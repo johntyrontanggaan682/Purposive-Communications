@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lesson 4 | New Media and Technology Aids</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                50: "#E7F7F5", 100: "#CFF0EC", 200: "#9FE1D9", 300: "#6ED2C6", 400: "#3EC3B3",
+                500: "#13A89A", 600: "#0F877B", 700: "#0B665C", 800: "#07453E", 900: "#032420",
+              },
+            },
+            boxShadow: { soft: "0 10px 30px rgba(0,0,0,0.10)" },
+          },
+        },
+      };
+    </script>
+    <style>
+      .page-bg {
+        background: radial-gradient(1200px 500px at 10% -10%, rgba(19, 168, 154, 0.12), transparent 55%),
+          radial-gradient(900px 450px at 100% 0%, rgba(19, 168, 154, 0.10), transparent 50%),
+          #fff;
+      }
+    </style>
+  </head>
+
+  <body class="page-bg text-slate-800">
+    <header class="sticky top-0 z-50 bg-white/80 backdrop-blur border-b border-slate-100">
+      <nav class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+        <a href="index.html" class="flex items-center gap-3">
+          <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 ring-1 ring-black/5">
+            <svg viewBox="0 0 24 24" class="h-6 w-6 text-brand-700" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 7l8-4 8 4v10l-8 4-8-4V7z"></path>
+              <path d="M8 11l2 2 5-5"></path>
+            </svg>
+          </div>
+          <span class="text-lg font-semibold tracking-tight text-slate-900">Purposive Communication</span>
+        </a>
+
+        <div class="hidden items-center gap-8 md:flex">
+          <a href="index.html" class="text-sm font-medium text-slate-700 hover:text-brand-700">Home</a>
+          <a href="lessons.html" class="text-sm font-semibold text-brand-700">Lessons</a>
+          <a href="profile.html" class="text-sm font-medium text-slate-700 hover:text-brand-700">Profile</a>
+          <a href="settings.html" class="text-sm font-medium text-slate-700 hover:text-brand-700">Settings</a>
+        </div>
+
+        <button
+          id="menuBtn"
+          class="inline-flex items-center justify-center rounded-xl bg-slate-50 p-2 text-slate-800 ring-1 ring-black/5 hover:bg-slate-100 md:hidden"
+          aria-label="Open menu"
+          aria-expanded="false"
+        >
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </nav>
+
+      <div id="mobileMenu" class="mx-auto hidden max-w-7xl px-4 pb-4 sm:px-6 lg:px-8 md:hidden">
+        <div class="rounded-2xl bg-white p-4 shadow-soft ring-1 ring-black/5">
+          <div class="flex flex-col gap-2">
+            <a href="index.html" class="rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">Home</a>
+            <a href="lessons.html" class="rounded-xl px-3 py-2 text-sm font-semibold text-brand-700 bg-brand-50">Lessons</a>
+            <a href="profile.html" class="rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">Profile</a>
+            <a href="settings.html" class="rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">Settings</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section class="bg-brand-700">
+      <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+        <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p class="text-white/80 text-sm font-semibold">Lesson 4</p>
+            <h1 class="mt-1 text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
+              The Rise of New Media and Technology Aids in Communication
+            </h1>
+            <p class="mt-3 max-w-3xl text-white/85">Part 1 (Lesson/Module) • Part 2 (Assessment — File Submission)</p>
+          </div>
+
+          <div class="w-full md:w-[340px]">
+            <div class="rounded-2xl bg-white/10 ring-1 ring-white/15 p-4">
+              <div class="flex items-center justify-between text-sm text-white/90">
+                <span class="font-semibold">Lesson Progress</span>
+                <span id="progressText" class="font-bold">0%</span>
+              </div>
+              <div class="mt-3 h-2.5 w-full rounded-full bg-white/20">
+                <div id="progressBar" class="h-2.5 w-0 rounded-full bg-white transition-all"></div>
+              </div>
+              <p class="mt-2 text-xs text-white/70">File upload stores filename only.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <main class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+      <div class="grid gap-8 lg:grid-cols-12">
+        <aside class="lg:col-span-3">
+          <div class="rounded-3xl bg-white shadow-soft ring-1 ring-black/5 p-5 sticky top-24">
+            <h2 class="text-sm font-extrabold text-slate-900">Lesson Parts</h2>
+            <div id="partsList" class="mt-4 space-y-2"></div>
+          </div>
+        </aside>
+
+        <section class="lg:col-span-9">
+          <div class="rounded-3xl bg-white shadow-soft ring-1 ring-black/5 p-6 sm:p-8">
+            <div class="flex items-start justify-between gap-4">
+              <div>
+                <h2 id="partTitle" class="text-2xl font-extrabold text-slate-900"></h2>
+                <p id="partSubtitle" class="mt-2 text-sm text-slate-600"></p>
+              </div>
+              <span id="statusPill" class="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ring-1 ring-black/5">
+                Not completed
+              </span>
+            </div>
+
+            <div id="partBody" class="mt-6 space-y-6"></div>
+
+            <div class="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <button id="prevBtn" class="rounded-xl bg-slate-100 px-4 py-2.5 text-sm font-semibold text-slate-800 hover:bg-slate-200 ring-1 ring-black/5">
+                ← Previous
+              </button>
+
+              <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
+                <button id="completeBtn" class="rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-700 ring-1 ring-black/5">
+                  Mark Part as Completed
+                </button>
+                <button id="nextBtn" class="rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800 ring-1 ring-black/5">
+                  Next →
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <script>
+      const LESSON_NO = 4;
+
+      const LS = {
+        partDone: (p) => `pc_lesson${LESSON_NO}_part${p}_done`,
+        progress: `pc_lesson${LESSON_NO}_progress`,
+        complete: `pc_lesson${LESSON_NO}_complete`,
+        assessmentFile: `pc_lesson${LESSON_NO}_assessment_file`,
+      };
+
+      const parts = [
+        {
+          title: "Part 1 — Lesson/Module",
+          subtitle: "Role of social media, responsible use, and tech-based communication strategies.",
+          type: "content",
+          html: `
+            <div class="rounded-2xl overflow-hidden ring-1 ring-black/5">
+              <div class="aspect-video bg-black">
+                <iframe class="w-full h-full"
+                  src="https://www.youtube.com/embed/8S0FDjFBj8o"
+                  title="Lesson Video (Fallback)"
+                  frameborder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen></iframe>
+              </div>
+            </div>
+
+            <div class="prose max-w-none prose-slate">
+              <p>
+                New media and technology tools have transformed communication into something instant, global, and highly interactive.
+                Platforms like Facebook, YouTube, TikTok, Instagram, and messaging apps support collaboration, tutorials, and learning communities.
+              </p>
+
+              <h3>Social media in technical fields</h3>
+              <ul>
+                <li>YouTube/TikTok tutorials for troubleshooting, safety practices, demonstrations</li>
+                <li>Online groups/communities for exchanging solutions, diagrams, and best practices</li>
+                <li>Industry updates and professional networking via platforms (e.g., LinkedIn, X)</li>
+              </ul>
+
+              <h3>Responsible use</h3>
+              <p>
+                Responsible social media use protects professionalism and credibility. Think before posting, avoid harassment, verify information,
+                and remember digital footprints can affect employment opportunities.
+              </p>
+
+              <h3>Tech-based communication strategies</h3>
+              <ul>
+                <li>Keep it simple and emphasize key ideas</li>
+                <li>Use visuals/videos for what is hard to explain with words</li>
+                <li>Maintain coherent design and readable text</li>
+              </ul>
+            </div>
+          `,
+        },
+        {
+          title: "Part 2 — Assessment (File Submission)",
+          subtitle: "Submit an infographic output (prototype file upload).",
+          type: "upload",
+          html: `
+            <div class="rounded-2xl bg-slate-50 p-5 ring-1 ring-black/5">
+              <h3 class="text-lg font-extrabold text-slate-900">Assessment Task</h3>
+              <p class="mt-2 text-sm text-slate-600">
+                Choose <strong>2 social media platforms</strong> (e.g., TikTok, YouTube, Facebook, X) and explain how they are used in your chosen field for:
+                <strong>Collaboration</strong>, <strong>Tutorials</strong>, and <strong>Industry updates</strong>. Present your explanation as an <strong>infographic</strong>.
+              </p>
+
+              <div class="mt-5">
+                <label class="block text-sm font-semibold text-slate-800">Upload your infographic file</label>
+                <input id="fileInput" type="file" class="mt-2 block w-full text-sm file:mr-4 file:rounded-xl file:border-0 file:bg-brand-600 file:px-4 file:py-2 file:text-white file:font-semibold hover:file:bg-brand-700" />
+                <button id="submitFileBtn" class="mt-3 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800">
+                  Submit File
+                </button>
+                <p id="fileStatus" class="mt-2 text-xs text-slate-600"></p>
+              </div>
+            </div>
+          `,
+        },
+      ];
+
+      const partsList = document.getElementById("partsList");
+      const partTitle = document.getElementById("partTitle");
+      const partSubtitle = document.getElementById("partSubtitle");
+      const partBody = document.getElementById("partBody");
+      const prevBtn = document.getElementById("prevBtn");
+      const nextBtn = document.getElementById("nextBtn");
+      const completeBtn = document.getElementById("completeBtn");
+      const progressText = document.getElementById("progressText");
+      const progressBar = document.getElementById("progressBar");
+      const statusPill = document.getElementById("statusPill");
+
+      let activePart = 0;
+
+      function initDefaults() {
+        if (localStorage.getItem(LS.progress) === null) localStorage.setItem(LS.progress, "0");
+        if (localStorage.getItem(LS.complete) === null) localStorage.setItem(LS.complete, "false");
+        parts.forEach((_, i) => {
+          const key = LS.partDone(i + 1);
+          if (localStorage.getItem(key) === null) localStorage.setItem(key, "false");
+        });
+      }
+
+      function isDone(partIndex1) {
+        return localStorage.getItem(LS.partDone(partIndex1)) === "true";
+      }
+
+      function setDone(partIndex1, val) {
+        localStorage.setItem(LS.partDone(partIndex1), val ? "true" : "false");
+      }
+
+      function computeAndSaveProgress() {
+        const doneCount = parts.reduce((acc, _, i) => acc + (isDone(i + 1) ? 1 : 0), 0);
+        const pct = Math.round((doneCount / parts.length) * 100);
+        localStorage.setItem(LS.progress, String(pct));
+        if (pct === 100) localStorage.setItem(LS.complete, "true");
+        return pct;
+      }
+
+      function renderProgress() {
+        const pct = computeAndSaveProgress();
+        progressText.textContent = `${pct}%`;
+        progressBar.style.width = `${pct}%`;
+      }
+
+      function pill(done) {
+        if (done) {
+          statusPill.textContent = "Completed";
+          statusPill.className = "inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold bg-brand-50 text-brand-800 ring-1 ring-black/5";
+        } else {
+          statusPill.textContent = "Not completed";
+          statusPill.className = "inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold bg-slate-100 text-slate-700 ring-1 ring-black/5";
+        }
+      }
+
+      function renderSidebar() {
+        partsList.innerHTML = "";
+        parts.forEach((p, idx) => {
+          const done = isDone(idx + 1);
+          const isActive = idx === activePart;
+
+          const btn = document.createElement("button");
+          btn.className =
+            "w-full flex items-center justify-between gap-3 rounded-2xl px-4 py-3 text-left ring-1 ring-black/5 transition " +
+            (isActive ? "bg-brand-600 text-white" : "bg-slate-50 hover:bg-slate-100 text-slate-900");
+
+          btn.innerHTML = `
+            <span class="text-sm font-semibold">${p.title}</span>
+            <span class="text-xs font-bold ${isActive ? "text-white" : "text-brand-700"}">${done ? "✓" : ""}</span>
+          `;
+
+          btn.addEventListener("click", () => { activePart = idx; render(); });
+          partsList.appendChild(btn);
+        });
+      }
+
+      function wireUpload() {
+        const submitFileBtn = document.getElementById("submitFileBtn");
+        const fileInput = document.getElementById("fileInput");
+        const fileStatus = document.getElementById("fileStatus");
+
+        const savedName = localStorage.getItem(LS.assessmentFile);
+        if (savedName) fileStatus.textContent = `Last submitted: ${savedName}`;
+
+        submitFileBtn?.addEventListener("click", () => {
+          if (!fileInput?.files?.length) {
+            fileStatus.textContent = "Please choose a file first.";
+            fileStatus.className = "mt-2 text-xs text-red-600";
+            return;
+          }
+          const name = fileInput.files[0].name;
+          localStorage.setItem(LS.assessmentFile, name);
+          fileStatus.textContent = `Submitted: ${name}`;
+          fileStatus.className = "mt-2 text-xs text-brand-800";
+
+          setDone(activePart + 1, true);
+          renderProgress();
+          renderSidebar();
+          pill(true);
+        });
+      }
+
+      function renderPart() {
+        const p = parts[activePart];
+        partTitle.textContent = p.title;
+        partSubtitle.textContent = p.subtitle;
+        partBody.innerHTML = p.html;
+
+        pill(isDone(activePart + 1));
+
+        prevBtn.disabled = activePart === 0;
+        nextBtn.disabled = activePart === parts.length - 1;
+        prevBtn.classList.toggle("opacity-50", prevBtn.disabled);
+        prevBtn.classList.toggle("cursor-not-allowed", prevBtn.disabled);
+        nextBtn.classList.toggle("opacity-50", nextBtn.disabled);
+        nextBtn.classList.toggle("cursor-not-allowed", nextBtn.disabled);
+
+        if (p.type === "upload") wireUpload();
+      }
+
+      function render() {
+        renderSidebar();
+        renderPart();
+        renderProgress();
+      }
+
+      document.getElementById("menuBtn")?.addEventListener("click", () => {
+        const mm = document.getElementById("mobileMenu");
+        const isOpen = !mm.classList.contains("hidden");
+        mm.classList.toggle("hidden");
+        document.getElementById("menuBtn").setAttribute("aria-expanded", String(!isOpen));
+      });
+
+      prevBtn.addEventListener("click", () => { if (activePart > 0) activePart--; render(); });
+      nextBtn.addEventListener("click", () => { if (activePart < parts.length - 1) activePart++; render(); });
+      completeBtn.addEventListener("click", () => { setDone(activePart + 1, true); render(); });
+
+      initDefaults();
+      render();
+    </script>
+  </body>
+</html>

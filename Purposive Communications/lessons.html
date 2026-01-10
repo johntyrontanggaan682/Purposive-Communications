@@ -1,0 +1,513 @@
+<!-- lessons.html (Main Lessons Page - 4 Lesson Cards, Lock After Lesson 1) -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Purposive Communication | Lessons</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: "#E7F7F5",
+              100: "#CFF0EC",
+              200: "#9FE1D9",
+              300: "#6ED2C6",
+              400: "#3EC3B3",
+              500: "#13A89A",
+              600: "#0F877B",
+              700: "#0B665C",
+              800: "#07453E",
+              900: "#032420",
+            },
+          },
+          boxShadow: {
+            soft: "0 10px 30px rgba(0,0,0,0.10)",
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    .page-bg {
+      background: radial-gradient(1200px 500px at 10% -10%, rgba(19, 168, 154, 0.12), transparent 55%),
+        radial-gradient(900px 450px at 100% 0%, rgba(19, 168, 154, 0.10), transparent 50%),
+        #fff;
+    }
+  </style>
+</head>
+
+<body class="page-bg text-slate-800">
+  <!-- NAVBAR -->
+  <header class="sticky top-0 z-50 bg-white/80 backdrop-blur border-b border-slate-100">
+    <nav class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+      <!-- Brand -->
+      <a href="index.html" class="flex items-center gap-3">
+        <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 ring-1 ring-black/5">
+          <svg viewBox="0 0 24 24" class="h-6 w-6 text-brand-700" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 7l8-4 8 4v10l-8 4-8-4V7z"></path>
+            <path d="M8 11l2 2 5-5"></path>
+          </svg>
+        </div>
+        <span class="text-lg font-semibold tracking-tight text-slate-900">Purposive Communication</span>
+      </a>
+
+      <!-- Desktop Links -->
+      <div class="hidden items-center gap-8 md:flex">
+        <a href="index.html" class="text-sm font-medium text-slate-700 hover:text-brand-700">Home</a>
+        <a href="lessons.html" class="text-sm font-semibold text-brand-700">Lessons</a>
+        <a href="profile.html" class="text-sm font-medium text-slate-700 hover:text-brand-700">Profile</a>
+        <a href="settings.html" class="text-sm font-medium text-slate-700 hover:text-brand-700">Settings</a>
+      </div>
+
+
+
+
+
+
+      <!-- Mobile -->
+      <button id="menuBtn"
+        class="inline-flex items-center justify-center rounded-xl bg-slate-50 p-2 text-slate-800 ring-1 ring-black/5 hover:bg-slate-100 md:hidden"
+        aria-label="Open menu" aria-expanded="false">
+        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="mx-auto hidden max-w-7xl px-4 pb-4 sm:px-6 lg:px-8 md:hidden">
+      <div class="rounded-2xl bg-white p-4 shadow-soft ring-1 ring-black/5">
+        <div class="flex flex-col gap-2">
+          <a href="index.html"
+            class="rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">Home</a>
+          <a href="lessons.html"
+            class="rounded-xl px-3 py-2 text-sm font-semibold text-brand-700 bg-brand-50">Lessons</a>
+          <a href="profile.html"
+            class="rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">Profile</a>
+          <a href="settings.html"
+            class="rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">Settings</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO STRIP -->
+  <section class="bg-brand-700">
+    <div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+      <h1 class="text-5xl font-extrabold tracking-tight text-white">All Lessons</h1>
+      <p class="mt-5 max-w-3xl text-lg text-white/85">
+        Master purposive communication through comprehensive, self-paced courses
+      </p>
+    </div>
+  </section>
+
+  <!-- LESSON GRID -->
+  <main class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+    <div class="grid gap-10 lg:grid-cols-3">
+      <!-- LESSON 1 (Always unlocked) -->
+      <a href="lesson-1.html"
+        class="group overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-brand-200">
+        <div class="relative">
+          <img class="h-56 w-full object-cover" src="./assets/lesson-1.jpg"
+            alt="Introduction to Purposive Communication"
+            onerror="this.src='https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1400&q=80';" />
+        </div>
+
+        <div class="p-7">
+          <h3 class="text-xl font-extrabold text-slate-900 group-hover:text-brand-700">
+            Introduction to Purposive Communication
+          </h3>
+          <p class="mt-3 text-sm leading-relaxed text-slate-600">
+            Understanding the fundamentals of communication and its purpose in various contexts
+          </p>
+
+          <div class="mt-6">
+            <div class="flex items-center justify-between text-sm">
+              <span class="font-semibold text-slate-700">Progress</span>
+              <span id="p1Text" class="font-bold text-brand-700">0%</span>
+            </div>
+            <div class="mt-3 h-2.5 w-full rounded-full bg-slate-200">
+              <div id="p1Bar" class="h-2.5 w-0 rounded-full bg-brand-500 transition-all"></div>
+            </div>
+          </div>
+
+          <div class="mt-6 flex items-center justify-between text-sm text-slate-500">
+            <span class="inline-flex items-center gap-2">
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="9"></circle>
+                <path d="M12 7v5l3 2"></path>
+              </svg>
+              3 Parts
+            </span>
+            <span class="inline-flex items-center gap-2">
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M8 4h10a2 2 0 012 2v14H8a2 2 0 01-2-2V6a2 2 0 012-2z"></path>
+                <path d="M6 6h2"></path>
+              </svg>
+              1 Assessment
+            </span>
+          </div>
+        </div>
+      </a>
+
+      <!-- LESSON 2 (Locked until Lesson 1 complete) -->
+      <div id="lesson2Card" class="relative">
+        <div id="lesson2LockOverlay"
+          class="absolute inset-0 z-20 flex items-center justify-center rounded-3xl bg-white/70 backdrop-blur-sm ring-1 ring-black/5">
+          <div class="text-center">
+            <div
+              class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-700 text-white shadow-soft">
+              <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M7 11V8a5 5 0 0110 0v3" />
+                <rect x="5" y="11" width="14" height="10" rx="2" />
+              </svg>
+            </div>
+            <p class="mt-4 text-sm font-semibold text-slate-900">Locked</p>
+            <p class="mt-1 text-xs text-slate-600">Finish Lesson 1 to unlock</p>
+            <button id="lockedToastBtn" type="button"
+              class="mt-4 rounded-xl bg-brand-500 px-4 py-2 text-xs font-semibold text-white hover:bg-brand-600">
+              Why is this locked?
+            </button>
+          </div>
+        </div>
+
+        <div id="lesson2Inner" class="overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/5 transition">
+          <div class="relative">
+            <img id="lesson2Img" class="h-56 w-full object-cover" src="./assets/lesson-2.jpg"
+              alt="Verbal and Non-Verbal Communication"
+              onerror="this.src='https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1400&q=80';" />
+          </div>
+
+          <div class="p-7">
+            <h3 class="text-xl font-extrabold text-slate-900">Verbal and Non-Verbal Communication</h3>
+            <p class="mt-3 text-sm leading-relaxed text-slate-600">
+              Mastering the art of spoken and unspoken messages in effective communication
+            </p>
+
+            <div class="mt-6">
+              <div class="flex items-center justify-between text-sm">
+                <span class="font-semibold text-slate-700">Progress</span>
+                <span id="p2Text" class="font-bold text-brand-700">0%</span>
+              </div>
+              <div class="mt-3 h-2.5 w-full rounded-full bg-slate-200">
+                <div id="p2Bar" class="h-2.5 w-0 rounded-full bg-brand-500 transition-all"></div>
+              </div>
+            </div>
+
+            <div class="mt-6 flex items-center justify-between text-sm text-slate-500">
+              <span class="inline-flex items-center gap-2">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="9"></circle>
+                  <path d="M12 7v5l3 2"></path>
+                </svg>
+                3 Parts
+              </span>
+              <span class="inline-flex items-center gap-2">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M8 4h10a2 2 0 012 2v14H8a2 2 0 01-2-2V6a2 2 0 012-2z"></path>
+                  <path d="M6 6h2"></path>
+                </svg>
+                1 Assessment
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LESSON 3 (Locked until Lesson 1 complete) -->
+      <div id="lesson3Card" class="relative">
+        <div id="lesson3LockOverlay"
+          class="absolute inset-0 z-20 flex items-center justify-center rounded-3xl bg-white/70 backdrop-blur-sm ring-1 ring-black/5">
+          <div class="text-center">
+            <div
+              class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-700 text-white shadow-soft">
+              <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M7 11V8a5 5 0 0110 0v3" />
+                <rect x="5" y="11" width="14" height="10" rx="2" />
+              </svg>
+            </div>
+            <p class="mt-4 text-sm font-semibold text-slate-900">Locked</p>
+            <p class="mt-1 text-xs text-slate-600">Finish Lesson 1 to unlock</p>
+          </div>
+        </div>
+
+        <div id="lesson3Inner" class="overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/5 transition">
+          <div class="relative">
+            <img id="lesson3Img" class="h-56 w-full object-cover" src="./assets/lesson-3.jpg"
+              alt="Written Communication Excellence"
+              onerror="this.src='https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=1400&q=80';" />
+          </div>
+
+          <div class="p-7">
+            <h3 class="text-xl font-extrabold text-slate-900">Written Communication Excellence</h3>
+            <p class="mt-3 text-sm leading-relaxed text-slate-600">
+              Developing professional writing skills for academic and business contexts
+            </p>
+
+            <div class="mt-6">
+              <div class="flex items-center justify-between text-sm">
+                <span class="font-semibold text-slate-700">Progress</span>
+                <span id="p3Text" class="font-bold text-brand-700">0%</span>
+              </div>
+              <div class="mt-3 h-2.5 w-full rounded-full bg-slate-200">
+                <div id="p3Bar" class="h-2.5 w-0 rounded-full bg-brand-500 transition-all"></div>
+              </div>
+            </div>
+
+            <div class="mt-6 flex items-center justify-between text-sm text-slate-500">
+              <span class="inline-flex items-center gap-2">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="9"></circle>
+                  <path d="M12 7v5l3 2"></path>
+                </svg>
+                3 Parts
+              </span>
+              <span class="inline-flex items-center gap-2">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M8 4h10a2 2 0 012 2v14H8a2 2 0 01-2-2V6a2 2 0 012-2z"></path>
+                  <path d="M6 6h2"></path>
+                </svg>
+                1 Assessment
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LESSON 4 (Locked until Lesson 1 complete) -->
+      <div id="lesson4Card" class="relative">
+        <div id="lesson4LockOverlay"
+          class="absolute inset-0 z-20 flex items-center justify-center rounded-3xl bg-white/70 backdrop-blur-sm ring-1 ring-black/5">
+          <div class="text-center">
+            <div
+              class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-700 text-white shadow-soft">
+              <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M7 11V8a5 5 0 0110 0v3" />
+                <rect x="5" y="11" width="14" height="10" rx="2" />
+              </svg>
+            </div>
+            <p class="mt-4 text-sm font-semibold text-slate-900">Locked</p>
+            <p class="mt-1 text-xs text-slate-600">Finish Lesson 1 to unlock</p>
+          </div>
+        </div>
+
+        <div id="lesson4Inner" class="overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/5 transition">
+          <div class="relative">
+            <img id="lesson4Img" class="h-56 w-full object-cover" src="./assets/lesson-4.jpg"
+              alt="Digital and Academic Communication"
+              onerror="this.src='https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1400&q=80';" />
+          </div>
+
+          <div class="p-7">
+            <h3 class="text-xl font-extrabold text-slate-900">Digital and Academic Communication</h3>
+            <p class="mt-3 text-sm leading-relaxed text-slate-600">
+              Communicating effectively in digital platforms, academic settings, and online collaboration
+            </p>
+
+            <div class="mt-6">
+              <div class="flex items-center justify-between text-sm">
+                <span class="font-semibold text-slate-700">Progress</span>
+                <span id="p4Text" class="font-bold text-brand-700">0%</span>
+              </div>
+              <div class="mt-3 h-2.5 w-full rounded-full bg-slate-200">
+                <div id="p4Bar" class="h-2.5 w-0 rounded-full bg-brand-500 transition-all"></div>
+              </div>
+            </div>
+
+            <div class="mt-6 flex items-center justify-between text-sm text-slate-500">
+              <span class="inline-flex items-center gap-2">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="9"></circle>
+                  <path d="M12 7v5l3 2"></path>
+                </svg>
+                3 Parts
+              </span>
+              <span class="inline-flex items-center gap-2">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M8 4h10a2 2 0 012 2v14H8a2 2 0 01-2-2V6a2 2 0 012-2z"></path>
+                  <path d="M6 6h2"></path>
+                </svg>
+                1 Assessment
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Toast -->
+  <div id="toast" class="fixed bottom-6 left-1/2 z-[60] hidden -translate-x-1/2">
+    <div class="flex items-start gap-3 rounded-2xl bg-slate-900 px-5 py-4 text-white shadow-soft ring-1 ring-white/10">
+      <div class="mt-0.5">
+        <svg class="h-5 w-5 text-brand-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10" />
+          <path d="M12 16v-4" />
+          <path d="M12 8h.01" />
+        </svg>
+      </div>
+      <div class="text-sm">
+        <p class="font-semibold">Locked lesson</p>
+        <p class="mt-0.5 text-white/80">Complete Lesson 1 to unlock the next lessons.</p>
+      </div>
+      <button id="toastClose" class="ml-2 rounded-lg p-1 text-white/70 hover:bg-white/10 hover:text-white"
+        aria-label="Close">
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // Prototype Locking using LocalStorage (no UI controls)
+    // Unlock for testing in console:
+    // localStorage.setItem("pc_lesson1_complete","true");
+    // localStorage.setItem("pc_lesson1_progress","100");
+    // location.reload();
+
+    const LS_KEYS = {
+      lesson1Complete: "pc_lesson1_complete",
+      lesson2Complete: "pc_lesson2_complete",
+      lesson3Complete: "pc_lesson3_complete",
+      lesson4Complete: "pc_lesson4_complete",
+
+      lesson1Progress: "pc_lesson1_progress",
+      lesson2Progress: "pc_lesson2_progress",
+      lesson3Progress: "pc_lesson3_progress",
+      lesson4Progress: "pc_lesson4_progress",
+    };
+
+
+    function initDefaults() {
+      // Complete flags
+      if (localStorage.getItem(LS_KEYS.lesson1Complete) === null) localStorage.setItem(LS_KEYS.lesson1Complete, "false");
+      if (localStorage.getItem(LS_KEYS.lesson2Complete) === null) localStorage.setItem(LS_KEYS.lesson2Complete, "false");
+      if (localStorage.getItem(LS_KEYS.lesson3Complete) === null) localStorage.setItem(LS_KEYS.lesson3Complete, "false");
+      if (localStorage.getItem(LS_KEYS.lesson4Complete) === null) localStorage.setItem(LS_KEYS.lesson4Complete, "false");
+
+      // Progress
+      if (localStorage.getItem(LS_KEYS.lesson1Progress) === null) localStorage.setItem(LS_KEYS.lesson1Progress, "0");
+      if (localStorage.getItem(LS_KEYS.lesson2Progress) === null) localStorage.setItem(LS_KEYS.lesson2Progress, "0");
+      if (localStorage.getItem(LS_KEYS.lesson3Progress) === null) localStorage.setItem(LS_KEYS.lesson3Progress, "0");
+      if (localStorage.getItem(LS_KEYS.lesson4Progress) === null) localStorage.setItem(LS_KEYS.lesson4Progress, "0");
+    }
+
+    function clamp(n, min, max) {
+      return Math.max(min, Math.min(max, n));
+    }
+
+    function setProgress(barId, textId, value) {
+      const v = clamp(parseInt(value || "0", 10), 0, 100);
+      const bar = document.getElementById(barId);
+      const txt = document.getElementById(textId);
+      if (bar) bar.style.width = v + "%";
+      if (txt) txt.textContent = v + "%";
+    }
+
+    function showToast() {
+      const toast = document.getElementById("toast");
+      toast.classList.remove("hidden");
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => toast.classList.add("hidden"), 2800);
+    }
+
+    function closeToast() {
+      document.getElementById("toast").classList.add("hidden");
+    }
+
+    function lockCard(imgElId, overlayElId) {
+      const img = document.getElementById(imgElId);
+      const overlay = document.getElementById(overlayElId);
+      if (img) img.classList.add("blur-[1px]");
+      if (overlay) overlay.classList.remove("hidden");
+    }
+
+    function unlockCard(cardContainerId, innerEl, overlayElId, href) {
+      const container = document.getElementById(cardContainerId);
+      const overlay = document.getElementById(overlayElId);
+
+      if (overlay) overlay.classList.add("hidden");
+
+      if (container && innerEl && !container.querySelector("a[data-unlocked='true']")) {
+        const link = document.createElement("a");
+        link.href = href;
+        link.setAttribute("data-unlocked", "true");
+        link.className =
+          "group block focus:outline-none focus:ring-4 focus:ring-brand-200 rounded-3xl transition hover:-translate-y-1 hover:shadow-lg";
+        link.appendChild(innerEl);
+        container.appendChild(link);
+      }
+
+      const img = container?.querySelector("img");
+      if (img) img.classList.remove("blur-[1px]");
+    }
+
+    function renderLocking() {
+      const l1 = localStorage.getItem(LS_KEYS.lesson1Complete) === "true";
+      const l2 = localStorage.getItem(LS_KEYS.lesson2Complete) === "true";
+      const l3 = localStorage.getItem(LS_KEYS.lesson3Complete) === "true";
+
+      // Lesson 2 unlocks after Lesson 1
+      if (l1) {
+        unlockCard("lesson2Card", document.getElementById("lesson2Inner"), "lesson2LockOverlay", "lesson-2.html");
+      } else {
+        lockCard("lesson2Img", "lesson2LockOverlay");
+      }
+
+      // Lesson 3 unlocks after Lesson 2
+      if (l2) {
+        unlockCard("lesson3Card", document.getElementById("lesson3Inner"), "lesson3LockOverlay", "lesson-3.html");
+      } else {
+        lockCard("lesson3Img", "lesson3LockOverlay");
+      }
+
+      // Lesson 4 unlocks after Lesson 3
+      if (l3) {
+        unlockCard("lesson4Card", document.getElementById("lesson4Inner"), "lesson4LockOverlay", "lesson-4.html");
+      } else {
+        lockCard("lesson4Img", "lesson4LockOverlay");
+      }
+    }
+
+    function renderProgress() {
+      setProgress("p1Bar", "p1Text", localStorage.getItem(LS_KEYS.lesson1Progress));
+      setProgress("p2Bar", "p2Text", localStorage.getItem(LS_KEYS.lesson2Progress));
+      setProgress("p3Bar", "p3Text", localStorage.getItem(LS_KEYS.lesson3Progress));
+      setProgress("p4Bar", "p4Text", localStorage.getItem(LS_KEYS.lesson4Progress));
+    }
+
+    // Mobile menu
+    const btn = document.getElementById("menuBtn");
+    const menu = document.getElementById("mobileMenu");
+    btn?.addEventListener("click", () => {
+      const isOpen = !menu.classList.contains("hidden");
+      menu.classList.toggle("hidden");
+      btn.setAttribute("aria-expanded", String(!isOpen));
+    });
+
+    document.getElementById("lockedToastBtn")?.addEventListener("click", showToast);
+    document.getElementById("toastClose")?.addEventListener("click", closeToast);
+
+    initDefaults();
+    renderProgress();
+    renderLocking();
+  </script>
+
+
+
+
+
+
+</body>
+
+</html>

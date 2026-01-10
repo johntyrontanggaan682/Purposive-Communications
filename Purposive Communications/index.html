@@ -1,0 +1,403 @@
+<!-- index.html (Welcome Page) -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Purposive Communication | Welcome</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Optional: Tailwind config (colors/typography) -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: "#E7F7F5",
+              100: "#CFF0EC",
+              200: "#9FE1D9",
+              300: "#6ED2C6",
+              400: "#3EC3B3",
+              500: "#13A89A",
+              600: "#0F877B",
+              700: "#0B665C",
+              800: "#07453E",
+              900: "#032420",
+            },
+          },
+          boxShadow: {
+            soft: "0 10px 30px rgba(0,0,0,0.12)",
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    /* Replace hero image path with your own: e.g., ./assets/hero.jpg */
+    .hero-bg {
+      background-image: linear-gradient(to bottom,
+          rgba(0, 0, 0, 0.45),
+          rgba(0, 0, 0, 0.35)),
+        url("./assets/hero.jpg");
+      background-size: cover;
+      background-position: center;
+    }
+  </style>
+</head>
+
+<body class="bg-white text-slate-800">
+  <!-- NAVBAR -->
+  <header class="absolute inset-x-0 top-0 z-50">
+    <nav class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+      <!-- Brand -->
+      <a href="index.html" class="flex items-center gap-3">
+        <div
+          class="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur">
+          <!-- Logo icon -->
+          <svg viewBox="0 0 24 24" class="h-6 w-6 text-white" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 7l8-4 8 4v10l-8 4-8-4V7z"></path>
+            <path d="M8 11l2 2 5-5"></path>
+          </svg>
+        </div>
+        <span class="text-lg font-semibold tracking-tight text-white">Purposive Communication</span>
+      </a>
+
+      <!-- Desktop Links -->
+      <div class="hidden items-center gap-8 md:flex">
+        <a href="#home" class="text-sm font-medium text-white/90 hover:text-white">Home</a>
+        <a href="#about" class="text-sm font-medium text-white/90 hover:text-white">About Us</a>
+        <a href="#contact" class="text-sm font-medium text-white/90 hover:text-white">Contact</a>
+
+        <a href="login.html"
+          class="rounded-xl bg-brand-500 px-5 py-2.5 text-sm font-semibold text-white shadow-soft hover:bg-brand-600">
+          Login
+        </a>
+      </div>
+
+      <!-- Mobile menu button -->
+      <button id="menuBtn"
+        class="inline-flex items-center justify-center rounded-xl bg-white/10 p-2 text-white ring-1 ring-white/20 backdrop-blur hover:bg-white/15 md:hidden"
+        aria-label="Open menu" aria-expanded="false">
+        <svg id="menuIcon" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="mx-auto hidden max-w-7xl px-4 pb-4 sm:px-6 lg:px-8 md:hidden">
+      <div class="rounded-2xl bg-white/95 p-4 shadow-soft ring-1 ring-black/5">
+        <div class="flex flex-col gap-2">
+          <a href="#home" class="rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">Home</a>
+          <a href="#about" class="rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">About
+            Us</a>
+          <a href="#contact"
+            class="rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">Contact</a>
+
+          <a href="login.html"
+            class="mt-2 rounded-xl bg-brand-500 px-4 py-2.5 text-center text-sm font-semibold text-white hover:bg-brand-600">
+            Login
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section id="home" class="hero-bg relative min-h-[78vh]">
+    <div
+      class="mx-auto flex max-w-7xl flex-col items-center justify-center px-4 pb-24 pt-28 text-center sm:px-6 lg:px-8">
+      <h1 class="mt-10 max-w-4xl text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">
+        Master Purposive <br class="hidden sm:block" />
+        Communication
+      </h1>
+
+      <p class="mt-6 max-w-3xl text-base leading-relaxed text-white/85 sm:text-lg">
+        Develop essential communication skills through self-paced learning with interactive lessons, quizzes, and
+        real-time
+        progress tracking.
+      </p>
+
+      <div class="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+        <a href="lessons.html"
+          class="w-full rounded-2xl bg-brand-500 px-8 py-3.5 text-sm font-semibold text-white shadow-soft hover:bg-brand-600 focus:outline-none focus:ring-4 focus:ring-brand-200 sm:w-auto">
+          Start Learning
+        </a>
+
+        <a href="signup.html"
+          class="w-full rounded-2xl border border-white/60 bg-white/10 px-8 py-3.5 text-sm font-semibold text-white backdrop-blur hover:bg-white/15 focus:outline-none focus:ring-4 focus:ring-white/20 sm:w-auto">
+          Sign Up Free
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY CHOOSE -->
+  <section class="bg-white py-20">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="text-center">
+        <h2 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">Why Choose Our Platform?</h2>
+        <p class="mx-auto mt-4 max-w-2xl text-slate-600">
+          Experience a comprehensive learning journey designed for your success
+        </p>
+      </div>
+
+      <div class="mt-12 grid gap-8 md:grid-cols-3">
+        <!-- Card 1 -->
+        <div class="rounded-3xl bg-brand-50 p-10 text-center shadow-soft ring-1 ring-black/5">
+          <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-brand-500 text-white">
+            <svg viewBox="0 0 24 24" class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          </div>
+          <h3 class="mt-6 text-xl font-bold text-slate-900">Self-Paced Learning</h3>
+          <p class="mt-3 text-sm leading-relaxed text-slate-600">
+            Learn at your own pace with flexible scheduling that fits your lifestyle and commitments
+          </p>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="rounded-3xl bg-brand-50 p-10 text-center shadow-soft ring-1 ring-black/5">
+          <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-brand-500 text-white">
+            <svg viewBox="0 0 24 24" class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 19h16" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M7 16V9" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 16V5" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 16v-7" />
+            </svg>
+          </div>
+          <h3 class="mt-6 text-xl font-bold text-slate-900">Progress Tracking</h3>
+          <p class="mt-3 text-sm leading-relaxed text-slate-600">
+            Monitor your advancement with real-time progress bars and detailed performance analytics
+          </p>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="rounded-3xl bg-brand-50 p-10 text-center shadow-soft ring-1 ring-black/5">
+          <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-brand-500 text-white">
+            <svg viewBox="0 0 24 24" class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5 9 6.343 9 8s1.343 3 3 3z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M7 11v-1a5 5 0 0110 0v1" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M7 11h10v8H7z" />
+            </svg>
+          </div>
+          <h3 class="mt-6 text-xl font-bold text-slate-900">Sequential Learning</h3>
+          <p class="mt-3 text-sm leading-relaxed text-slate-600">
+            Master each concept before moving forward with our structured unlock system
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="bg-white pb-20">
+    <div class="mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
+      <!-- Left -->
+      <div>
+        <h2 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">How It Works</h2>
+
+        <div class="mt-10 space-y-8">
+          <!-- Step 1 -->
+          <div class="flex gap-5">
+            <div
+              class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white font-bold">
+              1
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-slate-900">Choose Your Lesson</h3>
+              <p class="mt-1 text-sm text-slate-600">
+                Browse through our curated lessons and select the topic you want to master
+              </p>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="flex gap-5">
+            <div
+              class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white font-bold">
+              2
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-slate-900">Complete Each Part</h3>
+              <p class="mt-1 text-sm text-slate-600">
+                Watch videos, read content, and pass quizzes to unlock the next section
+              </p>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="flex gap-5">
+            <div
+              class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white font-bold">
+              3
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-slate-900">Pass Final Assessment</h3>
+              <p class="mt-1 text-sm text-slate-600">
+                Demonstrate your mastery by completing the comprehensive final assessment
+              </p>
+            </div>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="flex gap-5">
+            <div
+              class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white font-bold">
+              4
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-slate-900">Track Your Progress</h3>
+              <p class="mt-1 text-sm text-slate-600">
+                Monitor your achievements and continue building your communication skills
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right image -->
+      <div class="relative">
+        <div class="absolute -inset-6 rounded-[2rem] bg-brand-50 blur-2xl"></div>
+        <div class="relative overflow-hidden rounded-[2rem] shadow-soft ring-1 ring-black/5">
+          <!-- Replace with your own image file if you want (e.g., ./assets/how-it-works.jpg) -->
+          <img src="./assets/how-it-works.jpg" alt="Student learning" class="h-[420px] w-full object-cover sm:h-[520px]"
+            onerror="this.src='https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1400&q=80';" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA BAND -->
+  <section class="bg-brand-700 py-20">
+    <div class="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">Ready to Start Your Learning Journey?
+      </h2>
+      <p class="mx-auto mt-4 max-w-2xl text-white/85">
+        Join thousands of learners mastering purposive communication skills
+      </p>
+
+      <a href="signup.html"
+        class="mt-10 inline-flex items-center justify-center rounded-2xl bg-white px-10 py-3.5 text-sm font-semibold text-brand-700 shadow-soft hover:bg-brand-50 focus:outline-none focus:ring-4 focus:ring-white/30">
+        Get Started Free
+      </a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-brand-800 text-white">
+    <div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+      <div class="grid gap-10 md:grid-cols-3 md:items-start">
+        <!-- Brand -->
+        <div>
+          <div class="flex items-center gap-3">
+            <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20">
+              <svg viewBox="0 0 24 24" class="h-6 w-6 text-white" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 7l8-4 8 4v10l-8 4-8-4V7z"></path>
+                <path d="M8 11l2 2 5-5"></path>
+              </svg>
+            </div>
+            <span class="text-lg font-semibold">Purposive Communication</span>
+          </div>
+          <p class="mt-4 max-w-sm text-sm leading-relaxed text-white/80">
+            Master the art of effective communication through our comprehensive self-paced learning platform. Build
+            essential skills for academic and professional success.
+          </p>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="md:justify-self-center">
+          <h3 class="text-base font-semibold">Quick Links</h3>
+          <ul class="mt-4 space-y-3 text-sm text-white/80">
+            <li><a class="hover:text-white" href="index.html">Home</a></li>
+            <li><a class="hover:text-white" href="lessons.html">About Us</a></li>
+            <li><a class="hover:text-white" href="profile.html">Contact</a></li>
+            
+          </ul>
+        </div>
+
+        <!-- Connect -->
+        <div class="md:justify-self-end">
+          <h3 class="text-base font-semibold">Connect</h3>
+          <div class="mt-4 flex items-center gap-4">
+            <a href="#"
+              class="inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/20 hover:bg-white/15"
+              aria-label="Facebook">
+              <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M22 12a10 10 0 10-11.5 9.9v-7H8v-3h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.4H15.5c-1.2 0-1.5.7-1.5 1.5V12H17l-.5 3h-2.5v7A10 10 0 0022 12z" />
+              </svg>
+            </a>
+
+            <a href="#"
+              class="inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/20 hover:bg-white/15"
+              aria-label="Twitter">
+              <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M21 7.2c-.7.3-1.5.5-2.3.6.8-.5 1.4-1.2 1.7-2.1-.8.4-1.6.8-2.5.9A3.9 3.9 0 0015.1 5c-2.1 0-3.8 1.7-3.8 3.8 0 .3 0 .6.1.9-3.2-.2-6-1.7-7.9-4.1-.3.6-.5 1.2-.5 1.9 0 1.3.7 2.5 1.7 3.2-.6 0-1.2-.2-1.7-.5v.1c0 1.9 1.4 3.5 3.2 3.8-.3.1-.7.1-1.1.1-.2 0-.5 0-.7-.1.5 1.7 2.1 2.9 3.9 2.9A7.9 7.9 0 013 18.6 11.2 11.2 0 009 20.3c7.3 0 11.3-6.1 11.3-11.3v-.5c.8-.6 1.4-1.2 1.9-2z" />
+              </svg>
+            </a>
+
+            <a href="#"
+              class="inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/20 hover:bg-white/15"
+              aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M6.9 6.7a2.1 2.1 0 11-4.2 0 2.1 2.1 0 014.2 0zM2.9 21h4V9H2.9v12zM9.4 9h3.8v1.6h.1c.5-.9 1.8-1.9 3.7-1.9 4 0 4.7 2.6 4.7 6V21h-4v-5.4c0-1.3 0-2.9-1.8-2.9s-2.1 1.4-2.1 2.8V21h-4V9z" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-12 border-t border-white/15 pt-6 text-center text-sm text-white/75">
+        © <span id="year"></span> Purposive Communication E-Learning Platform. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <!-- JS -->
+  <script>
+    // Footer year
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Mobile menu toggle
+    const btn = document.getElementById("menuBtn");
+    const menu = document.getElementById("mobileMenu");
+
+    btn?.addEventListener("click", () => {
+      const isOpen = !menu.classList.contains("hidden");
+      menu.classList.toggle("hidden");
+      btn.setAttribute("aria-expanded", String(!isOpen));
+    });
+
+    // Smooth scroll for # links
+    document.querySelectorAll('a[href^="#"]').forEach((a) => {
+      a.addEventListener("click", (e) => {
+        const href = a.getAttribute("href");
+        if (!href || href === "#") return;
+
+        const el = document.querySelector(href);
+        if (!el) return;
+
+        e.preventDefault();
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+
+        // close mobile menu on navigation
+        if (!menu.classList.contains("hidden")) {
+          menu.classList.add("hidden");
+          btn.setAttribute("aria-expanded", "false");
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

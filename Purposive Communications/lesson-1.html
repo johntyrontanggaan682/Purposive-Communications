@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lesson 1 | Communication Principles and Ethics</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: "#E7F7F5",
+              100: "#CFF0EC",
+              200: "#9FE1D9",
+              300: "#6ED2C6",
+              400: "#3EC3B3",
+              500: "#13A89A",
+              600: "#0F877B",
+              700: "#0B665C",
+              800: "#07453E",
+              900: "#032420",
+            },
+          },
+          boxShadow: { soft: "0 10px 30px rgba(0,0,0,0.10)" },
+        },
+      },
+    };
+  </script>
+  <style>
+    .page-bg {
+      background: radial-gradient(1200px 500px at 10% -10%, rgba(19, 168, 154, 0.12), transparent 55%),
+        radial-gradient(900px 450px at 100% 0%, rgba(19, 168, 154, 0.10), transparent 50%),
+        #fff;
+    }
+  </style>
+</head>
+
+<body class="page-bg text-slate-800">
+
+  <!-- NAV -->
+  <header class="sticky top-0 z-50 bg-white/80 backdrop-blur border-b border-slate-100">
+    <nav class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+      <a href="index.html" class="flex items-center gap-3">
+        <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 ring-1 ring-black/5">
+          <svg viewBox="0 0 24 24" class="h-6 w-6 text-brand-700" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 7l8-4 8 4v10l-8 4-8-4V7z"></path>
+            <path d="M8 11l2 2 5-5"></path>
+          </svg>
+        </div>
+        <span class="text-lg font-semibold tracking-tight text-slate-900">Purposive Communication</span>
+      </a>
+
+      <div class="hidden items-center gap-8 md:flex">
+        <a href="index.html" class="text-sm font-medium text-slate-700 hover:text-brand-700">Home</a>
+        <a href="lessons.html" class="text-sm font-semibold text-brand-700">Lessons</a>
+        <a href="profile.html" class="text-sm font-medium text-slate-700 hover:text-brand-700">Profile</a>
+        <a href="settings.html" class="text-sm font-medium text-slate-700 hover:text-brand-700">Settings</a>
+      </div>
+
+      <button id="menuBtn"
+        class="inline-flex items-center justify-center rounded-xl bg-slate-50 p-2 text-slate-800 ring-1 ring-black/5 hover:bg-slate-100 md:hidden"
+        aria-label="Open menu" aria-expanded="false">
+        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </nav>
+
+    <div id="mobileMenu" class="mx-auto hidden max-w-7xl px-4 pb-4 sm:px-6 lg:px-8 md:hidden">
+      <div class="rounded-2xl bg-white p-4 shadow-soft ring-1 ring-black/5">
+        <div class="flex flex-col gap-2">
+          <a href="index.html"
+            class="rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">Home</a>
+          <a href="lessons.html"
+            class="rounded-xl px-3 py-2 text-sm font-semibold text-brand-700 bg-brand-50">Lessons</a>
+          <a href="profile.html"
+            class="rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">Profile</a>
+          <a href="settings.html"
+            class="rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">Settings</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="bg-brand-700">
+    <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+      <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div>
+          <p class="text-white/80 text-sm font-semibold">Lesson 1</p>
+          <h1 class="mt-1 text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
+            Communication Principles and Ethics
+          </h1>
+          <p class="mt-3 max-w-3xl text-white/85">
+            Parts: Principles of Effective Communication • Communication and Globalization • Ethics in Communication •
+            Assessment (File Submission)
+          </p>
+        </div>
+
+        <div class="w-full md:w-[340px]">
+          <div class="rounded-2xl bg-white/10 ring-1 ring-white/15 p-4">
+            <div class="flex items-center justify-between text-sm text-white/90">
+              <span class="font-semibold">Lesson Progress</span>
+              <span id="progressText" class="font-bold">0%</span>
+            </div>
+            <div class="mt-3 h-2.5 w-full rounded-full bg-white/20">
+              <div id="progressBar" class="h-2.5 w-0 rounded-full bg-white transition-all"></div>
+            </div>
+            <p class="mt-2 text-xs text-white/70">Prototype uses LocalStorage (Firebase later).</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTENT -->
+  <main class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+    <div class="grid gap-8 lg:grid-cols-12">
+      <!-- Sidebar -->
+      <aside class="lg:col-span-3">
+        <div class="rounded-3xl bg-white shadow-soft ring-1 ring-black/5 p-5 sticky top-24">
+          <h2 class="text-sm font-extrabold text-slate-900">Lesson Parts</h2>
+          <div id="partsList" class="mt-4 space-y-2"></div>
+
+          <div class="mt-5 rounded-2xl bg-brand-50 p-4 ring-1 ring-black/5">
+            <p class="text-xs font-semibold text-brand-800">Tip</p>
+            <p class="mt-1 text-xs text-slate-600">
+              Mark each part as completed to update the progress bar. This will later sync to Firebase.
+            </p>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main panel -->
+      <section class="lg:col-span-9">
+        <div class="rounded-3xl bg-white shadow-soft ring-1 ring-black/5 p-6 sm:p-8">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <h2 id="partTitle" class="text-2xl font-extrabold text-slate-900"></h2>
+              <p id="partSubtitle" class="mt-2 text-sm text-slate-600"></p>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <span id="statusPill"
+                class="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ring-1 ring-black/5">
+                Not completed
+              </span>
+            </div>
+          </div>
+
+          <div id="partBody" class="mt-6 space-y-6"></div>
+
+          <div class="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <button id="prevBtn"
+              class="rounded-xl bg-slate-100 px-4 py-2.5 text-sm font-semibold text-slate-800 hover:bg-slate-200 ring-1 ring-black/5">
+              ← Previous
+            </button>
+
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
+              <button id="completeBtn"
+                class="rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-700 ring-1 ring-black/5">
+                Mark Part as Completed
+              </button>
+              <button id="nextBtn"
+                class="rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800 ring-1 ring-black/5">
+                Next →
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <p class="mt-4 text-xs text-slate-500">
+          Note: This is a prototype lesson flow; file uploads are not sent anywhere yet (stored as filename in
+          LocalStorage).
+        </p>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    // =====================
+    // Lesson 1: 4 Parts
+    // =====================
+    const LESSON_NO = 1;
+
+    const LS = {
+      partDone: (p) => `pc_lesson${LESSON_NO}_part${p}_done`,
+      progress: `pc_lesson${LESSON_NO}_progress`,
+      complete: `pc_lesson${LESSON_NO}_complete`,
+      assessmentFile: `pc_lesson${LESSON_NO}_assessment_file`,
+    };
+
+    const parts = [
+      {
+        title: "Part 1 — Principles of Effective Communication",
+        subtitle: "Clarity, conciseness, completeness, organization, empathy, and flexibility.",
+        type: "content",
+        showVideo: true,
+        html: `
+            <div class="rounded-2xl overflow-hidden ring-1 ring-black/5">
+              <div class="aspect-video bg-black">
+                <iframe class="w-full h-full"
+                  src="https://www.youtube.com/embed/8S0FDjFBj8o"
+                  title="Lesson Video (Fallback)"
+                  frameborder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen></iframe>
+              </div>
+            </div>
+
+            <div class="prose max-w-none prose-slate">
+              <h3>Why communication matters for technology students</h3>
+              <p>
+                Communication is essential in the technology industry—being technically skilled is not enough if you cannot explain ideas clearly
+                to clients, managers, and teammates. Communication includes verbal, non-verbal, written, and visual forms, and effective
+                communication requires audience analysis and awareness of barriers.
+              </p>
+
+              <h3>Principles of effective communication</h3>
+              <ul>
+                <li><strong>Clarity</strong> — use language your audience understands and choose the right channel; make purpose clear.</li>
+                <li><strong>Conciseness</strong> — be brief but meaningful; avoid unnecessary details.</li>
+                <li><strong>Completeness</strong> — include necessary information so the receiver can act without guessing.</li>
+                <li><strong>Organization</strong> — present ideas logically and in a structured flow.</li>
+                <li><strong>Empathy</strong> — consider audience needs and feelings; adjust if they look confused or overwhelmed.</li>
+                <li><strong>Flexibility</strong> — adapt style, tone, and detail level for different people (manager vs engineer vs client).</li>
+              </ul>
+            </div>
+          `,
+      },
+      {
+        title: "Part 2 — Communication and Globalization",
+        subtitle: "Cultural sensitivity and adaptability in global teams and audiences.",
+        type: "content",
+        showVideo: false,
+        html: `
+            <div class="prose max-w-none prose-slate">
+              <p>
+                Globalization and digitization have made people interact across countries and cultures more than ever. For future tech
+                professionals, this means collaborating with diverse teammates, clients, and managers. Beyond language (often English),
+                global communication requires cultural sensitivity.
+              </p>
+
+              <h3>Why cultural awareness matters</h3>
+              <ul>
+                <li>Words, symbols, gestures, and designs can be interpreted differently across cultures.</li>
+                <li>Insensitivity can damage brands and relationships (even small design or wording choices can offend).</li>
+                <li>Even everyday behaviors may be polite in one culture and rude in another.</li>
+              </ul>
+
+              <p>
+                The key message: global communication requires <strong>awareness</strong>, <strong>respect</strong>, and <strong>adaptability</strong>
+                in how you speak, write, and present technical information.
+              </p>
+            </div>
+          `,
+      },
+      {
+        title: "Part 3 — Ethics in Communication",
+        subtitle: "Honesty, transparency, respect, and confidentiality in workplace communication.",
+        type: "content",
+        showVideo: false,
+        html: `
+            <div class="prose max-w-none prose-slate">
+              <p>
+                In the technology industry, communication must not only be clear—it must be <strong>ethical</strong>. Ethical communication
+                means being accurate, honest, respectful, and responsible with information. Unethical communication may involve hiding truth,
+                exaggerating results, or misleading others. Even without intent, poor choices can still cause harm.
+              </p>
+
+              <h3>Why ethics is critical in tech</h3>
+              <ul>
+                <li>You will handle sensitive data (project info, client records, system reports).</li>
+                <li>Misleading reports and careless messages can destroy trust and credibility.</li>
+                <li>Professionalism includes protecting confidential information.</li>
+              </ul>
+
+              <p>
+                Ethical communication builds trust, strengthens partnerships, and reflects professional integrity.
+              </p>
+            </div>
+          `,
+      },
+      {
+        title: "Assessment — Task Submission (Upload File)",
+        subtitle: "Submit your output file for the assessment tasks provided in Lesson 1.",
+        type: "upload",
+        showVideo: false,
+        html: `
+            <div class="rounded-2xl bg-slate-50 p-5 ring-1 ring-black/5">
+              <h3 class="text-lg font-extrabold text-slate-900">Assessment Tasks (Lesson 1)</h3>
+              <p class="mt-2 text-sm text-slate-600">
+                Prepare your output based on the tasks (Task 1–Task 4). Upload your file here (document/video link file, etc.).
+                This prototype will store the filename only.
+              </p>
+
+              <div class="mt-4 space-y-3 text-sm text-slate-700">
+                <div class="rounded-xl bg-white p-4 ring-1 ring-black/5">
+                  <p class="font-semibold">Task 1</p>
+                  <p class="mt-1">
+                    Choose one technical topic and explain how you would use the four forms of communication; write a short message for a specific
+                    audience; identify a barrier and how to overcome it.
+                  </p>
+                </div>
+                <div class="rounded-xl bg-white p-4 ring-1 ring-black/5">
+                  <p class="font-semibold">Task 2</p>
+                  <p class="mt-1">
+                    Write a 5–7 sentence incident report demonstrating clarity, conciseness, completeness, organization, empathy, and flexibility.
+                  </p>
+                </div>
+                <div class="rounded-xl bg-white p-4 ring-1 ring-black/5">
+                  <p class="font-semibold">Task 3</p>
+                  <p class="mt-1">
+                    Create a 2–3 minute video presentation for an international audience; show adaptation for two audiences; include reflection.
+                  </p>
+                </div>
+                <div class="rounded-xl bg-white p-4 ring-1 ring-black/5">
+                  <p class="font-semibold">Task 4</p>
+                  <p class="mt-1">
+                    Write a formal workplace email (8–10 sentences) to a client about a project delay with honesty, transparency, respect, and confidentiality.
+                  </p>
+                </div>
+              </div>
+
+              <div class="mt-5">
+                <label class="block text-sm font-semibold text-slate-800">Upload your file</label>
+                <input id="fileInput" type="file" class="mt-2 block w-full text-sm file:mr-4 file:rounded-xl file:border-0 file:bg-brand-600 file:px-4 file:py-2 file:text-white file:font-semibold hover:file:bg-brand-700" />
+                <button id="submitFileBtn" class="mt-3 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800">
+                  Submit File
+                </button>
+                <p id="fileStatus" class="mt-2 text-xs text-slate-600"></p>
+              </div>
+            </div>
+          `,
+      },
+    ];
+
+    // ---------------------
+    // UI helpers
+    // ---------------------
+    const partsList = document.getElementById("partsList");
+    const partTitle = document.getElementById("partTitle");
+    const partSubtitle = document.getElementById("partSubtitle");
+    const partBody = document.getElementById("partBody");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const completeBtn = document.getElementById("completeBtn");
+    const progressText = document.getElementById("progressText");
+    const progressBar = document.getElementById("progressBar");
+    const statusPill = document.getElementById("statusPill");
+
+    let activePart = 0;
+
+    function initDefaults() {
+      if (localStorage.getItem(LS.progress) === null) localStorage.setItem(LS.progress, "0");
+      if (localStorage.getItem(LS.complete) === null) localStorage.setItem(LS.complete, "false");
+      parts.forEach((_, i) => {
+        const key = LS.partDone(i + 1);
+        if (localStorage.getItem(key) === null) localStorage.setItem(key, "false");
+      });
+    }
+
+    function isDone(partIndex1) {
+      return localStorage.getItem(LS.partDone(partIndex1)) === "true";
+    }
+
+    function setDone(partIndex1, val) {
+      localStorage.setItem(LS.partDone(partIndex1), val ? "true" : "false");
+    }
+
+    function computeAndSaveProgress() {
+      const doneCount = parts.reduce((acc, _, i) => acc + (isDone(i + 1) ? 1 : 0), 0);
+      const pct = Math.round((doneCount / parts.length) * 100);
+
+      localStorage.setItem(LS.progress, String(pct));
+
+      // ✅ FIX: Mark lesson complete when 100%
+      if (pct === 100) localStorage.setItem(LS.complete, "true");
+      else localStorage.setItem(LS.complete, "false");
+
+      return pct;
+    }
+
+
+    function renderProgress() {
+      const pct = computeAndSaveProgress();
+      progressText.textContent = `${pct}%`;
+      progressBar.style.width = `${pct}%`;
+    }
+
+    function pill(done) {
+      if (done) {
+        statusPill.textContent = "Completed";
+        statusPill.className =
+          "inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold bg-brand-50 text-brand-800 ring-1 ring-black/5";
+      } else {
+        statusPill.textContent = "Not completed";
+        statusPill.className =
+          "inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold bg-slate-100 text-slate-700 ring-1 ring-black/5";
+      }
+    }
+
+    function renderSidebar() {
+      partsList.innerHTML = "";
+      parts.forEach((p, idx) => {
+        const done = isDone(idx + 1);
+        const isActive = idx === activePart;
+
+        const btn = document.createElement("button");
+        btn.className =
+          "w-full flex items-center justify-between gap-3 rounded-2xl px-4 py-3 text-left ring-1 ring-black/5 transition " +
+          (isActive ? "bg-brand-600 text-white" : "bg-slate-50 hover:bg-slate-100 text-slate-900");
+
+        btn.innerHTML = `
+            <span class="text-sm font-semibold">${p.title}</span>
+            <span class="inline-flex items-center gap-2">
+              ${done
+            ? `<span class="text-xs font-bold ${isActive ? "text-white" : "text-brand-700"}">✓</span>`
+            : `<span class="text-xs ${isActive ? "text-white/80" : "text-slate-400"}">•</span>`}
+            </span>
+          `;
+
+        btn.addEventListener("click", () => {
+          activePart = idx;
+          render();
+        });
+
+        partsList.appendChild(btn);
+      });
+    }
+
+    function renderPart() {
+      const p = parts[activePart];
+      partTitle.textContent = p.title;
+      partSubtitle.textContent = p.subtitle;
+      partBody.innerHTML = p.html;
+
+      const done = isDone(activePart + 1);
+      pill(done);
+
+      prevBtn.disabled = activePart === 0;
+      nextBtn.disabled = activePart === parts.length - 1;
+
+      prevBtn.classList.toggle("opacity-50", prevBtn.disabled);
+      prevBtn.classList.toggle("cursor-not-allowed", prevBtn.disabled);
+      nextBtn.classList.toggle("opacity-50", nextBtn.disabled);
+      nextBtn.classList.toggle("cursor-not-allowed", nextBtn.disabled);
+
+      // Upload part: special button wiring
+      if (p.type === "upload") {
+        const submitFileBtn = document.getElementById("submitFileBtn");
+        const fileInput = document.getElementById("fileInput");
+        const fileStatus = document.getElementById("fileStatus");
+
+        const savedName = localStorage.getItem(LS.assessmentFile);
+        if (savedName) fileStatus.textContent = `Last submitted: ${savedName}`;
+
+        submitFileBtn?.addEventListener("click", () => {
+          if (!fileInput?.files?.length) {
+            fileStatus.textContent = "Please choose a file first.";
+            fileStatus.className = "mt-2 text-xs text-red-600";
+            return;
+          }
+          const name = fileInput.files[0].name;
+          localStorage.setItem(LS.assessmentFile, name);
+          fileStatus.textContent = `Submitted: ${name}`;
+          fileStatus.className = "mt-2 text-xs text-brand-800";
+
+          setDone(activePart + 1, true);
+          renderProgress();
+          renderSidebar();
+          pill(true);
+        });
+      }
+    }
+
+    function render() {
+      renderSidebar();
+      renderPart();
+      renderProgress();
+    }
+
+    // Nav mobile
+    const menuBtn = document.getElementById("menuBtn");
+    const mobileMenu = document.getElementById("mobileMenu");
+    menuBtn?.addEventListener("click", () => {
+      const isOpen = !mobileMenu.classList.contains("hidden");
+      mobileMenu.classList.toggle("hidden");
+      menuBtn.setAttribute("aria-expanded", String(!isOpen));
+    });
+
+    prevBtn.addEventListener("click", () => {
+      if (activePart > 0) activePart--;
+      render();
+    });
+
+    nextBtn.addEventListener("click", () => {
+      if (activePart < parts.length - 1) activePart++;
+      render();
+    });
+
+    completeBtn.addEventListener("click", () => {
+      setDone(activePart + 1, true);
+      render();
+    });
+
+    initDefaults();
+    render();
+
+  </script>
+</body>
+
+</html>
