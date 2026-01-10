@@ -124,13 +124,14 @@
         progress tracking.
       </p>
 
+      <!-- UPDATED: buttons open the login modal (same as Login button) -->
       <div class="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-        <a href="lessons.html"
+        <a href="login.html" id="startLearningBtn"
           class="w-full rounded-2xl bg-brand-500 px-8 py-3.5 text-sm font-semibold text-white shadow-soft hover:bg-brand-600 focus:outline-none focus:ring-4 focus:ring-brand-200 sm:w-auto">
           Start Learning
         </a>
 
-        <a href="signup.html"
+        <a href="login.html" id="signUpFreeBtn"
           class="w-full rounded-2xl border border-white/60 bg-white/10 px-8 py-3.5 text-sm font-semibold text-white backdrop-blur hover:bg-white/15 focus:outline-none focus:ring-4 focus:ring-white/20 sm:w-auto">
           Sign Up Free
         </a>
@@ -268,7 +269,6 @@
       <div class="relative">
         <div class="absolute -inset-6 rounded-[2rem] bg-brand-50 blur-2xl"></div>
         <div class="relative overflow-hidden rounded-[2rem] shadow-soft ring-1 ring-black/5">
-          <!-- Replace with your own image file if you want (e.g., ./assets/how-it-works.jpg) -->
           <img src="./assets/how-it-works.jpg" alt="Student learning" class="h-[420px] w-full object-cover sm:h-[520px]"
             onerror="this.src='https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1400&q=80';" />
         </div>
@@ -285,7 +285,8 @@
         Join thousands of learners mastering purposive communication skills
       </p>
 
-      <a href="signup.html"
+      <!-- UPDATED: Get Started Free opens login modal -->
+      <a href="login.html" id="getStartedFreeBtn"
         class="mt-10 inline-flex items-center justify-center rounded-2xl bg-white px-10 py-3.5 text-sm font-semibold text-brand-700 shadow-soft hover:bg-brand-50 focus:outline-none focus:ring-4 focus:ring-white/30">
         Get Started Free
       </a>
@@ -320,7 +321,6 @@
             <li><a class="hover:text-white" href="index.html">Home</a></li>
             <li><a class="hover:text-white" href="lessons.html">About Us</a></li>
             <li><a class="hover:text-white" href="profile.html">Contact</a></li>
-            
           </ul>
         </div>
 
@@ -434,8 +434,14 @@
     const openLoginMobile = document.getElementById("openLoginMobile");
     const closeLoginBtn = document.getElementById("closeLoginBtn");
 
+    // NEW: hero + CTA buttons also open the login modal
+    const startLearningBtn = document.getElementById("startLearningBtn");
+    const signUpFreeBtn = document.getElementById("signUpFreeBtn");
+    const getStartedFreeBtn = document.getElementById("getStartedFreeBtn");
+
     function openLoginModal(e) {
       e?.preventDefault?.();
+
       // close mobile menu if open
       if (menu && !menu.classList.contains("hidden")) {
         menu.classList.add("hidden");
@@ -453,6 +459,10 @@
 
     openLoginBtn?.addEventListener("click", openLoginModal);
     openLoginMobile?.addEventListener("click", openLoginModal);
+    startLearningBtn?.addEventListener("click", openLoginModal);
+    signUpFreeBtn?.addEventListener("click", openLoginModal);
+    getStartedFreeBtn?.addEventListener("click", openLoginModal);
+
     closeLoginBtn?.addEventListener("click", closeLoginModal);
     loginBackdrop?.addEventListener("click", closeLoginModal);
 
