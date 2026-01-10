@@ -34,32 +34,26 @@
   </script>
 
   <style>
-  .page-bg{
-    background:
-      radial-gradient(1200px 500px at 10% -10%, rgba(19,168,154,0.16), transparent 55%),
-      radial-gradient(900px 450px at 100% 0%, rgba(19,168,154,0.12), transparent 50%),
-      #E7F7F5;
-  }
-  .nice-scroll::-webkit-scrollbar{ width: 10px; }
-  .nice-scroll::-webkit-scrollbar-thumb{ background: rgba(2,8,23,.15); border-radius: 999px; }
-  .nice-scroll::-webkit-scrollbar-track{ background: transparent; }
+    .page-bg{
+      background:
+        radial-gradient(1200px 500px at 10% -10%, rgba(19,168,154,0.16), transparent 55%),
+        radial-gradient(900px 450px at 100% 0%, rgba(19,168,154,0.12), transparent 50%),
+        #E7F7F5;
+    }
+    .nice-scroll::-webkit-scrollbar{ width: 10px; }
+    .nice-scroll::-webkit-scrollbar-thumb{ background: rgba(2,8,23,.15); border-radius: 999px; }
+    .nice-scroll::-webkit-scrollbar-track{ background: transparent; }
 
-  /* ✅ “Zoom out” the UI slightly on desktop so it fits better */
-  @media (min-width: 1024px) {
-    html { font-size: 14px; }   /* try 13.5px if still too big */
-  }
-  @media (min-width: 1536px) {
-    html { font-size: 16px; }   /* restore normal size on very large screens */
-  }
-</style>
-
+    /* small, safe helper for toast stacking */
+    .toast-stack { pointer-events:none; }
+    .toast { pointer-events:auto; }
+  </style>
 </head>
 
-<body class="page-bg text-slate-800 overflow-x-hidden">
-
+<body class="page-bg text-slate-800">
   <div class="min-h-screen flex">
-    <!-- SIDEBAR -->
-    <aside id="sidebar" class="hidden lg:flex w-72 shrink-0 flex-col bg-white/80 backdrop-blur border-r border-slate-100">
+    <!-- SIDEBAR (Desktop) -->
+    <aside class="hidden lg:flex w-72 shrink-0 flex-col bg-white/80 backdrop-blur border-r border-slate-100">
       <div class="px-6 py-5 flex items-center gap-3 border-b border-slate-100">
         <div class="h-11 w-11 rounded-xl bg-brand-500/10 ring-1 ring-black/5 flex items-center justify-center">
           <svg viewBox="0 0 24 24" class="h-6 w-6 text-brand-700" fill="none" stroke="currentColor" stroke-width="2">
@@ -73,64 +67,60 @@
         </div>
       </div>
 
-      <nav class="px-4 py-4 flex-1">
-        <a href="#"
-          class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold bg-brand-600 text-white shadow-softer">
-          <span class="h-9 w-9 rounded-xl bg-white/15 ring-1 ring-white/15 flex items-center justify-center">
+      <!-- Accessible Tabs (Desktop) -->
+      <nav class="px-4 py-4 flex-1" role="tablist" aria-label="Admin sections">
+        <button type="button" data-tab="dashboard" role="tab" aria-controls="panel-dashboard" aria-selected="true"
+          class="tab-btn w-full text-left flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold">
+          <span class="h-9 w-9 rounded-xl flex items-center justify-center">
             <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M4 13h7V4H4v9zM13 20h7v-7h-7v7zM13 11h7V4h-7v7zM4 20h7v-5H4v5z" />
             </svg>
           </span>
           Dashboard
-        </a>
+        </button>
 
-        <a href="#" class="mt-2 flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-100">
-          <span class="h-9 w-9 rounded-xl bg-slate-50 ring-1 ring-black/5 flex items-center justify-center text-slate-600">
+        <button type="button" data-tab="students" role="tab" aria-controls="panel-students" aria-selected="false"
+          class="tab-btn mt-2 w-full text-left flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold">
+          <span class="h-9 w-9 rounded-xl flex items-center justify-center">
             <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
               <circle cx="12" cy="7" r="4" />
             </svg>
           </span>
           Students
-        </a>
+        </button>
 
-        <a href="#" class="mt-2 flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-100">
-          <span class="h-9 w-9 rounded-xl bg-slate-50 ring-1 ring-black/5 flex items-center justify-center text-slate-600">
+        <button type="button" data-tab="lessons" role="tab" aria-controls="panel-lessons" aria-selected="false"
+          class="tab-btn mt-2 w-full text-left flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold">
+          <span class="h-9 w-9 rounded-xl flex items-center justify-center">
             <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M8 17V9m4 8V5m4 12v-7M4 19h16" />
             </svg>
           </span>
           Lessons Progress
-        </a>
+        </button>
 
-        <a href="#" class="mt-2 flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-100">
-          <span class="h-9 w-9 rounded-xl bg-slate-50 ring-1 ring-black/5 flex items-center justify-center text-slate-600">
+        <button type="button" data-tab="reports" role="tab" aria-controls="panel-reports" aria-selected="false"
+          class="tab-btn mt-2 w-full text-left flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold">
+          <span class="h-9 w-9 rounded-xl flex items-center justify-center">
             <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-6a2 2 0 012-2h2a2 2 0 012 2v6" />
               <path stroke-linecap="round" stroke-linejoin="round" d="M6 21h12M8 7h8M8 3h8" />
             </svg>
           </span>
           Reports
-        </a>
+        </button>
 
-        <a href="#" class="mt-2 flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-100">
-          <span class="h-9 w-9 rounded-xl bg-slate-50 ring-1 ring-black/5 flex items-center justify-center text-slate-600">
-            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M21 15a4 4 0 01-4 4H7l-4 3V7a4 4 0 014-4h10a4 4 0 014 4v8z" />
-            </svg>
-          </span>
-          Messages
-        </a>
-
-        <a href="#" class="mt-2 flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-100">
-          <span class="h-9 w-9 rounded-xl bg-slate-50 ring-1 ring-black/5 flex items-center justify-center text-slate-600">
+        <button type="button" data-tab="settings" role="tab" aria-controls="panel-settings" aria-selected="false"
+          class="tab-btn mt-2 w-full text-left flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold">
+          <span class="h-9 w-9 rounded-xl flex items-center justify-center">
             <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 15.5A3.5 3.5 0 1112 8.5a3.5 3.5 0 010 7z" />
               <path stroke-linecap="round" stroke-linejoin="round" d="M19.4 15a7.97 7.97 0 00.1-3l2-1.5-2-3.5-2.4 1a8.2 8.2 0 00-2.6-1.5L14 3h-4l-.5 3.5A8.2 8.2 0 007 8l-2.4-1-2 3.5 2 1.5a7.97 7.97 0 00.1 3L2.6 16.5l2 3.5 2.4-1a8.2 8.2 0 002.6 1.5L10 21h4l.5-3.5A8.2 8.2 0 0017 19l2.4 1 2-3.5L19.4 15z" />
             </svg>
           </span>
           Settings
-        </a>
+        </button>
       </nav>
 
       <div class="mt-auto px-4 py-5 border-t border-slate-100">
@@ -148,30 +138,29 @@
     </aside>
 
     <!-- MAIN -->
-    <div class="flex-1 min-w-0 flex flex-col">
-
+    <div class="flex-1 flex flex-col min-w-0">
       <!-- TOP BAR -->
       <header class="sticky top-0 z-40 bg-white/80 backdrop-blur border-b border-slate-100">
         <div class="px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between gap-3">
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-3 min-w-0">
             <button id="openSidebarBtn"
               class="lg:hidden inline-flex h-11 w-11 items-center justify-center rounded-xl bg-slate-50 ring-1 ring-black/5 hover:bg-slate-100"
-              aria-label="Open menu">
+              aria-label="Open menu" aria-controls="sidebarOverlay" aria-expanded="false">
               <svg class="h-6 w-6 text-slate-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
 
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-3 min-w-0">
               <div class="hidden sm:flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 ring-1 ring-black/5">
                 <svg viewBox="0 0 24 24" class="h-6 w-6 text-brand-700" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M4 7l8-4 8 4v10l-8 4-8-4V7z"></path>
                   <path d="M8 11l2 2 5-5"></path>
                 </svg>
               </div>
-              <div>
-                <p class="text-lg font-extrabold text-slate-900 leading-tight">Purposive Communication</p>
-                <p class="text-xs text-slate-500 font-semibold -mt-0.5">Admin Dashboard</p>
+              <div class="min-w-0">
+                <p class="text-lg font-extrabold text-slate-900 leading-tight truncate">Purposive Communication</p>
+                <p id="topSubtitle" class="text-xs text-slate-500 font-semibold -mt-0.5 truncate">Admin Dashboard</p>
               </div>
             </div>
           </div>
@@ -196,210 +185,512 @@
         </div>
       </header>
 
-      <!-- CONTENT -->
-      <main class="px-4 sm:px-6 lg:px-8 py-8">
-        <!-- Summary Cards -->
-        <section class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          <div class="rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-5 relative overflow-hidden">
-            <span class="absolute inset-y-0 left-0 w-1.5 bg-brand-500"></span>
-            <div class="flex items-start justify-between">
-              <div>
-                <p class="text-sm font-semibold text-slate-500">Total Students</p>
-                <p id="statTotal" class="mt-2 text-3xl font-extrabold text-slate-900">0</p>
-              </div>
-              <div class="h-12 w-12 rounded-xl bg-brand-50 ring-1 ring-black/5 flex items-center justify-center text-brand-700">
-                <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
-                  <circle cx="12" cy="7" r="4" />
-                </svg>
+      <!-- CONTENT / TAB PANELS -->
+      <main class="px-4 sm:px-6 lg:px-8 py-8 min-w-0">
+
+        <!-- DASHBOARD -->
+        <section id="panel-dashboard" role="tabpanel" aria-label="Dashboard">
+          <section class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            <div class="rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-5 relative overflow-hidden">
+              <span class="absolute inset-y-0 left-0 w-1.5 bg-brand-500"></span>
+              <div class="flex items-start justify-between">
+                <div>
+                  <p class="text-sm font-semibold text-slate-500">Total Students</p>
+                  <p id="statTotal" class="mt-2 text-3xl font-extrabold text-slate-900">0</p>
+                </div>
+                <div class="h-12 w-12 rounded-xl bg-brand-50 ring-1 ring-black/5 flex items-center justify-center text-brand-700">
+                  <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                  </svg>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div class="rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-5 relative overflow-hidden">
-            <span class="absolute inset-y-0 left-0 w-1.5 bg-emerald-500"></span>
-            <div class="flex items-start justify-between">
-              <div>
-                <p class="text-sm font-semibold text-slate-500">Active Today</p>
-                <p id="statActive" class="mt-2 text-3xl font-extrabold text-slate-900">0</p>
-              </div>
-              <div class="h-12 w-12 rounded-xl bg-emerald-50 ring-1 ring-black/5 flex items-center justify-center text-emerald-700">
-                <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 12a5 5 0 100-10 5 5 0 000 10z" />
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M17 20H7a4 4 0 014-4h2a4 4 0 014 4z" />
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 8l2 2m0-2l-2 2" />
-                </svg>
+            <div class="rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-5 relative overflow-hidden">
+              <span class="absolute inset-y-0 left-0 w-1.5 bg-emerald-500"></span>
+              <div class="flex items-start justify-between">
+                <div>
+                  <p class="text-sm font-semibold text-slate-500">Active Today</p>
+                  <p id="statActive" class="mt-2 text-3xl font-extrabold text-slate-900">0</p>
+                </div>
+                <div class="h-12 w-12 rounded-xl bg-emerald-50 ring-1 ring-black/5 flex items-center justify-center text-emerald-700">
+                  <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 12a5 5 0 100-10 5 5 0 000 10z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 20H7a4 4 0 014-4h2a4 4 0 014 4z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 8l2 2m0-2l-2 2" />
+                  </svg>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div class="rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-5 relative overflow-hidden">
-            <span class="absolute inset-y-0 left-0 w-1.5 bg-sky-500"></span>
-            <div class="flex items-start justify-between">
-              <div>
-                <p class="text-sm font-semibold text-slate-500">Avg Completion</p>
-                <p class="mt-2 text-3xl font-extrabold text-slate-900"><span id="statAvg">0</span>%</p>
-              </div>
-              <div class="h-12 w-12 rounded-xl bg-sky-50 ring-1 ring-black/5 flex items-center justify-center text-sky-700">
-                <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2" />
-                  <circle cx="12" cy="12" r="9" />
-                </svg>
+            <div class="rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-5 relative overflow-hidden">
+              <span class="absolute inset-y-0 left-0 w-1.5 bg-sky-500"></span>
+              <div class="flex items-start justify-between">
+                <div>
+                  <p class="text-sm font-semibold text-slate-500">Avg Completion</p>
+                  <p class="mt-2 text-3xl font-extrabold text-slate-900"><span id="statAvg">0</span>%</p>
+                </div>
+                <div class="h-12 w-12 rounded-xl bg-sky-50 ring-1 ring-black/5 flex items-center justify-center text-sky-700">
+                  <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2" />
+                    <circle cx="12" cy="12" r="9" />
+                  </svg>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div class="rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-5 relative overflow-hidden">
-            <span class="absolute inset-y-0 left-0 w-1.5 bg-orange-500"></span>
-            <div class="flex items-start justify-between">
+            <div class="rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-5 relative overflow-hidden">
+              <span class="absolute inset-y-0 left-0 w-1.5 bg-orange-500"></span>
+              <div class="flex items-start justify-between">
+                <div>
+                  <p class="text-sm font-semibold text-slate-500">Pending Assessments</p>
+                  <p id="statPending" class="mt-2 text-3xl font-extrabold text-slate-900">0</p>
+                </div>
+                <div class="h-12 w-12 rounded-xl bg-orange-50 ring-1 ring-black/5 flex items-center justify-center text-orange-700">
+                  <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M7 3h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6M9 11h6M9 15h4" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="mt-6 rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-6">
+            <h2 class="text-xl font-extrabold text-slate-900">Lesson Completion Overview</h2>
+
+            <div class="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              <div class="rounded-2xl ring-1 ring-black/5 bg-brand-50 p-5">
+                <div class="flex items-center justify-between">
+                  <p class="text-sm font-extrabold text-brand-800">Lesson 1</p>
+                </div>
+                <p class="mt-4 text-3xl font-extrabold text-brand-800"><span id="l1Done">0</span>/<span id="lTotal1">0</span></p>
+                <p class="mt-1 text-sm text-brand-800/70">Students Completed</p>
+              </div>
+
+              <div class="rounded-2xl ring-1 ring-black/5 bg-emerald-50 p-5">
+                <div class="flex items-center justify-between">
+                  <p class="text-sm font-extrabold text-emerald-800">Lesson 2</p>
+                </div>
+                <p class="mt-4 text-3xl font-extrabold text-emerald-800"><span id="l2Done">0</span>/<span id="lTotal2">0</span></p>
+                <p class="mt-1 text-sm text-emerald-800/70">Students Completed</p>
+              </div>
+
+              <div class="rounded-2xl ring-1 ring-black/5 bg-sky-50 p-5">
+                <div class="flex items-center justify-between">
+                  <p class="text-sm font-extrabold text-sky-800">Lesson 3</p>
+                </div>
+                <p class="mt-4 text-3xl font-extrabold text-sky-800"><span id="l3Done">0</span>/<span id="lTotal3">0</span></p>
+                <p class="mt-1 text-sm text-sky-800/70">Students Completed</p>
+              </div>
+
+              <div class="rounded-2xl ring-1 ring-black/5 bg-orange-50 p-5">
+                <div class="flex items-center justify-between">
+                  <p class="text-sm font-extrabold text-orange-800">Lesson 4</p>
+                </div>
+                <p class="mt-4 text-3xl font-extrabold text-orange-800"><span id="l4Done">0</span>/<span id="lTotal4">0</span></p>
+                <p class="mt-1 text-sm text-orange-800/70">Students Completed</p>
+              </div>
+            </div>
+          </section>
+        </section>
+
+        <!-- STUDENTS -->
+        <section id="panel-students" role="tabpanel" aria-label="Students" hidden>
+          <section class="rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-6">
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <p class="text-sm font-semibold text-slate-500">Pending Assessments</p>
-                <p id="statPending" class="mt-2 text-3xl font-extrabold text-slate-900">0</p>
+                <h2 class="text-xl font-extrabold text-slate-900">Student Monitoring</h2>
+                <p class="mt-1 text-sm text-slate-600">Bulk select students and run quick actions.</p>
               </div>
-              <div class="h-12 w-12 rounded-xl bg-orange-50 ring-1 ring-black/5 flex items-center justify-center text-orange-700">
-                <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M7 3h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z" />
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6M9 11h6M9 15h4" />
+
+              <button id="exportBtn"
+                class="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white shadow-softer hover:bg-brand-700 focus:outline-none focus:ring-4 focus:ring-brand-200">
+                Export Students (Filtered)
+              </button>
+            </div>
+
+            <!-- Bulk Action Bar -->
+            <div id="bulkBar" class="mt-5 hidden rounded-2xl bg-slate-900 text-white ring-1 ring-black/10 px-5 py-4">
+              <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div class="flex items-center gap-3">
+                  <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/10">
+                    <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4" />
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M7 6h10M7 18h10" />
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 4h14v16H5V4z" />
+                    </svg>
+                  </span>
+                  <div>
+                    <p class="text-sm font-extrabold">Selected: <span id="bulkCount">0</span></p>
+                    <p class="text-xs text-white/70 font-semibold">Actions affect selected students (prototype).</p>
+                  </div>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-2">
+                  <button id="bulkReminderBtn"
+                    class="inline-flex items-center justify-center rounded-xl bg-white/10 px-4 py-2 text-sm font-extrabold hover:bg-white/15 ring-1 ring-white/10">
+                    Send Reminder
+                  </button>
+
+                  <button id="bulkMarkInactiveBtn"
+                    class="inline-flex items-center justify-center rounded-xl bg-rose-500/90 px-4 py-2 text-sm font-extrabold hover:bg-rose-500 ring-1 ring-white/10">
+                    Mark Inactive
+                  </button>
+
+                  <button id="bulkExportBtn"
+                    class="inline-flex items-center justify-center rounded-xl bg-white px-4 py-2 text-sm font-extrabold text-slate-900 hover:bg-slate-100 ring-1 ring-black/10">
+                    Export Selected
+                  </button>
+
+                  <button id="bulkClearBtn"
+                    class="inline-flex items-center justify-center rounded-xl bg-transparent px-4 py-2 text-sm font-extrabold text-white/90 hover:text-white">
+                    Clear
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Filters -->
+            <div class="mt-5 flex flex-wrap items-center gap-2">
+              <button id="riskFilterBtn"
+                class="inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-extrabold ring-1 ring-black/5 bg-white text-slate-700 hover:bg-slate-50">
+                <span class="inline-flex h-2.5 w-2.5 rounded-full bg-rose-500"></span>
+                At Risk
+              </button>
+
+              <button id="clearQuickBtn"
+                class="inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-extrabold ring-1 ring-black/5 bg-white text-slate-700 hover:bg-slate-50">
+                Clear Quick Filter
+              </button>
+
+              <span class="text-xs font-semibold text-slate-500 ml-1">
+                Uses Settings thresholds: inactive ≥ <span id="qRiskDays" class="font-extrabold">7</span>d, progress &lt; <span id="qRiskProg" class="font-extrabold">40</span>%.
+              </span>
+            </div>
+
+            <!-- Filters -->
+            <div class="mt-5 grid gap-3 lg:grid-cols-4">
+              <div class="relative">
+                <svg viewBox="0 0 24 24" class="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="7" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M20 20l-3-3" />
                 </svg>
+                <input id="searchInput" type="text" placeholder="Search students..."
+                  class="w-full rounded-xl border border-slate-200 bg-white pl-10 pr-3 py-2.5 text-sm outline-none focus:ring-4 focus:ring-brand-200" />
               </div>
+
+              <select id="courseFilter" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:ring-4 focus:ring-brand-200">
+                <option value="all">All Courses</option>
+              </select>
+
+              <select id="yearFilter" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:ring-4 focus:ring-brand-200">
+                <option value="all">All Year Levels</option>
+                <option>1st Year</option>
+                <option>2nd Year</option>
+                <option>3rd Year</option>
+                <option>4th Year</option>
+                <option>5th Year</option>
+              </select>
+
+              <select id="progressFilter" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:ring-4 focus:ring-brand-200">
+                <option value="all">All Progress Levels</option>
+                <option value="0-25">0% - 25%</option>
+                <option value="26-50">26% - 50%</option>
+                <option value="51-75">51% - 75%</option>
+                <option value="76-100">76% - 100%</option>
+              </select>
+            </div>
+
+            <!-- Sort + Page size + Results -->
+            <div class="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-extrabold text-slate-500">Sort by</span>
+
+                <select id="sortBy" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:ring-4 focus:ring-brand-200">
+                  <option value="name">Name</option>
+                  <option value="lastLogin">Last Login</option>
+                  <option value="progress">Progress</option>
+                  <option value="quiz">Quiz</option>
+                  <option value="assessment">Assessment</option>
+                  <option value="status">Status</option>
+                </select>
+
+                <button id="sortDirBtn"
+                  class="inline-flex items-center justify-center rounded-xl bg-slate-50 px-3 py-2 text-sm font-extrabold text-slate-700 ring-1 ring-black/5 hover:bg-slate-100"
+                  aria-label="Toggle sort direction">
+                  Asc
+                </button>
+
+                <span class="text-xs text-slate-500 font-semibold ml-1">(Tip: click headers)</span>
+              </div>
+
+              <div class="flex items-center gap-3">
+                <p id="resultsCount" class="text-xs font-semibold text-slate-500">Showing 0 of 0</p>
+
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-extrabold text-slate-500">Rows</span>
+                  <select id="pageSize" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:ring-4 focus:ring-brand-200">
+                    <option value="5">5</option>
+                    <option value="10" selected>10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="mt-5 flex items-center justify-between">
+              <button id="prevPage"
+                class="inline-flex items-center justify-center rounded-xl bg-white px-4 py-2 text-sm font-extrabold text-slate-700 ring-1 ring-black/5 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                Prev
+              </button>
+
+              <p id="pageInfo" class="text-xs font-extrabold text-slate-500">Page 1 of 1</p>
+
+              <button id="nextPage"
+                class="inline-flex items-center justify-center rounded-xl bg-white px-4 py-2 text-sm font-extrabold text-slate-700 ring-1 ring-black/5 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                Next
+              </button>
+            </div>
+
+            <!-- MOBILE CARDS -->
+            <div id="studentCards" class="mt-6 md:hidden space-y-4"></div>
+
+            <!-- TABLE (md+) -->
+            <div class="mt-6 overflow-x-auto hidden md:block">
+              <table class="min-w-[1040px] w-full">
+                <thead>
+                  <tr class="text-left text-xs font-extrabold text-slate-500 border-b border-slate-100">
+                    <th class="py-3 pr-4 w-14">
+                      <div class="flex items-center gap-2">
+                        <input id="selectAllPage" type="checkbox"
+                          class="h-4 w-4 rounded border-slate-300 text-brand-600 focus:ring-brand-200"
+                          aria-label="Select all students on this page" />
+                        <span class="text-[11px]">ALL</span>
+                      </div>
+                    </th>
+
+                    <th class="py-3 pr-4 sortable" data-sort="name">
+                      <button class="inline-flex items-center gap-2 hover:text-slate-700">
+                        STUDENT <span class="sort-indicator text-slate-400" data-ind="name">—</span>
+                      </button>
+                    </th>
+                    <th class="py-3 pr-4">COURSE/YEAR</th>
+                    <th class="py-3 pr-4 sortable" data-sort="lastLogin">
+                      <button class="inline-flex items-center gap-2 hover:text-slate-700">
+                        LAST<br/>LOGIN <span class="sort-indicator text-slate-400" data-ind="lastLogin">—</span>
+                      </button>
+                    </th>
+                    <th class="py-3 pr-4 sortable" data-sort="status">
+                      <button class="inline-flex items-center gap-2 hover:text-slate-700">
+                        STATUS <span class="sort-indicator text-slate-400" data-ind="status">—</span>
+                      </button>
+                    </th>
+                    <th class="py-3 pr-4 sortable" data-sort="progress">
+                      <button class="inline-flex items-center gap-2 hover:text-slate-700">
+                        PROGRESS <span class="sort-indicator text-slate-400" data-ind="progress">—</span>
+                      </button>
+                    </th>
+                    <th class="py-3 pr-4">L1</th>
+                    <th class="py-3 pr-4">L2</th>
+                    <th class="py-3 pr-4">L3</th>
+                    <th class="py-3 pr-4">L4</th>
+                    <th class="py-3 pr-4 sortable" data-sort="quiz">
+                      <button class="inline-flex items-center gap-2 hover:text-slate-700">
+                        QUIZ <span class="sort-indicator text-slate-400" data-ind="quiz">—</span>
+                      </button>
+                    </th>
+                    <th class="py-3 pr-4 sortable" data-sort="assessment">
+                      <button class="inline-flex items-center gap-2 hover:text-slate-700">
+                        ASSESSMENT <span class="sort-indicator text-slate-400" data-ind="assessment">—</span>
+                      </button>
+                    </th>
+                    <th class="py-3">ACTION</th>
+                  </tr>
+                </thead>
+                <tbody id="studentTbody" class="divide-y divide-slate-50"></tbody>
+              </table>
+            </div>
+          </section>
+        </section>
+
+        <!-- LESSONS PROGRESS (kept, connected) -->
+        <section id="panel-lessons" role="tabpanel" aria-label="Lessons Progress" hidden>
+          <div class="rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-6">
+            <h2 class="text-xl font-extrabold text-slate-900">Lessons Progress</h2>
+            <p class="mt-1 text-sm text-slate-600">This tab is still connected (filters + export) — kept minimal here.</p>
+            <div class="mt-6 grid gap-3 md:grid-cols-5">
+              <select id="lpCourse" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:ring-4 focus:ring-brand-200">
+                <option value="all">All Courses</option>
+              </select>
+              <select id="lpYear" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:ring-4 focus:ring-brand-200">
+                <option value="all">All Year Levels</option>
+                <option>1st Year</option><option>2nd Year</option><option>3rd Year</option><option>4th Year</option><option>5th Year</option>
+              </select>
+              <select id="lpLesson" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:ring-4 focus:ring-brand-200">
+                <option value="l1">Lesson 1</option><option value="l2">Lesson 2</option><option value="l3">Lesson 3</option><option value="l4">Lesson 4</option>
+              </select>
+              <select id="lpStatus" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:ring-4 focus:ring-brand-200">
+                <option value="all">All Status</option>
+                <option value="completed">Completed (100%)</option>
+                <option value="inprogress">In Progress (1–99%)</option>
+                <option value="notstarted">Not Started (0%)</option>
+              </select>
+              <button id="lpExportBtn" class="rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-extrabold text-white shadow-softer hover:bg-brand-700">
+                Export View
+              </button>
+            </div>
+
+            <div class="mt-6 overflow-x-auto">
+              <table class="min-w-[900px] w-full">
+                <thead>
+                  <tr class="text-left text-xs font-extrabold text-slate-500 border-b border-slate-100">
+                    <th class="py-3 pr-4">STUDENT</th>
+                    <th class="py-3 pr-4">COURSE/YEAR</th>
+                    <th class="py-3 pr-4">LAST LOGIN</th>
+                    <th class="py-3 pr-4">LESSON %</th>
+                    <th class="py-3 pr-4">STATUS</th>
+                    <th class="py-3 pr-4">PARTS</th>
+                    <th class="py-3">ACTION</th>
+                  </tr>
+                </thead>
+                <tbody id="lpTbody" class="divide-y divide-slate-50"></tbody>
+              </table>
             </div>
           </div>
         </section>
 
-        <!-- Lesson Overview -->
-        <section class="mt-6 rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-6">
-          <h2 class="text-xl font-extrabold text-slate-900">Lesson Completion Overview</h2>
-
-          <div class="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            <div class="rounded-2xl ring-1 ring-black/5 bg-brand-50 p-5">
-              <div class="flex items-center justify-between">
-                <p class="text-sm font-extrabold text-brand-800">Lesson 1</p>
-                <div class="h-10 w-10 rounded-xl bg-white/70 ring-1 ring-black/5 flex items-center justify-center text-brand-700">
-                  <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 4h12v16H6V4z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h8M8 11h8M8 15h6" />
-                  </svg>
-                </div>
+        <!-- REPORTS (kept, connected) -->
+        <section id="panel-reports" role="tabpanel" aria-label="Reports" hidden>
+          <div class="rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-6">
+            <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <h2 class="text-xl font-extrabold text-slate-900">Reports</h2>
+                <p class="mt-1 text-sm text-slate-600">Connected templates + export.</p>
               </div>
-              <p class="mt-4 text-3xl font-extrabold text-brand-800"><span id="l1Done">0</span>/<span id="lTotal1">0</span></p>
-              <p class="mt-1 text-sm text-brand-800/70">Students Completed</p>
+              <button id="rpExportBtn" class="rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-extrabold text-white shadow-softer hover:bg-brand-700">
+                Export Current Report
+              </button>
             </div>
 
-            <div class="rounded-2xl ring-1 ring-black/5 bg-emerald-50 p-5">
-              <div class="flex items-center justify-between">
-                <p class="text-sm font-extrabold text-emerald-800">Lesson 2</p>
-                <div class="h-10 w-10 rounded-xl bg-white/70 ring-1 ring-black/5 flex items-center justify-center text-emerald-700">
-                  <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 19h16" />
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M7 16V9" />
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 16V5" />
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 16v-7" />
-                  </svg>
-                </div>
-              </div>
-              <p class="mt-4 text-3xl font-extrabold text-emerald-800"><span id="l2Done">0</span>/<span id="lTotal2">0</span></p>
-              <p class="mt-1 text-sm text-emerald-800/70">Students Completed</p>
+            <div class="mt-6 grid gap-3 md:grid-cols-5">
+              <select id="rpScope" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:ring-4 focus:ring-brand-200">
+                <option value="all" selected>All Students</option>
+                <option value="filtered">Current Filters (Students tab)</option>
+              </select>
+
+              <select id="rpCourse" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:ring-4 focus:ring-brand-200">
+                <option value="all">All Courses</option>
+              </select>
+
+              <select id="rpYear" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:ring-4 focus:ring-brand-200">
+                <option value="all">All Year Levels</option>
+                <option>1st Year</option><option>2nd Year</option><option>3rd Year</option><option>4th Year</option><option>5th Year</option>
+              </select>
+
+              <select id="rpTemplate" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:ring-4 focus:ring-brand-200">
+                <option value="at_risk" selected>At-Risk Students</option>
+                <option value="assessment_pipeline">Assessment Pipeline</option>
+                <option value="engagement">Engagement / Activity</option>
+                <option value="top_performers">Top Performers</option>
+              </select>
+
+              <button id="rpRunBtn" class="rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-extrabold text-white hover:bg-slate-800">
+                Run
+              </button>
             </div>
 
-            <div class="rounded-2xl ring-1 ring-black/5 bg-sky-50 p-5">
-              <div class="flex items-center justify-between">
-                <p class="text-sm font-extrabold text-sky-800">Lesson 3</p>
-                <div class="h-10 w-10 rounded-xl bg-white/70 ring-1 ring-black/5 flex items-center justify-center text-sky-700">
-                  <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h10M4 17h16" />
-                  </svg>
-                </div>
-              </div>
-              <p class="mt-4 text-3xl font-extrabold text-sky-800"><span id="l3Done">0</span>/<span id="lTotal3">0</span></p>
-              <p class="mt-1 text-sm text-sky-800/70">Students Completed</p>
-            </div>
-
-            <div class="rounded-2xl ring-1 ring-black/5 bg-orange-50 p-5">
-              <div class="flex items-center justify-between">
-                <p class="text-sm font-extrabold text-orange-800">Lesson 4</p>
-                <div class="h-10 w-10 rounded-xl bg-white/70 ring-1 ring-black/5 flex items-center justify-center text-orange-700">
-                  <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 4h10a2 2 0 012 2v14H8a2 2 0 01-2-2V6a2 2 0 012-2z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h2" />
-                  </svg>
-                </div>
-              </div>
-              <p class="mt-4 text-3xl font-extrabold text-orange-800"><span id="l4Done">0</span>/<span id="lTotal4">0</span></p>
-              <p class="mt-1 text-sm text-orange-800/70">Students Completed</p>
+            <div class="mt-6 overflow-x-auto">
+              <table class="min-w-[900px] w-full">
+                <thead>
+                  <tr class="text-left text-xs font-extrabold text-slate-500 border-b border-slate-100" id="rpTheadRow"></tr>
+                </thead>
+                <tbody id="rpTbody" class="divide-y divide-slate-50"></tbody>
+              </table>
             </div>
           </div>
         </section>
 
-        <!-- Student Monitoring -->
-        <section class="mt-6 rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-6">
-          <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <h2 class="text-xl font-extrabold text-slate-900">Student Monitoring</h2>
+        <!-- SETTINGS (kept, connected) -->
+        <section id="panel-settings" role="tabpanel" aria-label="Settings" hidden>
+          <div class="rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-6">
+            <h2 class="text-xl font-extrabold text-slate-900">Settings</h2>
+            <p class="mt-1 text-sm text-slate-600">Saved locally. Affects At-Risk + reporting.</p>
 
-            <button id="exportBtn"
-              class="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white shadow-softer hover:bg-brand-700 focus:outline-none focus:ring-4 focus:ring-brand-200">
-              <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0l4-4m-4 4l-4-4" />
-                <path stroke-linecap="round" stroke-linejoin="round" d="M4 17v3h16v-3" />
-              </svg>
-              Export Report
-            </button>
-          </div>
+            <div class="mt-6 grid gap-5 sm:grid-cols-2">
+              <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-5">
+                <p class="text-xs font-extrabold text-slate-500 uppercase">Students Tab Defaults</p>
 
-          <!-- Filters -->
-          <div class="mt-5 grid gap-3 lg:grid-cols-4">
-            <div class="relative">
-              <svg viewBox="0 0 24 24" class="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="11" cy="11" r="7" />
-                <path stroke-linecap="round" stroke-linejoin="round" d="M20 20l-3-3" />
-              </svg>
-              <input id="searchInput" type="text" placeholder="Search students..."
-                class="w-full rounded-xl border border-slate-200 bg-white pl-10 pr-3 py-2.5 text-sm outline-none focus:ring-4 focus:ring-brand-200" />
+                <label class="mt-3 block text-sm font-extrabold text-slate-700">Page Size</label>
+                <select id="setPageSize" class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:ring-4 focus:ring-brand-200">
+                  <option value="5">5</option>
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                </select>
+
+                <label class="mt-4 block text-sm font-extrabold text-slate-700">Default Sort</label>
+                <div class="mt-2 grid grid-cols-2 gap-3">
+                  <select id="setSortBy" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:ring-4 focus:ring-brand-200">
+                    <option value="name">Name</option>
+                    <option value="lastLogin">Last Login</option>
+                    <option value="progress">Progress</option>
+                    <option value="quiz">Quiz</option>
+                    <option value="assessment">Assessment</option>
+                    <option value="status">Status</option>
+                  </select>
+                  <select id="setSortDir" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:ring-4 focus:ring-brand-200">
+                    <option value="asc">Asc</option>
+                    <option value="desc">Desc</option>
+                  </select>
+                </div>
+
+                <label class="mt-4 flex items-center gap-3">
+                  <input id="setShowEmail" type="checkbox" class="h-5 w-5 rounded border-slate-300 text-brand-600 focus:ring-brand-200" />
+                  <span class="text-sm font-semibold text-slate-700">Show student email in lists</span>
+                </label>
+              </div>
+
+              <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-5">
+                <p class="text-xs font-extrabold text-slate-500 uppercase">At-Risk Rules</p>
+
+                <label class="mt-3 block text-sm font-extrabold text-slate-700">Inactive threshold (days)</label>
+                <input id="setRiskInactiveDays" type="number" min="1" max="365"
+                  class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:ring-4 focus:ring-brand-200" />
+
+                <label class="mt-4 block text-sm font-extrabold text-slate-700">Low progress threshold (%)</label>
+                <input id="setRiskProgress" type="number" min="0" max="100"
+                  class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:ring-4 focus:ring-brand-200" />
+
+                <label class="mt-4 flex items-center gap-3">
+                  <input id="setRiskLesson4" type="checkbox" class="h-5 w-5 rounded border-slate-300 text-brand-600 focus:ring-brand-200" />
+                  <span class="text-sm font-semibold text-slate-700">Flag if Lesson 4 not started</span>
+                </label>
+
+                <div class="mt-4 rounded-2xl bg-white ring-1 ring-black/5 p-4">
+                  <p class="text-xs font-extrabold text-slate-500 uppercase">Preview</p>
+                  <p class="mt-2 text-sm text-slate-700">At-risk students right now:</p>
+                  <p class="mt-1 text-3xl font-extrabold text-slate-900" id="setRiskPreview">0</p>
+                </div>
+              </div>
             </div>
 
-            <select id="courseFilter" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:ring-4 focus:ring-brand-200">
-              <option value="all">All Courses</option>
-            </select>
-
-            <select id="yearFilter" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:ring-4 focus:ring-brand-200">
-              <option value="all">All Year Levels</option>
-              <option>1st Year</option>
-              <option>2nd Year</option>
-              <option>3rd Year</option>
-              <option>4th Year</option>
-              <option>5th Year</option>
-            </select>
-
-            <select id="progressFilter" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:ring-4 focus:ring-brand-200">
-              <option value="all">All Progress Levels</option>
-              <option value="0-25">0% - 25%</option>
-              <option value="26-50">26% - 50%</option>
-              <option value="51-75">51% - 75%</option>
-              <option value="76-100">76% - 100%</option>
-            </select>
-          </div>
-
-          <!-- Table -->
-          <div class="mt-6 overflow-x-auto max-w-full">
-
-            <table class="min-w-[980px] w-full">
-              <thead>
-                <tr class="text-left text-xs font-extrabold text-slate-500 border-b border-slate-100">
-                  <th class="py-3 pr-4">STUDENT</th>
-                  <th class="py-3 pr-4">COURSE/YEAR</th>
-                  <th class="py-3 pr-4">LAST<br/>LOGIN</th>
-                  <th class="py-3 pr-4">STATUS</th>
-                  <th class="py-3 pr-4">PROGRESS</th>
-                  <th class="py-3 pr-4">L1</th>
-                  <th class="py-3 pr-4">L2</th>
-                  <th class="py-3 pr-4">L3</th>
-                  <th class="py-3 pr-4">L4</th>
-                  <th class="py-3 pr-4">QUIZ</th>
-                  <th class="py-3 pr-4">ASSESSMENT</th>
-                  <th class="py-3">ACTION</th>
-                </tr>
-              </thead>
-              <tbody id="studentTbody" class="divide-y divide-slate-50"></tbody>
-            </table>
+            <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div class="text-xs text-slate-500 font-semibold" id="settingsHint">No changes yet.</div>
+              <div class="flex items-center gap-2">
+                <button id="resetSettingsBtn"
+                  class="inline-flex items-center justify-center rounded-xl bg-white px-4 py-2.5 text-sm font-extrabold text-slate-700 ring-1 ring-black/5 hover:bg-slate-50">
+                  Reset
+                </button>
+                <button id="saveSettingsBtn"
+                  class="inline-flex items-center justify-center rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-extrabold text-white shadow-softer hover:bg-brand-700 focus:outline-none focus:ring-4 focus:ring-brand-200">
+                  Save Settings
+                </button>
+              </div>
+            </div>
           </div>
         </section>
       </main>
@@ -407,9 +698,9 @@
   </div>
 
   <!-- Mobile sidebar overlay -->
-  <div id="sidebarOverlay" class="fixed inset-0 z-50 hidden">
+  <div id="sidebarOverlay" class="fixed inset-0 z-50 hidden" aria-hidden="true">
     <div class="absolute inset-0 bg-black/40"></div>
-    <div class="absolute inset-y-0 left-0 w-80 bg-white shadow-soft">
+    <div class="absolute inset-y-0 left-0 w-80 bg-white shadow-soft" role="dialog" aria-modal="true" aria-label="Mobile menu">
       <div class="px-5 py-4 flex items-center justify-between border-b border-slate-100">
         <div class="flex items-center gap-3">
           <div class="h-10 w-10 rounded-xl bg-brand-50 ring-1 ring-black/5 flex items-center justify-center">
@@ -431,77 +722,44 @@
       </div>
 
       <div class="p-4">
-        <div class="space-y-2">
-          <a href="#" class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold bg-brand-600 text-white">
-            <span class="h-9 w-9 rounded-xl bg-white/15 ring-1 ring-white/15 flex items-center justify-center">
-              <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M4 13h7V4H4v9zM13 20h7v-7h-7v7zM13 11h7V4h-7v7zM4 20h7v-5H4v5z" />
-              </svg>
-            </span>
+        <div class="space-y-2" role="tablist" aria-label="Admin sections (mobile)">
+          <button type="button" data-tab="dashboard" role="tab" aria-controls="panel-dashboard" aria-selected="true"
+            class="tab-btn-mobile w-full text-left flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold">
+            <span class="h-9 w-9 rounded-xl flex items-center justify-center">D</span>
             Dashboard
-          </a>
-          <a href="#" class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-100">
-            <span class="h-9 w-9 rounded-xl bg-slate-50 ring-1 ring-black/5 flex items-center justify-center">
-              <svg viewBox="0 0 24 24" class="h-5 w-5 text-slate-600" fill="none" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
-                <circle cx="12" cy="7" r="4" />
-              </svg>
-            </span>
+          </button>
+
+          <button type="button" data-tab="students" role="tab" aria-controls="panel-students" aria-selected="false"
+            class="tab-btn-mobile w-full text-left flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold">
+            <span class="h-9 w-9 rounded-xl flex items-center justify-center">S</span>
             Students
-          </a>
-          <a href="#" class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-100">
-            <span class="h-9 w-9 rounded-xl bg-slate-50 ring-1 ring-black/5 flex items-center justify-center">
-              <svg viewBox="0 0 24 24" class="h-5 w-5 text-slate-600" fill="none" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M8 17V9m4 8V5m4 12v-7M4 19h16" />
-              </svg>
-            </span>
+          </button>
+
+          <button type="button" data-tab="lessons" role="tab" aria-controls="panel-lessons" aria-selected="false"
+            class="tab-btn-mobile w-full text-left flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold">
+            <span class="h-9 w-9 rounded-xl flex items-center justify-center">L</span>
             Lessons Progress
-          </a>
-          <a href="#" class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-100">
-            <span class="h-9 w-9 rounded-xl bg-slate-50 ring-1 ring-black/5 flex items-center justify-center">
-              <svg viewBox="0 0 24 24" class="h-5 w-5 text-slate-600" fill="none" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-6a2 2 0 012-2h2a2 2 0 012 2v6" />
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 21h12M8 7h8M8 3h8" />
-              </svg>
-            </span>
+          </button>
+
+          <button type="button" data-tab="reports" role="tab" aria-controls="panel-reports" aria-selected="false"
+            class="tab-btn-mobile w-full text-left flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold">
+            <span class="h-9 w-9 rounded-xl flex items-center justify-center">R</span>
             Reports
-          </a>
-          <a href="#" class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-100">
-            <span class="h-9 w-9 rounded-xl bg-slate-50 ring-1 ring-black/5 flex items-center justify-center">
-              <svg viewBox="0 0 24 24" class="h-5 w-5 text-slate-600" fill="none" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M21 15a4 4 0 01-4 4H7l-4 3V7a4 4 0 014-4h10a4 4 0 014 4v8z" />
-              </svg>
-            </span>
-            Messages
-          </a>
-          <a href="#" class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-100">
-            <span class="h-9 w-9 rounded-xl bg-slate-50 ring-1 ring-black/5 flex items-center justify-center">
-              <svg viewBox="0 0 24 24" class="h-5 w-5 text-slate-600" fill="none" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 15.5A3.5 3.5 0 1112 8.5a3.5 3.5 0 010 7z" />
-                <path stroke-linecap="round" stroke-linejoin="round" d="M19.4 15a7.97 7.97 0 00.1-3l2-1.5-2-3.5-2.4 1a8.2 8.2 0 00-2.6-1.5L14 3h-4l-.5 3.5A8.2 8.2 0 007 8l-2.4-1-2 3.5 2 1.5a7.97 7.97 0 00.1 3L2.6 16.5l2 3.5 2.4-1a8.2 8.2 0 002.6 1.5L10 21h4l.5-3.5A8.2 8.2 0 0017 19l2.4 1 2-3.5L19.4 15z" />
-              </svg>
-            </span>
+          </button>
+
+          <button type="button" data-tab="settings" role="tab" aria-controls="panel-settings" aria-selected="false"
+            class="tab-btn-mobile w-full text-left flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold">
+            <span class="h-9 w-9 rounded-xl flex items-center justify-center">⚙</span>
             Settings
-          </a>
-          <a href="login.html" class="mt-3 flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-rose-600 hover:bg-rose-50">
-            <span class="h-9 w-9 rounded-xl bg-rose-50 ring-1 ring-black/5 flex items-center justify-center">
-              <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M10 17l5-5-5-5" />
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12H3" />
-                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21V3" />
-              </svg>
-            </span>
-            Logout
-          </a>
+          </button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- STUDENT DETAILS MODAL -->
-  <div id="detailsModal" class="fixed inset-0 z-[60] hidden">
+  <!-- STUDENT DETAILS MODAL (kept) -->
+  <div id="detailsModal" class="fixed inset-0 z-[60] hidden" role="dialog" aria-modal="true" aria-label="Student details">
     <div class="absolute inset-0 bg-black/55"></div>
-
     <div class="absolute inset-x-4 top-6 bottom-6 md:inset-x-10 lg:inset-x-24 flex items-center justify-center">
       <div class="w-full max-w-5xl h-full rounded-3xl bg-white shadow-soft ring-1 ring-black/10 overflow-hidden flex flex-col">
         <div class="bg-gradient-to-r from-brand-600 to-brand-500 px-7 py-5 flex items-center justify-between">
@@ -509,9 +767,7 @@
             <p class="text-xl font-extrabold text-white">Student Details</p>
           </div>
           <button id="closeDetails" class="h-10 w-10 rounded-xl bg-white/15 ring-1 ring-white/15 text-white flex items-center justify-center hover:bg-white/20" aria-label="Close">
-            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            ✕
           </button>
         </div>
 
@@ -537,60 +793,25 @@
             <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <div>
                 <p class="text-xs font-extrabold text-slate-400 uppercase">Course</p>
-                <p id="dCourse" class="mt-1 font-extrabold text-slate-900">BS Computer Science</p>
+                <p id="dCourse" class="mt-1 font-extrabold text-slate-900">—</p>
               </div>
               <div>
                 <p class="text-xs font-extrabold text-slate-400 uppercase">Year Level</p>
-                <p id="dYear" class="mt-1 font-extrabold text-slate-900">2nd Year</p>
+                <p id="dYear" class="mt-1 font-extrabold text-slate-900">—</p>
               </div>
               <div>
                 <p class="text-xs font-extrabold text-slate-400 uppercase">Last Login</p>
-                <p id="dLastLogin" class="mt-1 font-extrabold text-slate-900">2 hours ago</p>
+                <p id="dLastLogin" class="mt-1 font-extrabold text-slate-900">—</p>
               </div>
               <div>
                 <p class="text-xs font-extrabold text-slate-400 uppercase">Overall Progress</p>
-                <p class="mt-1 font-extrabold text-slate-900"><span id="dProgress">68</span>%</p>
+                <p class="mt-1 font-extrabold text-slate-900"><span id="dProgress">0</span>%</p>
               </div>
             </div>
           </div>
 
           <h3 class="mt-8 text-lg font-extrabold text-slate-900">Lesson-by-Lesson Progress</h3>
           <div id="lessonProgressList" class="mt-4 space-y-4"></div>
-
-          <h3 class="mt-8 text-lg font-extrabold text-slate-900">Quiz Performance</h3>
-          <div class="mt-4 rounded-2xl bg-white ring-1 ring-black/5 p-6 flex items-center justify-between">
-            <div>
-              <p class="text-sm font-semibold text-slate-500">Average Quiz Score</p>
-              <p class="mt-2 text-4xl font-extrabold text-brand-700"><span id="dQuiz">87</span>%</p>
-            </div>
-            <div class="h-16 w-16 rounded-full bg-brand-600 text-white flex items-center justify-center ring-1 ring-black/5">
-              <svg viewBox="0 0 24 24" class="h-8 w-8" fill="none" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M7 21h10" />
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 17V3" />
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 6h6" />
-                <path stroke-linecap="round" stroke-linejoin="round" d="M8 13l4-2 4 2" />
-              </svg>
-            </div>
-          </div>
-
-          <h3 class="mt-8 text-lg font-extrabold text-slate-900">Assessment Status</h3>
-          <div class="mt-4 rounded-2xl bg-white ring-1 ring-black/5 p-6 flex items-center justify-between gap-4">
-            <div>
-              <p class="text-sm font-semibold text-slate-500">Current Status</p>
-              <span id="dAssessPill" class="mt-3 inline-flex items-center rounded-full px-4 py-1.5 text-xs font-extrabold bg-emerald-100 text-emerald-800 ring-1 ring-black/5">
-                Submitted
-              </span>
-            </div>
-
-            <button id="viewSubmissionBtn"
-              class="hidden inline-flex items-center justify-center gap-2 rounded-xl bg-brand-50 px-4 py-2.5 text-sm font-extrabold text-brand-800 ring-1 ring-black/5 hover:bg-brand-100">
-              <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M7 3h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z" />
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6M9 11h6M9 15h4" />
-              </svg>
-              View Submission
-            </button>
-          </div>
 
           <h3 class="mt-8 text-lg font-extrabold text-slate-900">Admin Notes</h3>
           <div class="mt-4 rounded-2xl bg-white ring-1 ring-black/5 p-6">
@@ -600,104 +821,24 @@
             <div class="mt-4 flex items-center justify-between">
               <div class="text-xs text-slate-500 font-semibold">Notes are stored locally (prototype).</div>
               <button id="saveNotesBtn"
-                class="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-extrabold text-white shadow-softer hover:bg-brand-700 focus:outline-none focus:ring-4 focus:ring-brand-200">
-                <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 21h14V7l-3-3H5v17z" />
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 21V13h6v8" />
-                </svg>
+                class="inline-flex items-center justify-center rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-extrabold text-white shadow-softer hover:bg-brand-700 focus:outline-none focus:ring-4 focus:ring-brand-200">
                 Save Notes
               </button>
             </div>
           </div>
+
         </div>
       </div>
     </div>
   </div>
 
-  <!-- SUBMISSION MODAL -->
-  <div id="submissionModal" class="fixed inset-0 z-[70] hidden">
-    <div class="absolute inset-0 bg-black/60"></div>
-
-    <div class="absolute inset-x-4 top-6 bottom-6 md:inset-x-10 lg:inset-x-24 flex items-center justify-center">
-      <div class="w-full max-w-5xl h-full rounded-3xl bg-white shadow-soft ring-1 ring-black/10 overflow-hidden flex flex-col">
-        <div class="bg-gradient-to-r from-brand-600 to-brand-500 px-7 py-5 flex items-start justify-between gap-4">
-          <div>
-            <p class="text-xl font-extrabold text-white">Assessment Submission</p>
-            <p id="sStudentLine" class="text-sm font-semibold text-white/85 mt-0.5">Maria Santos - STU-2024-001</p>
-          </div>
-
-          <button id="closeSubmission" class="h-10 w-10 rounded-xl bg-white/15 ring-1 ring-white/15 text-white flex items-center justify-center hover:bg-white/20" aria-label="Close">
-            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-
-        <div class="nice-scroll flex-1 overflow-y-auto p-7">
-          <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-6">
-            <div class="grid gap-6 md:grid-cols-3">
-              <div>
-                <p class="text-xs font-extrabold text-slate-400 uppercase">Submission Date</p>
-                <p id="sDate" class="mt-1 font-extrabold text-slate-900">May 15, 2024 at 3:45 PM</p>
-              </div>
-              <div>
-                <p class="text-xs font-extrabold text-slate-400 uppercase">Status</p>
-                <span id="sStatus" class="mt-2 inline-flex items-center rounded-full px-4 py-1.5 text-xs font-extrabold bg-emerald-100 text-emerald-800 ring-1 ring-black/5">
-                  Submitted
-                </span>
-              </div>
-              <div>
-                <p class="text-xs font-extrabold text-slate-400 uppercase">Grade</p>
-                <p id="sGrade" class="mt-1 font-extrabold text-brand-700">Pending Review</p>
-              </div>
-            </div>
-          </div>
-
-          <h3 class="mt-8 text-lg font-extrabold text-slate-900">Essay Responses</h3>
-          <div id="essayList" class="mt-4 space-y-5"></div>
-
-          <h3 class="mt-8 text-lg font-extrabold text-slate-900">Attached Files</h3>
-          <div class="mt-4 space-y-4">
-            <div class="rounded-2xl bg-white ring-1 ring-black/5 p-5 flex items-center justify-between gap-4">
-              <div class="flex items-center gap-4">
-                <div class="h-12 w-12 rounded-xl bg-rose-50 ring-1 ring-black/5 flex items-center justify-center text-rose-600 font-extrabold">PDF</div>
-                <div>
-                  <p class="font-extrabold text-slate-900">Communication_Assessment.pdf</p>
-                  <p class="text-xs text-slate-500 font-semibold">2.4 MB</p>
-                </div>
-              </div>
-              <a href="#" class="inline-flex items-center gap-2 rounded-xl bg-brand-50 px-4 py-2.5 text-sm font-extrabold text-brand-800 ring-1 ring-black/5 hover:bg-brand-100">
-                <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0l4-4m-4 4l-4-4" />
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 17v3h16v-3" />
-                </svg>
-                Download
-              </a>
-            </div>
-
-            <div class="rounded-2xl bg-white ring-1 ring-black/5 p-5 flex items-center justify-between gap-4">
-              <div class="flex items-center gap-4">
-                <div class="h-12 w-12 rounded-xl bg-sky-50 ring-1 ring-black/5 flex items-center justify-center text-sky-700 font-extrabold">DOC</div>
-                <div>
-                  <p class="font-extrabold text-slate-900">References.docx</p>
-                  <p class="text-xs text-slate-500 font-semibold">156 KB</p>
-                </div>
-              </div>
-              <a href="#" class="inline-flex items-center gap-2 rounded-xl bg-brand-50 px-4 py-2.5 text-sm font-extrabold text-brand-800 ring-1 ring-black/5 hover:bg-brand-100">
-                <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0l4-4m-4 4l-4-4" />
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 17v3h16v-3" />
-                </svg>
-                Download
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!-- Toast container -->
+  <div id="toastStack" class="toast-stack fixed bottom-4 right-4 z-[90] space-y-3"></div>
 
   <script>
+    // ==========================
+    // DATA (Prototype)
+    // ==========================
     const students = [
       {
         id: "STU-2024-001",
@@ -796,38 +937,59 @@
       },
     ];
 
-    const defaultEssays = [
-      {
-        q: "Question 1: Explain the importance of effective communication in professional settings",
-        words: 500,
-        a: `Effective communication is fundamental to success in any professional environment. It serves as the backbone of organizational operations, enabling teams to collaborate efficiently, share ideas, and achieve common goals. In today's globalized business landscape, the ability to communicate clearly and persuasively has become more critical than ever.
+    // ==========================
+    // SETTINGS (Local)
+    // ==========================
+    const SETTINGS_KEY = "pc_admin_settings_v3";
+    const LAST_TAB_KEY = "pc_admin_last_tab_v3";
 
-First and foremost, effective communication fosters better teamwork and collaboration. When team members can express their thoughts clearly and listen actively to others, it creates an environment of mutual understanding and respect. This leads to improved problem-solving capabilities as diverse perspectives are shared and considered. Moreover, clear communication helps prevent misunderstandings that could lead to costly errors or conflicts within the organization.
+    const DEFAULT_SETTINGS = {
+      pageSize: 10,
+      sortBy: "name",
+      sortDir: "asc",
+      showEmail: true,
+      riskInactiveDays: 7,
+      riskProgressThreshold: 40,
+      riskLesson4NotStarted: true,
+    };
 
-Furthermore, strong communication skills are essential for leadership and career advancement. Professionals who can articulate their ideas convincingly, present information effectively, and adapt their communication style to different audiences are more likely to be recognized and promoted. In client-facing roles, excellent communication builds trust and strengthens business relationships, ultimately contributing to organizational success and personal career growth.`,
-      },
-      {
-        q: "Question 2: Discuss the different communication styles and how they impact workplace relationships",
-        words: 450,
-        a: `Communication styles significantly influence how individuals interact and work together. In professional settings, common styles include direct, considerate, systematic, and spirited communication. Each style has strengths and potential limitations depending on the context and the people involved.
+    function loadSettings() {
+      try {
+        const raw = localStorage.getItem(SETTINGS_KEY);
+        const parsed = raw ? JSON.parse(raw) : {};
+        return { ...DEFAULT_SETTINGS, ...parsed };
+      } catch {
+        return { ...DEFAULT_SETTINGS };
+      }
+    }
+    function saveSettings(next) {
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify(next));
+    }
+    let settings = loadSettings();
 
-A direct style values clarity and efficiency, which can be beneficial during decision-making or urgent tasks. However, if used without tact, it may be perceived as harsh. A considerate style prioritizes empathy and cooperation, supporting positive team relationships but sometimes slowing decisions. A systematic style is detailed and organized, helpful for documentation and accuracy, though it can feel rigid. A spirited style brings energy and motivation, encouraging creativity, but may be seen as unfocused if not guided.
-
-Understanding these styles helps teams reduce conflict, improve collaboration, and communicate more effectively by adjusting tone, detail, and delivery to meet the needs of different colleagues.`,
-      },
-      {
-        q: "Question 3: Analyze a communication barrier you have experienced and how you overcame it",
-        words: 400,
-        a: `During my internship at a multinational company, I encountered a significant communication barrier related to cultural differences. I was assigned to work with a team that included members from Japan, Germany, and the Philippines. Initially, I struggled to understand the varying communication styles and expectations across these cultures.
-
-The Japanese team members tended to communicate indirectly and valued harmony, often avoiding direct disagreement. The German colleagues, on the other hand, were very direct and valued efficiency in communication. This created confusion during meetings, as I sometimes misinterpreted indirect feedback as agreement when it was actually polite disagreement. Additionally, language barriers occasionally led to misunderstandings, even though we all spoke English.
-
-To overcome these barriers, I took several proactive steps. First, I researched cultural communication norms to better understand each team member's background. I also started asking clarifying questions more frequently and summarizing key points at the end of discussions to ensure everyone was aligned. Most importantly, I learned to be more observant of non-verbal cues and to adapt my communication style based on my audience.`,
-      },
-    ];
-
+    // ==========================
+    // HELPERS
+    // ==========================
     const $ = (id) => document.getElementById(id);
+
+    function avg(nums) { return nums.length ? Math.round(nums.reduce((a,b)=>a+b,0)/nums.length) : 0; }
     const initials = (name) => name.split(" ").slice(0,2).map(x => x[0]).join("").toUpperCase();
+
+    function toast(msg) {
+      const stack = $("toastStack");
+      const el = document.createElement("div");
+      el.className = "toast w-[320px] rounded-2xl bg-white shadow-soft ring-1 ring-black/10 p-4";
+      el.innerHTML = `
+        <div class="flex items-start justify-between gap-3">
+          <p class="text-sm font-semibold text-slate-800">${msg}</p>
+          <button class="text-xs font-extrabold text-slate-500 hover:text-slate-700">✕</button>
+        </div>
+      `;
+      stack.appendChild(el);
+      const btn = el.querySelector("button");
+      btn.addEventListener("click", () => el.remove());
+      setTimeout(() => { if (el.isConnected) el.remove(); }, 3500);
+    }
 
     function statusPill(status) {
       if (status === "Active") return "bg-emerald-100 text-emerald-800";
@@ -844,15 +1006,103 @@ To overcome these barriers, I took several proactive steps. First, I researched 
       return "bg-slate-100 text-slate-700";
     }
 
+    function parseLastLoginToMinutes(str) {
+      const s = String(str || "").toLowerCase().trim();
+      const m = s.match(/(\d+)\s*(minute|minutes|hour|hours|day|days)/);
+      if (!m) return Number.POSITIVE_INFINITY;
+      const n = Number(m[1]);
+      const unit = m[2];
+      if (unit.startsWith("minute")) return n;
+      if (unit.startsWith("hour")) return n * 60;
+      if (unit.startsWith("day")) return n * 60 * 24;
+      return Number.POSITIVE_INFINITY;
+    }
+    function parseLastLoginToDays(str) {
+      const s = String(str || "").toLowerCase();
+      const m = s.match(/(\d+)\s*day/);
+      return m ? Number(m[1]) : 0;
+    }
+
+    function riskReasons(student) {
+      const reasons = [];
+      const days = parseLastLoginToDays(student.lastLogin);
+      if (days >= (settings.riskInactiveDays || 7)) reasons.push(`Inactive ≥ ${settings.riskInactiveDays}d`);
+      if ((student.progress ?? 0) < (settings.riskProgressThreshold ?? 40)) reasons.push(`Progress < ${settings.riskProgressThreshold}%`);
+      if (settings.riskLesson4NotStarted && (student.l4 ?? 0) === 0) reasons.push("Lesson 4 not started");
+      return reasons;
+    }
+
+    function downloadCSV(filename, headers, rows) {
+      const csv = [headers, ...rows].map(r => r.map(v => `"${String(v ?? "").replaceAll('"','""')}"`).join(",")).join("\n");
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    // ==========================
+    // BULK SELECTION STATE
+    // ==========================
+    const selectedIds = new Set(); // persists across pagination/filter
+
+    function updateBulkBar() {
+      const count = selectedIds.size;
+      $("bulkCount").textContent = String(count);
+      const bar = $("bulkBar");
+      if (count > 0) bar.classList.remove("hidden");
+      else bar.classList.add("hidden");
+    }
+
+    function clearSelection() {
+      selectedIds.clear();
+      updateBulkBar();
+      renderCurrentPage(); // refresh checkboxes
+    }
+
+    function toggleSelection(id, checked) {
+      if (checked) selectedIds.add(id);
+      else selectedIds.delete(id);
+      updateBulkBar();
+      updateSelectAllCheckbox();
+    }
+
+    function selectAllOnPage(pageItems, checked) {
+      pageItems.forEach(s => {
+        if (checked) selectedIds.add(s.id);
+        else selectedIds.delete(s.id);
+      });
+      updateBulkBar();
+      renderCurrentPage();
+    }
+
+    function updateSelectAllCheckbox() {
+      const cb = $("selectAllPage");
+      if (!cb) return;
+
+      const pageItems = uiState.pageItems || [];
+      const selectedOnPage = pageItems.filter(s => selectedIds.has(s.id)).length;
+
+      cb.indeterminate = selectedOnPage > 0 && selectedOnPage < pageItems.length;
+      cb.checked = pageItems.length > 0 && selectedOnPage === pageItems.length;
+    }
+
+    // ==========================
+    // DASHBOARD STATS
+    // ==========================
     function computeStats(list) {
       const total = list.length;
       const activeToday = list.filter(s => /minutes|hour/i.test(s.lastLogin)).length;
-      const avg = Math.round(list.reduce((a,s) => a + s.progress, 0) / Math.max(1, total));
-      const pendingAssessments = list.filter(s => s.assessment.status !== "Submitted").length;
+      const avgProgress = Math.round(list.reduce((a,s) => a + (s.progress || 0), 0) / Math.max(1, total));
+      const pendingAssessments = list.filter(s => (s.assessment?.status || "") !== "Submitted").length;
 
       $("statTotal").textContent = total;
       $("statActive").textContent = activeToday;
-      $("statAvg").textContent = avg;
+      $("statAvg").textContent = avgProgress;
       $("statPending").textContent = pendingAssessments;
 
       $("l1Done").textContent = list.filter(s => s.l1 === 100).length;
@@ -866,24 +1116,44 @@ To overcome these barriers, I took several proactive steps. First, I researched 
       $("lTotal4").textContent = total;
     }
 
+    // ==========================
+    // COURSE OPTIONS
+    // ==========================
     function renderCourseOptions() {
       const courses = Array.from(new Set(students.map(s => s.course))).sort();
-      const sel = $("courseFilter");
+
+      const studentCourseSel = $("courseFilter");
       courses.forEach(c => {
         const opt = document.createElement("option");
         opt.value = c;
         opt.textContent = c;
-        sel.appendChild(opt);
+        studentCourseSel.appendChild(opt);
+      });
+
+      const lp = $("lpCourse");
+      const rp = $("rpCourse");
+      courses.forEach(c => {
+        if (lp) { const o = document.createElement("option"); o.value=c; o.textContent=c; lp.appendChild(o); }
+        if (rp) { const o = document.createElement("option"); o.value=c; o.textContent=c; rp.appendChild(o); }
       });
     }
 
+    // ==========================
+    // STUDENTS: RENDER
+    // ==========================
     function rowHTML(s) {
+      const checked = selectedIds.has(s.id) ? "checked" : "";
       return `
         <tr class="hover:bg-slate-50/60">
           <td class="py-5 pr-4 align-top">
+            <input class="row-check h-4 w-4 rounded border-slate-300 text-brand-600 focus:ring-brand-200"
+              type="checkbox" data-student="${s.id}" aria-label="Select ${s.name}" ${checked} />
+          </td>
+
+          <td class="py-5 pr-4 align-top">
             <div class="font-extrabold text-slate-900">${s.name}</div>
             <div class="text-xs text-slate-500 font-semibold">${s.id}</div>
-            <div class="text-xs text-slate-400">${s.email}</div>
+            ${settings.showEmail ? `<div class="text-xs text-slate-400">${s.email}</div>` : ``}
           </td>
 
           <td class="py-5 pr-4 align-top">
@@ -927,12 +1197,186 @@ To overcome these barriers, I took several proactive steps. First, I researched 
       `;
     }
 
+    function cardHTML(s) {
+      const checked = selectedIds.has(s.id) ? "checked" : "";
+      return `
+        <div class="rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-5">
+          <div class="flex items-start justify-between gap-4">
+            <div class="min-w-0">
+              <p class="text-base font-extrabold text-slate-900 truncate">${s.name}</p>
+              <p class="text-xs text-slate-500 font-semibold">${s.id}</p>
+              ${settings.showEmail ? `<p class="text-xs text-slate-400 truncate">${s.email}</p>` : ``}
+            </div>
+
+            <div class="flex items-center gap-3">
+              <input class="row-check h-4 w-4 rounded border-slate-300 text-brand-600 focus:ring-brand-200"
+                type="checkbox" data-student="${s.id}" aria-label="Select ${s.name}" ${checked} />
+              <span class="shrink-0 inline-flex items-center rounded-full px-3 py-1 text-xs font-extrabold ring-1 ring-black/5 ${statusPill(s.status)}">${s.status}</span>
+            </div>
+          </div>
+
+          <div class="mt-4 grid grid-cols-2 gap-3 text-sm">
+            <div>
+              <p class="text-xs font-extrabold text-slate-400 uppercase">Course</p>
+              <p class="font-extrabold text-slate-800">${s.course}</p>
+            </div>
+            <div>
+              <p class="text-xs font-extrabold text-slate-400 uppercase">Year</p>
+              <p class="font-extrabold text-slate-800">${s.year}</p>
+            </div>
+            <div>
+              <p class="text-xs font-extrabold text-slate-400 uppercase">Last login</p>
+              <p class="font-extrabold text-slate-800">${s.lastLogin}</p>
+            </div>
+            <div>
+              <p class="text-xs font-extrabold text-slate-400 uppercase">Assessment</p>
+              <span class="inline-flex items-center rounded-full px-3 py-1 text-xs font-extrabold ring-1 ring-black/5 ${assessPill(s.assessment.status)}">${s.assessment.status}</span>
+            </div>
+          </div>
+
+          <div class="mt-4">
+            <div class="flex items-center justify-between">
+              <p class="text-xs font-extrabold text-slate-400 uppercase">Progress</p>
+              <span class="inline-flex items-center rounded-lg px-3 py-1 text-xs font-extrabold ring-1 ring-black/5 ${progressBadge(s.progress)}">${s.progress}%</span>
+            </div>
+            <div class="mt-2 h-2.5 w-full rounded-full bg-slate-200 overflow-hidden">
+              <div class="h-2.5 bg-brand-600" style="width:${s.progress}%"></div>
+            </div>
+          </div>
+
+          <button data-student="${s.id}" class="view-details mt-4 w-full inline-flex items-center justify-center rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-extrabold text-white shadow-softer hover:bg-brand-700 focus:outline-none focus:ring-4 focus:ring-brand-200">
+            View Details
+          </button>
+        </div>
+      `;
+    }
+
+    function wireRowCheckboxes(root) {
+      root.querySelectorAll(".row-check").forEach(cb => {
+        cb.addEventListener("change", () => {
+          const id = cb.getAttribute("data-student");
+          toggleSelection(id, cb.checked);
+        });
+      });
+    }
+
     function renderTable(list) {
       const tbody = $("studentTbody");
       tbody.innerHTML = list.map(rowHTML).join("");
+
       tbody.querySelectorAll(".view-details").forEach(btn => {
         btn.addEventListener("click", () => openDetails(btn.getAttribute("data-student")));
       });
+
+      wireRowCheckboxes(tbody);
+    }
+
+    function renderCards(list) {
+      const wrap = $("studentCards");
+      wrap.innerHTML = list.map(cardHTML).join("");
+
+      wrap.querySelectorAll(".view-details").forEach(btn => {
+        btn.addEventListener("click", () => openDetails(btn.getAttribute("data-student")));
+      });
+
+      wireRowCheckboxes(wrap);
+    }
+
+    // ==========================
+    // SORT + PAGINATION + QUICK FILTER
+    // ==========================
+    const uiState = {
+      sortBy: settings.sortBy,
+      sortDir: settings.sortDir,
+      pageSize: Number(settings.pageSize) || 10,
+      page: 1,
+      filtered: [...students],
+      pageItems: [],
+      quickRisk: false,
+    };
+
+    const DEFAULT_DIR_FOR_SORT = {
+      name: "asc",
+      lastLogin: "asc",  // smaller minutes = more recent
+      progress: "desc",
+      quiz: "desc",
+      assessment: "asc",
+      status: "asc",
+    };
+
+    function getSortValue(s, key) {
+      switch (key) {
+        case "name": return (s.name || "").toLowerCase();
+        case "lastLogin": return parseLastLoginToMinutes(s.lastLogin);
+        case "progress": return Number(s.progress || 0);
+        case "quiz": return Number(s.quiz || 0);
+        case "assessment": return (s.assessment?.status || "").toLowerCase() === "submitted" ? 0 : 1;
+        case "status": return (s.status || "").toLowerCase() === "active" ? 0 : 1;
+        default: return (s.name || "").toLowerCase();
+      }
+    }
+
+    function sortStudents(list) {
+      const dir = uiState.sortDir === "asc" ? 1 : -1;
+      const key = uiState.sortBy;
+
+      return list
+        .map((item, idx) => ({ item, idx }))
+        .sort((A,B) => {
+          const a = getSortValue(A.item, key);
+          const b = getSortValue(B.item, key);
+          let out;
+          if (typeof a === "string" && typeof b === "string") out = a.localeCompare(b);
+          else out = a === b ? 0 : (a > b ? 1 : -1);
+          if (out === 0) return A.idx - B.idx;
+          return out * dir;
+        })
+        .map(x => x.item);
+    }
+
+    function clampPage() {
+      const total = uiState.filtered.length;
+      const totalPages = Math.max(1, Math.ceil(total / uiState.pageSize));
+      uiState.page = Math.min(Math.max(1, uiState.page), totalPages);
+      return totalPages;
+    }
+
+    function updateSortIndicators() {
+      document.querySelectorAll(".sort-indicator").forEach(el => {
+        const key = el.getAttribute("data-ind");
+        if (key !== uiState.sortBy) el.textContent = "—";
+        else el.textContent = uiState.sortDir === "asc" ? "▲" : "▼";
+      });
+    }
+
+    function syncSortControls() {
+      $("sortBy").value = uiState.sortBy;
+      $("sortDirBtn").textContent = uiState.sortDir === "asc" ? "Asc" : "Desc";
+      $("pageSize").value = String(uiState.pageSize);
+      updateSortIndicators();
+    }
+
+    function renderCurrentPage() {
+      const sorted = sortStudents(uiState.filtered);
+      const totalPages = clampPage();
+
+      const start = (uiState.page - 1) * uiState.pageSize;
+      const end = start + uiState.pageSize;
+      const pageItems = sorted.slice(start, end);
+      uiState.pageItems = pageItems;
+
+      renderTable(pageItems);
+      renderCards(pageItems);
+
+      $("pageInfo").textContent = `Page ${uiState.page} of ${totalPages}`;
+      $("prevPage").disabled = uiState.page <= 1;
+      $("nextPage").disabled = uiState.page >= totalPages;
+
+      $("resultsCount").textContent = `Showing ${pageItems.length} of ${uiState.filtered.length}`;
+
+      updateSortIndicators();
+      updateBulkBar();
+      updateSelectAllCheckbox();
     }
 
     function applyFilters() {
@@ -947,7 +1391,7 @@ To overcome these barriers, I took several proactive steps. First, I researched 
         list = list.filter(s =>
           s.name.toLowerCase().includes(q) ||
           s.id.toLowerCase().includes(q) ||
-          s.email.toLowerCase().includes(q)
+          (settings.showEmail && s.email.toLowerCase().includes(q))
         );
       }
       if (course !== "all") list = list.filter(s => s.course === course);
@@ -958,16 +1402,287 @@ To overcome these barriers, I took several proactive steps. First, I researched 
         list = list.filter(s => s.progress >= a && s.progress <= b);
       }
 
-      renderTable(list);
-      computeStats(list);
+      if (uiState.quickRisk) {
+        list = list.filter(s => riskReasons(s).length > 0);
+      }
+
+      uiState.filtered = list;
+      uiState.page = 1;
+      renderCurrentPage();
     }
 
+    function setRiskButtonUI() {
+      const btn = $("riskFilterBtn");
+      if (uiState.quickRisk) {
+        btn.className = "inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-extrabold ring-1 ring-black/5 bg-rose-600 text-white hover:bg-rose-700";
+      } else {
+        btn.className = "inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-extrabold ring-1 ring-black/5 bg-white text-slate-700 hover:bg-slate-50";
+      }
+      $("qRiskDays").textContent = String(settings.riskInactiveDays);
+      $("qRiskProg").textContent = String(settings.riskProgressThreshold);
+    }
+
+    // Clickable sort headers
+    function wireSortableHeaders() {
+      document.querySelectorAll("th.sortable").forEach(th => {
+        th.addEventListener("click", () => {
+          const key = th.getAttribute("data-sort");
+          if (!key) return;
+
+          if (uiState.sortBy === key) uiState.sortDir = uiState.sortDir === "asc" ? "desc" : "asc";
+          else {
+            uiState.sortBy = key;
+            uiState.sortDir = DEFAULT_DIR_FOR_SORT[key] || "asc";
+          }
+
+          uiState.page = 1;
+          syncSortControls();
+          renderCurrentPage();
+        });
+      });
+    }
+
+    // ==========================
+    // BULK ACTIONS (prototype)
+    // ==========================
+    function getSelectedStudents() {
+      return students.filter(s => selectedIds.has(s.id));
+    }
+
+    function bulkSendReminder() {
+      const list = getSelectedStudents();
+      if (!list.length) return;
+      toast(`✅ Reminder queued for ${list.length} student(s) (prototype).`);
+    }
+
+    function bulkMarkInactive() {
+      const list = getSelectedStudents();
+      if (!list.length) return;
+
+      list.forEach(s => { s.status = "Inactive"; });
+      toast(`⚠ Marked ${list.length} student(s) as Inactive.`);
+      computeStats(students);
+      applyFilters(); // rerender, keeps selection
+    }
+
+    function bulkExportSelected() {
+      const list = getSelectedStudents();
+      if (!list.length) return;
+
+      const headers = ["Name","Student ID","Email","Course","Year","Last Login","Status","Progress","L1","L2","L3","L4","Quiz","Assessment"];
+      const rows = list.map(s => [s.name, s.id, s.email, s.course, s.year, s.lastLogin, s.status, s.progress, s.l1, s.l2, s.l3, s.l4, s.quiz, s.assessment?.status]);
+      downloadCSV("purposive_students_selected.csv", headers, rows);
+      toast(`⬇ Exported ${list.length} selected student(s).`);
+    }
+
+    // ==========================
+    // LESSONS (simple connected listing)
+    // ==========================
+    const LESSON_META = {
+      l1: { titlePrefix: "Lesson 1" },
+      l2: { titlePrefix: "Lesson 2" },
+      l3: { titlePrefix: "Lesson 3" },
+      l4: { titlePrefix: "Lesson 4" },
+    };
+    function getLessonDetail(student, lessonKey) {
+      const meta = LESSON_META[lessonKey];
+      const found = student.lessons?.find(l => String(l.title || "").startsWith(meta.titlePrefix));
+      return found || { pct: student[lessonKey] ?? 0, parts: "—" };
+    }
+
+    function renderLessonsList() {
+      const course = $("lpCourse").value;
+      const year = $("lpYear").value;
+      const lessonKey = $("lpLesson").value;
+      const status = $("lpStatus").value;
+
+      let list = [...students];
+      if (course !== "all") list = list.filter(s => s.course === course);
+      if (year !== "all") list = list.filter(s => s.year === year);
+
+      const decorated = list.map(s => {
+        const d = getLessonDetail(s, lessonKey);
+        const pct = Number(d.pct || 0);
+        let st = "notstarted";
+        if (pct === 100) st = "completed";
+        else if (pct > 0) st = "inprogress";
+        return { s, pct, parts: d.parts, st };
+      }).filter(x => status === "all" ? true : x.st === status);
+
+      $("lpTbody").innerHTML = decorated.map(x => `
+        <tr>
+          <td class="py-4 pr-4">
+            <div class="font-extrabold text-slate-900">${x.s.name}</div>
+            <div class="text-xs text-slate-500 font-semibold">${x.s.id}</div>
+            ${settings.showEmail ? `<div class="text-xs text-slate-400">${x.s.email}</div>` : ``}
+          </td>
+          <td class="py-4 pr-4">
+            <div class="text-sm font-extrabold text-slate-700">${x.s.course}</div>
+            <div class="text-xs text-slate-500 font-semibold mt-1">${x.s.year}</div>
+          </td>
+          <td class="py-4 pr-4 text-sm font-semibold text-slate-700">${x.s.lastLogin}</td>
+          <td class="py-4 pr-4 text-sm font-extrabold text-slate-900">${x.pct}%</td>
+          <td class="py-4 pr-4 text-sm font-extrabold text-slate-700">
+            ${x.st === "completed" ? "Completed" : x.st === "inprogress" ? "In Progress" : "Not Started"}
+          </td>
+          <td class="py-4 pr-4 text-sm font-semibold text-slate-700">${x.parts}</td>
+          <td class="py-4">
+            <button data-student="${x.s.id}" class="lp-view inline-flex items-center justify-center rounded-xl bg-brand-100 px-4 py-2 text-sm font-extrabold text-brand-800 hover:bg-brand-200 ring-1 ring-black/5">
+              View Details
+            </button>
+          </td>
+        </tr>
+      `).join("");
+
+      document.querySelectorAll(".lp-view").forEach(btn => {
+        btn.addEventListener("click", () => openDetails(btn.getAttribute("data-student")));
+      });
+    }
+
+    function exportLessonsViewCSV() {
+      const course = $("lpCourse").value;
+      const year = $("lpYear").value;
+      const lessonKey = $("lpLesson").value;
+      const status = $("lpStatus").value;
+
+      let list = [...students];
+      if (course !== "all") list = list.filter(s => s.course === course);
+      if (year !== "all") list = list.filter(s => s.year === year);
+
+      const rows = list.map(s => {
+        const d = getLessonDetail(s, lessonKey);
+        const pct = Number(d.pct || 0);
+        const st = pct === 100 ? "Completed" : pct > 0 ? "In Progress" : "Not Started";
+        if (status !== "all") {
+          const ok = (status === "completed" && st === "Completed") ||
+                     (status === "inprogress" && st === "In Progress") ||
+                     (status === "notstarted" && st === "Not Started");
+          if (!ok) return null;
+        }
+        return [s.id, s.name, s.course, s.year, s.lastLogin, `${pct}%`, st, d.parts];
+      }).filter(Boolean);
+
+      downloadCSV(`lesson_view_${lessonKey}.csv`, ["Student ID","Name","Course","Year","Last Login","Lesson %","Status","Parts"], rows);
+      toast("⬇ Exported lesson view.");
+    }
+
+    // ==========================
+    // REPORTS (simple connected)
+    // ==========================
+    let currentReport = { title: "report", headers: [], rows: [] };
+
+    function getBaseReportList() {
+      const scope = $("rpScope").value;
+      const base = scope === "filtered" ? uiState.filtered : students;
+
+      const course = $("rpCourse").value;
+      const year = $("rpYear").value;
+
+      let list = [...base];
+      if (course !== "all") list = list.filter(s => s.course === course);
+      if (year !== "all") list = list.filter(s => s.year === year);
+      return list;
+    }
+
+    function renderReports() {
+      const base = getBaseReportList();
+      const template = $("rpTemplate").value;
+
+      let title="", headers=[], rows=[];
+
+      if (template === "at_risk") {
+        title = "At-Risk Students";
+        headers = ["Student","Course/Year","Last Login","Progress","Reasons","Action"];
+        const list = base.map(s => ({s, reasons: riskReasons(s)})).filter(x => x.reasons.length);
+        rows = list.map(x => ({
+          actionId: x.s.id,
+          cells: [
+            `${x.s.name}\n${x.s.id}${settings.showEmail ? `\n${x.s.email}` : ""}`,
+            `${x.s.course}\n${x.s.year}`,
+            x.s.lastLogin,
+            `${x.s.progress}%`,
+            x.reasons.join(" • ")
+          ]
+        }));
+      } else if (template === "assessment_pipeline") {
+        title = "Assessment Pipeline";
+        headers = ["Student","Course/Year","Assessment","Submitted At","Grade","Action"];
+        rows = base.map(s => ({
+          actionId: s.id,
+          cells: [
+            `${s.name}\n${s.id}${settings.showEmail ? `\n${s.email}` : ""}`,
+            `${s.course}\n${s.year}`,
+            s.assessment?.status || "—",
+            s.assessment?.submittedAt || "—",
+            s.assessment?.grade || "—"
+          ]
+        }));
+      } else if (template === "engagement") {
+        title = "Engagement / Activity";
+        headers = ["Student","Last Login","Active?","Progress","Action"];
+        rows = base.map(s => ({
+          actionId: s.id,
+          cells: [
+            `${s.name}\n${s.id}${settings.showEmail ? `\n${s.email}` : ""}`,
+            s.lastLogin,
+            parseLastLoginToDays(s.lastLogin) >= settings.riskInactiveDays ? "Inactive" : "Active",
+            `${s.progress}%`
+          ]
+        }));
+      } else {
+        title = "Top Performers";
+        headers = ["Student","Course/Year","Progress","Quiz","Assessment","Action"];
+        const top = [...base].sort((a,b)=> (b.progress-a.progress) || (b.quiz-a.quiz)).slice(0,15);
+        rows = top.map(s => ({
+          actionId: s.id,
+          cells: [
+            `${s.name}\n${s.id}${settings.showEmail ? `\n${s.email}` : ""}`,
+            `${s.course}\n${s.year}`,
+            `${s.progress}%`,
+            `${s.quiz}%`,
+            s.assessment?.status || "—"
+          ]
+        }));
+      }
+
+      $("rpTheadRow").innerHTML = headers.map(h => `<th class="py-3 pr-4">${h}</th>`).join("");
+      $("rpTbody").innerHTML = rows.map(r => `
+        <tr>
+          ${r.cells.map((c, idx) => `
+            <td class="py-4 pr-4 ${idx===0 ? "whitespace-pre-line font-extrabold text-slate-900" : "whitespace-pre-line text-sm font-semibold text-slate-700"}">${c}</td>
+          `).join("")}
+          <td class="py-4">
+            <button data-student="${r.actionId}" class="rp-view inline-flex items-center justify-center rounded-xl bg-brand-100 px-4 py-2 text-sm font-extrabold text-brand-800 hover:bg-brand-200 ring-1 ring-black/5">
+              View Details
+            </button>
+          </td>
+        </tr>
+      `).join("");
+
+      document.querySelectorAll(".rp-view").forEach(btn => {
+        btn.addEventListener("click", () => openDetails(btn.getAttribute("data-student")));
+      });
+
+      currentReport = { title, headers: headers.filter(h => h !== "Action"), rows: rows.map(r => r.cells) };
+    }
+
+    function exportCurrentReportCSV() {
+      const filename = `${(currentReport.title || "report").replaceAll(" ","_").toLowerCase()}.csv`;
+      downloadCSV(filename, currentReport.headers, currentReport.rows);
+      toast("⬇ Exported report.");
+    }
+
+    // ==========================
+    // MODAL
+    // ==========================
     let activeStudent = null;
+    let lastFocusEl = null;
 
     function openDetails(studentId) {
       const s = students.find(x => x.id === studentId);
       if (!s) return;
       activeStudent = s;
+      lastFocusEl = document.activeElement;
 
       $("dAvatar").textContent = initials(s.name);
       $("dName").textContent = s.name;
@@ -983,14 +1698,7 @@ To overcome these barriers, I took several proactive steps. First, I researched 
       pill.textContent = s.status;
       pill.className = `inline-flex items-center rounded-full px-4 py-1.5 text-xs font-extrabold ring-1 ring-black/5 ${statusPill(s.status)}`;
 
-      $("dQuiz").textContent = s.quiz;
-
-      const assess = $("dAssessPill");
-      assess.textContent = s.assessment.status;
-      assess.className = `mt-3 inline-flex items-center rounded-full px-4 py-1.5 text-xs font-extrabold ring-1 ring-black/5 ${assessPill(s.assessment.status)}`;
-
-      const wrap = $("lessonProgressList");
-      wrap.innerHTML = s.lessons.map(l => `
+      $("lessonProgressList").innerHTML = s.lessons.map(l => `
         <div class="rounded-2xl bg-white ring-1 ring-black/5 p-6">
           <div class="flex items-center justify-between gap-4">
             <p class="text-sm font-extrabold text-slate-900">${l.title}</p>
@@ -999,106 +1707,298 @@ To overcome these barriers, I took several proactive steps. First, I researched 
           <div class="mt-3 h-2.5 w-full rounded-full bg-slate-200 overflow-hidden">
             <div class="h-2.5 bg-brand-600" style="width:${l.pct}%"></div>
           </div>
-          <div class="mt-3 text-xs text-slate-500 font-semibold flex items-center gap-2">
-            <span class="inline-flex h-5 w-5 items-center justify-center rounded-full bg-slate-100 ring-1 ring-black/5">
-              <svg viewBox="0 0 24 24" class="h-3.5 w-3.5 text-slate-600" fill="none" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M20 6L9 17l-5-5" />
-              </svg>
-            </span>
-            ${l.parts}
-          </div>
+          <div class="mt-3 text-xs text-slate-500 font-semibold">${l.parts}</div>
         </div>
       `).join("");
 
       const key = `pc_admin_note_${s.id}`;
       $("adminNotes").value = localStorage.getItem(key) || "";
 
-      const viewBtn = $("viewSubmissionBtn");
-      if (s.assessment.status === "Submitted") {
-        viewBtn.classList.remove("hidden");
-        viewBtn.onclick = () => openSubmission(s);
-      } else {
-        viewBtn.classList.add("hidden");
-        viewBtn.onclick = null;
-      }
-
       $("detailsModal").classList.remove("hidden");
       document.body.classList.add("overflow-hidden");
+      $("closeDetails").focus();
     }
 
     function closeDetails() {
       $("detailsModal").classList.add("hidden");
       document.body.classList.remove("overflow-hidden");
+      lastFocusEl?.focus?.();
     }
 
     $("closeDetails").addEventListener("click", closeDetails);
     $("saveNotesBtn").addEventListener("click", () => {
       if (!activeStudent) return;
       localStorage.setItem(`pc_admin_note_${activeStudent.id}`, $("adminNotes").value || "");
-      $("saveNotesBtn").textContent = "Saved!";
-      setTimeout(() => $("saveNotesBtn").innerHTML = `
-        <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M5 21h14V7l-3-3H5v17z" />
-          <path stroke-linecap="round" stroke-linejoin="round" d="M9 21V13h6v8" />
-        </svg>
-        Save Notes
-      `, 900);
+      toast("💾 Notes saved.");
     });
 
-    function openSubmission(s) {
-      $("sStudentLine").textContent = `${s.name} - ${s.id}`;
-      $("sDate").textContent = s.assessment.submittedAt || "—";
-      $("sStatus").textContent = s.assessment.status;
-      $("sGrade").textContent = s.assessment.grade || "—";
+    // ESC to close modal/menu
+    document.addEventListener("keydown", (e) => {
+      if (e.key !== "Escape") return;
+      if (!$("detailsModal").classList.contains("hidden")) return closeDetails();
+      if (!overlay.classList.contains("hidden")) return closeSidebar();
+    });
 
-      $("essayList").innerHTML = defaultEssays.map((x) => `
-        <div class="rounded-2xl bg-white ring-1 ring-black/5 p-6">
-          <div class="flex items-start justify-between gap-4">
-            <p class="text-sm font-extrabold text-slate-900">${x.q}</p>
-            <p class="text-xs font-extrabold text-slate-400">${x.words} words</p>
-          </div>
-          <div class="mt-4 rounded-xl bg-slate-50 ring-1 ring-black/5 p-5 text-sm leading-relaxed text-slate-600 whitespace-pre-line">${x.a}</div>
-        </div>
-      `).join("");
-
-      $("submissionModal").classList.remove("hidden");
-    }
-
-    function closeSubmission() {
-      $("submissionModal").classList.add("hidden");
-    }
-    $("closeSubmission").addEventListener("click", closeSubmission);
-
-    function exportCSV() {
-      const headers = ["Name","Student ID","Email","Course","Year","Last Login","Status","Progress","L1","L2","L3","L4","Quiz","Assessment"];
-      const rows = students.map(s => [s.name, s.id, s.email, s.course, s.year, s.lastLogin, s.status, s.progress, s.l1, s.l2, s.l3, s.l4, s.quiz, s.assessment.status]);
-      const csv = [headers, ...rows].map(r => r.map(v => `"${String(v).replaceAll('"','""')}"`).join(",")).join("\\n");
-      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "purposive_admin_report.csv";
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
-    }
-    $("exportBtn").addEventListener("click", exportCSV);
-
+    // ==========================
+    // MOBILE SIDEBAR
+    // ==========================
     const overlay = $("sidebarOverlay");
-    $("openSidebarBtn").addEventListener("click", () => overlay.classList.remove("hidden"));
-    $("closeSidebarBtn").addEventListener("click", () => overlay.classList.add("hidden"));
-    overlay.addEventListener("click", (e) => { if (e.target === overlay.firstElementChild) overlay.classList.add("hidden"); });
+    const openBtn = $("openSidebarBtn");
+    const closeBtn = $("closeSidebarBtn");
+    let lastMenuFocus = null;
 
-    renderCourseOptions();
-    computeStats(students);
-    renderTable(students);
+    function openSidebar() {
+      lastMenuFocus = document.activeElement;
+      overlay.classList.remove("hidden");
+      overlay.setAttribute("aria-hidden", "false");
+      openBtn.setAttribute("aria-expanded", "true");
+      document.body.classList.add("overflow-hidden");
+      overlay.querySelector(".tab-btn-mobile")?.focus?.();
+    }
 
+    function closeSidebar() {
+      overlay.classList.add("hidden");
+      overlay.setAttribute("aria-hidden", "true");
+      openBtn.setAttribute("aria-expanded", "false");
+      document.body.classList.remove("overflow-hidden");
+      lastMenuFocus?.focus?.();
+    }
+
+    openBtn.addEventListener("click", openSidebar);
+    closeBtn.addEventListener("click", closeSidebar);
+    overlay.addEventListener("click", (e) => { if (e.target === overlay.firstElementChild) closeSidebar(); });
+
+    // ==========================
+    // TABS
+    // ==========================
+    const TAB_META = {
+      dashboard: { panel: "panel-dashboard", label: "Admin Dashboard" },
+      students:  { panel: "panel-students",  label: "Students" },
+      lessons:   { panel: "panel-lessons",   label: "Lessons Progress" },
+      reports:   { panel: "panel-reports",   label: "Reports" },
+      settings:  { panel: "panel-settings",  label: "Settings" },
+    };
+
+    function setTabActive(tabKey) {
+      Object.keys(TAB_META).forEach((k) => {
+        const panel = $(TAB_META[k].panel);
+        panel.hidden = k !== tabKey;
+      });
+
+      $("topSubtitle").textContent = TAB_META[tabKey]?.label || "Admin Dashboard";
+      localStorage.setItem(LAST_TAB_KEY, tabKey);
+
+      const allBtns = [...document.querySelectorAll(".tab-btn"), ...document.querySelectorAll(".tab-btn-mobile")];
+
+      allBtns.forEach((btn) => {
+        const k = btn.getAttribute("data-tab");
+        const isActive = k === tabKey;
+        btn.setAttribute("aria-selected", isActive ? "true" : "false");
+
+        if (isActive) {
+          btn.classList.add("bg-brand-600", "text-white", "shadow-softer");
+          btn.classList.remove("text-slate-700", "hover:bg-slate-100");
+        } else {
+          btn.classList.remove("bg-brand-600", "text-white", "shadow-softer");
+          btn.classList.add("text-slate-700", "hover:bg-slate-100");
+        }
+      });
+
+      // refresh per tab
+      if (tabKey === "students") renderCurrentPage();
+      if (tabKey === "lessons") renderLessonsList();
+      if (tabKey === "reports") renderReports();
+      if (tabKey === "settings") renderSettingsRiskPreview();
+    }
+
+    function wireTabs() {
+      const clickHandler = (btn) => {
+        const key = btn.getAttribute("data-tab");
+        if (!TAB_META[key]) return;
+        setTabActive(key);
+        if (!overlay.classList.contains("hidden")) closeSidebar();
+      };
+
+      document.querySelectorAll(".tab-btn, .tab-btn-mobile").forEach((btn) => {
+        btn.addEventListener("click", () => clickHandler(btn));
+      });
+
+      const last = localStorage.getItem(LAST_TAB_KEY);
+      setTabActive(last && TAB_META[last] ? last : "dashboard");
+    }
+
+    // ==========================
+    // SETTINGS UI
+    // ==========================
+    function loadSettingsIntoUI() {
+      $("setPageSize").value = String(settings.pageSize);
+      $("setSortBy").value = settings.sortBy;
+      $("setSortDir").value = settings.sortDir;
+      $("setShowEmail").checked = !!settings.showEmail;
+      $("setRiskInactiveDays").value = String(settings.riskInactiveDays);
+      $("setRiskProgress").value = String(settings.riskProgressThreshold);
+      $("setRiskLesson4").checked = !!settings.riskLesson4NotStarted;
+
+      renderSettingsRiskPreview();
+      setRiskButtonUI();
+    }
+
+    function renderSettingsRiskPreview() {
+      $("setRiskPreview").textContent = String(students.filter(s => riskReasons(s).length).length);
+    }
+
+    $("saveSettingsBtn").addEventListener("click", () => {
+      settings = {
+        pageSize: Number($("setPageSize").value) || 10,
+        sortBy: $("setSortBy").value,
+        sortDir: $("setSortDir").value,
+        showEmail: $("setShowEmail").checked,
+        riskInactiveDays: Number($("setRiskInactiveDays").value) || 7,
+        riskProgressThreshold: Number($("setRiskProgress").value) || 40,
+        riskLesson4NotStarted: $("setRiskLesson4").checked,
+      };
+      saveSettings(settings);
+
+      uiState.pageSize = settings.pageSize;
+      uiState.sortBy = settings.sortBy;
+      uiState.sortDir = settings.sortDir;
+      uiState.page = 1;
+
+      syncSortControls();
+      setRiskButtonUI();
+      renderSettingsRiskPreview();
+
+      applyFilters();
+      renderReports();
+      renderLessonsList();
+
+      $("settingsHint").textContent = "Settings saved & applied.";
+      toast("✅ Settings saved.");
+      setTimeout(() => $("settingsHint").textContent = "No changes yet.", 1200);
+    });
+
+    $("resetSettingsBtn").addEventListener("click", () => {
+      settings = { ...DEFAULT_SETTINGS };
+      saveSettings(settings);
+      loadSettingsIntoUI();
+
+      uiState.pageSize = settings.pageSize;
+      uiState.sortBy = settings.sortBy;
+      uiState.sortDir = settings.sortDir;
+      uiState.page = 1;
+      uiState.quickRisk = false;
+
+      syncSortControls();
+      setRiskButtonUI();
+      applyFilters();
+      renderReports();
+      renderLessonsList();
+      toast("↩ Reset settings.");
+    });
+
+    // ==========================
+    // STUDENTS FILTERS + CONTROLS
+    // ==========================
+    function applyStudentsExportFiltered() {
+      const list = uiState.filtered?.length ? uiState.filtered : students;
+      const headers = ["Name","Student ID","Email","Course","Year","Last Login","Status","Progress","L1","L2","L3","L4","Quiz","Assessment"];
+      const rows = list.map(s => [s.name, s.id, s.email, s.course, s.year, s.lastLogin, s.status, s.progress, s.l1, s.l2, s.l3, s.l4, s.quiz, s.assessment?.status]);
+      downloadCSV("purposive_students_filtered.csv", headers, rows);
+      toast(`⬇ Exported ${list.length} filtered student(s).`);
+    }
+
+    // ==========================
+    // APPLY FILTERS WIRING
+    // ==========================
     ["searchInput","courseFilter","yearFilter","progressFilter"].forEach(id => {
       $(id).addEventListener("input", applyFilters);
       $(id).addEventListener("change", applyFilters);
     });
+
+    $("sortBy").addEventListener("change", () => {
+      uiState.sortBy = $("sortBy").value;
+      uiState.sortDir = DEFAULT_DIR_FOR_SORT[uiState.sortBy] || uiState.sortDir;
+      uiState.page = 1;
+      syncSortControls();
+      renderCurrentPage();
+    });
+
+    $("sortDirBtn").addEventListener("click", () => {
+      uiState.sortDir = uiState.sortDir === "asc" ? "desc" : "asc";
+      uiState.page = 1;
+      syncSortControls();
+      renderCurrentPage();
+    });
+
+    $("pageSize").addEventListener("change", () => {
+      uiState.pageSize = Number($("pageSize").value) || 10;
+      uiState.page = 1;
+      syncSortControls();
+      renderCurrentPage();
+    });
+
+    $("prevPage").addEventListener("click", () => { uiState.page -= 1; renderCurrentPage(); });
+    $("nextPage").addEventListener("click", () => { uiState.page += 1; renderCurrentPage(); });
+
+    $("riskFilterBtn").addEventListener("click", () => {
+      uiState.quickRisk = !uiState.quickRisk;
+      setRiskButtonUI();
+      applyFilters();
+    });
+
+    $("clearQuickBtn").addEventListener("click", () => {
+      uiState.quickRisk = false;
+      setRiskButtonUI();
+      applyFilters();
+    });
+
+    // Select-all checkbox (page)
+    $("selectAllPage").addEventListener("change", (e) => {
+      const checked = e.target.checked;
+      selectAllOnPage(uiState.pageItems || [], checked);
+    });
+
+    // Bulk bar actions
+    $("bulkClearBtn").addEventListener("click", clearSelection);
+    $("bulkReminderBtn").addEventListener("click", bulkSendReminder);
+    $("bulkMarkInactiveBtn").addEventListener("click", bulkMarkInactive);
+    $("bulkExportBtn").addEventListener("click", bulkExportSelected);
+
+    // Students export
+    $("exportBtn").addEventListener("click", applyStudentsExportFiltered);
+
+    // Lessons wiring
+    ["lpCourse","lpYear","lpLesson","lpStatus"].forEach(id => {
+      $(id).addEventListener("change", renderLessonsList);
+    });
+    $("lpExportBtn").addEventListener("click", exportLessonsViewCSV);
+
+    // Reports wiring
+    ["rpScope","rpCourse","rpYear","rpTemplate"].forEach(id => {
+      $(id).addEventListener("change", renderReports);
+    });
+    $("rpRunBtn").addEventListener("click", renderReports);
+    $("rpExportBtn").addEventListener("click", exportCurrentReportCSV);
+
+    // ==========================
+    // INIT
+    // ==========================
+    renderCourseOptions();
+    computeStats(students);
+    loadSettingsIntoUI();
+
+    // start state
+    uiState.filtered = [...students];
+    syncSortControls();
+    wireSortableHeaders();
+    wireTabs();
+
+    // initial renders
+    setRiskButtonUI();
+    updateBulkBar();
+    applyFilters();      // renders students page list
+    renderLessonsList(); // prep
+    renderReports();     // 
   </script>
 </body>
 </html>
-
