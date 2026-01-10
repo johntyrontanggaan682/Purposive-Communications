@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Purposive Communication | Profile</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: "#E7F7F5",
+              100: "#CFF0EC",
+              200: "#9FE1D9",
+              300: "#6ED2C6",
+              400: "#3EC3B3",
+              500: "#13A89A",
+              600: "#0F877B",
+              700: "#0B665C",
+              800: "#07453E",
+              900: "#032420",
+            },
+          },
+          boxShadow: {
+            soft: "0 10px 30px rgba(0,0,0,0.10)",
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    .page-bg{
+      background:
+        radial-gradient(1200px 520px at 10% -10%, rgba(19,168,154,0.16), transparent 55%),
+        radial-gradient(900px 450px at 100% 0%, rgba(19,168,154,0.12), transparent 50%),
+        #E7F7F5;
+    }
+    /* Simple modal animation */
+    .fade-in { animation: fadeIn .18s ease-out; }
+    .scale-in { animation: scaleIn .18s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes scaleIn { from { transform: translateY(8px) scale(.98); } to { transform: translateY(0) scale(1); } }
+  </style>
+</head>
+
+<body class="page-bg text-slate-800">
+  <!-- NAVBAR (same style as lessons.html) -->
+  <header class="sticky top-0 z-50 bg-white/80 backdrop-blur border-b border-slate-100">
+    <nav class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+      <!-- Brand -->
+      <a href="index.html" class="flex items-center gap-3">
+        <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 ring-1 ring-black/5">
+          <svg viewBox="0 0 24 24" class="h-6 w-6 text-brand-700" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 7l8-4 8 4v10l-8 4-8-4V7z"></path>
+            <path d="M8 11l2 2 5-5"></path>
+          </svg>
+        </div>
+        <span class="text-lg font-semibold tracking-tight text-slate-900">Purposive Communication</span>
+      </a>
+
+      <!-- Desktop Links -->
+      <div class="hidden items-center gap-8 md:flex">
+        <a href="index.html" class="text-sm font-medium text-slate-700 hover:text-brand-700">Home</a>
+        <a href="lessons.html" class="text-sm font-medium text-slate-700 hover:text-brand-700">Lessons</a>
+        <a href="profile.html" class="text-sm font-semibold text-brand-700">Profile</a>
+        <a href="settings.html" class="text-sm font-medium text-slate-700 hover:text-brand-700">Settings</a>
+      </div>
+
+      <!-- Mobile -->
+      <button id="menuBtn"
+        class="inline-flex items-center justify-center rounded-xl bg-slate-50 p-2 text-slate-800 ring-1 ring-black/5 hover:bg-slate-100 md:hidden"
+        aria-label="Open menu" aria-expanded="false">
+        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="mx-auto hidden max-w-7xl px-4 pb-4 sm:px-6 lg:px-8 md:hidden">
+      <div class="rounded-2xl bg-white p-4 shadow-soft ring-1 ring-black/5">
+        <div class="flex flex-col gap-2">
+          <a href="index.html"
+            class="rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">Home</a>
+          <a href="lessons.html"
+            class="rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">Lessons</a>
+          <a href="profile.html"
+            class="rounded-xl px-3 py-2 text-sm font-semibold text-brand-700 bg-brand-50">Profile</a>
+          <a href="settings.html"
+            class="rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">Settings</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO STRIP (Profile) -->
+  <section class="bg-brand-700">
+    <div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+      <h1 class="text-5xl font-extrabold tracking-tight text-white">My Profile</h1>
+      <p class="mt-5 max-w-3xl text-lg text-white/85">
+        View your account details and track your learning progress.
+      </p>
+    </div>
+  </section>
+
+  <main class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+    <!-- PROFILE CARD -->
+    <section class="overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/5">
+      <div class="h-28 bg-gradient-to-r from-brand-600 to-brand-500"></div>
+
+      <div class="relative px-6 pb-7 pt-0 sm:px-8">
+        <div class="-mt-14">
+          <!-- Clickable Avatar (Netflix-like picker) -->
+          <button id="avatarBtn" type="button"
+            class="group relative h-28 w-28 rounded-3xl bg-white shadow-soft ring-1 ring-black/5 flex items-center justify-center focus:outline-none focus:ring-4 focus:ring-brand-200"
+            aria-haspopup="dialog" aria-expanded="false">
+            <!-- Selected avatar shows here -->
+            <div id="avatarView" class="flex items-center justify-center">
+              <span class="text-4xl font-extrabold text-brand-700">MS</span>
+            </div>
+
+            <!-- Hover hint -->
+            <div class="pointer-events-none absolute inset-0 rounded-3xl bg-slate-900/0 group-hover:bg-slate-900/10 transition"></div>
+            <div class="pointer-events-none absolute -bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-white px-3 py-1 text-[11px] font-extrabold text-slate-700 shadow-soft ring-1 ring-black/5 opacity-0 group-hover:opacity-100 transition">
+              Change
+            </div>
+          </button>
+        </div>
+
+        <div class="mt-4 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <h2 class="text-4xl font-extrabold tracking-tight text-slate-900">Maria Santos</h2>
+            <p class="mt-1 text-sm font-semibold text-slate-500">STU-2024-001</p>
+          </div>
+
+          <button type="button"
+            class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand-500 px-5 py-3 text-sm font-extrabold text-white shadow-soft hover:bg-brand-600 focus:outline-none focus:ring-4 focus:ring-brand-200 sm:w-auto">
+            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 20h9" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4 12.5-12.5z" />
+            </svg>
+            Edit Profile
+          </button>
+        </div>
+
+        <div class="mt-6 grid gap-4 md:grid-cols-3">
+          <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-5">
+            <div class="flex items-center gap-4">
+              <div class="h-12 w-12 rounded-2xl bg-brand-100 ring-1 ring-black/5 flex items-center justify-center text-brand-700">
+                <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 4h16v16H4V4z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M22 6l-10 7L2 6" />
+                </svg>
+              </div>
+              <div>
+                <p class="text-xs font-extrabold text-slate-400 uppercase">Email</p>
+                <p class="mt-1 text-sm font-extrabold text-slate-900">maria.santos@student.edu</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-5">
+            <div class="flex items-center gap-4">
+              <div class="h-12 w-12 rounded-2xl bg-emerald-100 ring-1 ring-black/5 flex items-center justify-center text-emerald-700">
+                <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 4h12v16H6V4z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6M9 11h6M9 15h6" />
+                </svg>
+              </div>
+              <div>
+                <p class="text-xs font-extrabold text-slate-400 uppercase">Course</p>
+                <p class="mt-1 text-sm font-extrabold text-slate-900">BS Computer Science</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-5">
+            <div class="flex items-center gap-4">
+              <div class="h-12 w-12 rounded-2xl bg-sky-100 ring-1 ring-black/5 flex items-center justify-center text-sky-700">
+                <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l6.16-3.422A12.083 12.083 0 0112 21.5c-2.305 0-4.454-.651-6.16-1.922L12 14z" />
+                </svg>
+              </div>
+              <div>
+                <p class="text-xs font-extrabold text-slate-400 uppercase">Year Level</p>
+                <p class="mt-1 text-sm font-extrabold text-slate-900">2nd Year</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- OVERALL COMPLETION -->
+    <section class="mt-8 rounded-3xl bg-white shadow-soft ring-1 ring-black/5 p-7 sm:p-8">
+      <div class="flex items-center justify-between">
+        <p class="text-sm font-extrabold text-slate-700">Overall Completion</p>
+        <p class="text-3xl font-extrabold text-brand-700">68%</p>
+      </div>
+
+      <div class="mt-4 h-4 w-full rounded-full bg-slate-200 overflow-hidden">
+        <div class="h-4 w-[68%] rounded-full bg-brand-600"></div>
+      </div>
+    </section>
+
+    <!-- MY LESSONS PROGRESS -->
+    <section class="mt-8 rounded-3xl bg-white shadow-soft ring-1 ring-black/5 p-7 sm:p-8">
+      <h2 class="text-4xl font-extrabold text-slate-900">My Lessons Progress</h2>
+
+      <div class="mt-8 grid gap-6 lg:grid-cols-2">
+        <!-- LESSON 1 -->
+        <div class="rounded-2xl border border-slate-200 bg-white p-7 shadow-sm min-h-[190px] flex flex-col">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <p class="text-base font-extrabold text-slate-900">Lesson 1: Introduction to Communication</p>
+              <span class="mt-3 inline-flex items-center rounded-full bg-emerald-100 px-5 py-2 text-sm font-extrabold text-emerald-800">
+                Completed
+              </span>
+            </div>
+            <button class="rounded-2xl bg-emerald-100 px-10 py-3 text-base font-extrabold text-emerald-800 hover:bg-emerald-200">
+              Review
+            </button>
+          </div>
+
+          <div class="mt-auto pt-6 flex items-center gap-6">
+            <div class="h-3 w-full rounded-full bg-slate-200 overflow-hidden">
+              <div class="h-3 w-full bg-brand-700"></div>
+            </div>
+            <p class="text-base font-extrabold text-slate-900">100%</p>
+          </div>
+        </div>
+
+        <!-- LESSON 3 -->
+        <div class="rounded-2xl border border-slate-200 bg-white p-7 shadow-sm min-h-[190px] flex flex-col">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <p class="text-base font-extrabold text-slate-900">Lesson 3: Written Communication Skills</p>
+              <span class="mt-3 inline-flex items-center rounded-full bg-sky-100 px-5 py-2 text-sm font-extrabold text-sky-800">
+                In Progress
+              </span>
+            </div>
+            <button class="rounded-2xl bg-brand-500 px-10 py-3 text-base font-extrabold text-white hover:bg-brand-600">
+              Continue
+            </button>
+          </div>
+
+          <div class="mt-auto pt-6 flex items-center gap-6">
+            <div class="h-3 w-full rounded-full bg-slate-200 overflow-hidden">
+              <div class="h-3 w-[45%] bg-brand-700"></div>
+            </div>
+            <p class="text-base font-extrabold text-slate-900">45%</p>
+          </div>
+        </div>
+
+        <!-- LESSON 2 -->
+        <div class="rounded-2xl border border-slate-200 bg-white p-7 shadow-sm min-h-[190px] flex flex-col">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <p class="text-base font-extrabold text-slate-900">Lesson 2: Verbal and Non-Verbal Communication</p>
+              <span class="mt-3 inline-flex items-center rounded-full bg-emerald-100 px-5 py-2 text-sm font-extrabold text-emerald-800">
+                Completed
+              </span>
+            </div>
+            <button class="rounded-2xl bg-emerald-100 px-10 py-3 text-base font-extrabold text-emerald-800 hover:bg-emerald-200">
+              Review
+            </button>
+          </div>
+
+          <div class="mt-auto pt-6 flex items-center gap-6">
+            <div class="h-3 w-full rounded-full bg-slate-200 overflow-hidden">
+              <div class="h-3 w-full bg-brand-700"></div>
+            </div>
+            <p class="text-base font-extrabold text-slate-900">100%</p>
+          </div>
+        </div>
+
+        <!-- LESSON 4 -->
+        <div class="rounded-2xl border border-slate-200 bg-white p-7 shadow-sm min-h-[190px] flex flex-col">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <p class="text-base font-extrabold text-slate-900">Lesson 4: Presentation and Public Speaking</p>
+              <span class="mt-3 inline-flex items-center rounded-full bg-slate-100 px-5 py-2 text-sm font-extrabold text-slate-800">
+                Not Started
+              </span>
+            </div>
+            <button class="rounded-2xl bg-slate-100 px-10 py-3 text-base font-extrabold text-slate-800 hover:bg-slate-200">
+              Start
+            </button>
+          </div>
+
+          <div class="mt-auto pt-6 flex items-center gap-6">
+            <div class="h-3 w-full rounded-full bg-slate-200 overflow-hidden">
+              <div class="h-3 w-[0%] bg-brand-700"></div>
+            </div>
+            <p class="text-base font-extrabold text-slate-900">0%</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- AVATAR PICKER MODAL -->
+  <div id="avatarModal" class="fixed inset-0 z-[80] hidden">
+    <div id="avatarBackdrop" class="absolute inset-0 bg-slate-900/45 backdrop-blur-sm fade-in"></div>
+
+    <div class="relative mx-auto flex min-h-full max-w-3xl items-center justify-center px-4 py-10">
+      <div class="w-full rounded-3xl bg-white shadow-soft ring-1 ring-black/10 scale-in">
+        <div class="flex items-center justify-between border-b border-slate-100 px-6 py-5">
+          <div>
+            <p class="text-lg font-extrabold text-slate-900">Choose your profile icon</p>
+            <p class="mt-1 text-sm font-semibold text-slate-500">Pick one to personalize your account.</p>
+          </div>
+          <button id="avatarClose" class="rounded-xl p-2 text-slate-600 hover:bg-slate-100" aria-label="Close">
+            <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="px-6 pt-5">
+          <div class="flex flex-wrap gap-2">
+            <button data-tab="characters"
+              class="avatar-tab rounded-full bg-brand-50 px-4 py-2 text-sm font-extrabold text-brand-800 ring-1 ring-black/5">
+              Characters
+            </button>
+            <button data-tab="animals"
+              class="avatar-tab rounded-full bg-white px-4 py-2 text-sm font-extrabold text-slate-700 ring-1 ring-black/5 hover:bg-slate-50">
+              Animals
+            </button>
+          </div>
+        </div>
+
+        <div class="px-6 pb-6 pt-5">
+          <div id="avatarGrid" class="grid grid-cols-3 gap-4 sm:grid-cols-4 md:grid-cols-6"></div>
+
+          <div class="mt-6 flex items-center justify-end gap-3">
+            <button id="avatarCancel"
+              class="rounded-xl bg-slate-100 px-5 py-3 text-sm font-extrabold text-slate-800 hover:bg-slate-200">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Mobile menu
+    const menuBtn = document.getElementById("menuBtn");
+    const mobileMenu = document.getElementById("mobileMenu");
+    menuBtn?.addEventListener("click", () => {
+      const isOpen = !mobileMenu.classList.contains("hidden");
+      mobileMenu.classList.toggle("hidden");
+      menuBtn.setAttribute("aria-expanded", String(!isOpen));
+    });
+
+    // --- Avatar Picker ---
+    const LS_AVATAR = "pc_profile_avatar";
+
+    const avatarBtn = document.getElementById("avatarBtn");
+    const avatarModal = document.getElementById("avatarModal");
+    const avatarBackdrop = document.getElementById("avatarBackdrop");
+    const avatarClose = document.getElementById("avatarClose");
+    const avatarCancel = document.getElementById("avatarCancel");
+    const avatarGrid = document.getElementById("avatarGrid");
+    const avatarView = document.getElementById("avatarView");
+    const tabs = Array.from(document.querySelectorAll(".avatar-tab"));
+
+    const AVATARS = {
+      characters: [
+        { type: "emoji", value: "🧑‍🎓", label: "Student" },
+        { type: "emoji", value: "🧑‍💻", label: "Coder" },
+        { type: "emoji", value: "👩‍🏫", label: "Learner" },
+        { type: "emoji", value: "🧑‍🔬", label: "Research" },
+        { type: "emoji", value: "🧑‍🎨", label: "Creative" },
+        { type: "emoji", value: "🧑‍🚀", label: "Explorer" },
+        { type: "emoji", value: "🧑‍🍳", label: "Chef" },
+        { type: "emoji", value: "🧑‍⚕️", label: "Medic" },
+        { type: "emoji", value: "🧑‍🌾", label: "Grower" },
+        { type: "emoji", value: "🕵️", label: "Detective" },
+        { type: "emoji", value: "🧝", label: "Fantasy" },
+        { type: "emoji", value: "🧑‍✈️", label: "Pilot" },
+      ],
+      animals: [
+        { type: "emoji", value: "🦊", label: "Fox" },
+        { type: "emoji", value: "🐼", label: "Panda" },
+        { type: "emoji", value: "🐯", label: "Tiger" },
+        { type: "emoji", value: "🦁", label: "Lion" },
+        { type: "emoji", value: "🐶", label: "Dog" },
+        { type: "emoji", value: "🐱", label: "Cat" },
+        { type: "emoji", value: "🐸", label: "Frog" },
+        { type: "emoji", value: "🐵", label: "Monkey" },
+        { type: "emoji", value: "🦄", label: "Unicorn" },
+        { type: "emoji", value: "🐙", label: "Octopus" },
+        { type: "emoji", value: "🐧", label: "Penguin" },
+        { type: "emoji", value: "🦉", label: "Owl" },
+      ],
+    };
+
+    function openAvatarModal() {
+      avatarModal.classList.remove("hidden");
+      avatarBtn.setAttribute("aria-expanded", "true");
+      setActiveTab("characters");
+      setTimeout(() => avatarClose.focus(), 0);
+      document.addEventListener("keydown", onEsc);
+    }
+
+    function closeAvatarModal() {
+      avatarModal.classList.add("hidden");
+      avatarBtn.setAttribute("aria-expanded", "false");
+      avatarBtn.focus();
+      document.removeEventListener("keydown", onEsc);
+    }
+
+    function onEsc(e) {
+      if (e.key === "Escape") closeAvatarModal();
+    }
+
+    function setActiveTab(tabKey) {
+      tabs.forEach(btn => {
+        const isActive = btn.getAttribute("data-tab") === tabKey;
+        btn.className = "avatar-tab rounded-full px-4 py-2 text-sm font-extrabold ring-1 ring-black/5 " +
+          (isActive ? "bg-brand-50 text-brand-800" : "bg-white text-slate-700 hover:bg-slate-50");
+      });
+      renderGrid(tabKey);
+    }
+
+    function renderGrid(tabKey) {
+      avatarGrid.innerHTML = "";
+      const list = AVATARS[tabKey] || [];
+
+      list.forEach((a) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className =
+          "group flex flex-col items-center justify-center rounded-2xl bg-slate-50 p-3 ring-1 ring-black/5 hover:bg-white hover:shadow-soft focus:outline-none focus:ring-4 focus:ring-brand-200 transition";
+
+        const tile = document.createElement("div");
+        tile.className =
+          "flex h-14 w-14 items-center justify-center rounded-2xl bg-white ring-1 ring-black/5";
+
+        tile.innerHTML = `<span class="text-3xl">${a.value}</span>`;
+
+        const label = document.createElement("div");
+        label.className = "mt-2 text-[11px] font-extrabold text-slate-600 group-hover:text-slate-800";
+        label.textContent = a.label;
+
+        btn.appendChild(tile);
+        btn.appendChild(label);
+
+        btn.addEventListener("click", () => {
+          saveAvatar({ type: "emoji", value: a.value });
+          applyAvatar();
+          closeAvatarModal();
+        });
+
+        avatarGrid.appendChild(btn);
+      });
+    }
+
+    function saveAvatar(obj) {
+      localStorage.setItem(LS_AVATAR, JSON.stringify(obj));
+    }
+
+    function loadAvatar() {
+      try {
+        const raw = localStorage.getItem(LS_AVATAR);
+        return raw ? JSON.parse(raw) : null;
+      } catch {
+        return null;
+      }
+    }
+
+    function applyAvatar() {
+      const av = loadAvatar();
+      if (!av) return;
+      avatarView.innerHTML = `<span class="text-4xl">${av.value}</span>`;
+    }
+
+    // Wire up
+    avatarBtn.addEventListener("click", openAvatarModal);
+    avatarBackdrop.addEventListener("click", closeAvatarModal);
+    avatarClose.addEventListener("click", closeAvatarModal);
+    avatarCancel.addEventListener("click", closeAvatarModal);
+    tabs.forEach(btn => btn.addEventListener("click", () => setActiveTab(btn.getAttribute("data-tab"))));
+
+    applyAvatar();
+  </script>
+</body>
+</html>
