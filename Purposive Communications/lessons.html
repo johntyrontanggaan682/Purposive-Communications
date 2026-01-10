@@ -68,11 +68,6 @@
         <a href="settings.html" class="text-sm font-medium text-slate-700 hover:text-brand-700">Settings</a>
       </div>
 
-
-
-
-
-
       <!-- Mobile -->
       <button id="menuBtn"
         class="inline-flex items-center justify-center rounded-xl bg-slate-50 p-2 text-slate-800 ring-1 ring-black/5 hover:bg-slate-100 md:hidden"
@@ -162,7 +157,7 @@
       <!-- LESSON 2 (Locked until Lesson 1 complete) -->
       <div id="lesson2Card" class="relative">
         <div id="lesson2LockOverlay"
-          class="absolute inset-0 z-20 flex items-center justify-center rounded-3xl bg-white/70 backdrop-blur-sm ring-1 ring-black/5">
+          class="absolute inset-0 z-20 flex items-center justify-center rounded-3xl bg-white/70 backdrop-blur-sm ring-1 ring-black/5 transition-opacity duration-500 opacity-100">
           <div class="text-center">
             <div
               class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-700 text-white shadow-soft">
@@ -172,7 +167,7 @@
               </svg>
             </div>
             <p class="mt-4 text-sm font-semibold text-slate-900">Locked</p>
-            <p class="mt-1 text-xs text-slate-600">Finish Lesson 1 to unlock</p>
+            <p id="lesson2LockMsg" class="mt-1 text-xs text-slate-600">Finish Lesson 1 to unlock</p>
             <button id="lockedToastBtn" type="button"
               class="mt-4 rounded-xl bg-brand-500 px-4 py-2 text-xs font-semibold text-white hover:bg-brand-600">
               Why is this locked?
@@ -182,7 +177,7 @@
 
         <div id="lesson2Inner" class="overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/5 transition">
           <div class="relative">
-            <img id="lesson2Img" class="h-56 w-full object-cover" src="./assets/lesson-2.jpg"
+            <img id="lesson2Img" class="h-56 w-full object-cover transition-[filter] duration-500" src="./assets/lesson-2.jpg"
               alt="Verbal and Non-Verbal Communication"
               onerror="this.src='https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1400&q=80';" />
           </div>
@@ -226,7 +221,7 @@
       <!-- LESSON 3 (Locked until Lesson 1 complete) -->
       <div id="lesson3Card" class="relative">
         <div id="lesson3LockOverlay"
-          class="absolute inset-0 z-20 flex items-center justify-center rounded-3xl bg-white/70 backdrop-blur-sm ring-1 ring-black/5">
+          class="absolute inset-0 z-20 flex items-center justify-center rounded-3xl bg-white/70 backdrop-blur-sm ring-1 ring-black/5 transition-opacity duration-500 opacity-100">
           <div class="text-center">
             <div
               class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-700 text-white shadow-soft">
@@ -236,13 +231,13 @@
               </svg>
             </div>
             <p class="mt-4 text-sm font-semibold text-slate-900">Locked</p>
-            <p class="mt-1 text-xs text-slate-600">Finish Lesson 1 to unlock</p>
+            <p id="lesson3LockMsg" class="mt-1 text-xs text-slate-600">Finish Lesson 1 to unlock</p>
           </div>
         </div>
 
         <div id="lesson3Inner" class="overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/5 transition">
           <div class="relative">
-            <img id="lesson3Img" class="h-56 w-full object-cover" src="./assets/lesson-3.jpg"
+            <img id="lesson3Img" class="h-56 w-full object-cover transition-[filter] duration-500" src="./assets/lesson-3.jpg"
               alt="Written Communication Excellence"
               onerror="this.src='https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=1400&q=80';" />
           </div>
@@ -286,7 +281,7 @@
       <!-- LESSON 4 (Locked until Lesson 1 complete) -->
       <div id="lesson4Card" class="relative">
         <div id="lesson4LockOverlay"
-          class="absolute inset-0 z-20 flex items-center justify-center rounded-3xl bg-white/70 backdrop-blur-sm ring-1 ring-black/5">
+          class="absolute inset-0 z-20 flex items-center justify-center rounded-3xl bg-white/70 backdrop-blur-sm ring-1 ring-black/5 transition-opacity duration-500 opacity-100">
           <div class="text-center">
             <div
               class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-700 text-white shadow-soft">
@@ -296,13 +291,13 @@
               </svg>
             </div>
             <p class="mt-4 text-sm font-semibold text-slate-900">Locked</p>
-            <p class="mt-1 text-xs text-slate-600">Finish Lesson 1 to unlock</p>
+            <p id="lesson4LockMsg" class="mt-1 text-xs text-slate-600">Finish Lesson 1 to unlock</p>
           </div>
         </div>
 
         <div id="lesson4Inner" class="overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/5 transition">
           <div class="relative">
-            <img id="lesson4Img" class="h-56 w-full object-cover" src="./assets/lesson-4.jpg"
+            <img id="lesson4Img" class="h-56 w-full object-cover transition-[filter] duration-500" src="./assets/lesson-4.jpg"
               alt="Digital and Academic Communication"
               onerror="this.src='https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1400&q=80';" />
           </div>
@@ -428,15 +423,39 @@
     function lockCard(imgElId, overlayElId) {
       const img = document.getElementById(imgElId);
       const overlay = document.getElementById(overlayElId);
+
       if (img) img.classList.add("blur-[1px]");
-      if (overlay) overlay.classList.remove("hidden");
+
+      if (overlay) {
+        overlay.classList.remove("hidden");
+        overlay.classList.remove("opacity-0", "pointer-events-none");
+        overlay.classList.add("opacity-100");
+      }
+    }
+
+    function fadeOutOverlay(overlay) {
+      if (!overlay) return;
+      overlay.classList.remove("opacity-100");
+      overlay.classList.add("opacity-0", "pointer-events-none");
+
+      // After fade, hide it (keeps DOM clean)
+      const onEnd = (e) => {
+        if (e.propertyName !== "opacity") return;
+        overlay.classList.add("hidden");
+        overlay.removeEventListener("transitionend", onEnd);
+      };
+      overlay.addEventListener("transitionend", onEnd);
     }
 
     function unlockCard(cardContainerId, innerEl, overlayElId, href) {
       const container = document.getElementById(cardContainerId);
       const overlay = document.getElementById(overlayElId);
 
-      if (overlay) overlay.classList.add("hidden");
+      // Smoothly fade out overlay + remove blur
+      fadeOutOverlay(overlay);
+
+      const img = container?.querySelector("img");
+      if (img) img.classList.remove("blur-[1px]");
 
       if (container && innerEl && !container.querySelector("a[data-unlocked='true']")) {
         const link = document.createElement("a");
@@ -447,9 +466,40 @@
         link.appendChild(innerEl);
         container.appendChild(link);
       }
+    }
 
-      const img = container?.querySelector("img");
-      if (img) img.classList.remove("blur-[1px]");
+    function setLockMessages() {
+      const l1 = localStorage.getItem(LS_KEYS.lesson1Complete) === "true";
+      const l2 = localStorage.getItem(LS_KEYS.lesson2Complete) === "true";
+      const l3 = localStorage.getItem(LS_KEYS.lesson3Complete) === "true";
+
+      // Determine the "next" locked lesson (only this one shows the finish text)
+      let nextLocked = null;
+      if (!l1) nextLocked = 2;
+      else if (!l2) nextLocked = 3;
+      else if (!l3) nextLocked = 4;
+      else nextLocked = null;
+
+      const m2 = document.getElementById("lesson2LockMsg");
+      const m3 = document.getElementById("lesson3LockMsg");
+      const m4 = document.getElementById("lesson4LockMsg");
+
+      // Default: hide all messages
+      [m2, m3, m4].forEach(m => m && m.classList.add("hidden"));
+
+      // Show only the next one with correct text
+      if (nextLocked === 2 && m2) {
+        m2.textContent = "Finish Lesson 1 to unlock";
+        m2.classList.remove("hidden");
+      }
+      if (nextLocked === 3 && m3) {
+        m3.textContent = "Finish Lesson 2 to unlock";
+        m3.classList.remove("hidden");
+      }
+      if (nextLocked === 4 && m4) {
+        m4.textContent = "Finish Lesson 3 to unlock";
+        m4.classList.remove("hidden");
+      }
     }
 
     function renderLocking() {
@@ -500,14 +550,9 @@
 
     initDefaults();
     renderProgress();
+    setLockMessages();
     renderLocking();
   </script>
-
-
-
-
-
-
 </body>
 
 </html>
