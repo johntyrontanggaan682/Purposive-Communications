@@ -54,12 +54,9 @@
     <nav class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
       <!-- Brand -->
       <a href="index.html" class="flex items-center gap-3">
-        <img
-          src="./assets/logo.png"
-          alt="Purposive Communication Logo"
+        <img src="./assets/logo.png" alt="Purposive Communication Logo"
           class="h-10 w-10 rounded-full ring-1 ring-black/10 object-cover"
-          onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png';"
-        />
+          onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png';" />
         <span class="text-lg font-semibold tracking-tight text-slate-900">Purposive Communication</span>
       </a>
 
@@ -68,7 +65,6 @@
         <a href="index.html#home" class="text-sm font-semibold text-brand-700 hover:text-brand-800">Home</a>
         <a href="lessons.html" class="text-sm font-medium text-slate-600 hover:text-brand-700">Lessons</a>
         <a href="profile.html" class="text-sm font-medium text-slate-600 hover:text-brand-700">Profile</a>
-        <a href="settings.html" class="text-sm font-medium text-slate-600 hover:text-brand-700">Settings</a>
 
         <!-- Login (GUEST ONLY)  ✅ MOVED RIGHT -->
         <a href="login.html" id="openLoginBtn"
@@ -424,12 +420,8 @@
           </svg>
         </button>
 
-        <iframe
-          id="loginFrame"
-          src="login.html"
-          title="Login"
-          class="h-[720px] w-full overflow-hidden rounded-3xl bg-transparent shadow-soft ring-1 ring-black/10"
-        ></iframe>
+        <iframe id="loginFrame" src="login.html" title="Login"
+          class="h-[720px] w-full overflow-hidden rounded-3xl bg-transparent shadow-soft ring-1 ring-black/10"></iframe>
       </div>
     </div>
   </div>
@@ -685,6 +677,16 @@
 
     applyAuthUI();
     window.addEventListener("focus", applyAuthUI);
+
+    // ✅ NEW: If user clicks Lessons/Profile while NOT logged in, open login modal.
+    // (When logged in, it navigates normally.)
+    document.querySelectorAll('a[href="lessons.html"], a[href="profile.html"]').forEach((a) => {
+      a.addEventListener("click", (e) => {
+        if (!isLoggedIn()) {
+          openLoginModal(e);
+        }
+      });
+    });
   </script>
 </body>
 
