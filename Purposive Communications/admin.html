@@ -43,10 +43,6 @@
     .nice-scroll::-webkit-scrollbar{ width: 10px; }
     .nice-scroll::-webkit-scrollbar-thumb{ background: rgba(2,8,23,.15); border-radius: 999px; }
     .nice-scroll::-webkit-scrollbar-track{ background: transparent; }
-
-    /* small, safe helper for toast stacking */
-    .toast-stack { pointer-events:none; }
-    .toast { pointer-events:auto; }
   </style>
 </head>
 
@@ -67,7 +63,7 @@
         </div>
       </div>
 
-      <!-- Accessible Tabs (Desktop) -->
+      <!-- Tabs -->
       <nav class="px-4 py-4 flex-1" role="tablist" aria-label="Admin sections">
         <button type="button" data-tab="dashboard" role="tab" aria-controls="panel-dashboard" aria-selected="true"
           class="tab-btn w-full text-left flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold">
@@ -98,28 +94,6 @@
             </svg>
           </span>
           Lessons Progress
-        </button>
-
-        <button type="button" data-tab="reports" role="tab" aria-controls="panel-reports" aria-selected="false"
-          class="tab-btn mt-2 w-full text-left flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold">
-          <span class="h-9 w-9 rounded-xl flex items-center justify-center">
-            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-6a2 2 0 012-2h2a2 2 0 012 2v6" />
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6 21h12M8 7h8M8 3h8" />
-            </svg>
-          </span>
-          Reports
-        </button>
-
-        <button type="button" data-tab="settings" role="tab" aria-controls="panel-settings" aria-selected="false"
-          class="tab-btn mt-2 w-full text-left flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold">
-          <span class="h-9 w-9 rounded-xl flex items-center justify-center">
-            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 15.5A3.5 3.5 0 1112 8.5a3.5 3.5 0 010 7z" />
-              <path stroke-linecap="round" stroke-linejoin="round" d="M19.4 15a7.97 7.97 0 00.1-3l2-1.5-2-3.5-2.4 1a8.2 8.2 0 00-2.6-1.5L14 3h-4l-.5 3.5A8.2 8.2 0 007 8l-2.4-1-2 3.5 2 1.5a7.97 7.97 0 00.1 3L2.6 16.5l2 3.5 2.4-1a8.2 8.2 0 002.6 1.5L10 21h4l.5-3.5A8.2 8.2 0 0017 19l2.4 1 2-3.5L19.4 15z" />
-            </svg>
-          </span>
-          Settings
         </button>
       </nav>
 
@@ -166,14 +140,6 @@
           </div>
 
           <div class="flex items-center gap-4">
-            <button class="relative inline-flex h-11 w-11 items-center justify-center rounded-xl bg-white ring-1 ring-black/5 hover:bg-slate-50" aria-label="Notifications">
-              <svg viewBox="0 0 24 24" class="h-6 w-6 text-slate-700" fill="none" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.4-1.4A2 2 0 0118 14.2V11a6 6 0 10-12 0v3.2c0 .5-.2 1-.6 1.4L4 17h5" />
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 17a3 3 0 006 0" />
-              </svg>
-              <span class="absolute top-2 right-2 h-2.5 w-2.5 rounded-full bg-rose-500 ring-2 ring-white"></span>
-            </button>
-
             <div class="flex items-center gap-3">
               <div class="h-11 w-11 rounded-full bg-brand-600 text-white font-extrabold flex items-center justify-center">AD</div>
               <div class="hidden sm:block">
@@ -185,7 +151,7 @@
         </div>
       </header>
 
-      <!-- CONTENT / TAB PANELS -->
+      <!-- CONTENT -->
       <main class="px-4 sm:px-6 lg:px-8 py-8 min-w-0">
 
         <!-- DASHBOARD -->
@@ -193,106 +159,75 @@
           <section class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             <div class="rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-5 relative overflow-hidden">
               <span class="absolute inset-y-0 left-0 w-1.5 bg-brand-500"></span>
-              <div class="flex items-start justify-between">
-                <div>
-                  <p class="text-sm font-semibold text-slate-500">Total Students</p>
-                  <p id="statTotal" class="mt-2 text-3xl font-extrabold text-slate-900">0</p>
-                </div>
-                <div class="h-12 w-12 rounded-xl bg-brand-50 ring-1 ring-black/5 flex items-center justify-center text-brand-700">
-                  <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
-                    <circle cx="12" cy="7" r="4" />
-                  </svg>
-                </div>
-              </div>
+              <p class="text-sm font-semibold text-slate-500">Total Students</p>
+              <p id="statTotal" class="mt-2 text-3xl font-extrabold text-slate-900">0</p>
             </div>
 
             <div class="rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-5 relative overflow-hidden">
               <span class="absolute inset-y-0 left-0 w-1.5 bg-emerald-500"></span>
-              <div class="flex items-start justify-between">
-                <div>
-                  <p class="text-sm font-semibold text-slate-500">Active Today</p>
-                  <p id="statActive" class="mt-2 text-3xl font-extrabold text-slate-900">0</p>
-                </div>
-                <div class="h-12 w-12 rounded-xl bg-emerald-50 ring-1 ring-black/5 flex items-center justify-center text-emerald-700">
-                  <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 12a5 5 0 100-10 5 5 0 000 10z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 20H7a4 4 0 014-4h2a4 4 0 014 4z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 8l2 2m0-2l-2 2" />
-                  </svg>
-                </div>
-              </div>
+              <p class="text-sm font-semibold text-slate-500">Active Today</p>
+              <p id="statActive" class="mt-2 text-3xl font-extrabold text-slate-900">0</p>
             </div>
 
             <div class="rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-5 relative overflow-hidden">
               <span class="absolute inset-y-0 left-0 w-1.5 bg-sky-500"></span>
-              <div class="flex items-start justify-between">
-                <div>
-                  <p class="text-sm font-semibold text-slate-500">Avg Completion</p>
-                  <p class="mt-2 text-3xl font-extrabold text-slate-900"><span id="statAvg">0</span>%</p>
-                </div>
-                <div class="h-12 w-12 rounded-xl bg-sky-50 ring-1 ring-black/5 flex items-center justify-center text-sky-700">
-                  <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2" />
-                    <circle cx="12" cy="12" r="9" />
-                  </svg>
-                </div>
-              </div>
+              <p class="text-sm font-semibold text-slate-500">Avg Completion</p>
+              <p class="mt-2 text-3xl font-extrabold text-slate-900"><span id="statAvg">0</span>%</p>
             </div>
 
             <div class="rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-5 relative overflow-hidden">
               <span class="absolute inset-y-0 left-0 w-1.5 bg-orange-500"></span>
-              <div class="flex items-start justify-between">
-                <div>
-                  <p class="text-sm font-semibold text-slate-500">Pending Assessments</p>
-                  <p id="statPending" class="mt-2 text-3xl font-extrabold text-slate-900">0</p>
-                </div>
-                <div class="h-12 w-12 rounded-xl bg-orange-50 ring-1 ring-black/5 flex items-center justify-center text-orange-700">
-                  <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M7 3h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6M9 11h6M9 15h4" />
-                  </svg>
-                </div>
-              </div>
+              <p class="text-sm font-semibold text-slate-500">Pending Assessments</p>
+              <p id="statPending" class="mt-2 text-3xl font-extrabold text-slate-900">0</p>
             </div>
           </section>
 
-          <section class="mt-6 rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-6">
-            <h2 class="text-xl font-extrabold text-slate-900">Lesson Completion Overview</h2>
+          <section class="mt-6 grid gap-6 lg:grid-cols-3">
+            <div class="lg:col-span-2 rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-6">
+              <h2 class="text-xl font-extrabold text-slate-900">Admin Action Queue</h2>
+              <p class="mt-1 text-sm text-slate-600">Prioritize work from assessment workflow + engagement signals.</p>
 
-            <div class="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-              <div class="rounded-2xl ring-1 ring-black/5 bg-brand-50 p-5">
-                <div class="flex items-center justify-between">
-                  <p class="text-sm font-extrabold text-brand-800">Lesson 1</p>
+              <div class="mt-5 grid gap-4 sm:grid-cols-2">
+                <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-5">
+                  <p class="text-xs font-extrabold text-slate-500 uppercase">Needs Review</p>
+                  <p class="mt-2 text-4xl font-extrabold text-slate-900" id="dqNeedsReview">0</p>
+                  <p class="mt-1 text-sm text-slate-600">Submitted → waiting for admin</p>
                 </div>
-                <p class="mt-4 text-3xl font-extrabold text-brand-800"><span id="l1Done">0</span>/<span id="lTotal1">0</span></p>
-                <p class="mt-1 text-sm text-brand-800/70">Students Completed</p>
+                <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-5">
+                  <p class="text-xs font-extrabold text-slate-500 uppercase">Needs Revision</p>
+                  <p class="mt-2 text-4xl font-extrabold text-slate-900" id="dqNeedsRevision">0</p>
+                  <p class="mt-1 text-sm text-slate-600">Student must resubmit</p>
+                </div>
               </div>
 
-              <div class="rounded-2xl ring-1 ring-black/5 bg-emerald-50 p-5">
-                <div class="flex items-center justify-between">
-                  <p class="text-sm font-extrabold text-emerald-800">Lesson 2</p>
-                </div>
-                <p class="mt-4 text-3xl font-extrabold text-emerald-800"><span id="l2Done">0</span>/<span id="lTotal2">0</span></p>
-                <p class="mt-1 text-sm text-emerald-800/70">Students Completed</p>
-              </div>
-
-              <div class="rounded-2xl ring-1 ring-black/5 bg-sky-50 p-5">
-                <div class="flex items-center justify-between">
-                  <p class="text-sm font-extrabold text-sky-800">Lesson 3</p>
-                </div>
-                <p class="mt-4 text-3xl font-extrabold text-sky-800"><span id="l3Done">0</span>/<span id="lTotal3">0</span></p>
-                <p class="mt-1 text-sm text-sky-800/70">Students Completed</p>
-              </div>
-
-              <div class="rounded-2xl ring-1 ring-black/5 bg-orange-50 p-5">
-                <div class="flex items-center justify-between">
-                  <p class="text-sm font-extrabold text-orange-800">Lesson 4</p>
-                </div>
-                <p class="mt-4 text-3xl font-extrabold text-orange-800"><span id="l4Done">0</span>/<span id="lTotal4">0</span></p>
-                <p class="mt-1 text-sm text-orange-800/70">Students Completed</p>
-              </div>
+              <h3 class="mt-6 text-lg font-extrabold text-slate-900">Top At-Risk (Preview)</h3>
+              <p class="mt-1 text-sm text-slate-600">Based on inactivity, low progress, and quiz failure signals.</p>
+              <div id="dqRiskList" class="mt-4 space-y-3"></div>
             </div>
+
+            <aside class="rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-6">
+              <h2 class="text-xl font-extrabold text-slate-900">Lesson Completion</h2>
+              <p class="mt-1 text-sm text-slate-600">Completed (100%) count per lesson.</p>
+
+              <div class="mt-5 grid gap-4">
+                <div class="rounded-2xl bg-brand-50 ring-1 ring-black/5 p-5">
+                  <p class="text-xs font-extrabold text-brand-800 uppercase">Lesson 1</p>
+                  <p class="mt-2 text-3xl font-extrabold text-brand-800"><span id="l1Done">0</span>/<span id="lTotal1">0</span></p>
+                </div>
+                <div class="rounded-2xl bg-emerald-50 ring-1 ring-black/5 p-5">
+                  <p class="text-xs font-extrabold text-emerald-800 uppercase">Lesson 2</p>
+                  <p class="mt-2 text-3xl font-extrabold text-emerald-800"><span id="l2Done">0</span>/<span id="lTotal2">0</span></p>
+                </div>
+                <div class="rounded-2xl bg-sky-50 ring-1 ring-black/5 p-5">
+                  <p class="text-xs font-extrabold text-sky-800 uppercase">Lesson 3</p>
+                  <p class="mt-2 text-3xl font-extrabold text-sky-800"><span id="l3Done">0</span>/<span id="lTotal3">0</span></p>
+                </div>
+                <div class="rounded-2xl bg-orange-50 ring-1 ring-black/5 p-5">
+                  <p class="text-xs font-extrabold text-orange-800 uppercase">Lesson 4</p>
+                  <p class="mt-2 text-3xl font-extrabold text-orange-800"><span id="l4Done">0</span>/<span id="lTotal4">0</span></p>
+                </div>
+              </div>
+            </aside>
           </section>
         </section>
 
@@ -302,75 +237,15 @@
             <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h2 class="text-xl font-extrabold text-slate-900">Student Monitoring</h2>
-                <p class="mt-1 text-sm text-slate-600">Bulk select students and run quick actions.</p>
+                <p class="mt-1 text-sm text-slate-600">Track progress states, engagement signals, and assessment workflow.</p>
               </div>
 
               <button id="exportBtn"
                 class="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white shadow-softer hover:bg-brand-700 focus:outline-none focus:ring-4 focus:ring-brand-200">
-                Export Students (Filtered)
+                Export CSV
               </button>
             </div>
 
-            <!-- Bulk Action Bar -->
-            <div id="bulkBar" class="mt-5 hidden rounded-2xl bg-slate-900 text-white ring-1 ring-black/10 px-5 py-4">
-              <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <div class="flex items-center gap-3">
-                  <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/10">
-                    <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4" />
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M7 6h10M7 18h10" />
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 4h14v16H5V4z" />
-                    </svg>
-                  </span>
-                  <div>
-                    <p class="text-sm font-extrabold">Selected: <span id="bulkCount">0</span></p>
-                    <p class="text-xs text-white/70 font-semibold">Actions affect selected students (prototype).</p>
-                  </div>
-                </div>
-
-                <div class="flex flex-wrap items-center gap-2">
-                  <button id="bulkReminderBtn"
-                    class="inline-flex items-center justify-center rounded-xl bg-white/10 px-4 py-2 text-sm font-extrabold hover:bg-white/15 ring-1 ring-white/10">
-                    Send Reminder
-                  </button>
-
-                  <button id="bulkMarkInactiveBtn"
-                    class="inline-flex items-center justify-center rounded-xl bg-rose-500/90 px-4 py-2 text-sm font-extrabold hover:bg-rose-500 ring-1 ring-white/10">
-                    Mark Inactive
-                  </button>
-
-                  <button id="bulkExportBtn"
-                    class="inline-flex items-center justify-center rounded-xl bg-white px-4 py-2 text-sm font-extrabold text-slate-900 hover:bg-slate-100 ring-1 ring-black/10">
-                    Export Selected
-                  </button>
-
-                  <button id="bulkClearBtn"
-                    class="inline-flex items-center justify-center rounded-xl bg-transparent px-4 py-2 text-sm font-extrabold text-white/90 hover:text-white">
-                    Clear
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Quick Filters -->
-            <div class="mt-5 flex flex-wrap items-center gap-2">
-              <button id="riskFilterBtn"
-                class="inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-extrabold ring-1 ring-black/5 bg-white text-slate-700 hover:bg-slate-50">
-                <span class="inline-flex h-2.5 w-2.5 rounded-full bg-rose-500"></span>
-                At Risk
-              </button>
-
-              <button id="clearQuickBtn"
-                class="inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-extrabold ring-1 ring-black/5 bg-white text-slate-700 hover:bg-slate-50">
-                Clear Quick Filter
-              </button>
-
-              <span class="text-xs font-semibold text-slate-500 ml-1">
-                Uses Settings thresholds: inactive ≥ <span id="qRiskDays" class="font-extrabold">7</span>d, progress &lt; <span id="qRiskProg" class="font-extrabold">40</span>%.
-              </span>
-            </div>
-
-            <!-- Filters -->
             <div class="mt-5 grid gap-3 lg:grid-cols-4">
               <div class="relative">
                 <svg viewBox="0 0 24 24" class="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" stroke-width="2">
@@ -387,127 +262,31 @@
 
               <select id="yearFilter" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:ring-4 focus:ring-brand-200">
                 <option value="all">All Year Levels</option>
-                <option>1st Year</option>
-                <option>2nd Year</option>
-                <option>3rd Year</option>
-                <option>4th Year</option>
-                <option>5th Year</option>
+                <option>1st Year</option><option>2nd Year</option><option>3rd Year</option><option>4th Year</option><option>5th Year</option>
               </select>
 
-              <select id="progressFilter" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:ring-4 focus:ring-brand-200">
-                <option value="all">All Progress Levels</option>
-                <option value="0-25">0% - 25%</option>
-                <option value="26-50">26% - 50%</option>
-                <option value="51-75">51% - 75%</option>
-                <option value="76-100">76% - 100%</option>
+              <select id="assessmentFilter" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:ring-4 focus:ring-brand-200">
+                <option value="all">All Assessment Status</option>
+                <option value="Submitted">Submitted</option>
+                <option value="Under review">Under review</option>
+                <option value="Needs revision">Needs revision</option>
+                <option value="Resubmitted">Resubmitted</option>
+                <option value="Graded">Graded</option>
+                <option value="Not started">Not started</option>
               </select>
             </div>
 
-            <!-- Sort + Page size + Results -->
-            <div class="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <div class="flex items-center gap-2">
-                <span class="text-xs font-extrabold text-slate-500">Sort by</span>
-
-                <select id="sortBy" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:ring-4 focus:ring-brand-200">
-                  <option value="name">Name</option>
-                  <option value="lastLogin">Last Login</option>
-                  <option value="progress">Progress</option>
-                  <option value="quiz">Quiz</option>
-                  <option value="assessment">Assessment</option>
-                  <option value="status">Status</option>
-                </select>
-
-                <button id="sortDirBtn"
-                  class="inline-flex items-center justify-center rounded-xl bg-slate-50 px-3 py-2 text-sm font-extrabold text-slate-700 ring-1 ring-black/5 hover:bg-slate-100"
-                  aria-label="Toggle sort direction">
-                  Asc
-                </button>
-
-                <span class="text-xs text-slate-500 font-semibold ml-1">(Tip: click headers)</span>
-              </div>
-
-              <div class="flex items-center gap-3">
-                <p id="resultsCount" class="text-xs font-semibold text-slate-500">Showing 0 of 0</p>
-
-                <div class="flex items-center gap-2">
-                  <span class="text-xs font-extrabold text-slate-500">Rows</span>
-                  <select id="pageSize" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:ring-4 focus:ring-brand-200">
-                    <option value="5">5</option>
-                    <option value="10" selected>10</option>
-                    <option value="25">25</option>
-                    <option value="50">50</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            <!-- Pagination -->
-            <div class="mt-5 flex items-center justify-between">
-              <button id="prevPage"
-                class="inline-flex items-center justify-center rounded-xl bg-white px-4 py-2 text-sm font-extrabold text-slate-700 ring-1 ring-black/5 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed">
-                Prev
-              </button>
-
-              <p id="pageInfo" class="text-xs font-extrabold text-slate-500">Page 1 of 1</p>
-
-              <button id="nextPage"
-                class="inline-flex items-center justify-center rounded-xl bg-white px-4 py-2 text-sm font-extrabold text-slate-700 ring-1 ring-black/5 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed">
-                Next
-              </button>
-            </div>
-
-            <!-- MOBILE CARDS -->
-            <div id="studentCards" class="mt-6 md:hidden space-y-4"></div>
-
-            <!-- TABLE (md+) -->
-            <div class="mt-6 overflow-x-auto hidden md:block">
-              <table class="min-w-[1040px] w-full">
+            <div class="mt-6 overflow-x-auto">
+              <table class="min-w-[1050px] w-full">
                 <thead>
                   <tr class="text-left text-xs font-extrabold text-slate-500 border-b border-slate-100">
-                    <th class="py-3 pr-4 w-14">
-                      <div class="flex items-center gap-2">
-                        <input id="selectAllPage" type="checkbox"
-                          class="h-4 w-4 rounded border-slate-300 text-brand-600 focus:ring-brand-200"
-                          aria-label="Select all students on this page" />
-                        <span class="text-[11px]">ALL</span>
-                      </div>
-                    </th>
-
-                    <th class="py-3 pr-4 sortable" data-sort="name">
-                      <button class="inline-flex items-center gap-2 hover:text-slate-700">
-                        STUDENT <span class="sort-indicator text-slate-400" data-ind="name">—</span>
-                      </button>
-                    </th>
+                    <th class="py-3 pr-4">STUDENT</th>
                     <th class="py-3 pr-4">COURSE/YEAR</th>
-                    <th class="py-3 pr-4 sortable" data-sort="lastLogin">
-                      <button class="inline-flex items-center gap-2 hover:text-slate-700">
-                        LAST<br/>LOGIN <span class="sort-indicator text-slate-400" data-ind="lastLogin">—</span>
-                      </button>
-                    </th>
-                    <th class="py-3 pr-4 sortable" data-sort="status">
-                      <button class="inline-flex items-center gap-2 hover:text-slate-700">
-                        STATUS <span class="sort-indicator text-slate-400" data-ind="status">—</span>
-                      </button>
-                    </th>
-                    <th class="py-3 pr-4 sortable" data-sort="progress">
-                      <button class="inline-flex items-center gap-2 hover:text-slate-700">
-                        PROGRESS <span class="sort-indicator text-slate-400" data-ind="progress">—</span>
-                      </button>
-                    </th>
-                    <th class="py-3 pr-4">L1</th>
-                    <th class="py-3 pr-4">L2</th>
-                    <th class="py-3 pr-4">L3</th>
-                    <th class="py-3 pr-4">L4</th>
-                    <th class="py-3 pr-4 sortable" data-sort="quiz">
-                      <button class="inline-flex items-center gap-2 hover:text-slate-700">
-                        QUIZ <span class="sort-indicator text-slate-400" data-ind="quiz">—</span>
-                      </button>
-                    </th>
-                    <th class="py-3 pr-4 sortable" data-sort="assessment">
-                      <button class="inline-flex items-center gap-2 hover:text-slate-700">
-                        ASSESSMENT <span class="sort-indicator text-slate-400" data-ind="assessment">—</span>
-                      </button>
-                    </th>
+                    <th class="py-3 pr-4">LAST ACTIVE</th>
+                    <th class="py-3 pr-4">CURRENT STATE</th>
+                    <th class="py-3 pr-4">PROGRESS</th>
+                    <th class="py-3 pr-4">QUIZ</th>
+                    <th class="py-3 pr-4">ASSESSMENT</th>
                     <th class="py-3">ACTION</th>
                   </tr>
                 </thead>
@@ -517,182 +296,24 @@
           </section>
         </section>
 
-        <!-- LESSONS PROGRESS (kept, connected) -->
+        <!-- LESSONS PROGRESS -->
         <section id="panel-lessons" role="tabpanel" aria-label="Lessons Progress" hidden>
-          <div class="rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-6">
-            <h2 class="text-xl font-extrabold text-slate-900">Lessons Progress</h2>
-            <p class="mt-1 text-sm text-slate-600">This tab is still connected (filters + export) — kept minimal here.</p>
-            <div class="mt-6 grid gap-3 md:grid-cols-5">
-              <select id="lpCourse" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:ring-4 focus:ring-brand-200">
-                <option value="all">All Courses</option>
-              </select>
-              <select id="lpYear" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:ring-4 focus:ring-brand-200">
-                <option value="all">All Year Levels</option>
-                <option>1st Year</option><option>2nd Year</option><option>3rd Year</option><option>4th Year</option><option>5th Year</option>
-              </select>
-              <select id="lpLesson" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:ring-4 focus:ring-brand-200">
-                <option value="l1">Lesson 1</option><option value="l2">Lesson 2</option><option value="l3">Lesson 3</option><option value="l4">Lesson 4</option>
-              </select>
-              <select id="lpStatus" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:ring-4 focus:ring-brand-200">
-                <option value="all">All Status</option>
-                <option value="completed">Completed (100%)</option>
-                <option value="inprogress">In Progress (1–99%)</option>
-                <option value="notstarted">Not Started (0%)</option>
-              </select>
-              <button id="lpExportBtn" class="rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-extrabold text-white shadow-softer hover:bg-brand-700">
-                Export View
-              </button>
-            </div>
-
-            <div class="mt-6 overflow-x-auto">
-              <table class="min-w-[900px] w-full">
-                <thead>
-                  <tr class="text-left text-xs font-extrabold text-slate-500 border-b border-slate-100">
-                    <th class="py-3 pr-4">STUDENT</th>
-                    <th class="py-3 pr-4">COURSE/YEAR</th>
-                    <th class="py-3 pr-4">LAST LOGIN</th>
-                    <th class="py-3 pr-4">LESSON %</th>
-                    <th class="py-3 pr-4">STATUS</th>
-                    <th class="py-3 pr-4">PARTS</th>
-                    <th class="py-3">ACTION</th>
-                  </tr>
-                </thead>
-                <tbody id="lpTbody" class="divide-y divide-slate-50"></tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-
-        <!-- REPORTS (kept, connected) -->
-        <section id="panel-reports" role="tabpanel" aria-label="Reports" hidden>
-          <div class="rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-6">
-            <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+          <section class="rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-6">
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <h2 class="text-xl font-extrabold text-slate-900">Reports</h2>
-                <p class="mt-1 text-sm text-slate-600">Connected templates + export.</p>
+                <h2 class="text-xl font-extrabold text-slate-900">Lessons Progress (States)</h2>
+                <p class="mt-1 text-sm text-slate-600">Counts by state per lesson (Not started / In progress / Completed / Needs revision).</p>
               </div>
-              <button id="rpExportBtn" class="rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-extrabold text-white shadow-softer hover:bg-brand-700">
-                Export Current Report
+              <button id="lessonsExportBtn"
+                class="inline-flex items-center justify-center rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-extrabold text-white shadow-softer hover:bg-brand-700">
+                Export Lesson Summary
               </button>
             </div>
 
-            <div class="mt-6 grid gap-3 md:grid-cols-5">
-              <select id="rpScope" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:ring-4 focus:ring-brand-200">
-                <option value="all" selected>All Students</option>
-                <option value="filtered">Current Filters (Students tab)</option>
-              </select>
-
-              <select id="rpCourse" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:ring-4 focus:ring-brand-200">
-                <option value="all">All Courses</option>
-              </select>
-
-              <select id="rpYear" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:ring-4 focus:ring-brand-200">
-                <option value="all">All Year Levels</option>
-                <option>1st Year</option><option>2nd Year</option><option>3rd Year</option><option>4th Year</option><option>5th Year</option>
-              </select>
-
-              <select id="rpTemplate" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:ring-4 focus:ring-brand-200">
-                <option value="at_risk" selected>At-Risk Students</option>
-                <option value="assessment_pipeline">Assessment Pipeline</option>
-                <option value="engagement">Engagement / Activity</option>
-                <option value="top_performers">Top Performers</option>
-              </select>
-
-              <button id="rpRunBtn" class="rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-extrabold text-white hover:bg-slate-800">
-                Run
-              </button>
-            </div>
-
-            <div class="mt-6 overflow-x-auto">
-              <table class="min-w-[900px] w-full">
-                <thead>
-                  <tr class="text-left text-xs font-extrabold text-slate-500 border-b border-slate-100" id="rpTheadRow"></tr>
-                </thead>
-                <tbody id="rpTbody" class="divide-y divide-slate-50"></tbody>
-              </table>
-            </div>
-          </div>
+            <div class="mt-6 grid gap-5 lg:grid-cols-2" id="lessonStateGrid"></div>
+          </section>
         </section>
 
-        <!-- SETTINGS (kept, connected) -->
-        <section id="panel-settings" role="tabpanel" aria-label="Settings" hidden>
-          <div class="rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-6">
-            <h2 class="text-xl font-extrabold text-slate-900">Settings</h2>
-            <p class="mt-1 text-sm text-slate-600">Saved locally. Affects At-Risk + reporting.</p>
-
-            <div class="mt-6 grid gap-5 sm:grid-cols-2">
-              <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-5">
-                <p class="text-xs font-extrabold text-slate-500 uppercase">Students Tab Defaults</p>
-
-                <label class="mt-3 block text-sm font-extrabold text-slate-700">Page Size</label>
-                <select id="setPageSize" class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:ring-4 focus:ring-brand-200">
-                  <option value="5">5</option>
-                  <option value="10">10</option>
-                  <option value="25">25</option>
-                  <option value="50">50</option>
-                </select>
-
-                <label class="mt-4 block text-sm font-extrabold text-slate-700">Default Sort</label>
-                <div class="mt-2 grid grid-cols-2 gap-3">
-                  <select id="setSortBy" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:ring-4 focus:ring-brand-200">
-                    <option value="name">Name</option>
-                    <option value="lastLogin">Last Login</option>
-                    <option value="progress">Progress</option>
-                    <option value="quiz">Quiz</option>
-                    <option value="assessment">Assessment</option>
-                    <option value="status">Status</option>
-                  </select>
-                  <select id="setSortDir" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:ring-4 focus:ring-brand-200">
-                    <option value="asc">Asc</option>
-                    <option value="desc">Desc</option>
-                  </select>
-                </div>
-
-                <label class="mt-4 flex items-center gap-3">
-                  <input id="setShowEmail" type="checkbox" class="h-5 w-5 rounded border-slate-300 text-brand-600 focus:ring-brand-200" />
-                  <span class="text-sm font-semibold text-slate-700">Show student email in lists</span>
-                </label>
-              </div>
-
-              <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-5">
-                <p class="text-xs font-extrabold text-slate-500 uppercase">At-Risk Rules</p>
-
-                <label class="mt-3 block text-sm font-extrabold text-slate-700">Inactive threshold (days)</label>
-                <input id="setRiskInactiveDays" type="number" min="1" max="365"
-                  class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:ring-4 focus:ring-brand-200" />
-
-                <label class="mt-4 block text-sm font-extrabold text-slate-700">Low progress threshold (%)</label>
-                <input id="setRiskProgress" type="number" min="0" max="100"
-                  class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:ring-4 focus:ring-brand-200" />
-
-                <label class="mt-4 flex items-center gap-3">
-                  <input id="setRiskLesson4" type="checkbox" class="h-5 w-5 rounded border-slate-300 text-brand-600 focus:ring-brand-200" />
-                  <span class="text-sm font-semibold text-slate-700">Flag if Lesson 4 not started</span>
-                </label>
-
-                <div class="mt-4 rounded-2xl bg-white ring-1 ring-black/5 p-4">
-                  <p class="text-xs font-extrabold text-slate-500 uppercase">Preview</p>
-                  <p class="mt-2 text-sm text-slate-700">At-risk students right now:</p>
-                  <p class="mt-1 text-3xl font-extrabold text-slate-900" id="setRiskPreview">0</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <div class="text-xs text-slate-500 font-semibold" id="settingsHint">No changes yet.</div>
-              <div class="flex items-center gap-2">
-                <button id="resetSettingsBtn"
-                  class="inline-flex items-center justify-center rounded-xl bg-white px-4 py-2.5 text-sm font-extrabold text-slate-700 ring-1 ring-black/5 hover:bg-slate-50">
-                  Reset
-                </button>
-                <button id="saveSettingsBtn"
-                  class="inline-flex items-center justify-center rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-extrabold text-white shadow-softer hover:bg-brand-700 focus:outline-none focus:ring-4 focus:ring-brand-200">
-                  Save Settings
-                </button>
-              </div>
-            </div>
-          </div>
-        </section>
       </main>
     </div>
   </div>
@@ -721,53 +342,40 @@
         </button>
       </div>
 
-      <div class="p-4">
-        <div class="space-y-2" role="tablist" aria-label="Admin sections (mobile)">
+      <div class="p-4" role="tablist" aria-label="Admin sections (mobile)">
+        <div class="space-y-2">
           <button type="button" data-tab="dashboard" role="tab" aria-controls="panel-dashboard" aria-selected="true"
             class="tab-btn-mobile w-full text-left flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold">
-            <span class="h-9 w-9 rounded-xl flex items-center justify-center">D</span>
             Dashboard
           </button>
-
           <button type="button" data-tab="students" role="tab" aria-controls="panel-students" aria-selected="false"
             class="tab-btn-mobile w-full text-left flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold">
-            <span class="h-9 w-9 rounded-xl flex items-center justify-center">S</span>
             Students
           </button>
-
           <button type="button" data-tab="lessons" role="tab" aria-controls="panel-lessons" aria-selected="false"
             class="tab-btn-mobile w-full text-left flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold">
-            <span class="h-9 w-9 rounded-xl flex items-center justify-center">L</span>
             Lessons Progress
-          </button>
-
-          <button type="button" data-tab="reports" role="tab" aria-controls="panel-reports" aria-selected="false"
-            class="tab-btn-mobile w-full text-left flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold">
-            <span class="h-9 w-9 rounded-xl flex items-center justify-center">R</span>
-            Reports
-          </button>
-
-          <button type="button" data-tab="settings" role="tab" aria-controls="panel-settings" aria-selected="false"
-            class="tab-btn-mobile w-full text-left flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold">
-            <span class="h-9 w-9 rounded-xl flex items-center justify-center">⚙</span>
-            Settings
           </button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- STUDENT DETAILS MODAL (kept) -->
+  <!-- STUDENT DETAILS MODAL -->
   <div id="detailsModal" class="fixed inset-0 z-[60] hidden" role="dialog" aria-modal="true" aria-label="Student details">
     <div class="absolute inset-0 bg-black/55"></div>
+
     <div class="absolute inset-x-4 top-6 bottom-6 md:inset-x-10 lg:inset-x-24 flex items-center justify-center">
-      <div class="w-full max-w-5xl h-full rounded-3xl bg-white shadow-soft ring-1 ring-black/10 overflow-hidden flex flex-col">
+      <div class="w-full max-w-6xl h-full rounded-3xl bg-white shadow-soft ring-1 ring-black/10 overflow-hidden flex flex-col">
         <div class="bg-gradient-to-r from-brand-600 to-brand-500 px-7 py-5 flex items-center justify-between">
           <div>
             <p class="text-xl font-extrabold text-white">Student Details</p>
+            <p id="dHeaderSub" class="text-sm font-semibold text-white/85 mt-0.5">—</p>
           </div>
           <button id="closeDetails" class="h-10 w-10 rounded-xl bg-white/15 ring-1 ring-white/15 text-white flex items-center justify-center hover:bg-white/20" aria-label="Close">
-            ✕
+            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
           </button>
         </div>
 
@@ -777,16 +385,34 @@
               <div class="flex items-start gap-5">
                 <div id="dAvatar" class="h-16 w-16 rounded-full bg-brand-600 text-white font-extrabold flex items-center justify-center text-xl">MS</div>
                 <div>
-                  <p id="dName" class="text-xl font-extrabold text-slate-900">Maria Santos</p>
-                  <p id="dId" class="text-sm text-slate-500 font-semibold">STU-2024-001</p>
-                  <p id="dEmail" class="text-sm text-slate-500">maria.santos@student.edu</p>
+                  <p id="dName" class="text-xl font-extrabold text-slate-900">—</p>
+                  <p id="dId" class="text-sm text-slate-500 font-semibold">—</p>
+                  <p id="dEmail" class="text-sm text-slate-500">—</p>
                 </div>
               </div>
 
-              <div class="flex items-center gap-3">
-                <span id="dStatusPill" class="inline-flex items-center rounded-full px-4 py-1.5 text-xs font-extrabold bg-emerald-100 text-emerald-800 ring-1 ring-black/5">
-                  Active
-                </span>
+              <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+                <span id="dStatusPill" class="inline-flex items-center rounded-full px-4 py-1.5 text-xs font-extrabold bg-slate-100 text-slate-700 ring-1 ring-black/5">—</span>
+
+                <div class="rounded-2xl bg-white ring-1 ring-black/5 p-3">
+                  <p class="text-[11px] font-extrabold text-slate-500 uppercase">Assessment Workflow</p>
+                  <div class="mt-2 flex items-center gap-2">
+                    <select id="dAssessStatusSelect" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold outline-none focus:ring-4 focus:ring-brand-200">
+                      <option>Not started</option>
+                      <option>Draft</option>
+                      <option>Submitted</option>
+                      <option>Under review</option>
+                      <option>Needs revision</option>
+                      <option>Resubmitted</option>
+                      <option>Graded</option>
+                    </select>
+                    <button id="openSubmissionBtn"
+                      class="inline-flex items-center justify-center rounded-xl bg-brand-600 px-4 py-2 text-sm font-extrabold text-white shadow-softer hover:bg-brand-700">
+                      Open Submission
+                    </button>
+                  </div>
+                  <p class="mt-2 text-xs text-slate-500 font-semibold" id="dAssessMeta">—</p>
+                </div>
               </div>
             </div>
 
@@ -800,8 +426,8 @@
                 <p id="dYear" class="mt-1 font-extrabold text-slate-900">—</p>
               </div>
               <div>
-                <p class="text-xs font-extrabold text-slate-400 uppercase">Last Login</p>
-                <p id="dLastLogin" class="mt-1 font-extrabold text-slate-900">—</p>
+                <p class="text-xs font-extrabold text-slate-400 uppercase">Last Active</p>
+                <p id="dLastActive" class="mt-1 font-extrabold text-slate-900">—</p>
               </div>
               <div>
                 <p class="text-xs font-extrabold text-slate-400 uppercase">Overall Progress</p>
@@ -810,20 +436,166 @@
             </div>
           </div>
 
-          <h3 class="mt-8 text-lg font-extrabold text-slate-900">Lesson-by-Lesson Progress</h3>
+          <div class="mt-8 grid gap-6 lg:grid-cols-3">
+            <section class="lg:col-span-2">
+              <h3 class="text-lg font-extrabold text-slate-900">Timeline</h3>
+              <p class="mt-1 text-sm text-slate-600">Key events across lessons, quizzes, and assessment.</p>
+              <div id="timelineList" class="mt-4 space-y-3"></div>
+            </section>
+
+            <aside class="rounded-2xl bg-white ring-1 ring-black/5 p-6">
+              <h3 class="text-lg font-extrabold text-slate-900">Engagement Signals</h3>
+              <div class="mt-4 space-y-3">
+                <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-4">
+                  <p class="text-xs font-extrabold text-slate-500 uppercase">Time Spent (total)</p>
+                  <p class="mt-1 text-3xl font-extrabold text-slate-900" id="dTimeSpent">0m</p>
+                </div>
+                <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-4">
+                  <p class="text-xs font-extrabold text-slate-500 uppercase">Quiz Attempts</p>
+                  <p class="mt-1 text-3xl font-extrabold text-slate-900"><span id="dQuizAttempts">0</span></p>
+                  <p class="mt-1 text-sm text-slate-600">Failed: <span id="dQuizFails" class="font-extrabold">0</span></p>
+                </div>
+                <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-4">
+                  <p class="text-xs font-extrabold text-slate-500 uppercase">Drop-Off Point</p>
+                  <p class="mt-1 text-sm font-extrabold text-slate-900" id="dDropOff">—</p>
+                </div>
+              </div>
+            </aside>
+          </div>
+
+          <h3 class="mt-10 text-lg font-extrabold text-slate-900">Lesson-by-Lesson (State + Progress)</h3>
+          <p class="mt-1 text-sm text-slate-600">State helps admins understand if student is progressing, blocked, or done.</p>
           <div id="lessonProgressList" class="mt-4 space-y-4"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-          <h3 class="mt-8 text-lg font-extrabold text-slate-900">Admin Notes</h3>
-          <div class="mt-4 rounded-2xl bg-white ring-1 ring-black/5 p-6">
-            <textarea id="adminNotes" rows="5" placeholder="Add notes about this student..."
-              class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:ring-4 focus:ring-brand-200"></textarea>
+  <!-- SUBMISSION / GRADING MODAL -->
+  <div id="submissionModal" class="fixed inset-0 z-[70] hidden" role="dialog" aria-modal="true" aria-label="Assessment submission">
+    <div class="absolute inset-0 bg-black/60"></div>
 
-            <div class="mt-4 flex items-center justify-between">
-              <div class="text-xs text-slate-500 font-semibold">Notes are stored locally (prototype).</div>
-              <button id="saveNotesBtn"
-                class="inline-flex items-center justify-center rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-extrabold text-white shadow-softer hover:bg-brand-700 focus:outline-none focus:ring-4 focus:ring-brand-200">
-                Save Notes
-              </button>
+    <div class="absolute inset-x-4 top-6 bottom-6 md:inset-x-10 lg:inset-x-24 flex items-center justify-center">
+      <div class="w-full max-w-6xl h-full rounded-3xl bg-white shadow-soft ring-1 ring-black/10 overflow-hidden flex flex-col">
+        <div class="bg-gradient-to-r from-brand-600 to-brand-500 px-7 py-5 flex items-start justify-between gap-4">
+          <div>
+            <p class="text-xl font-extrabold text-white">Assessment Submission & Rubric</p>
+            <p id="sStudentLine" class="text-sm font-semibold text-white/85 mt-0.5">—</p>
+          </div>
+
+          <button id="closeSubmission" class="h-10 w-10 rounded-xl bg-white/15 ring-1 ring-white/15 text-white flex items-center justify-center hover:bg-white/20" aria-label="Close">
+            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="nice-scroll flex-1 overflow-y-auto p-7">
+          <div class="grid gap-6 lg:grid-cols-3">
+            <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-6 lg:col-span-1">
+              <div class="grid gap-4">
+                <div>
+                  <p class="text-xs font-extrabold text-slate-400 uppercase">Submission Date</p>
+                  <p id="sDate" class="mt-1 font-extrabold text-slate-900">—</p>
+                </div>
+                <div>
+                  <p class="text-xs font-extrabold text-slate-400 uppercase">Status</p>
+                  <p class="mt-1">
+                    <span id="sStatusPill" class="inline-flex items-center rounded-full px-4 py-1.5 text-xs font-extrabold bg-slate-100 text-slate-700 ring-1 ring-black/5">—</span>
+                  </p>
+                </div>
+                <div>
+                  <p class="text-xs font-extrabold text-slate-400 uppercase">Reviewer</p>
+                  <input id="sReviewer" type="text" placeholder="Admin name"
+                    class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:ring-4 focus:ring-brand-200" />
+                </div>
+                <div>
+                  <p class="text-xs font-extrabold text-slate-400 uppercase">Rubric Total</p>
+                  <p class="mt-2 text-4xl font-extrabold text-brand-700"><span id="sRubricPct">0</span>%</p>
+                  <p class="mt-1 text-xs text-slate-500 font-semibold"><span id="sRubricRaw">0</span>/<span id="sRubricMax">60</span></p>
+                </div>
+              </div>
+            </div>
+
+            <div class="lg:col-span-2 space-y-6">
+              <div class="rounded-2xl bg-white ring-1 ring-black/5 p-6">
+                <h3 class="text-lg font-extrabold text-slate-900">Essay Response (Preview)</h3>
+                <p class="mt-1 text-sm text-slate-600">Prototype text. Replace with student submission content later.</p>
+                <div id="sEssayPreview" class="mt-4 rounded-xl bg-slate-50 ring-1 ring-black/5 p-5 text-sm leading-relaxed text-slate-600 whitespace-pre-line"></div>
+              </div>
+
+              <div class="rounded-2xl bg-white ring-1 ring-black/5 p-6">
+                <h3 class="text-lg font-extrabold text-slate-900">Rubric Scoring</h3>
+                <p class="mt-1 text-sm text-slate-600">Score each criterion (0–10). Total is calculated automatically.</p>
+
+                <div class="mt-5 grid gap-4 sm:grid-cols-2">
+                  <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-4">
+                    <p class="text-sm font-extrabold text-slate-900">Clarity & Coherence</p>
+                    <p class="text-xs text-slate-500 font-semibold mt-1">Clear message, logical flow, easy to follow.</p>
+                    <input id="rClarity" type="range" min="0" max="10" value="0" class="mt-3 w-full" />
+                    <p class="mt-2 text-sm font-extrabold text-slate-900"><span id="rClarityVal">0</span>/10</p>
+                  </div>
+
+                  <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-4">
+                    <p class="text-sm font-extrabold text-slate-900">Audience Awareness</p>
+                    <p class="text-xs text-slate-500 font-semibold mt-1">Appropriate for target reader/listener.</p>
+                    <input id="rAudience" type="range" min="0" max="10" value="0" class="mt-3 w-full" />
+                    <p class="mt-2 text-sm font-extrabold text-slate-900"><span id="rAudienceVal">0</span>/10</p>
+                  </div>
+
+                  <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-4">
+                    <p class="text-sm font-extrabold text-slate-900">Tone & Professionalism</p>
+                    <p class="text-xs text-slate-500 font-semibold mt-1">Tone matches purpose; polite and professional.</p>
+                    <input id="rTone" type="range" min="0" max="10" value="0" class="mt-3 w-full" />
+                    <p class="mt-2 text-sm font-extrabold text-slate-900"><span id="rToneVal">0</span>/10</p>
+                  </div>
+
+                  <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-4">
+                    <p class="text-sm font-extrabold text-slate-900">Organization & Structure</p>
+                    <p class="text-xs text-slate-500 font-semibold mt-1">Strong opening, body, closing; coherent sections.</p>
+                    <input id="rOrg" type="range" min="0" max="10" value="0" class="mt-3 w-full" />
+                    <p class="mt-2 text-sm font-extrabold text-slate-900"><span id="rOrgVal">0</span>/10</p>
+                  </div>
+
+                  <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-4">
+                    <p class="text-sm font-extrabold text-slate-900">Grammar & Mechanics</p>
+                    <p class="text-xs text-slate-500 font-semibold mt-1">Grammar, punctuation, spelling accuracy.</p>
+                    <input id="rGrammar" type="range" min="0" max="10" value="0" class="mt-3 w-full" />
+                    <p class="mt-2 text-sm font-extrabold text-slate-900"><span id="rGrammarVal">0</span>/10</p>
+                  </div>
+
+                  <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-4">
+                    <p class="text-sm font-extrabold text-slate-900">Persuasiveness / Purpose Match</p>
+                    <p class="text-xs text-slate-500 font-semibold mt-1">Meets communicative purpose (inform/persuade/request).</p>
+                    <input id="rPurpose" type="range" min="0" max="10" value="0" class="mt-3 w-full" />
+                    <p class="mt-2 text-sm font-extrabold text-slate-900"><span id="rPurposeVal">0</span>/10</p>
+                  </div>
+                </div>
+
+                <h4 class="mt-6 text-sm font-extrabold text-slate-900">Feedback</h4>
+                <textarea id="sFeedback" rows="4" placeholder="Write feedback / required revisions…"
+                  class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:ring-4 focus:ring-brand-200"></textarea>
+
+                <div class="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <p class="text-xs text-slate-500 font-semibold" id="sSaveHint">Changes are stored locally (prototype).</p>
+
+                  <div class="flex items-center gap-2">
+                    <button id="markNeedsRevisionBtn"
+                      class="inline-flex items-center justify-center rounded-xl bg-orange-600 px-4 py-2.5 text-sm font-extrabold text-white hover:bg-orange-700 ring-1 ring-black/5">
+                      Mark Needs Revision
+                    </button>
+                    <button id="markGradedBtn"
+                      class="inline-flex items-center justify-center rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-extrabold text-white hover:bg-emerald-700 ring-1 ring-black/5">
+                      Save & Mark Graded
+                    </button>
+                    <button id="saveRubricBtn"
+                      class="inline-flex items-center justify-center rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-extrabold text-white shadow-softer hover:bg-brand-700 focus:outline-none focus:ring-4 focus:ring-brand-200">
+                      Save Rubric
+                    </button>
+                  </div>
+                </div>
+
+              </div>
             </div>
           </div>
 
@@ -832,32 +604,48 @@
     </div>
   </div>
 
-  <!-- Toast container -->
-  <div id="toastStack" class="toast-stack fixed bottom-4 right-4 z-[90] space-y-3"></div>
-
   <script>
-    // ==========================
-    // DATA (Prototype)
-    // ==========================
-    const students = [
+    // ==========================================================
+    // STORAGE
+    // ==========================================================
+    const STORAGE_KEY = "pc_admin_students_state_v1";
+
+    // Rules (Settings tab removed)
+    const rules = {
+      riskInactiveDays: 7,
+      riskProgressThreshold: 40,
+      riskQuizFails: 3,
+    };
+
+    // ==========================================================
+    // SAMPLE DATA
+    // ==========================================================
+    const seedStudents = [
       {
         id: "STU-2024-001",
         name: "Maria Santos",
         email: "maria.santos@student.edu",
         course: "BS Computer Science",
         year: "2nd Year",
-        lastLogin: "2 hours ago",
+        lastActive: "2 hours ago",
         status: "Active",
         progress: 68,
         lessons: [
-          { title: "Lesson 1: Introduction to Communication", pct: 100, parts: "4 of 4 parts completed" },
-          { title: "Lesson 2: Verbal and Non-Verbal Communication", pct: 100, parts: "4 of 4 parts completed" },
-          { title: "Lesson 3: Written Communication Skills", pct: 45, parts: "2 of 4 parts completed" },
-          { title: "Lesson 4: Presentation and Public Speaking", pct: 0, parts: "0 of 4 parts completed" },
+          { key: "l1", title: "Lesson 1: Introduction to Communication", pct: 100, partsDone: 4, partsTotal: 4, state: "Completed", startedAt: "2024-05-01T09:10:00", completedAt: "2024-05-01T10:05:00", timeSpentMin: 55 },
+          { key: "l2", title: "Lesson 2: Verbal and Non-Verbal Communication", pct: 100, partsDone: 4, partsTotal: 4, state: "Completed", startedAt: "2024-05-03T11:00:00", completedAt: "2024-05-03T12:05:00", timeSpentMin: 65 },
+          { key: "l3", title: "Lesson 3: Written Communication Skills", pct: 45, partsDone: 2, partsTotal: 4, state: "In progress", startedAt: "2024-05-06T08:10:00", completedAt: "", timeSpentMin: 35 },
+          { key: "l4", title: "Lesson 4: Presentation and Public Speaking", pct: 0, partsDone: 0, partsTotal: 4, state: "Not started", startedAt: "", completedAt: "", timeSpentMin: 0 },
         ],
-        l1: 100, l2: 100, l3: 45, l4: 0,
-        quiz: 87,
-        assessment: { status: "Submitted", submittedAt: "May 15, 2024 at 3:45 PM", grade: "Pending Review" },
+        quiz: { avgScore: 87, attempts: 2, failedAttempts: 1, lastAttemptAt: "2024-05-08T14:20:00" },
+        assessment: {
+          status: "Submitted",
+          submittedAt: "2024-05-15T15:45:00",
+          reviewedAt: "",
+          gradedAt: "",
+          reviewer: "",
+          feedback: "",
+          rubric: { clarity: 0, audience: 0, tone: 0, organization: 0, grammar: 0, purpose: 0 },
+        },
       },
       {
         id: "STU-2024-002",
@@ -865,18 +653,25 @@
         email: "juan.cruz@student.edu",
         course: "BS Information Technology",
         year: "3rd Year",
-        lastLogin: "5 hours ago",
+        lastActive: "5 hours ago",
         status: "Active",
         progress: 92,
         lessons: [
-          { title: "Lesson 1: Introduction to Communication", pct: 100, parts: "4 of 4 parts completed" },
-          { title: "Lesson 2: Verbal and Non-Verbal Communication", pct: 100, parts: "4 of 4 parts completed" },
-          { title: "Lesson 3: Written Communication Skills", pct: 100, parts: "4 of 4 parts completed" },
-          { title: "Lesson 4: Presentation and Public Speaking", pct: 75, parts: "3 of 4 parts completed" },
+          { key: "l1", title: "Lesson 1: Introduction to Communication", pct: 100, partsDone: 4, partsTotal: 4, state: "Completed", startedAt: "2024-05-01T09:10:00", completedAt: "2024-05-01T09:50:00", timeSpentMin: 40 },
+          { key: "l2", title: "Lesson 2: Verbal and Non-Verbal Communication", pct: 100, partsDone: 4, partsTotal: 4, state: "Completed", startedAt: "2024-05-02T10:00:00", completedAt: "2024-05-02T10:50:00", timeSpentMin: 50 },
+          { key: "l3", title: "Lesson 3: Written Communication Skills", pct: 100, partsDone: 4, partsTotal: 4, state: "Completed", startedAt: "2024-05-04T13:00:00", completedAt: "2024-05-04T14:10:00", timeSpentMin: 70 },
+          { key: "l4", title: "Lesson 4: Presentation and Public Speaking", pct: 75, partsDone: 3, partsTotal: 4, state: "In progress", startedAt: "2024-05-07T09:30:00", completedAt: "", timeSpentMin: 45 },
         ],
-        l1: 100, l2: 100, l3: 100, l4: 75,
-        quiz: 94,
-        assessment: { status: "Submitted", submittedAt: "May 16, 2024 at 10:12 AM", grade: "Pending Review" },
+        quiz: { avgScore: 94, attempts: 1, failedAttempts: 0, lastAttemptAt: "2024-05-09T10:12:00" },
+        assessment: {
+          status: "Under review",
+          submittedAt: "2024-05-16T10:12:00",
+          reviewedAt: "2024-05-17T09:00:00",
+          gradedAt: "",
+          reviewer: "Admin User",
+          feedback: "",
+          rubric: { clarity: 7, audience: 8, tone: 8, organization: 7, grammar: 8, purpose: 8 },
+        },
       },
       {
         id: "STU-2024-003",
@@ -884,18 +679,25 @@
         email: "ana.reyes@student.edu",
         course: "BS Business Administration",
         year: "1st Year",
-        lastLogin: "1 day ago",
+        lastActive: "1 day ago",
         status: "Active",
         progress: 45,
         lessons: [
-          { title: "Lesson 1: Introduction to Communication", pct: 100, parts: "4 of 4 parts completed" },
-          { title: "Lesson 2: Verbal and Non-Verbal Communication", pct: 70, parts: "3 of 4 parts completed" },
-          { title: "Lesson 3: Written Communication Skills", pct: 20, parts: "1 of 4 parts completed" },
-          { title: "Lesson 4: Presentation and Public Speaking", pct: 0, parts: "0 of 4 parts completed" },
+          { key: "l1", title: "Lesson 1: Introduction to Communication", pct: 100, partsDone: 4, partsTotal: 4, state: "Completed", startedAt: "2024-05-01T09:10:00", completedAt: "2024-05-01T10:40:00", timeSpentMin: 90 },
+          { key: "l2", title: "Lesson 2: Verbal and Non-Verbal Communication", pct: 70, partsDone: 3, partsTotal: 4, state: "In progress", startedAt: "2024-05-05T15:00:00", completedAt: "", timeSpentMin: 60 },
+          { key: "l3", title: "Lesson 3: Written Communication Skills", pct: 20, partsDone: 1, partsTotal: 4, state: "In progress", startedAt: "2024-05-07T16:20:00", completedAt: "", timeSpentMin: 25 },
+          { key: "l4", title: "Lesson 4: Presentation and Public Speaking", pct: 0, partsDone: 0, partsTotal: 4, state: "Not started", startedAt: "", completedAt: "", timeSpentMin: 0 },
         ],
-        l1: 100, l2: 70, l3: 20, l4: 0,
-        quiz: 78,
-        assessment: { status: "Pending", submittedAt: "", grade: "" },
+        quiz: { avgScore: 78, attempts: 4, failedAttempts: 3, lastAttemptAt: "2024-05-10T09:00:00" },
+        assessment: {
+          status: "Not started",
+          submittedAt: "",
+          reviewedAt: "",
+          gradedAt: "",
+          reviewer: "",
+          feedback: "",
+          rubric: { clarity: 0, audience: 0, tone: 0, organization: 0, grammar: 0, purpose: 0 },
+        },
       },
       {
         id: "STU-2024-004",
@@ -903,18 +705,25 @@
         email: "carla.mendoza@student.edu",
         course: "BS Computer Science",
         year: "2nd Year",
-        lastLogin: "3 days ago",
+        lastActive: "3 days ago",
         status: "Inactive",
         progress: 28,
         lessons: [
-          { title: "Lesson 1: Introduction to Communication", pct: 100, parts: "4 of 4 parts completed" },
-          { title: "Lesson 2: Verbal and Non-Verbal Communication", pct: 40, parts: "2 of 4 parts completed" },
-          { title: "Lesson 3: Written Communication Skills", pct: 0, parts: "0 of 4 parts completed" },
-          { title: "Lesson 4: Presentation and Public Speaking", pct: 0, parts: "0 of 4 parts completed" },
+          { key: "l1", title: "Lesson 1: Introduction to Communication", pct: 100, partsDone: 4, partsTotal: 4, state: "Completed", startedAt: "2024-05-01T09:10:00", completedAt: "2024-05-01T10:05:00", timeSpentMin: 55 },
+          { key: "l2", title: "Lesson 2: Verbal and Non-Verbal Communication", pct: 40, partsDone: 2, partsTotal: 4, state: "In progress", startedAt: "2024-05-03T11:00:00", completedAt: "", timeSpentMin: 30 },
+          { key: "l3", title: "Lesson 3: Written Communication Skills", pct: 0, partsDone: 0, partsTotal: 4, state: "Not started", startedAt: "", completedAt: "", timeSpentMin: 0 },
+          { key: "l4", title: "Lesson 4: Presentation and Public Speaking", pct: 0, partsDone: 0, partsTotal: 4, state: "Not started", startedAt: "", completedAt: "", timeSpentMin: 0 },
         ],
-        l1: 100, l2: 40, l3: 0, l4: 0,
-        quiz: 65,
-        assessment: { status: "Pending", submittedAt: "", grade: "" },
+        quiz: { avgScore: 65, attempts: 2, failedAttempts: 2, lastAttemptAt: "2024-05-06T13:20:00" },
+        assessment: {
+          status: "Needs revision",
+          submittedAt: "2024-05-14T08:30:00",
+          reviewedAt: "2024-05-14T15:10:00",
+          gradedAt: "",
+          reviewer: "Admin User",
+          feedback: "Please revise tone and organization. Add a clearer opening and closing.",
+          rubric: { clarity: 4, audience: 5, tone: 3, organization: 3, grammar: 6, purpose: 4 },
+        },
       },
       {
         id: "STU-2024-005",
@@ -922,82 +731,74 @@
         email: "leah.garcia@student.edu",
         course: "BS Nursing",
         year: "4th Year",
-        lastLogin: "30 minutes ago",
+        lastActive: "30 minutes ago",
         status: "Active",
         progress: 85,
         lessons: [
-          { title: "Lesson 1: Introduction to Communication", pct: 100, parts: "4 of 4 parts completed" },
-          { title: "Lesson 2: Verbal and Non-Verbal Communication", pct: 100, parts: "4 of 4 parts completed" },
-          { title: "Lesson 3: Written Communication Skills", pct: 100, parts: "4 of 4 parts completed" },
-          { title: "Lesson 4: Presentation and Public Speaking", pct: 60, parts: "2 of 4 parts completed" },
+          { key: "l1", title: "Lesson 1: Introduction to Communication", pct: 100, partsDone: 4, partsTotal: 4, state: "Completed", startedAt: "2024-05-01T09:10:00", completedAt: "2024-05-01T09:55:00", timeSpentMin: 45 },
+          { key: "l2", title: "Lesson 2: Verbal and Non-Verbal Communication", pct: 100, partsDone: 4, partsTotal: 4, state: "Completed", startedAt: "2024-05-02T10:00:00", completedAt: "2024-05-02T11:05:00", timeSpentMin: 65 },
+          { key: "l3", title: "Lesson 3: Written Communication Skills", pct: 100, partsDone: 4, partsTotal: 4, state: "Completed", startedAt: "2024-05-04T13:00:00", completedAt: "2024-05-04T13:45:00", timeSpentMin: 45 },
+          { key: "l4", title: "Lesson 4: Presentation and Public Speaking", pct: 60, partsDone: 2, partsTotal: 4, state: "In progress", startedAt: "2024-05-08T12:00:00", completedAt: "", timeSpentMin: 30 },
         ],
-        l1: 100, l2: 100, l3: 100, l4: 60,
-        quiz: 91,
-        assessment: { status: "Submitted", submittedAt: "May 18, 2024 at 1:05 PM", grade: "Pending Review" },
+        quiz: { avgScore: 91, attempts: 1, failedAttempts: 0, lastAttemptAt: "2024-05-10T13:05:00" },
+        assessment: {
+          status: "Graded",
+          submittedAt: "2024-05-18T13:05:00",
+          reviewedAt: "2024-05-19T09:00:00",
+          gradedAt: "2024-05-19T10:30:00",
+          reviewer: "Admin User",
+          feedback: "Great audience awareness and clear purpose. Improve minor grammar issues.",
+          rubric: { clarity: 8, audience: 9, tone: 9, organization: 8, grammar: 7, purpose: 9 },
+        },
       },
     ];
 
-    // ==========================
-    // SETTINGS (Local)
-    // ==========================
-    const SETTINGS_KEY = "pc_admin_settings_v3";
-    const LAST_TAB_KEY = "pc_admin_last_tab_v3";
-
-    const DEFAULT_SETTINGS = {
-      pageSize: 10,
-      sortBy: "name",
-      sortDir: "asc",
-      showEmail: true,
-      riskInactiveDays: 7,
-      riskProgressThreshold: 40,
-      riskLesson4NotStarted: true,
-    };
-
-    function loadSettings() {
+    function loadStudents() {
       try {
-        const raw = localStorage.getItem(SETTINGS_KEY);
-        const parsed = raw ? JSON.parse(raw) : {};
-        return { ...DEFAULT_SETTINGS, ...parsed };
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return structuredClone(seedStudents);
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : structuredClone(seedStudents);
       } catch {
-        return { ...DEFAULT_SETTINGS };
+        return structuredClone(seedStudents);
       }
     }
-    function saveSettings(next) {
-      localStorage.setItem(SETTINGS_KEY, JSON.stringify(next));
+    function saveStudents() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(students));
     }
-    let settings = loadSettings();
 
-    // ==========================
+    let students = loadStudents();
+
+    // ==========================================================
     // HELPERS
-    // ==========================
+    // ==========================================================
     const $ = (id) => document.getElementById(id);
 
-    function avg(nums) { return nums.length ? Math.round(nums.reduce((a,b)=>a+b,0)/nums.length) : 0; }
-    const initials = (name) => name.split(" ").slice(0,2).map(x => x[0]).join("").toUpperCase();
+    function initials(name) {
+      return String(name || "").split(" ").slice(0,2).map(x => x[0]).join("").toUpperCase() || "—";
+    }
+    function clamp(n, a, b){ return Math.min(Math.max(n, a), b); }
 
-    function toast(msg) {
-      const stack = $("toastStack");
-      const el = document.createElement("div");
-      el.className = "toast w-[320px] rounded-2xl bg-white shadow-soft ring-1 ring-black/10 p-4";
-      el.innerHTML = `
-        <div class="flex items-start justify-between gap-3">
-          <p class="text-sm font-semibold text-slate-800">${msg}</p>
-          <button class="text-xs font-extrabold text-slate-500 hover:text-slate-700">✕</button>
-        </div>
-      `;
-      stack.appendChild(el);
-      const btn = el.querySelector("button");
-      btn.addEventListener("click", () => el.remove());
-      setTimeout(() => { if (el.isConnected) el.remove(); }, 3500);
+    function fmtDateTime(iso) {
+      if (!iso) return "—";
+      const d = new Date(iso);
+      if (isNaN(d.getTime())) return "—";
+      return d.toLocaleString(undefined, { year:"numeric", month:"short", day:"2-digit", hour:"2-digit", minute:"2-digit" });
+    }
+
+    function parseRelativeToDays(rel) {
+      const s = String(rel || "").toLowerCase().trim();
+      const m = s.match(/(\d+)\s*(minute|minutes|hour|hours|day|days)/);
+      if (!m) return 0;
+      const n = Number(m[1]);
+      const unit = m[2];
+      if (unit.startsWith("day")) return n;
+      return 0;
     }
 
     function statusPill(status) {
       if (status === "Active") return "bg-emerald-100 text-emerald-800";
       return "bg-slate-100 text-slate-700";
-    }
-    function assessPill(status) {
-      if (status === "Submitted") return "bg-emerald-100 text-emerald-800";
-      return "bg-orange-100 text-orange-800";
     }
     function progressBadge(p) {
       if (p >= 76) return "bg-emerald-100 text-emerald-800";
@@ -1005,33 +806,566 @@
       if (p >= 26) return "bg-rose-100 text-rose-800";
       return "bg-slate-100 text-slate-700";
     }
-
-    function parseLastLoginToMinutes(str) {
-      const s = String(str || "").toLowerCase().trim();
-      const m = s.match(/(\d+)\s*(minute|minutes|hour|hours|day|days)/);
-      if (!m) return Number.POSITIVE_INFINITY;
-      const n = Number(m[1]);
-      const unit = m[2];
-      if (unit.startsWith("minute")) return n;
-      if (unit.startsWith("hour")) return n * 60;
-      if (unit.startsWith("day")) return n * 60 * 24;
-      return Number.POSITIVE_INFINITY;
+    function statePill(state) {
+      switch (state) {
+        case "Completed": return "bg-emerald-100 text-emerald-800";
+        case "In progress": return "bg-orange-100 text-orange-800";
+        case "Needs revision": return "bg-rose-100 text-rose-800";
+        default: return "bg-slate-100 text-slate-700";
+      }
     }
-    function parseLastLoginToDays(str) {
-      const s = String(str || "").toLowerCase();
-      const m = s.match(/(\d+)\s*day/);
-      return m ? Number(m[1]) : 0;
+    function assessPill(status) {
+      if (status === "Submitted" || status === "Resubmitted") return "bg-emerald-100 text-emerald-800";
+      if (status === "Under review") return "bg-sky-100 text-sky-800";
+      if (status === "Needs revision") return "bg-orange-100 text-orange-800";
+      if (status === "Graded") return "bg-slate-900 text-white";
+      return "bg-slate-100 text-slate-700";
     }
 
-    function riskReasons(student) {
+    function rubricTotals(rubric) {
+      const vals = ["clarity","audience","tone","organization","grammar","purpose"].map(k => Number(rubric?.[k] || 0));
+      const raw = vals.reduce((a,b)=>a+b,0);
+      const max = 60;
+      const pct = Math.round((raw / max) * 100);
+      return { raw, max, pct };
+    }
+
+    function timeSpentTotal(student) {
+      return (student.lessons || []).reduce((a,l)=> a + Number(l.timeSpentMin || 0), 0);
+    }
+
+    function dropOffPoint(student) {
+      const lessons = student.lessons || [];
+      const notCompleted = lessons.filter(l => l.state !== "Completed");
+      if (!notCompleted.length) return "Completed all lessons";
+      const inProgress = notCompleted.filter(l => (l.pct || 0) > 0);
+      if (inProgress.length) {
+        const worst = inProgress.sort((a,b)=>(a.pct||0)-(b.pct||0))[0];
+        return `${worst.title}`;
+      }
+      const firstNS = notCompleted.find(l => (l.pct || 0) === 0) || notCompleted[0];
+      return `${firstNS.title}`;
+    }
+
+    function atRiskReasons(student) {
       const reasons = [];
-      const days = parseLastLoginToDays(student.lastLogin);
-      if (days >= (settings.riskInactiveDays || 7)) reasons.push(`Inactive ≥ ${settings.riskInactiveDays}d`);
-      if ((student.progress ?? 0) < (settings.riskProgressThreshold ?? 40)) reasons.push(`Progress < ${settings.riskProgressThreshold}%`);
-      if (settings.riskLesson4NotStarted && (student.l4 ?? 0) === 0) reasons.push("Lesson 4 not started");
+      const days = parseRelativeToDays(student.lastActive);
+      if (days >= rules.riskInactiveDays) reasons.push(`Inactive ≥ ${rules.riskInactiveDays}d`);
+      if ((student.progress ?? 0) < rules.riskProgressThreshold) reasons.push(`Progress < ${rules.riskProgressThreshold}%`);
+      if ((student.quiz?.failedAttempts ?? 0) >= rules.riskQuizFails) reasons.push(`Quiz fails ≥ ${rules.riskQuizFails}`);
+      const stuckLesson = (student.lessons || []).find(l => l.state === "In progress" && (l.pct||0) <= 50);
+      if (stuckLesson && days >= 1) reasons.push("Possibly stuck");
       return reasons;
     }
 
+    function buildTimeline(student) {
+      const items = [];
+      (student.lessons || []).forEach(l => {
+        if (l.startedAt) items.push({ at: l.startedAt, label: `Started: ${l.title}` });
+        if (l.completedAt) items.push({ at: l.completedAt, label: `Completed: ${l.title}` });
+      });
+      if (student.quiz?.lastAttemptAt) items.push({ at: student.quiz.lastAttemptAt, label: `Quiz attempt (avg ${student.quiz.avgScore}%)` });
+      if (student.assessment?.submittedAt) items.push({ at: student.assessment.submittedAt, label: `Assessment submitted` });
+      if (student.assessment?.reviewedAt) items.push({ at: student.assessment.reviewedAt, label: `Assessment reviewed` });
+      if (student.assessment?.gradedAt) items.push({ at: student.assessment.gradedAt, label: `Assessment graded` });
+
+      return items.filter(x => x.at).sort((a,b) => new Date(b.at) - new Date(a.at));
+    }
+
+    // ==========================================================
+    // DASHBOARD
+    // ==========================================================
+    function computeStats(list) {
+      const total = list.length;
+      const activeToday = list.filter(s => /minutes|hour/i.test(s.lastActive)).length;
+      const avg = Math.round(list.reduce((a,s) => a + (s.progress || 0), 0) / Math.max(1, total));
+
+      const pending = list.filter(s => {
+        const st = s.assessment?.status || "Not started";
+        return st === "Submitted" || st === "Resubmitted" || st === "Under review" || st === "Needs revision";
+      }).length;
+
+      $("statTotal").textContent = total;
+      $("statActive").textContent = activeToday;
+      $("statAvg").textContent = avg;
+      $("statPending").textContent = pending;
+
+      const l1 = list.filter(s => (s.lessons?.find(x=>x.key==="l1")?.pct || 0) === 100).length;
+      const l2 = list.filter(s => (s.lessons?.find(x=>x.key==="l2")?.pct || 0) === 100).length;
+      const l3 = list.filter(s => (s.lessons?.find(x=>x.key==="l3")?.pct || 0) === 100).length;
+      const l4 = list.filter(s => (s.lessons?.find(x=>x.key==="l4")?.pct || 0) === 100).length;
+
+      $("l1Done").textContent = l1;
+      $("l2Done").textContent = l2;
+      $("l3Done").textContent = l3;
+      $("l4Done").textContent = l4;
+
+      $("lTotal1").textContent = total;
+      $("lTotal2").textContent = total;
+      $("lTotal3").textContent = total;
+      $("lTotal4").textContent = total;
+
+      $("dqNeedsReview").textContent = list.filter(s => s.assessment?.status === "Submitted" || s.assessment?.status === "Resubmitted").length;
+      $("dqNeedsRevision").textContent = list.filter(s => s.assessment?.status === "Needs revision").length;
+    }
+
+    function renderDashboardRisk() {
+      const list = [...students]
+        .map(s => ({ s, reasons: atRiskReasons(s) }))
+        .filter(x => x.reasons.length)
+        .sort((a,b) => (a.s.progress - b.s.progress) || ((b.s.quiz?.failedAttempts||0) - (a.s.quiz?.failedAttempts||0)))
+        .slice(0, 5);
+
+      const wrap = $("dqRiskList");
+      if (!list.length) {
+        wrap.innerHTML = `<div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-4 text-sm text-slate-600">No students flagged by current rules.</div>`;
+        return;
+      }
+
+      wrap.innerHTML = list.map(x => `
+        <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-4 flex items-start justify-between gap-4">
+          <div class="min-w-0">
+            <p class="font-extrabold text-slate-900 truncate">${x.s.name}</p>
+            <p class="text-xs text-slate-500 font-semibold">${x.s.id} • ${x.s.course}</p>
+            <div class="mt-2 flex flex-wrap gap-2">
+              ${x.reasons.map(r => `<span class="inline-flex items-center rounded-full bg-white px-3 py-1 text-xs font-extrabold text-slate-700 ring-1 ring-black/5">${r}</span>`).join("")}
+            </div>
+          </div>
+          <button class="risk-open shrink-0 inline-flex items-center justify-center rounded-xl bg-brand-600 px-4 py-2 text-sm font-extrabold text-white shadow-softer hover:bg-brand-700"
+            data-student="${x.s.id}">Open</button>
+        </div>
+      `).join("");
+
+      wrap.querySelectorAll(".risk-open").forEach(btn => {
+        btn.addEventListener("click", () => openDetails(btn.getAttribute("data-student")));
+      });
+    }
+
+    // ==========================================================
+    // STUDENTS TABLE
+    // ==========================================================
+    function currentLearningState(student) {
+      const a = student.assessment?.status || "Not started";
+      if (a === "Needs revision") return { label: "Needs revision", cls: statePill("Needs revision") };
+      if (a === "Under review") return { label: "Under review", cls: "bg-sky-100 text-sky-800" };
+      if (a === "Submitted" || a === "Resubmitted") return { label: "Needs review", cls: "bg-emerald-100 text-emerald-800" };
+      if (a === "Graded") return { label: "Graded", cls: "bg-slate-900 text-white" };
+
+      const lessons = student.lessons || [];
+      const inprog = lessons.find(l => l.state === "In progress");
+      if (inprog) return { label: "In progress", cls: statePill("In progress") };
+      const notStarted = lessons.find(l => l.state === "Not started");
+      if (notStarted) return { label: "Not started", cls: statePill("Not started") };
+      return { label: "Completed", cls: statePill("Completed") };
+    }
+
+    function rowHTML(s) {
+      const state = currentLearningState(s);
+      const { pct: rubricPct } = rubricTotals(s.assessment?.rubric || {});
+      const rubricText = (["Graded","Under review","Needs revision"].includes(s.assessment?.status || "")) ? ` • Rubric ${rubricPct}%` : "";
+
+      return `
+        <tr class="hover:bg-slate-50/60">
+          <td class="py-5 pr-4 align-top">
+            <div class="font-extrabold text-slate-900">${s.name}</div>
+            <div class="text-xs text-slate-500 font-semibold">${s.id}</div>
+            <div class="text-xs text-slate-400">${s.email}</div>
+          </td>
+
+          <td class="py-5 pr-4 align-top">
+            <div class="text-sm font-extrabold text-slate-700">${s.course}</div>
+            <div class="text-xs text-slate-500 font-semibold mt-1">${s.year}</div>
+          </td>
+
+          <td class="py-5 pr-4 align-top">
+            <div class="text-sm font-semibold text-slate-700">${s.lastActive}</div>
+          </td>
+
+          <td class="py-5 pr-4 align-top">
+            <span class="inline-flex items-center rounded-full px-4 py-1.5 text-xs font-extrabold ring-1 ring-black/5 ${state.cls}">${state.label}</span>
+          </td>
+
+          <td class="py-5 pr-4 align-top">
+            <div class="flex items-center gap-3">
+              <div class="w-24 h-2.5 rounded-full bg-slate-200 overflow-hidden">
+                <div class="h-2.5 bg-brand-600" style="width:${s.progress}%"></div>
+              </div>
+              <span class="inline-flex items-center rounded-lg px-3 py-1 text-xs font-extrabold ring-1 ring-black/5 ${progressBadge(s.progress)}">${s.progress}%</span>
+            </div>
+          </td>
+
+          <td class="py-5 pr-4 align-top">
+            <div class="text-sm font-extrabold text-slate-700">${s.quiz?.avgScore ?? 0}%</div>
+            <div class="text-xs text-slate-500 font-semibold">Attempts: ${s.quiz?.attempts ?? 0} • Failed: ${s.quiz?.failedAttempts ?? 0}</div>
+          </td>
+
+          <td class="py-5 pr-4 align-top">
+            <span class="inline-flex items-center rounded-full px-4 py-1.5 text-xs font-extrabold ring-1 ring-black/5 ${assessPill(s.assessment?.status || "Not started")}">
+              ${s.assessment?.status || "Not started"}
+            </span>
+            <div class="text-xs text-slate-500 font-semibold mt-1">${rubricText || ""}</div>
+          </td>
+
+          <td class="py-5 align-top">
+            <button data-student="${s.id}" class="view-details inline-flex items-center justify-center rounded-xl bg-brand-100 px-4 py-2 text-sm font-extrabold text-brand-800 hover:bg-brand-200 ring-1 ring-black/5">
+              View Details
+            </button>
+          </td>
+        </tr>
+      `;
+    }
+
+    function renderStudentsTable(list) {
+      const tbody = $("studentTbody");
+      tbody.innerHTML = list.map(rowHTML).join("");
+      tbody.querySelectorAll(".view-details").forEach(btn => {
+        btn.addEventListener("click", () => openDetails(btn.getAttribute("data-student")));
+      });
+    }
+
+    function renderCourseOptions() {
+      const courses = Array.from(new Set(students.map(s => s.course))).sort();
+      const sel = $("courseFilter");
+      courses.forEach(c => {
+        const opt = document.createElement("option");
+        opt.value = c;
+        opt.textContent = c;
+        sel.appendChild(opt);
+      });
+    }
+
+    function applyStudentFilters() {
+      const q = $("searchInput").value.trim().toLowerCase();
+      const course = $("courseFilter").value;
+      const year = $("yearFilter").value;
+      const assess = $("assessmentFilter").value;
+
+      let list = [...students];
+      if (q) {
+        list = list.filter(s =>
+          s.name.toLowerCase().includes(q) ||
+          s.id.toLowerCase().includes(q) ||
+          s.email.toLowerCase().includes(q)
+        );
+      }
+      if (course !== "all") list = list.filter(s => s.course === course);
+      if (year !== "all") list = list.filter(s => s.year === year);
+      if (assess !== "all") list = list.filter(s => (s.assessment?.status || "Not started") === assess);
+
+      renderStudentsTable(list);
+      computeStats(list);
+    }
+
+    // ==========================================================
+    // LESSONS PANEL
+    // ==========================================================
+    function renderLessonStatesPanel() {
+      const grid = $("lessonStateGrid");
+      const lessonKeys = ["l1","l2","l3","l4"];
+      const keyToTitle = (k) => ({ l1:"Lesson 1", l2:"Lesson 2", l3:"Lesson 3", l4:"Lesson 4" }[k] || k);
+
+      grid.innerHTML = lessonKeys.map(k => {
+        const states = { "Not started":0, "In progress":0, "Completed":0, "Needs revision":0 };
+        students.forEach(s => {
+          const l = (s.lessons || []).find(x => x.key === k);
+          const st = l?.state || "Not started";
+          if (states[st] === undefined) states[st] = 0;
+          states[st] += 1;
+        });
+
+        return `
+          <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-6">
+            <h3 class="text-lg font-extrabold text-slate-900">${keyToTitle(k)}</h3>
+            <div class="mt-4 grid gap-3 sm:grid-cols-2">
+              ${Object.entries(states).map(([st,count]) => `
+                <div class="rounded-2xl bg-white ring-1 ring-black/5 p-4 flex items-center justify-between">
+                  <span class="inline-flex items-center rounded-full px-3 py-1 text-xs font-extrabold ring-1 ring-black/5 ${statePill(st)}">${st}</span>
+                  <span class="text-2xl font-extrabold text-slate-900">${count}</span>
+                </div>
+              `).join("")}
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    // ==========================================================
+    // DETAILS MODAL
+    // ==========================================================
+    let activeStudent = null;
+    let lastFocusEl = null;
+
+    function renderTimeline(student) {
+      const items = buildTimeline(student);
+      const wrap = $("timelineList");
+      if (!items.length) {
+        wrap.innerHTML = `<div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-4 text-sm text-slate-600">No events yet.</div>`;
+        return;
+      }
+      wrap.innerHTML = items.map(x => `
+        <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-4">
+          <p class="text-sm font-extrabold text-slate-900">${x.label}</p>
+          <p class="text-xs text-slate-500 font-semibold mt-1">${fmtDateTime(x.at)}</p>
+        </div>
+      `).join("");
+    }
+
+    function renderEngagement(student) {
+      $("dTimeSpent").textContent = `${timeSpentTotal(student)}m`;
+      $("dQuizAttempts").textContent = String(student.quiz?.attempts || 0);
+      $("dQuizFails").textContent = String(student.quiz?.failedAttempts || 0);
+      $("dDropOff").textContent = dropOffPoint(student);
+    }
+
+    function renderLessons(student) {
+      const wrap = $("lessonProgressList");
+      wrap.innerHTML = (student.lessons || []).map(l => `
+        <div class="rounded-2xl bg-white ring-1 ring-black/5 p-6">
+          <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <div class="min-w-0">
+              <p class="text-sm font-extrabold text-slate-900">${l.title}</p>
+              <p class="mt-1 text-xs text-slate-500 font-semibold">
+                Parts: ${l.partsDone} of ${l.partsTotal} • Time: ${Number(l.timeSpentMin||0)}m
+              </p>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <span class="inline-flex items-center rounded-full px-3 py-1 text-xs font-extrabold ring-1 ring-black/5 ${statePill(l.state)}">${l.state}</span>
+              <span class="text-sm font-extrabold text-brand-700">${l.pct || 0}%</span>
+            </div>
+          </div>
+
+          <div class="mt-4 h-2.5 w-full rounded-full bg-slate-200 overflow-hidden">
+            <div class="h-2.5 bg-brand-600" style="width:${clamp(Number(l.pct||0),0,100)}%"></div>
+          </div>
+
+          <div class="mt-4 grid gap-3 sm:grid-cols-3 text-xs">
+            <div class="rounded-xl bg-slate-50 ring-1 ring-black/5 p-3">
+              <p class="font-extrabold text-slate-500 uppercase">Started</p>
+              <p class="mt-1 text-sm font-extrabold text-slate-900">${fmtDateTime(l.startedAt)}</p>
+            </div>
+            <div class="rounded-xl bg-slate-50 ring-1 ring-black/5 p-3">
+              <p class="font-extrabold text-slate-500 uppercase">Completed</p>
+              <p class="mt-1 text-sm font-extrabold text-slate-900">${fmtDateTime(l.completedAt)}</p>
+            </div>
+            <div class="rounded-xl bg-slate-50 ring-1 ring-black/5 p-3">
+              <p class="font-extrabold text-slate-500 uppercase">Recommended Next</p>
+              <p class="mt-1 text-sm font-extrabold text-slate-900">${l.state === "Completed" ? "Proceed to next lesson" : "Continue remaining parts"}</p>
+            </div>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function setAssessmentMeta(student) {
+      const a = student.assessment || {};
+      const { pct } = rubricTotals(a.rubric || {});
+      const lines = [];
+      if (a.submittedAt) lines.push(`Submitted: ${fmtDateTime(a.submittedAt)}`);
+      if (a.reviewedAt) lines.push(`Reviewed: ${fmtDateTime(a.reviewedAt)}`);
+      if (a.gradedAt) lines.push(`Graded: ${fmtDateTime(a.gradedAt)}`);
+      if (pct > 0) lines.push(`Rubric: ${pct}%`);
+      $("dAssessMeta").textContent = lines.length ? lines.join(" • ") : "—";
+    }
+
+    function openDetails(studentId) {
+      const s = students.find(x => x.id === studentId);
+      if (!s) return;
+      activeStudent = s;
+      lastFocusEl = document.activeElement;
+
+      $("dHeaderSub").textContent = `${s.name} • ${s.id}`;
+      $("dAvatar").textContent = initials(s.name);
+      $("dName").textContent = s.name;
+      $("dId").textContent = s.id;
+      $("dEmail").textContent = s.email;
+
+      $("dCourse").textContent = s.course;
+      $("dYear").textContent = s.year;
+      $("dLastActive").textContent = s.lastActive;
+      $("dProgress").textContent = s.progress;
+
+      const pill = $("dStatusPill");
+      pill.textContent = s.status;
+      pill.className = `inline-flex items-center rounded-full px-4 py-1.5 text-xs font-extrabold ring-1 ring-black/5 ${statusPill(s.status)}`;
+
+      $("dAssessStatusSelect").value = s.assessment?.status || "Not started";
+      setAssessmentMeta(s);
+
+      renderTimeline(s);
+      renderEngagement(s);
+      renderLessons(s);
+
+      $("detailsModal").classList.remove("hidden");
+      document.body.classList.add("overflow-hidden");
+      $("closeDetails").focus();
+    }
+
+    function closeDetails() {
+      $("detailsModal").classList.add("hidden");
+      document.body.classList.remove("overflow-hidden");
+      lastFocusEl?.focus?.();
+    }
+    $("closeDetails").addEventListener("click", closeDetails);
+
+    function setAssessmentStatus(student, nextStatus) {
+      const a = student.assessment || (student.assessment = {});
+      a.status = nextStatus;
+
+      const now = new Date().toISOString();
+      if ((nextStatus === "Submitted" || nextStatus === "Resubmitted") && !a.submittedAt) a.submittedAt = now;
+      if (nextStatus === "Under review" && !a.reviewedAt) a.reviewedAt = now;
+      if (nextStatus === "Graded") {
+        if (!a.reviewedAt) a.reviewedAt = now;
+        if (!a.gradedAt) a.gradedAt = now;
+      }
+      saveStudents();
+      setAssessmentMeta(student);
+    }
+
+    $("dAssessStatusSelect").addEventListener("change", (e) => {
+      if (!activeStudent) return;
+      setAssessmentStatus(activeStudent, e.target.value);
+
+      computeStats(students);
+      renderDashboardRisk();
+      renderLessonStatesPanel();
+      applyStudentFilters();
+    });
+
+    // ==========================================================
+    // SUBMISSION MODAL
+    // ==========================================================
+    function setRubricUIFromStudent(student) {
+      const r = student.assessment?.rubric || {};
+      const map = [
+        ["rClarity","rClarityVal","clarity"],
+        ["rAudience","rAudienceVal","audience"],
+        ["rTone","rToneVal","tone"],
+        ["rOrg","rOrgVal","organization"],
+        ["rGrammar","rGrammarVal","grammar"],
+        ["rPurpose","rPurposeVal","purpose"],
+      ];
+
+      map.forEach(([slider, label, key]) => {
+        $(slider).value = String(Number(r[key] || 0));
+        $(label).textContent = String(Number(r[key] || 0));
+      });
+
+      $("sReviewer").value = student.assessment?.reviewer || "";
+      $("sFeedback").value = student.assessment?.feedback || "";
+      updateRubricTotals(student);
+    }
+
+    function getRubricFromUI() {
+      return {
+        clarity: Number($("rClarity").value || 0),
+        audience: Number($("rAudience").value || 0),
+        tone: Number($("rTone").value || 0),
+        organization: Number($("rOrg").value || 0),
+        grammar: Number($("rGrammar").value || 0),
+        purpose: Number($("rPurpose").value || 0),
+      };
+    }
+
+    function updateRubricTotals(student) {
+      const r = getRubricFromUI();
+      const { raw, max, pct } = rubricTotals(r);
+      $("sRubricRaw").textContent = String(raw);
+      $("sRubricMax").textContent = String(max);
+      $("sRubricPct").textContent = String(pct);
+
+      const st = student.assessment?.status || "Not started";
+      $("sStatusPill").textContent = st;
+      $("sStatusPill").className = `inline-flex items-center rounded-full px-4 py-1.5 text-xs font-extrabold ring-1 ring-black/5 ${assessPill(st)}`;
+    }
+
+    function openSubmission(student) {
+      lastFocusEl = document.activeElement;
+
+      $("sStudentLine").textContent = `${student.name} • ${student.id}`;
+      $("sDate").textContent = student.assessment?.submittedAt ? fmtDateTime(student.assessment.submittedAt) : "—";
+
+      $("sEssayPreview").textContent =
+`[Prototype submission]
+Write a professional email requesting an extension for a project deadline. Use proper tone, structure, and clarity.
+
+(Replace this with real submission content from your database later.)`;
+
+      setRubricUIFromStudent(student);
+
+      $("submissionModal").classList.remove("hidden");
+      $("closeSubmission").focus();
+    }
+
+    function closeSubmission() {
+      $("submissionModal").classList.add("hidden");
+      lastFocusEl?.focus?.();
+    }
+    $("closeSubmission").addEventListener("click", closeSubmission);
+
+    $("openSubmissionBtn").addEventListener("click", () => {
+      if (!activeStudent) return;
+      openSubmission(activeStudent);
+    });
+
+    const rubricControls = [
+      ["rClarity","rClarityVal"],
+      ["rAudience","rAudienceVal"],
+      ["rTone","rToneVal"],
+      ["rOrg","rOrgVal"],
+      ["rGrammar","rGrammarVal"],
+      ["rPurpose","rPurposeVal"],
+    ];
+    rubricControls.forEach(([slider, label]) => {
+      $(slider).addEventListener("input", () => {
+        $(label).textContent = $(slider).value;
+        if (activeStudent) updateRubricTotals(activeStudent);
+      });
+    });
+
+    function persistRubricToStudent(student) {
+      const a = student.assessment || (student.assessment = {});
+      a.reviewer = $("sReviewer").value || "";
+      a.feedback = $("sFeedback").value || "";
+      a.rubric = getRubricFromUI();
+      saveStudents();
+      setAssessmentMeta(student);
+    }
+
+    $("saveRubricBtn").addEventListener("click", () => {
+      if (!activeStudent) return;
+      persistRubricToStudent(activeStudent);
+      applyStudentFilters();
+      $("sSaveHint").textContent = "Saved!";
+      setTimeout(()=> $("sSaveHint").textContent = "Changes are stored locally (prototype).", 1200);
+    });
+
+    $("markNeedsRevisionBtn").addEventListener("click", () => {
+      if (!activeStudent) return;
+      persistRubricToStudent(activeStudent);
+      setAssessmentStatus(activeStudent, "Needs revision");
+      computeStats(students);
+      renderDashboardRisk();
+      applyStudentFilters();
+      $("sSaveHint").textContent = "Marked Needs revision.";
+      setTimeout(()=> $("sSaveHint").textContent = "Changes are stored locally (prototype).", 1200);
+    });
+
+    $("markGradedBtn").addEventListener("click", () => {
+      if (!activeStudent) return;
+      persistRubricToStudent(activeStudent);
+      setAssessmentStatus(activeStudent, "Graded");
+      computeStats(students);
+      renderDashboardRisk();
+      applyStudentFilters();
+      $("sSaveHint").textContent = "Saved & Graded.";
+      setTimeout(()=> $("sSaveHint").textContent = "Changes are stored locally (prototype).", 1200);
+    });
+
+    // ==========================================================
+    // EXPORTS
+    // ==========================================================
     function downloadCSV(filename, headers, rows) {
       const csv = [headers, ...rows].map(r => r.map(v => `"${String(v ?? "").replaceAll('"','""')}"`).join(",")).join("\n");
       const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
@@ -1045,703 +1379,93 @@
       URL.revokeObjectURL(url);
     }
 
-    // ==========================
-    // BULK SELECTION STATE
-    // ==========================
-    const selectedIds = new Set(); // persists across pagination/filter
+    $("exportBtn").addEventListener("click", () => {
+      const headers = ["Student ID","Name","Email","Course","Year","Last Active","Progress","Quiz Avg","Quiz Attempts","Quiz Failed","Assessment Status"];
+      const rows = students.map(s => [
+        s.id, s.name, s.email, s.course, s.year, s.lastActive,
+        s.progress, s.quiz?.avgScore ?? 0, s.quiz?.attempts ?? 0, s.quiz?.failedAttempts ?? 0,
+        s.assessment?.status ?? "Not started",
+      ]);
+      downloadCSV("purposive_students_export.csv", headers, rows);
+    });
 
-    function updateBulkBar() {
-      const count = selectedIds.size;
-      $("bulkCount").textContent = String(count);
-      const bar = $("bulkBar");
-      if (count > 0) bar.classList.remove("hidden");
-      else bar.classList.add("hidden");
-    }
-
-    function clearSelection() {
-      selectedIds.clear();
-      updateBulkBar();
-      renderCurrentPage(); // refresh checkboxes
-    }
-
-    function toggleSelection(id, checked) {
-      if (checked) selectedIds.add(id);
-      else selectedIds.delete(id);
-      updateBulkBar();
-      updateSelectAllCheckbox();
-    }
-
-    function selectAllOnPage(pageItems, checked) {
-      pageItems.forEach(s => {
-        if (checked) selectedIds.add(s.id);
-        else selectedIds.delete(s.id);
+    $("lessonsExportBtn").addEventListener("click", () => {
+      const headers = ["Student ID","Name","L1 State","L1 %","L2 State","L2 %","L3 State","L3 %","L4 State","L4 %"];
+      const rows = students.map(s => {
+        const by = Object.fromEntries((s.lessons||[]).map(l => [l.key, l]));
+        return [
+          s.id, s.name,
+          by.l1?.state || "—", by.l1?.pct ?? 0,
+          by.l2?.state || "—", by.l2?.pct ?? 0,
+          by.l3?.state || "—", by.l3?.pct ?? 0,
+          by.l4?.state || "—", by.l4?.pct ?? 0,
+        ];
       });
-      updateBulkBar();
-      renderCurrentPage();
-    }
+      downloadCSV("purposive_lessons_states.csv", headers, rows);
+    });
 
-    function updateSelectAllCheckbox() {
-      const cb = $("selectAllPage");
-      if (!cb) return;
-
-      const pageItems = uiState.pageItems || [];
-      const selectedOnPage = pageItems.filter(s => selectedIds.has(s.id)).length;
-
-      cb.indeterminate = selectedOnPage > 0 && selectedOnPage < pageItems.length;
-      cb.checked = pageItems.length > 0 && selectedOnPage === pageItems.length;
-    }
-
-    // ==========================
-    // DASHBOARD STATS
-    // ==========================
-    function computeStats(list) {
-      const total = list.length;
-      const activeToday = list.filter(s => /minutes|hour/i.test(s.lastLogin)).length;
-      const avgProgress = Math.round(list.reduce((a,s) => a + (s.progress || 0), 0) / Math.max(1, total));
-      const pendingAssessments = list.filter(s => (s.assessment?.status || "") !== "Submitted").length;
-
-      $("statTotal").textContent = total;
-      $("statActive").textContent = activeToday;
-      $("statAvg").textContent = avgProgress;
-      $("statPending").textContent = pendingAssessments;
-
-      $("l1Done").textContent = list.filter(s => s.l1 === 100).length;
-      $("l2Done").textContent = list.filter(s => s.l2 === 100).length;
-      $("l3Done").textContent = list.filter(s => s.l3 === 100).length;
-      $("l4Done").textContent = list.filter(s => s.l4 === 100).length;
-
-      $("lTotal1").textContent = total;
-      $("lTotal2").textContent = total;
-      $("lTotal3").textContent = total;
-      $("lTotal4").textContent = total;
-    }
-
-    // ==========================
-    // COURSE OPTIONS
-    // ==========================
-    function renderCourseOptions() {
-      const courses = Array.from(new Set(students.map(s => s.course))).sort();
-
-      const studentCourseSel = $("courseFilter");
-      courses.forEach(c => {
-        const opt = document.createElement("option");
-        opt.value = c;
-        opt.textContent = c;
-        studentCourseSel.appendChild(opt);
-      });
-
-      const lp = $("lpCourse");
-      const rp = $("rpCourse");
-      courses.forEach(c => {
-        if (lp) { const o = document.createElement("option"); o.value=c; o.textContent=c; lp.appendChild(o); }
-        if (rp) { const o = document.createElement("option"); o.value=c; o.textContent=c; rp.appendChild(o); }
-      });
-    }
-
-    // ==========================
-    // STUDENTS: RENDER
-    // ==========================
-    function rowHTML(s) {
-      const checked = selectedIds.has(s.id) ? "checked" : "";
-      return `
-        <tr class="hover:bg-slate-50/60">
-          <td class="py-5 pr-4 align-top">
-            <input class="row-check h-4 w-4 rounded border-slate-300 text-brand-600 focus:ring-brand-200"
-              type="checkbox" data-student="${s.id}" aria-label="Select ${s.name}" ${checked} />
-          </td>
-
-          <td class="py-5 pr-4 align-top">
-            <div class="font-extrabold text-slate-900">${s.name}</div>
-            <div class="text-xs text-slate-500 font-semibold">${s.id}</div>
-            ${settings.showEmail ? `<div class="text-xs text-slate-400">${s.email}</div>` : ``}
-          </td>
-
-          <td class="py-5 pr-4 align-top">
-            <div class="text-sm font-extrabold text-slate-700">${s.course}</div>
-            <div class="text-xs text-slate-500 font-semibold mt-1">${s.year}</div>
-          </td>
-
-          <td class="py-5 pr-4 align-top">
-            <div class="text-sm font-semibold text-slate-700">${s.lastLogin}</div>
-          </td>
-
-          <td class="py-5 pr-4 align-top">
-            <span class="inline-flex items-center rounded-full px-4 py-1.5 text-xs font-extrabold ring-1 ring-black/5 ${statusPill(s.status)}">${s.status}</span>
-          </td>
-
-          <td class="py-5 pr-4 align-top">
-            <div class="flex items-center gap-3">
-              <div class="w-24 h-2.5 rounded-full bg-slate-200 overflow-hidden">
-                <div class="h-2.5 bg-brand-600" style="width:${s.progress}%"></div>
-              </div>
-              <span class="inline-flex items-center rounded-lg px-3 py-1 text-xs font-extrabold ring-1 ring-black/5 ${progressBadge(s.progress)}">${s.progress}%</span>
-            </div>
-          </td>
-
-          <td class="py-5 pr-4 align-top text-sm font-extrabold text-brand-700">${s.l1}%</td>
-          <td class="py-5 pr-4 align-top text-sm font-extrabold text-brand-700">${s.l2}%</td>
-          <td class="py-5 pr-4 align-top text-sm font-extrabold text-slate-700">${s.l3}%</td>
-          <td class="py-5 pr-4 align-top text-sm font-extrabold text-slate-700">${s.l4}%</td>
-          <td class="py-5 pr-4 align-top text-sm font-extrabold text-slate-700">${s.quiz}%</td>
-
-          <td class="py-5 pr-4 align-top">
-            <span class="inline-flex items-center rounded-full px-4 py-1.5 text-xs font-extrabold ring-1 ring-black/5 ${assessPill(s.assessment.status)}">${s.assessment.status}</span>
-          </td>
-
-          <td class="py-5 align-top">
-            <button data-student="${s.id}" class="view-details inline-flex items-center justify-center rounded-xl bg-brand-100 px-4 py-2 text-sm font-extrabold text-brand-800 hover:bg-brand-200 ring-1 ring-black/5">
-              View Details
-            </button>
-          </td>
-        </tr>
-      `;
-    }
-
-    function cardHTML(s) {
-      const checked = selectedIds.has(s.id) ? "checked" : "";
-      return `
-        <div class="rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-5">
-          <div class="flex items-start justify-between gap-4">
-            <div class="min-w-0">
-              <p class="text-base font-extrabold text-slate-900 truncate">${s.name}</p>
-              <p class="text-xs text-slate-500 font-semibold">${s.id}</p>
-              ${settings.showEmail ? `<p class="text-xs text-slate-400 truncate">${s.email}</p>` : ``}
-            </div>
-
-            <div class="flex items-center gap-3">
-              <input class="row-check h-4 w-4 rounded border-slate-300 text-brand-600 focus:ring-brand-200"
-                type="checkbox" data-student="${s.id}" aria-label="Select ${s.name}" ${checked} />
-              <span class="shrink-0 inline-flex items-center rounded-full px-3 py-1 text-xs font-extrabold ring-1 ring-black/5 ${statusPill(s.status)}">${s.status}</span>
-            </div>
-          </div>
-
-          <div class="mt-4 grid grid-cols-2 gap-3 text-sm">
-            <div>
-              <p class="text-xs font-extrabold text-slate-400 uppercase">Course</p>
-              <p class="font-extrabold text-slate-800">${s.course}</p>
-            </div>
-            <div>
-              <p class="text-xs font-extrabold text-slate-400 uppercase">Year</p>
-              <p class="font-extrabold text-slate-800">${s.year}</p>
-            </div>
-            <div>
-              <p class="text-xs font-extrabold text-slate-400 uppercase">Last login</p>
-              <p class="font-extrabold text-slate-800">${s.lastLogin}</p>
-            </div>
-            <div>
-              <p class="text-xs font-extrabold text-slate-400 uppercase">Assessment</p>
-              <span class="inline-flex items-center rounded-full px-3 py-1 text-xs font-extrabold ring-1 ring-black/5 ${assessPill(s.assessment.status)}">${s.assessment.status}</span>
-            </div>
-          </div>
-
-          <div class="mt-4">
-            <div class="flex items-center justify-between">
-              <p class="text-xs font-extrabold text-slate-400 uppercase">Progress</p>
-              <span class="inline-flex items-center rounded-lg px-3 py-1 text-xs font-extrabold ring-1 ring-black/5 ${progressBadge(s.progress)}">${s.progress}%</span>
-            </div>
-            <div class="mt-2 h-2.5 w-full rounded-full bg-slate-200 overflow-hidden">
-              <div class="h-2.5 bg-brand-600" style="width:${s.progress}%"></div>
-            </div>
-          </div>
-
-          <button data-student="${s.id}" class="view-details mt-4 w-full inline-flex items-center justify-center rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-extrabold text-white shadow-softer hover:bg-brand-700 focus:outline-none focus:ring-4 focus:ring-brand-200">
-            View Details
-          </button>
-        </div>
-      `;
-    }
-
-    function wireRowCheckboxes(root) {
-      root.querySelectorAll(".row-check").forEach(cb => {
-        cb.addEventListener("change", () => {
-          const id = cb.getAttribute("data-student");
-          toggleSelection(id, cb.checked);
-        });
-      });
-    }
-
-    function renderTable(list) {
-      const tbody = $("studentTbody");
-      tbody.innerHTML = list.map(rowHTML).join("");
-
-      tbody.querySelectorAll(".view-details").forEach(btn => {
-        btn.addEventListener("click", () => openDetails(btn.getAttribute("data-student")));
-      });
-
-      wireRowCheckboxes(tbody);
-    }
-
-    function renderCards(list) {
-      const wrap = $("studentCards");
-      wrap.innerHTML = list.map(cardHTML).join("");
-
-      wrap.querySelectorAll(".view-details").forEach(btn => {
-        btn.addEventListener("click", () => openDetails(btn.getAttribute("data-student")));
-      });
-
-      wireRowCheckboxes(wrap);
-    }
-
-    // ==========================
-    // SORT + PAGINATION + QUICK FILTER
-    // ==========================
-    const uiState = {
-      sortBy: settings.sortBy,
-      sortDir: settings.sortDir,
-      pageSize: Number(settings.pageSize) || 10,
-      page: 1,
-      filtered: [...students],
-      pageItems: [],
-      quickRisk: false,
+    // ==========================================================
+    // TAB SWITCHING
+    // ==========================================================
+    const TAB_META = {
+      dashboard: { panel: "panel-dashboard", label: "Admin Dashboard" },
+      students:  { panel: "panel-students",  label: "Students" },
+      lessons:   { panel: "panel-lessons",   label: "Lessons Progress" },
     };
 
-    const DEFAULT_DIR_FOR_SORT = {
-      name: "asc",
-      lastLogin: "asc",  // smaller minutes = more recent
-      progress: "desc",
-      quiz: "desc",
-      assessment: "asc",
-      status: "asc",
-    };
-
-    function getSortValue(s, key) {
-      switch (key) {
-        case "name": return (s.name || "").toLowerCase();
-        case "lastLogin": return parseLastLoginToMinutes(s.lastLogin);
-        case "progress": return Number(s.progress || 0);
-        case "quiz": return Number(s.quiz || 0);
-        case "assessment": return (s.assessment?.status || "").toLowerCase() === "submitted" ? 0 : 1;
-        case "status": return (s.status || "").toLowerCase() === "active" ? 0 : 1;
-        default: return (s.name || "").toLowerCase();
-      }
-    }
-
-    function sortStudents(list) {
-      const dir = uiState.sortDir === "asc" ? 1 : -1;
-      const key = uiState.sortBy;
-
-      return list
-        .map((item, idx) => ({ item, idx }))
-        .sort((A,B) => {
-          const a = getSortValue(A.item, key);
-          const b = getSortValue(B.item, key);
-          let out;
-          if (typeof a === "string" && typeof b === "string") out = a.localeCompare(b);
-          else out = a === b ? 0 : (a > b ? 1 : -1);
-          if (out === 0) return A.idx - B.idx;
-          return out * dir;
-        })
-        .map(x => x.item);
-    }
-
-    function clampPage() {
-      const total = uiState.filtered.length;
-      const totalPages = Math.max(1, Math.ceil(total / uiState.pageSize));
-      uiState.page = Math.min(Math.max(1, uiState.page), totalPages);
-      return totalPages;
-    }
-
-    function updateSortIndicators() {
-      document.querySelectorAll(".sort-indicator").forEach(el => {
-        const key = el.getAttribute("data-ind");
-        if (key !== uiState.sortBy) el.textContent = "—";
-        else el.textContent = uiState.sortDir === "asc" ? "▲" : "▼";
+    function setTabActive(tabKey) {
+      Object.keys(TAB_META).forEach((k) => {
+        const panel = $(TAB_META[k].panel);
+        if (!panel) return;
+        panel.hidden = k !== tabKey;
       });
-    }
 
-    function syncSortControls() {
-      $("sortBy").value = uiState.sortBy;
-      $("sortDirBtn").textContent = uiState.sortDir === "asc" ? "Asc" : "Desc";
-      $("pageSize").value = String(uiState.pageSize);
-      updateSortIndicators();
-    }
+      $("topSubtitle").textContent = TAB_META[tabKey]?.label || "Admin Dashboard";
 
-    function renderCurrentPage() {
-      const sorted = sortStudents(uiState.filtered);
-      const totalPages = clampPage();
+      const allBtns = [
+        ...document.querySelectorAll(".tab-btn"),
+        ...document.querySelectorAll(".tab-btn-mobile"),
+      ];
 
-      const start = (uiState.page - 1) * uiState.pageSize;
-      const end = start + uiState.pageSize;
-      const pageItems = sorted.slice(start, end);
-      uiState.pageItems = pageItems;
+      allBtns.forEach((btn) => {
+        const k = btn.getAttribute("data-tab");
+        const isActive = k === tabKey;
+        btn.setAttribute("aria-selected", isActive ? "true" : "false");
 
-      renderTable(pageItems);
-      renderCards(pageItems);
-
-      $("pageInfo").textContent = `Page ${uiState.page} of ${totalPages}`;
-      $("prevPage").disabled = uiState.page <= 1;
-      $("nextPage").disabled = uiState.page >= totalPages;
-
-      $("resultsCount").textContent = `Showing ${pageItems.length} of ${uiState.filtered.length}`;
-
-      updateSortIndicators();
-      updateBulkBar();
-      updateSelectAllCheckbox();
-    }
-
-    function applyFilters() {
-      const q = $("searchInput").value.trim().toLowerCase();
-      const course = $("courseFilter").value;
-      const year = $("yearFilter").value;
-      const prog = $("progressFilter").value;
-
-      let list = [...students];
-
-      if (q) {
-        list = list.filter(s =>
-          s.name.toLowerCase().includes(q) ||
-          s.id.toLowerCase().includes(q) ||
-          (settings.showEmail && s.email.toLowerCase().includes(q))
-        );
-      }
-      if (course !== "all") list = list.filter(s => s.course === course);
-      if (year !== "all") list = list.filter(s => s.year === year);
-
-      if (prog !== "all") {
-        const [a,b] = prog.split("-").map(Number);
-        list = list.filter(s => s.progress >= a && s.progress <= b);
-      }
-
-      if (uiState.quickRisk) {
-        list = list.filter(s => riskReasons(s).length > 0);
-      }
-
-      uiState.filtered = list;
-      uiState.page = 1;
-      renderCurrentPage();
-    }
-
-    function setRiskButtonUI() {
-      const btn = $("riskFilterBtn");
-      if (uiState.quickRisk) {
-        btn.className = "inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-extrabold ring-1 ring-black/5 bg-rose-600 text-white hover:bg-rose-700";
-      } else {
-        btn.className = "inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-extrabold ring-1 ring-black/5 bg-white text-slate-700 hover:bg-slate-50";
-      }
-      $("qRiskDays").textContent = String(settings.riskInactiveDays);
-      $("qRiskProg").textContent = String(settings.riskProgressThreshold);
-    }
-
-    // Clickable sort headers
-    function wireSortableHeaders() {
-      document.querySelectorAll("th.sortable").forEach(th => {
-        th.addEventListener("click", () => {
-          const key = th.getAttribute("data-sort");
-          if (!key) return;
-
-          if (uiState.sortBy === key) uiState.sortDir = uiState.sortDir === "asc" ? "desc" : "asc";
-          else {
-            uiState.sortBy = key;
-            uiState.sortDir = DEFAULT_DIR_FOR_SORT[key] || "asc";
-          }
-
-          uiState.page = 1;
-          syncSortControls();
-          renderCurrentPage();
-        });
-      });
-    }
-
-    // ==========================
-    // BULK ACTIONS (prototype)
-    // ==========================
-    function getSelectedStudents() {
-      return students.filter(s => selectedIds.has(s.id));
-    }
-
-    function bulkSendReminder() {
-      const list = getSelectedStudents();
-      if (!list.length) return;
-      toast(`✅ Reminder queued for ${list.length} student(s) (prototype).`);
-    }
-
-    function bulkMarkInactive() {
-      const list = getSelectedStudents();
-      if (!list.length) return;
-
-      list.forEach(s => { s.status = "Inactive"; });
-      toast(`⚠ Marked ${list.length} student(s) as Inactive.`);
-      computeStats(students);
-      applyFilters(); // rerender, keeps selection
-    }
-
-    function bulkExportSelected() {
-      const list = getSelectedStudents();
-      if (!list.length) return;
-
-      const headers = ["Name","Student ID","Email","Course","Year","Last Login","Status","Progress","L1","L2","L3","L4","Quiz","Assessment"];
-      const rows = list.map(s => [s.name, s.id, s.email, s.course, s.year, s.lastLogin, s.status, s.progress, s.l1, s.l2, s.l3, s.l4, s.quiz, s.assessment?.status]);
-      downloadCSV("purposive_students_selected.csv", headers, rows);
-      toast(`⬇ Exported ${list.length} selected student(s).`);
-    }
-
-    // ==========================
-    // LESSONS (simple connected listing)
-    // ==========================
-    const LESSON_META = {
-      l1: { titlePrefix: "Lesson 1" },
-      l2: { titlePrefix: "Lesson 2" },
-      l3: { titlePrefix: "Lesson 3" },
-      l4: { titlePrefix: "Lesson 4" },
-    };
-    function getLessonDetail(student, lessonKey) {
-      const meta = LESSON_META[lessonKey];
-      const found = student.lessons?.find(l => String(l.title || "").startsWith(meta.titlePrefix));
-      return found || { pct: student[lessonKey] ?? 0, parts: "—" };
-    }
-
-    function renderLessonsList() {
-      const course = $("lpCourse").value;
-      const year = $("lpYear").value;
-      const lessonKey = $("lpLesson").value;
-      const status = $("lpStatus").value;
-
-      let list = [...students];
-      if (course !== "all") list = list.filter(s => s.course === course);
-      if (year !== "all") list = list.filter(s => s.year === year);
-
-      const decorated = list.map(s => {
-        const d = getLessonDetail(s, lessonKey);
-        const pct = Number(d.pct || 0);
-        let st = "notstarted";
-        if (pct === 100) st = "completed";
-        else if (pct > 0) st = "inprogress";
-        return { s, pct, parts: d.parts, st };
-      }).filter(x => status === "all" ? true : x.st === status);
-
-      $("lpTbody").innerHTML = decorated.map(x => `
-        <tr>
-          <td class="py-4 pr-4">
-            <div class="font-extrabold text-slate-900">${x.s.name}</div>
-            <div class="text-xs text-slate-500 font-semibold">${x.s.id}</div>
-            ${settings.showEmail ? `<div class="text-xs text-slate-400">${x.s.email}</div>` : ``}
-          </td>
-          <td class="py-4 pr-4">
-            <div class="text-sm font-extrabold text-slate-700">${x.s.course}</div>
-            <div class="text-xs text-slate-500 font-semibold mt-1">${x.s.year}</div>
-          </td>
-          <td class="py-4 pr-4 text-sm font-semibold text-slate-700">${x.s.lastLogin}</td>
-          <td class="py-4 pr-4 text-sm font-extrabold text-slate-900">${x.pct}%</td>
-          <td class="py-4 pr-4 text-sm font-extrabold text-slate-700">
-            ${x.st === "completed" ? "Completed" : x.st === "inprogress" ? "In Progress" : "Not Started"}
-          </td>
-          <td class="py-4 pr-4 text-sm font-semibold text-slate-700">${x.parts}</td>
-          <td class="py-4">
-            <button data-student="${x.s.id}" class="lp-view inline-flex items-center justify-center rounded-xl bg-brand-100 px-4 py-2 text-sm font-extrabold text-brand-800 hover:bg-brand-200 ring-1 ring-black/5">
-              View Details
-            </button>
-          </td>
-        </tr>
-      `).join("");
-
-      document.querySelectorAll(".lp-view").forEach(btn => {
-        btn.addEventListener("click", () => openDetails(btn.getAttribute("data-student")));
-      });
-    }
-
-    function exportLessonsViewCSV() {
-      const course = $("lpCourse").value;
-      const year = $("lpYear").value;
-      const lessonKey = $("lpLesson").value;
-      const status = $("lpStatus").value;
-
-      let list = [...students];
-      if (course !== "all") list = list.filter(s => s.course === course);
-      if (year !== "all") list = list.filter(s => s.year === year);
-
-      const rows = list.map(s => {
-        const d = getLessonDetail(s, lessonKey);
-        const pct = Number(d.pct || 0);
-        const st = pct === 100 ? "Completed" : pct > 0 ? "In Progress" : "Not Started";
-        if (status !== "all") {
-          const ok = (status === "completed" && st === "Completed") ||
-                     (status === "inprogress" && st === "In Progress") ||
-                     (status === "notstarted" && st === "Not Started");
-          if (!ok) return null;
+        if (isActive) {
+          btn.classList.add("bg-brand-600", "text-white", "shadow-softer");
+          btn.classList.remove("text-slate-700", "hover:bg-slate-100");
+        } else {
+          btn.classList.remove("bg-brand-600", "text-white", "shadow-softer");
+          btn.classList.add("text-slate-700", "hover:bg-slate-100");
         }
-        return [s.id, s.name, s.course, s.year, s.lastLogin, `${pct}%`, st, d.parts];
-      }).filter(Boolean);
-
-      downloadCSV(`lesson_view_${lessonKey}.csv`, ["Student ID","Name","Course","Year","Last Login","Lesson %","Status","Parts"], rows);
-      toast("⬇ Exported lesson view.");
-    }
-
-    // ==========================
-    // REPORTS (simple connected)
-    // ==========================
-    let currentReport = { title: "report", headers: [], rows: [] };
-
-    function getBaseReportList() {
-      const scope = $("rpScope").value;
-      const base = scope === "filtered" ? uiState.filtered : students;
-
-      const course = $("rpCourse").value;
-      const year = $("rpYear").value;
-
-      let list = [...base];
-      if (course !== "all") list = list.filter(s => s.course === course);
-      if (year !== "all") list = list.filter(s => s.year === year);
-      return list;
-    }
-
-    function renderReports() {
-      const base = getBaseReportList();
-      const template = $("rpTemplate").value;
-
-      let title="", headers=[], rows=[];
-
-      if (template === "at_risk") {
-        title = "At-Risk Students";
-        headers = ["Student","Course/Year","Last Login","Progress","Reasons","Action"];
-        const list = base.map(s => ({s, reasons: riskReasons(s)})).filter(x => x.reasons.length);
-        rows = list.map(x => ({
-          actionId: x.s.id,
-          cells: [
-            `${x.s.name}\n${x.s.id}${settings.showEmail ? `\n${x.s.email}` : ""}`,
-            `${x.s.course}\n${x.s.year}`,
-            x.s.lastLogin,
-            `${x.s.progress}%`,
-            x.reasons.join(" • ")
-          ]
-        }));
-      } else if (template === "assessment_pipeline") {
-        title = "Assessment Pipeline";
-        headers = ["Student","Course/Year","Assessment","Submitted At","Grade","Action"];
-        rows = base.map(s => ({
-          actionId: s.id,
-          cells: [
-            `${s.name}\n${s.id}${settings.showEmail ? `\n${s.email}` : ""}`,
-            `${s.course}\n${s.year}`,
-            s.assessment?.status || "—",
-            s.assessment?.submittedAt || "—",
-            s.assessment?.grade || "—"
-          ]
-        }));
-      } else if (template === "engagement") {
-        title = "Engagement / Activity";
-        headers = ["Student","Last Login","Active?","Progress","Action"];
-        rows = base.map(s => ({
-          actionId: s.id,
-          cells: [
-            `${s.name}\n${s.id}${settings.showEmail ? `\n${s.email}` : ""}`,
-            s.lastLogin,
-            parseLastLoginToDays(s.lastLogin) >= settings.riskInactiveDays ? "Inactive" : "Active",
-            `${s.progress}%`
-          ]
-        }));
-      } else {
-        title = "Top Performers";
-        headers = ["Student","Course/Year","Progress","Quiz","Assessment","Action"];
-        const top = [...base].sort((a,b)=> (b.progress-a.progress) || (b.quiz-a.quiz)).slice(0,15);
-        rows = top.map(s => ({
-          actionId: s.id,
-          cells: [
-            `${s.name}\n${s.id}${settings.showEmail ? `\n${s.email}` : ""}`,
-            `${s.course}\n${s.year}`,
-            `${s.progress}%`,
-            `${s.quiz}%`,
-            s.assessment?.status || "—"
-          ]
-        }));
-      }
-
-      $("rpTheadRow").innerHTML = headers.map(h => `<th class="py-3 pr-4">${h}</th>`).join("");
-      $("rpTbody").innerHTML = rows.map(r => `
-        <tr>
-          ${r.cells.map((c, idx) => `
-            <td class="py-4 pr-4 ${idx===0 ? "whitespace-pre-line font-extrabold text-slate-900" : "whitespace-pre-line text-sm font-semibold text-slate-700"}">${c}</td>
-          `).join("")}
-          <td class="py-4">
-            <button data-student="${r.actionId}" class="rp-view inline-flex items-center justify-center rounded-xl bg-brand-100 px-4 py-2 text-sm font-extrabold text-brand-800 hover:bg-brand-200 ring-1 ring-black/5">
-              View Details
-            </button>
-          </td>
-        </tr>
-      `).join("");
-
-      document.querySelectorAll(".rp-view").forEach(btn => {
-        btn.addEventListener("click", () => openDetails(btn.getAttribute("data-student")));
       });
 
-      currentReport = { title, headers: headers.filter(h => h !== "Action"), rows: rows.map(r => r.cells) };
+      if (tabKey === "dashboard") {
+        computeStats(students);
+        renderDashboardRisk();
+      }
+      if (tabKey === "lessons") renderLessonStatesPanel();
     }
 
-    function exportCurrentReportCSV() {
-      const filename = `${(currentReport.title || "report").replaceAll(" ","_").toLowerCase()}.csv`;
-      downloadCSV(filename, currentReport.headers, currentReport.rows);
-      toast("⬇ Exported report.");
+    function wireTabs() {
+      const clickHandler = (btn) => {
+        const key = btn.getAttribute("data-tab");
+        if (!TAB_META[key]) return;
+        setTabActive(key);
+        if (!$("sidebarOverlay").classList.contains("hidden")) closeSidebar();
+      };
+
+      document.querySelectorAll(".tab-btn, .tab-btn-mobile").forEach((btn) => {
+        btn.addEventListener("click", () => clickHandler(btn));
+      });
+
+      setTabActive("dashboard");
     }
 
-    // ==========================
-    // MODAL
-    // ==========================
-    let activeStudent = null;
-    let lastFocusEl = null;
-
-    function openDetails(studentId) {
-      const s = students.find(x => x.id === studentId);
-      if (!s) return;
-      activeStudent = s;
-      lastFocusEl = document.activeElement;
-
-      $("dAvatar").textContent = initials(s.name);
-      $("dName").textContent = s.name;
-      $("dId").textContent = s.id;
-      $("dEmail").textContent = s.email;
-
-      $("dCourse").textContent = s.course;
-      $("dYear").textContent = s.year;
-      $("dLastLogin").textContent = s.lastLogin;
-      $("dProgress").textContent = s.progress;
-
-      const pill = $("dStatusPill");
-      pill.textContent = s.status;
-      pill.className = `inline-flex items-center rounded-full px-4 py-1.5 text-xs font-extrabold ring-1 ring-black/5 ${statusPill(s.status)}`;
-
-      $("lessonProgressList").innerHTML = s.lessons.map(l => `
-        <div class="rounded-2xl bg-white ring-1 ring-black/5 p-6">
-          <div class="flex items-center justify-between gap-4">
-            <p class="text-sm font-extrabold text-slate-900">${l.title}</p>
-            <p class="text-sm font-extrabold text-brand-700">${l.pct}%</p>
-          </div>
-          <div class="mt-3 h-2.5 w-full rounded-full bg-slate-200 overflow-hidden">
-            <div class="h-2.5 bg-brand-600" style="width:${l.pct}%"></div>
-          </div>
-          <div class="mt-3 text-xs text-slate-500 font-semibold">${l.parts}</div>
-        </div>
-      `).join("");
-
-      const key = `pc_admin_note_${s.id}`;
-      $("adminNotes").value = localStorage.getItem(key) || "";
-
-      $("detailsModal").classList.remove("hidden");
-      document.body.classList.add("overflow-hidden");
-      $("closeDetails").focus();
-    }
-
-    function closeDetails() {
-      $("detailsModal").classList.add("hidden");
-      document.body.classList.remove("overflow-hidden");
-      lastFocusEl?.focus?.();
-    }
-
-    $("closeDetails").addEventListener("click", closeDetails);
-    $("saveNotesBtn").addEventListener("click", () => {
-      if (!activeStudent) return;
-      localStorage.setItem(`pc_admin_note_${activeStudent.id}`, $("adminNotes").value || "");
-      toast("💾 Notes saved.");
-    });
-
-    // ESC to close modal/menu
-    document.addEventListener("keydown", (e) => {
-      if (e.key !== "Escape") return;
-      if (!$("detailsModal").classList.contains("hidden")) return closeDetails();
-      if (!overlay.classList.contains("hidden")) return closeSidebar();
-    });
-
-    // ==========================
+    // ==========================================================
     // MOBILE SIDEBAR
-    // ==========================
+    // ==========================================================
     const overlay = $("sidebarOverlay");
     const openBtn = $("openSidebarBtn");
     const closeBtn = $("closeSidebarBtn");
@@ -1768,237 +1492,35 @@
     closeBtn.addEventListener("click", closeSidebar);
     overlay.addEventListener("click", (e) => { if (e.target === overlay.firstElementChild) closeSidebar(); });
 
-    // ==========================
-    // TABS
-    // ==========================
-    const TAB_META = {
-      dashboard: { panel: "panel-dashboard", label: "Admin Dashboard" },
-      students:  { panel: "panel-students",  label: "Students" },
-      lessons:   { panel: "panel-lessons",   label: "Lessons Progress" },
-      reports:   { panel: "panel-reports",   label: "Reports" },
-      settings:  { panel: "panel-settings",  label: "Settings" },
-    };
-
-    function setTabActive(tabKey) {
-      Object.keys(TAB_META).forEach((k) => {
-        const panel = $(TAB_META[k].panel);
-        panel.hidden = k !== tabKey;
-      });
-
-      $("topSubtitle").textContent = TAB_META[tabKey]?.label || "Admin Dashboard";
-      localStorage.setItem(LAST_TAB_KEY, tabKey);
-
-      const allBtns = [...document.querySelectorAll(".tab-btn"), ...document.querySelectorAll(".tab-btn-mobile")];
-
-      allBtns.forEach((btn) => {
-        const k = btn.getAttribute("data-tab");
-        const isActive = k === tabKey;
-        btn.setAttribute("aria-selected", isActive ? "true" : "false");
-
-        if (isActive) {
-          btn.classList.add("bg-brand-600", "text-white", "shadow-softer");
-          btn.classList.remove("text-slate-700", "hover:bg-slate-100");
-        } else {
-          btn.classList.remove("bg-brand-600", "text-white", "shadow-softer");
-          btn.classList.add("text-slate-700", "hover:bg-slate-100");
-        }
-      });
-
-      // refresh per tab
-      if (tabKey === "students") renderCurrentPage();
-      if (tabKey === "lessons") renderLessonsList();
-      if (tabKey === "reports") renderReports();
-      if (tabKey === "settings") renderSettingsRiskPreview();
-    }
-
-    function wireTabs() {
-      const clickHandler = (btn) => {
-        const key = btn.getAttribute("data-tab");
-        if (!TAB_META[key]) return;
-        setTabActive(key);
-        if (!overlay.classList.contains("hidden")) closeSidebar();
-      };
-
-      document.querySelectorAll(".tab-btn, .tab-btn-mobile").forEach((btn) => {
-        btn.addEventListener("click", () => clickHandler(btn));
-      });
-
-      const last = localStorage.getItem(LAST_TAB_KEY);
-      setTabActive(last && TAB_META[last] ? last : "dashboard");
-    }
-
-    // ==========================
-    // SETTINGS UI
-    // ==========================
-    function loadSettingsIntoUI() {
-      $("setPageSize").value = String(settings.pageSize);
-      $("setSortBy").value = settings.sortBy;
-      $("setSortDir").value = settings.sortDir;
-      $("setShowEmail").checked = !!settings.showEmail;
-      $("setRiskInactiveDays").value = String(settings.riskInactiveDays);
-      $("setRiskProgress").value = String(settings.riskProgressThreshold);
-      $("setRiskLesson4").checked = !!settings.riskLesson4NotStarted;
-
-      renderSettingsRiskPreview();
-      setRiskButtonUI();
-    }
-
-    function renderSettingsRiskPreview() {
-      $("setRiskPreview").textContent = String(students.filter(s => riskReasons(s).length).length);
-    }
-
-    $("saveSettingsBtn").addEventListener("click", () => {
-      settings = {
-        pageSize: Number($("setPageSize").value) || 10,
-        sortBy: $("setSortBy").value,
-        sortDir: $("setSortDir").value,
-        showEmail: $("setShowEmail").checked,
-        riskInactiveDays: Number($("setRiskInactiveDays").value) || 7,
-        riskProgressThreshold: Number($("setRiskProgress").value) || 40,
-        riskLesson4NotStarted: $("setRiskLesson4").checked,
-      };
-      saveSettings(settings);
-
-      uiState.pageSize = settings.pageSize;
-      uiState.sortBy = settings.sortBy;
-      uiState.sortDir = settings.sortDir;
-      uiState.page = 1;
-
-      syncSortControls();
-      setRiskButtonUI();
-      renderSettingsRiskPreview();
-
-      applyFilters();
-      renderReports();
-      renderLessonsList();
-
-      $("settingsHint").textContent = "Settings saved & applied.";
-      toast("✅ Settings saved.");
-      setTimeout(() => $("settingsHint").textContent = "No changes yet.", 1200);
+    // ==========================================================
+    // ESC SUPPORT
+    // ==========================================================
+    document.addEventListener("keydown", (e) => {
+      if (e.key !== "Escape") return;
+      if (!$("submissionModal").classList.contains("hidden")) return closeSubmission();
+      if (!$("detailsModal").classList.contains("hidden")) return closeDetails();
+      if (!overlay.classList.contains("hidden")) return closeSidebar();
     });
 
-    $("resetSettingsBtn").addEventListener("click", () => {
-      settings = { ...DEFAULT_SETTINGS };
-      saveSettings(settings);
-      loadSettingsIntoUI();
-
-      uiState.pageSize = settings.pageSize;
-      uiState.sortBy = settings.sortBy;
-      uiState.sortDir = settings.sortDir;
-      uiState.page = 1;
-      uiState.quickRisk = false;
-
-      syncSortControls();
-      setRiskButtonUI();
-      applyFilters();
-      renderReports();
-      renderLessonsList();
-      toast("↩ Reset settings.");
+    // ==========================================================
+    // WIRING
+    // ==========================================================
+    ["searchInput","courseFilter","yearFilter","assessmentFilter"].forEach(id => {
+      $(id).addEventListener("input", applyStudentFilters);
+      $(id).addEventListener("change", applyStudentFilters);
     });
 
-    // ==========================
-    // STUDENTS FILTERS + CONTROLS
-    // ==========================
-    function applyStudentsExportFiltered() {
-      const list = uiState.filtered?.length ? uiState.filtered : students;
-      const headers = ["Name","Student ID","Email","Course","Year","Last Login","Status","Progress","L1","L2","L3","L4","Quiz","Assessment"];
-      const rows = list.map(s => [s.name, s.id, s.email, s.course, s.year, s.lastLogin, s.status, s.progress, s.l1, s.l2, s.l3, s.l4, s.quiz, s.assessment?.status]);
-      downloadCSV("purposive_students_filtered.csv", headers, rows);
-      toast(`⬇ Exported ${list.length} filtered student(s).`);
-    }
-
-    // ==========================
-    // APPLY FILTERS WIRING
-    // ==========================
-    ["searchInput","courseFilter","yearFilter","progressFilter"].forEach(id => {
-      $(id).addEventListener("input", applyFilters);
-      $(id).addEventListener("change", applyFilters);
-    });
-
-    $("sortBy").addEventListener("change", () => {
-      uiState.sortBy = $("sortBy").value;
-      uiState.sortDir = DEFAULT_DIR_FOR_SORT[uiState.sortBy] || uiState.sortDir;
-      uiState.page = 1;
-      syncSortControls();
-      renderCurrentPage();
-    });
-
-    $("sortDirBtn").addEventListener("click", () => {
-      uiState.sortDir = uiState.sortDir === "asc" ? "desc" : "asc";
-      uiState.page = 1;
-      syncSortControls();
-      renderCurrentPage();
-    });
-
-    $("pageSize").addEventListener("change", () => {
-      uiState.pageSize = Number($("pageSize").value) || 10;
-      uiState.page = 1;
-      syncSortControls();
-      renderCurrentPage();
-    });
-
-    $("prevPage").addEventListener("click", () => { uiState.page -= 1; renderCurrentPage(); });
-    $("nextPage").addEventListener("click", () => { uiState.page += 1; renderCurrentPage(); });
-
-    $("riskFilterBtn").addEventListener("click", () => {
-      uiState.quickRisk = !uiState.quickRisk;
-      setRiskButtonUI();
-      applyFilters();
-    });
-
-    $("clearQuickBtn").addEventListener("click", () => {
-      uiState.quickRisk = false;
-      setRiskButtonUI();
-      applyFilters();
-    });
-
-    // Select-all checkbox (page)
-    $("selectAllPage").addEventListener("change", (e) => {
-      const checked = e.target.checked;
-      selectAllOnPage(uiState.pageItems || [], checked);
-    });
-
-    // Bulk bar actions
-    $("bulkClearBtn").addEventListener("click", clearSelection);
-    $("bulkReminderBtn").addEventListener("click", bulkSendReminder);
-    $("bulkMarkInactiveBtn").addEventListener("click", bulkMarkInactive);
-    $("bulkExportBtn").addEventListener("click", bulkExportSelected);
-
-    // Students export
-    $("exportBtn").addEventListener("click", applyStudentsExportFiltered);
-
-    // Lessons wiring
-    ["lpCourse","lpYear","lpLesson","lpStatus"].forEach(id => {
-      $(id).addEventListener("change", renderLessonsList);
-    });
-    $("lpExportBtn").addEventListener("click", exportLessonsViewCSV);
-
-    // Reports wiring
-    ["rpScope","rpCourse","rpYear","rpTemplate"].forEach(id => {
-      $(id).addEventListener("change", renderReports);
-    });
-    $("rpRunBtn").addEventListener("click", renderReports);
-    $("rpExportBtn").addEventListener("click", exportCurrentReportCSV);
-
-    // ==========================
+    // ==========================================================
     // INIT
-    // ==========================
+    // ==========================================================
     renderCourseOptions();
     computeStats(students);
-    loadSettingsIntoUI();
-
-    // start state
-    uiState.filtered = [...students];
-    syncSortControls();
-    wireSortableHeaders();
+    renderDashboardRisk();
+    renderLessonStatesPanel();
+    applyStudentFilters();
     wireTabs();
 
-    // initial renders
-    setRiskButtonUI();
-    updateBulkBar();
-    applyFilters();      // renders students page list
-    renderLessonsList(); // prep
-    renderReports();     // 
+    $("sRubricMax").textContent = "60";
   </script>
 </body>
 </html>
