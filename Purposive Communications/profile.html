@@ -49,7 +49,7 @@
 </head>
 
 <body class="page-bg text-slate-800">
-  <!-- NAVBAR (same style as lessons.html) -->
+  <!-- NAVBAR ✅ includes same login/user dropdown like index.html + lessons.html -->
   <header class="sticky top-0 z-50 bg-white/80 backdrop-blur border-b border-slate-100">
     <nav class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
       <!-- Brand -->
@@ -63,12 +63,84 @@
         <span class="text-lg font-semibold tracking-tight text-slate-900">Purposive Communication</span>
       </a>
 
-      <!-- Desktop Links -->
+      <!-- Desktop Links + Login/User Dropdown -->
       <div class="hidden items-center gap-8 md:flex">
         <a href="index.html" class="text-sm font-medium text-slate-700 hover:text-brand-700">Home</a>
         <a href="lessons.html" class="text-sm font-medium text-slate-700 hover:text-brand-700">Lessons</a>
         <a href="profile.html" class="text-sm font-semibold text-brand-700">Profile</a>
-        <a href="settings.html" class="text-sm font-medium text-slate-700 hover:text-brand-700">Settings</a>
+
+        <!-- Login (GUEST ONLY) -->
+        <a href="login.html" id="openLoginBtn"
+          class="auth-guest rounded-xl bg-brand-500 px-5 py-2.5 text-sm font-semibold text-white shadow-soft hover:bg-brand-600">
+          Login
+        </a>
+
+        <!-- User dropdown (LOGGED IN ONLY) -->
+        <div class="auth-user hidden relative">
+          <button id="userMenuBtn" type="button"
+            class="inline-flex items-center gap-3 rounded-2xl bg-white px-2 py-1.5 ring-1 ring-black/5 shadow-sm hover:bg-slate-50 hover:shadow-soft transition"
+            aria-haspopup="menu" aria-expanded="false">
+            <div id="navAvatar"
+              class="h-9 w-9 rounded-full bg-slate-100 ring-1 ring-black/5 flex items-center justify-center text-slate-700 font-extrabold">
+              U
+            </div>
+            <span id="navName" class="text-sm font-semibold text-slate-900">Student</span>
+            <svg id="navCaret" class="h-4 w-4 text-slate-500 transition-transform" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6" />
+            </svg>
+          </button>
+
+          <!-- Dropdown panel -->
+          <div id="userDropdown"
+            class="absolute right-[-10px] mt-3 hidden w-[290px] overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/10">
+            <div class="p-3">
+              <div class="rounded-2xl bg-brand-50 p-3 ring-1 ring-brand-100">
+                <div class="flex items-start gap-3">
+                  <div id="ddAvatar"
+                    class="h-11 w-11 rounded-full bg-slate-100 ring-1 ring-black/5 flex items-center justify-center text-slate-700 font-extrabold text-lg">
+                  </div>
+                  <div class="min-w-0">
+                    <p id="ddName" class="truncate text-sm font-extrabold text-slate-900">Student</p>
+                    <p class="text-xs font-semibold text-slate-500">Student</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-3 space-y-2 text-sm">
+                <div class="flex items-center gap-3 rounded-xl bg-white px-3 py-2 ring-1 ring-black/5">
+                  <svg class="h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 4h16v16H4V4z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M22 6l-10 7L2 6" />
+                  </svg>
+                  <span id="ddEmail" class="truncate text-slate-700">email@example.com</span>
+                </div>
+
+                <div class="flex items-center gap-3 rounded-xl bg-white px-3 py-2 ring-1 ring-black/5">
+                  <svg class="h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <rect x="3" y="5" width="18" height="14" rx="2" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M7 15h4" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M7 9h10" />
+                  </svg>
+                  <span class="text-slate-700">ID: <span id="ddId" class="font-semibold text-slate-800">—</span></span>
+                </div>
+              </div>
+
+              <div class="mt-3 grid grid-cols-2 gap-2">
+                <a href="profile.html"
+                  class="inline-flex items-center justify-center rounded-2xl bg-brand-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-900 transition">
+                  View profile
+                </a>
+                <button id="signOutBtn" type="button"
+                  class="inline-flex items-center justify-center rounded-2xl bg-slate-100 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-200 transition">
+                  Sign out
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Mobile -->
@@ -93,35 +165,61 @@
             class="rounded-xl px-3 py-2 text-sm font-semibold text-brand-700 bg-brand-50">Profile</a>
           <a href="settings.html"
             class="rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">Settings</a>
+
+          <!-- Login (GUEST ONLY) -->
+          <a href="login.html" id="openLoginMobile"
+            class="auth-guest mt-2 rounded-xl bg-brand-500 px-4 py-2.5 text-center text-sm font-semibold text-white hover:bg-brand-600">
+            Login
+          </a>
+
+          <!-- Logged-in block (MOBILE ONLY) -->
+          <div class="auth-user hidden mt-2 rounded-2xl bg-white ring-1 ring-black/5 p-3">
+            <div class="flex items-center gap-3">
+              <div id="mNavAvatar"
+                class="h-10 w-10 rounded-full bg-slate-100 ring-1 ring-black/5 flex items-center justify-center font-extrabold text-slate-700">
+                U
+              </div>
+              <div class="min-w-0">
+                <p id="mNavName" class="truncate text-sm font-extrabold text-slate-900">Student</p>
+                <p id="mNavEmail" class="truncate text-xs font-semibold text-slate-500">email@example.com</p>
+              </div>
+            </div>
+            <div class="mt-3 grid grid-cols-2 gap-2">
+              <a href="profile.html"
+                class="rounded-xl bg-brand-800 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-brand-900">View profile</a>
+              <button id="mSignOutBtn"
+                class="rounded-xl bg-slate-100 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-200">Sign out</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </header>
 
-  <!-- HERO STRIP (Profile) -->
+  <!-- HERO STRIP (Profile) ✅ smaller -->
   <section class="bg-brand-700">
-    <div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-      <h1 class="text-5xl font-extrabold tracking-tight text-white">My Profile</h1>
-      <p class="mt-5 max-w-3xl text-lg text-white/85">
+    <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+      <h1 class="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">My Profile</h1>
+      <p class="mt-3 max-w-3xl text-base text-white/85">
         View your account details and track your learning progress.
       </p>
     </div>
   </section>
 
-  <main class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-    <!-- PROFILE CARD -->
+  <main class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+    <!-- PROFILE CARD ✅ smaller -->
     <section class="overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/5">
-      <div class="h-28 bg-gradient-to-r from-brand-600 to-brand-500"></div>
+      <div class="h-20 bg-gradient-to-r from-brand-600 to-brand-500"></div>
 
-      <div class="relative px-6 pb-7 pt-0 sm:px-8">
-        <div class="-mt-14">
+      <div class="relative px-5 pb-6 pt-0 sm:px-7">
+        <div class="-mt-12">
           <!-- Clickable Avatar (Netflix-like picker) -->
           <button id="avatarBtn" type="button"
-            class="group relative h-28 w-28 rounded-3xl bg-white shadow-soft ring-1 ring-black/5 flex items-center justify-center focus:outline-none focus:ring-4 focus:ring-brand-200"
+            class="group relative h-24 w-24 rounded-3xl bg-white shadow-soft ring-1 ring-black/5 flex items-center justify-center focus:outline-none focus:ring-4 focus:ring-brand-200"
             aria-haspopup="dialog" aria-expanded="false">
             <!-- Selected avatar shows here -->
             <div id="avatarView" class="flex items-center justify-center">
-              <span class="text-4xl font-extrabold text-brand-700">MS</span>
+              <span class="text-3xl font-extrabold text-brand-700">MS</span>
             </div>
 
             <!-- Hover hint -->
@@ -132,14 +230,16 @@
           </button>
         </div>
 
-        <div class="mt-4 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+        <div class="mt-4 flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <h2 class="text-4xl font-extrabold tracking-tight text-slate-900">Maria Santos</h2>
-            <p class="mt-1 text-sm font-semibold text-slate-500">STU-2024-001</p>
+            <h2 id="profileName" class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">Maria Santos</h2>
+            <p class="mt-1 text-sm font-semibold text-slate-500">
+              <span id="profileStudentId">STU-2024-001</span>
+            </p>
           </div>
 
           <button type="button"
-            class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand-500 px-5 py-3 text-sm font-extrabold text-white shadow-soft hover:bg-brand-600 focus:outline-none focus:ring-4 focus:ring-brand-200 sm:w-auto">
+            class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand-500 px-4 py-2.5 text-sm font-extrabold text-white shadow-soft hover:bg-brand-600 focus:outline-none focus:ring-4 focus:ring-brand-200 sm:w-auto">
             <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 20h9" />
               <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4 12.5-12.5z" />
@@ -148,48 +248,48 @@
           </button>
         </div>
 
-        <div class="mt-6 grid gap-4 md:grid-cols-3">
-          <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-5">
-            <div class="flex items-center gap-4">
-              <div class="h-12 w-12 rounded-2xl bg-brand-100 ring-1 ring-black/5 flex items-center justify-center text-brand-700">
-                <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2">
+        <div class="mt-5 grid gap-3 md:grid-cols-3">
+          <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-4">
+            <div class="flex items-center gap-3">
+              <div class="h-10 w-10 rounded-2xl bg-brand-100 ring-1 ring-black/5 flex items-center justify-center text-brand-700">
+                <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M4 4h16v16H4V4z" />
                   <path stroke-linecap="round" stroke-linejoin="round" d="M22 6l-10 7L2 6" />
                 </svg>
               </div>
               <div>
-                <p class="text-xs font-extrabold text-slate-400 uppercase">Email</p>
-                <p class="mt-1 text-sm font-extrabold text-slate-900">maria.santos@student.edu</p>
+                <p class="text-[11px] font-extrabold text-slate-400 uppercase">Email</p>
+                <p id="profileEmail" class="mt-1 text-sm font-extrabold text-slate-900">maria.santos@student.edu</p>
               </div>
             </div>
           </div>
 
-          <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-5">
-            <div class="flex items-center gap-4">
-              <div class="h-12 w-12 rounded-2xl bg-emerald-100 ring-1 ring-black/5 flex items-center justify-center text-emerald-700">
-                <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2">
+          <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-4">
+            <div class="flex items-center gap-3">
+              <div class="h-10 w-10 rounded-2xl bg-emerald-100 ring-1 ring-black/5 flex items-center justify-center text-emerald-700">
+                <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M6 4h12v16H6V4z" />
                   <path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6M9 11h6M9 15h6" />
                 </svg>
               </div>
               <div>
-                <p class="text-xs font-extrabold text-slate-400 uppercase">Course</p>
-                <p class="mt-1 text-sm font-extrabold text-slate-900">BS Computer Science</p>
+                <p class="text-[11px] font-extrabold text-slate-400 uppercase">Course</p>
+                <p id="profileCourse" class="mt-1 text-sm font-extrabold text-slate-900">BS Computer Science</p>
               </div>
             </div>
           </div>
 
-          <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-5">
-            <div class="flex items-center gap-4">
-              <div class="h-12 w-12 rounded-2xl bg-sky-100 ring-1 ring-black/5 flex items-center justify-center text-sky-700">
-                <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2">
+          <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-4">
+            <div class="flex items-center gap-3">
+              <div class="h-10 w-10 rounded-2xl bg-sky-100 ring-1 ring-black/5 flex items-center justify-center text-sky-700">
+                <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5z" />
                   <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l6.16-3.422A12.083 12.083 0 0112 21.5c-2.305 0-4.454-.651-6.16-1.922L12 14z" />
                 </svg>
               </div>
               <div>
-                <p class="text-xs font-extrabold text-slate-400 uppercase">Year Level</p>
-                <p class="mt-1 text-sm font-extrabold text-slate-900">2nd Year</p>
+                <p class="text-[11px] font-extrabold text-slate-400 uppercase">Year Level</p>
+                <p id="profileYearLevel" class="mt-1 text-sm font-extrabold text-slate-900">2nd Year</p>
               </div>
             </div>
           </div>
@@ -197,108 +297,108 @@
       </div>
     </section>
 
-    <!-- OVERALL COMPLETION -->
-    <section class="mt-8 rounded-3xl bg-white shadow-soft ring-1 ring-black/5 p-7 sm:p-8">
+    <!-- OVERALL COMPLETION ✅ smaller -->
+    <section class="mt-6 rounded-3xl bg-white shadow-soft ring-1 ring-black/5 p-6 sm:p-7">
       <div class="flex items-center justify-between">
         <p class="text-sm font-extrabold text-slate-700">Overall Completion</p>
-        <p class="text-3xl font-extrabold text-brand-700">68%</p>
+        <p class="text-2xl font-extrabold text-brand-700">68%</p>
       </div>
 
-      <div class="mt-4 h-4 w-full rounded-full bg-slate-200 overflow-hidden">
-        <div class="h-4 w-[68%] rounded-full bg-brand-600"></div>
+      <div class="mt-3 h-3.5 w-full rounded-full bg-slate-200 overflow-hidden">
+        <div class="h-3.5 w-[68%] rounded-full bg-brand-600"></div>
       </div>
     </section>
 
-    <!-- MY LESSONS PROGRESS -->
-    <section class="mt-8 rounded-3xl bg-white shadow-soft ring-1 ring-black/5 p-7 sm:p-8">
-      <h2 class="text-4xl font-extrabold text-slate-900">My Lessons Progress</h2>
+    <!-- MY LESSONS PROGRESS ✅ smaller -->
+    <section class="mt-6 rounded-3xl bg-white shadow-soft ring-1 ring-black/5 p-6 sm:p-7">
+      <h2 class="text-3xl font-extrabold text-slate-900 sm:text-4xl">My Lessons Progress</h2>
 
-      <div class="mt-8 grid gap-6 lg:grid-cols-2">
+      <div class="mt-6 grid gap-5 lg:grid-cols-2">
         <!-- LESSON 1 -->
-        <div class="rounded-2xl border border-slate-200 bg-white p-7 shadow-sm min-h-[190px] flex flex-col">
+        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm min-h-[170px] flex flex-col">
           <div class="flex items-start justify-between gap-4">
             <div>
-              <p class="text-base font-extrabold text-slate-900">Lesson 1: Introduction to Communication</p>
-              <span class="mt-3 inline-flex items-center rounded-full bg-emerald-100 px-5 py-2 text-sm font-extrabold text-emerald-800">
+              <p class="text-sm font-extrabold text-slate-900">Lesson 1: Introduction to Communication</p>
+              <span class="mt-3 inline-flex items-center rounded-full bg-emerald-100 px-4 py-1.5 text-sm font-extrabold text-emerald-800">
                 Completed
               </span>
             </div>
-            <button class="rounded-2xl bg-emerald-100 px-10 py-3 text-base font-extrabold text-emerald-800 hover:bg-emerald-200">
+            <button class="rounded-2xl bg-emerald-100 px-8 py-2.5 text-sm font-extrabold text-emerald-800 hover:bg-emerald-200">
               Review
             </button>
           </div>
 
-          <div class="mt-auto pt-6 flex items-center gap-6">
-            <div class="h-3 w-full rounded-full bg-slate-200 overflow-hidden">
-              <div class="h-3 w-full bg-brand-700"></div>
+          <div class="mt-auto pt-5 flex items-center gap-5">
+            <div class="h-2.5 w-full rounded-full bg-slate-200 overflow-hidden">
+              <div class="h-2.5 w-full bg-brand-700"></div>
             </div>
-            <p class="text-base font-extrabold text-slate-900">100%</p>
+            <p class="text-sm font-extrabold text-slate-900">100%</p>
           </div>
         </div>
 
         <!-- LESSON 3 -->
-        <div class="rounded-2xl border border-slate-200 bg-white p-7 shadow-sm min-h-[190px] flex flex-col">
+        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm min-h-[170px] flex flex-col">
           <div class="flex items-start justify-between gap-4">
             <div>
-              <p class="text-base font-extrabold text-slate-900">Lesson 3: Written Communication Skills</p>
-              <span class="mt-3 inline-flex items-center rounded-full bg-sky-100 px-5 py-2 text-sm font-extrabold text-sky-800">
+              <p class="text-sm font-extrabold text-slate-900">Lesson 3: Written Communication Skills</p>
+              <span class="mt-3 inline-flex items-center rounded-full bg-sky-100 px-4 py-1.5 text-sm font-extrabold text-sky-800">
                 In Progress
               </span>
             </div>
-            <button class="rounded-2xl bg-brand-500 px-10 py-3 text-base font-extrabold text-white hover:bg-brand-600">
+            <button class="rounded-2xl bg-brand-500 px-8 py-2.5 text-sm font-extrabold text-white hover:bg-brand-600">
               Continue
             </button>
           </div>
 
-          <div class="mt-auto pt-6 flex items-center gap-6">
-            <div class="h-3 w-full rounded-full bg-slate-200 overflow-hidden">
-              <div class="h-3 w-[45%] bg-brand-700"></div>
+          <div class="mt-auto pt-5 flex items-center gap-5">
+            <div class="h-2.5 w-full rounded-full bg-slate-200 overflow-hidden">
+              <div class="h-2.5 w-[45%] bg-brand-700"></div>
             </div>
-            <p class="text-base font-extrabold text-slate-900">45%</p>
+            <p class="text-sm font-extrabold text-slate-900">45%</p>
           </div>
         </div>
 
         <!-- LESSON 2 -->
-        <div class="rounded-2xl border border-slate-200 bg-white p-7 shadow-sm min-h-[190px] flex flex-col">
+        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm min-h-[170px] flex flex-col">
           <div class="flex items-start justify-between gap-4">
             <div>
-              <p class="text-base font-extrabold text-slate-900">Lesson 2: Verbal and Non-Verbal Communication</p>
-              <span class="mt-3 inline-flex items-center rounded-full bg-emerald-100 px-5 py-2 text-sm font-extrabold text-emerald-800">
+              <p class="text-sm font-extrabold text-slate-900">Lesson 2: Verbal and Non-Verbal Communication</p>
+              <span class="mt-3 inline-flex items-center rounded-full bg-emerald-100 px-4 py-1.5 text-sm font-extrabold text-emerald-800">
                 Completed
               </span>
             </div>
-            <button class="rounded-2xl bg-emerald-100 px-10 py-3 text-base font-extrabold text-emerald-800 hover:bg-emerald-200">
+            <button class="rounded-2xl bg-emerald-100 px-8 py-2.5 text-sm font-extrabold text-emerald-800 hover:bg-emerald-200">
               Review
             </button>
           </div>
 
-          <div class="mt-auto pt-6 flex items-center gap-6">
-            <div class="h-3 w-full rounded-full bg-slate-200 overflow-hidden">
-              <div class="h-3 w-full bg-brand-700"></div>
+          <div class="mt-auto pt-5 flex items-center gap-5">
+            <div class="h-2.5 w-full rounded-full bg-slate-200 overflow-hidden">
+              <div class="h-2.5 w-full bg-brand-700"></div>
             </div>
-            <p class="text-base font-extrabold text-slate-900">100%</p>
+            <p class="text-sm font-extrabold text-slate-900">100%</p>
           </div>
         </div>
 
         <!-- LESSON 4 -->
-        <div class="rounded-2xl border border-slate-200 bg-white p-7 shadow-sm min-h-[190px] flex flex-col">
+        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm min-h-[170px] flex flex-col">
           <div class="flex items-start justify-between gap-4">
             <div>
-              <p class="text-base font-extrabold text-slate-900">Lesson 4: Presentation and Public Speaking</p>
-              <span class="mt-3 inline-flex items-center rounded-full bg-slate-100 px-5 py-2 text-sm font-extrabold text-slate-800">
+              <p class="text-sm font-extrabold text-slate-900">Lesson 4: Presentation and Public Speaking</p>
+              <span class="mt-3 inline-flex items-center rounded-full bg-slate-100 px-4 py-1.5 text-sm font-extrabold text-slate-800">
                 Not Started
               </span>
             </div>
-            <button class="rounded-2xl bg-slate-100 px-10 py-3 text-base font-extrabold text-slate-800 hover:bg-slate-200">
+            <button class="rounded-2xl bg-slate-100 px-8 py-2.5 text-sm font-extrabold text-slate-800 hover:bg-slate-200">
               Start
             </button>
           </div>
 
-          <div class="mt-auto pt-6 flex items-center gap-6">
-            <div class="h-3 w-full rounded-full bg-slate-200 overflow-hidden">
-              <div class="h-3 w-[0%] bg-brand-700"></div>
+          <div class="mt-auto pt-5 flex items-center gap-5">
+            <div class="h-2.5 w-full rounded-full bg-slate-200 overflow-hidden">
+              <div class="h-2.5 w-[0%] bg-brand-700"></div>
             </div>
-            <p class="text-base font-extrabold text-slate-900">0%</p>
+            <p class="text-sm font-extrabold text-slate-900">0%</p>
           </div>
         </div>
       </div>
@@ -351,7 +451,167 @@
   </div>
 
   <script>
-    // Mobile menu
+    // ===== Auth dropdown (same behavior as index.html / lessons.html) =====
+    const LS_AUTH = {
+      session: "pc_session",
+      users: "pc_users",
+      avatar: "pc_profile_avatar",
+      loggedIn: "pc_logged_in"
+    };
+
+    const guestEls = Array.from(document.querySelectorAll(".auth-guest"));
+    const userEls = Array.from(document.querySelectorAll(".auth-user"));
+
+    const userMenuBtn2 = document.getElementById("userMenuBtn");
+    const userDropdown2 = document.getElementById("userDropdown");
+    const navCaret = document.getElementById("navCaret");
+
+    const navName = document.getElementById("navName");
+    const navAvatar = document.getElementById("navAvatar");
+
+    const ddName = document.getElementById("ddName");
+    const ddEmail = document.getElementById("ddEmail");
+    const ddId = document.getElementById("ddId");
+    const ddAvatar = document.getElementById("ddAvatar");
+
+    const mNavName = document.getElementById("mNavName");
+    const mNavEmail = document.getElementById("mNavEmail");
+    const mNavAvatar = document.getElementById("mNavAvatar");
+
+    const signOutBtn = document.getElementById("signOutBtn");
+    const mSignOutBtn = document.getElementById("mSignOutBtn");
+
+    function safeParseJSON(v, fallback) {
+      try { return JSON.parse(v); } catch { return fallback; }
+    }
+
+    function getSession() {
+      const raw = localStorage.getItem(LS_AUTH.session);
+      return raw ? safeParseJSON(raw, null) : null;
+    }
+
+    function getUsers() {
+      const raw = localStorage.getItem(LS_AUTH.users);
+      return raw ? safeParseJSON(raw, []) : [];
+    }
+
+    function isLoggedIn() {
+      const s = getSession();
+      return !!(s && s.email);
+    }
+
+    function getInitials(name) {
+      const n = (name || "").trim();
+      if (!n) return "U";
+      const parts = n.split(/\s+/).filter(Boolean);
+      const first = parts[0]?.[0] || "U";
+      const last = parts.length > 1 ? parts[parts.length - 1][0] : "";
+      return (first + last).toUpperCase();
+    }
+
+    function getAvatarDisplay(userName) {
+      const raw = localStorage.getItem(LS_AUTH.avatar);
+      const obj = raw ? safeParseJSON(raw, null) : null;
+      if (obj && obj.type === "emoji" && obj.value) return { type: "emoji", value: obj.value };
+      return { type: "initials", value: getInitials(userName) };
+    }
+
+    function setAvatarEl(el, avatar) {
+      if (!el) return;
+      el.textContent = avatar.value;
+    }
+
+    function closeUserDropdown() {
+      if (!userDropdown2 || !userMenuBtn2) return;
+      userDropdown2.classList.add("hidden");
+      userMenuBtn2.setAttribute("aria-expanded", "false");
+      navCaret?.classList.remove("rotate-180");
+    }
+
+    function openUserDropdown() {
+      if (!userDropdown2 || !userMenuBtn2) return;
+      userDropdown2.classList.remove("hidden");
+      userMenuBtn2.setAttribute("aria-expanded", "true");
+      navCaret?.classList.add("rotate-180");
+    }
+
+    function toggleUserDropdown() {
+      if (!userDropdown2) return;
+      const isOpen = !userDropdown2.classList.contains("hidden");
+      if (isOpen) closeUserDropdown();
+      else openUserDropdown();
+    }
+
+    userMenuBtn2?.addEventListener("click", (e) => {
+      e.preventDefault();
+      toggleUserDropdown();
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!userDropdown2 || userDropdown2.classList.contains("hidden")) return;
+      const wrapper = userMenuBtn2?.parentElement;
+      if (wrapper && e.target instanceof Node && !wrapper.contains(e.target)) closeUserDropdown();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeUserDropdown();
+    });
+
+    function applyAuthUI() {
+      const loggedIn = isLoggedIn();
+      localStorage.setItem(LS_AUTH.loggedIn, loggedIn ? "true" : "false");
+
+      guestEls.forEach(el => el.classList.toggle("hidden", loggedIn));
+      userEls.forEach(el => el.classList.toggle("hidden", !loggedIn));
+
+      if (!loggedIn) {
+        closeUserDropdown();
+        return;
+      }
+
+      const session = getSession();
+      const email = (session?.email || "").toLowerCase();
+      const users = getUsers();
+      const found = users.find(u => (u.email || "").toLowerCase() === email) || null;
+
+      const fullName = (session?.fullName || found?.fullName || "Student").trim();
+      const studentId = (found?.studentId || "—").trim() || "—";
+      const avatar = getAvatarDisplay(fullName);
+
+      if (navName) navName.textContent = fullName;
+      if (ddName) ddName.textContent = fullName;
+      if (ddEmail) ddEmail.textContent = session?.email || found?.email || "";
+      if (ddId) ddId.textContent = studentId;
+
+      setAvatarEl(navAvatar, avatar);
+      setAvatarEl(ddAvatar, avatar);
+
+      if (mNavName) mNavName.textContent = fullName;
+      if (mNavEmail) mNavEmail.textContent = session?.email || found?.email || "";
+      setAvatarEl(mNavAvatar, avatar);
+    }
+
+    function signOut() {
+      localStorage.removeItem(LS_AUTH.session);
+      localStorage.setItem(LS_AUTH.loggedIn, "false");
+      closeUserDropdown();
+      applyAuthUI();
+      window.location.href = "index.html";
+    }
+
+    signOutBtn?.addEventListener("click", signOut);
+    mSignOutBtn?.addEventListener("click", signOut);
+
+    window.addEventListener("storage", (e) => {
+      if (e.key === LS_AUTH.session || e.key === LS_AUTH.avatar) {
+        applyAuthUI();
+      }
+    });
+
+    applyAuthUI();
+    window.addEventListener("focus", applyAuthUI);
+
+    // ===== Mobile menu =====
     const menuBtn = document.getElementById("menuBtn");
     const mobileMenu = document.getElementById("mobileMenu");
     menuBtn?.addEventListener("click", () => {
@@ -360,9 +620,74 @@
       menuBtn.setAttribute("aria-expanded", String(!isOpen));
     });
 
-    // --- Avatar Picker ---
-    const LS_AVATAR = "pc_profile_avatar";
+    // ===== Connect profile to registered user (pc_users) + logged-in session (pc_session) =====
+    const LS = {
+      users: "pc_users",
+      session: "pc_session",
+      avatarGlobal: "pc_profile_avatar",
+      avatarPrefix: "pc_profile_avatar:"
+    };
 
+    function getCurrentUser() {
+      const session = safeParseJSON(localStorage.getItem(LS.session), null);
+      const email = (session?.email || "").trim().toLowerCase();
+      if (!email) return { session: null, user: null, email: "" };
+
+      const users = safeParseJSON(localStorage.getItem(LS.users), []) || [];
+      const user = users.find(u => (u.email || "").trim().toLowerCase() === email) || null;
+      return { session, user, email };
+    }
+
+    function perUserAvatarKey(emailLower) {
+      return LS.avatarPrefix + (emailLower || "").toLowerCase();
+    }
+
+    function loadUserAvatar(emailLower) {
+      const raw = localStorage.getItem(perUserAvatarKey(emailLower));
+      const obj = raw ? safeParseJSON(raw, null) : null;
+      if (obj && obj.type === "emoji" && obj.value) return obj;
+      return null;
+    }
+
+    function saveUserAvatar(emailLower, avatarObj) {
+      localStorage.setItem(perUserAvatarKey(emailLower), JSON.stringify(avatarObj));
+      localStorage.setItem(LS.avatarGlobal, JSON.stringify(avatarObj));
+    }
+
+    function applyProfileData() {
+      const { session, user, email } = getCurrentUser();
+
+      if (!session || !email) {
+        alert("Please log in first.");
+        window.location.href = "login.html";
+        return;
+      }
+
+      const fullName = (session?.fullName || user?.fullName || "Student").trim() || "Student";
+      const studentId = (user?.studentId || "—").trim() || "—";
+      const course = (user?.course || "—").trim() || "—";
+      const yearLevel = (user?.yearLevel || "—").trim() || "—";
+      const displayEmail = (user?.email || session?.email || "").trim();
+
+      const elName = document.getElementById("profileName");
+      const elId = document.getElementById("profileStudentId");
+      const elEmail = document.getElementById("profileEmail");
+      const elCourse = document.getElementById("profileCourse");
+      const elYear = document.getElementById("profileYearLevel");
+
+      if (elName) elName.textContent = fullName;
+      if (elId) elId.textContent = studentId;
+      if (elEmail) elEmail.textContent = displayEmail;
+      if (elCourse) elCourse.textContent = course;
+      if (elYear) elYear.textContent = yearLevel;
+
+      const existing = loadUserAvatar(email);
+      if (existing) {
+        localStorage.setItem(LS.avatarGlobal, JSON.stringify(existing));
+      }
+    }
+
+    // --- Avatar Picker ---
     const avatarBtn = document.getElementById("avatarBtn");
     const avatarModal = document.getElementById("avatarModal");
     const avatarBackdrop = document.getElementById("avatarBackdrop");
@@ -455,8 +780,12 @@
         btn.appendChild(label);
 
         btn.addEventListener("click", () => {
-          saveAvatar({ type: "emoji", value: a.value });
+          const { email } = getCurrentUser();
+          if (!email) return;
+
+          saveUserAvatar(email, { type: "emoji", value: a.value });
           applyAvatar();
+          applyAuthUI(); // update header instantly
           closeAvatarModal();
         });
 
@@ -464,23 +793,18 @@
       });
     }
 
-    function saveAvatar(obj) {
-      localStorage.setItem(LS_AVATAR, JSON.stringify(obj));
-    }
-
-    function loadAvatar() {
-      try {
-        const raw = localStorage.getItem(LS_AVATAR);
-        return raw ? JSON.parse(raw) : null;
-      } catch {
-        return null;
-      }
-    }
-
     function applyAvatar() {
-      const av = loadAvatar();
-      if (!av) return;
-      avatarView.innerHTML = `<span class="text-4xl">${av.value}</span>`;
+      const { session, user, email } = getCurrentUser();
+      if (!email) return;
+
+      const fullName = (session?.fullName || user?.fullName || "Student").trim() || "Student";
+      const saved = loadUserAvatar(email);
+
+      if (saved && saved.type === "emoji" && saved.value) {
+        avatarView.innerHTML = `<span class="text-3xl">${saved.value}</span>`;
+      } else {
+        avatarView.innerHTML = `<span class="text-3xl font-extrabold text-brand-700">${getInitials(fullName)}</span>`;
+      }
     }
 
     // Wire up
@@ -490,7 +814,10 @@
     avatarCancel.addEventListener("click", closeAvatarModal);
     tabs.forEach(btn => btn.addEventListener("click", () => setActiveTab(btn.getAttribute("data-tab"))));
 
+    // Init
+    applyProfileData();
     applyAvatar();
+    applyAuthUI();
   </script>
 </body>
 </html>
