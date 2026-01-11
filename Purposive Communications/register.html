@@ -64,7 +64,6 @@
   </style>
 </head>
 
-<!-- FIX: items-center -> items-start so top is not cut in modal/iframe -->
 <body class="page-bg min-h-screen flex items-start justify-center px-4 py-10 text-slate-800">
   <main class="w-full max-w-md">
     <section class="overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/5">
@@ -133,7 +132,6 @@
               <input id="password" type="password" name="password" placeholder="Create a password"
                 class="w-full bg-transparent text-sm text-slate-800 placeholder:text-slate-400 outline-none" required />
 
-              <!-- Eye toggle -->
               <button id="togglePassword" type="button"
                 class="inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-500 hover:text-brand-700 hover:bg-brand-50"
                 aria-label="Show password">
@@ -158,7 +156,6 @@
               <input id="confirmPassword" type="password" name="confirm_password" placeholder="Confirm your password"
                 class="w-full bg-transparent text-sm text-slate-800 placeholder:text-slate-400 outline-none" required />
 
-              <!-- Eye toggle -->
               <button id="toggleConfirmPassword" type="button"
                 class="inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-500 hover:text-brand-700 hover:bg-brand-50"
                 aria-label="Show confirm password">
@@ -257,7 +254,13 @@
     }, { passive: true });
 
     // ===== LocalStorage registration (prototype) =====
-    const LS = { users: "pc_users", prefillEmail: "pc_prefill_email" };
+    const LS = {
+      users: "pc_users",
+      prefillEmail: "pc_prefill_email",
+
+      // ✅ flash message shown on login page
+      flash: "pc_flash_notice"
+    };
 
     function getUsers() {
       try { return JSON.parse(localStorage.getItem(LS.users)) || []; }
@@ -380,9 +383,13 @@
         users.push(newUser);
         saveUsers(users);
 
+        // Prefill login email
         localStorage.setItem(LS.prefillEmail, email);
 
-        alert("Account created successfully! Please log in.");
+        // ✅ Set toast message for login page
+        localStorage.setItem(LS.flash, "Your account has been created. Please log in.");
+
+        // ✅ No alert. Go to login (toast will slide in there)
         window.location.href = "login.html";
       }, 900);
     });
