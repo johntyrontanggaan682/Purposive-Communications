@@ -175,15 +175,15 @@
         </p>
       </div>
     </section>
-  </main>
-
-  <script type="module">
-    import { auth } from "./firebase.js";
+  </main>  <script type="module">
+    import { auth, db } from "./firebase.js";
     import {
       signInWithEmailAndPassword,
       setPersistence,
       browserSessionPersistence
     } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+
+    import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
     // Scrollbar: show only when scrolling, then hide
     let __scrollTimer;
@@ -196,11 +196,50 @@
     // Force Firebase auth to NOT use localStorage (session only)
     try { await setPersistence(auth, browserSessionPersistence); } catch (_) {}
 
+    // ✅ ROLE-BASED ACCESS
+    // Put your teacher/admin email(s) here (lowercase). Example: ["purcom2000@gmail.com"]
+    const ADMIN_EMAILS = [
+      "purcom2000@gmail.com"
+    ].map(e => String(e).toLowerCase().trim());
+
+    async function ensureUserDoc(user) {
+      const ref = doc(db, "users", user.uid);
+      const email = String(user.email || "").toLowerCase().trim();
+      const now = Date.now();
+
+      try {
+        const snap = await getDoc(ref);
+        if (snap.exists()) {
+          const data = snap.data() || {};
+          const emailIsAdmin = ADMIN_EMAILS.includes(email);
+          const currentRole = String(data.role || "").toLowerCase();
+          const shouldPromote = emailIsAdmin && !["admin", "teacher"].includes(currentRole);
+
+          await setDoc(ref, {
+            email,
+            ...(shouldPromote ? { role: "admin" } : {}),
+            lastLoginAt: now,
+            lastSeenAt: now
+          }, { merge: true });
+
+          return { ...data, email, ...(shouldPromote ? { role: "admin" } : {}) };
+        }
+
+        const role = ADMIN_EMAILS.includes(email) ? "admin" : "student";
+        const fullName = String(user.displayName || "").trim();
+        await setDoc(ref, { fullName, email, role, createdAt: now, lastLoginAt: now, lastSeenAt: now }, { merge: true });
+        return { fullName, email, role };
+      } catch (_) {
+        // If Firestore is blocked/misconfigured, fall back to student redirect
+        return { role: "student", email };
+      }
+    }
+
     function isInIframe() {
       try { return window.self !== window.top; } catch { return true; }
     }
 
-    // Toast (kept)
+    // Toast
     const flashToast = document.getElementById("flashToast");
     const flashToastMsg = document.getElementById("flashToastMsg");
     const flashToastClose = document.getElementById("flashToastClose");
@@ -224,7 +263,7 @@
       clearTimeout(__flashTimer);
     });
 
-    // ✅ Show toast + prefill email after register redirect (NO localStorage; uses URL params)
+    // Show toast + prefill email after register redirect (NO localStorage; uses URL params)
     (function initFromURL() {
       const params = new URLSearchParams(window.location.search);
 
@@ -240,7 +279,7 @@
       }
     })();
 
-    // Eye show/hide (kept)
+    // Eye show/hide
     const toggleStudentPassword = document.getElementById("toggleStudentPassword");
     const studentPasswordEye = document.getElementById("studentPasswordEye");
     const studentPasswordInput = document.getElementById("studentPassword");
@@ -263,7 +302,7 @@
       `;
     }
 
-    toggleStudentPassword.addEventListener("click", () => {
+    toggleStudentPassword?.addEventListener("click", () => {
       const isHidden = studentPasswordInput.type === "password";
       studentPasswordInput.type = isHidden ? "text" : "password";
       toggleStudentPassword.setAttribute("aria-label", isHidden ? "Hide password" : "Show password");
@@ -284,7 +323,7 @@
       loginText.textContent = isLoading ? "Logging in..." : "Login";
     }
 
-    // ✅ If in iframe: send credentials to parent so parent logs in (instant UI update)
+    // If in iframe: send credentials to parent so parent logs in (instant UI update)
     function requestParentLogin(email, password) {
       return new Promise((resolve, reject) => {
         function onMsg(ev) {
@@ -308,7 +347,7 @@
       });
     }
 
-    form.addEventListener("submit", async (e) => {
+    form?.addEventListener("submit", async (e) => {
       e.preventDefault();
       setLoading(true);
 
@@ -318,14 +357,15 @@
       try {
         if (isInIframe()) {
           await requestParentLogin(email, pass);
-          // parent will close the modal + update UI immediately
           setLoading(false);
           return;
         }
 
         // Normal login (not iframe)
-        await signInWithEmailAndPassword(auth, email, pass);
-        window.location.href = "index.html";
+        const cred = await signInWithEmailAndPassword(auth, email, pass);
+        const profile = await ensureUserDoc(cred.user);
+        const role = String(profile?.role || "student").toLowerCase();
+        window.location.href = (role === "admin" || role === "teacher") ? "admin.html" : "index.html";
       } catch (err) {
         alert(err?.message || "Login failed.");
         setLoading(false);

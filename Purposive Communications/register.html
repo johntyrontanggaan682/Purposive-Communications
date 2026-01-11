@@ -261,7 +261,13 @@
       serverTimestamp
     } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
-    // No localStorage: session only
+    
+    // ✅ ROLE-BASED ACCESS
+    // Put your teacher/admin email(s) here (lowercase). Example: ["purcom2000@gmail.com"]
+    const ADMIN_EMAILS = [
+      "purcom2000@gmail.com"
+    ].map(e => String(e).toLowerCase().trim());
+// No localStorage: session only
     try { await setPersistence(auth, browserSessionPersistence); } catch (_) {}
 
     const pw = document.getElementById("password");
@@ -342,14 +348,16 @@
 
         const ref = doc(db, "users", cred.user.uid);
 
-        // ✅ write profile
+        
+        const role = ADMIN_EMAILS.includes(String(email||"").toLowerCase().trim()) ? "admin" : "student";
+// ✅ write profile
         await setDoc(ref, {
           fullName,
           studentId: studentId || "",
           email,
           course,
           yearLevel,
-          role: "student",
+          role,
           createdAt: serverTimestamp()
         }, { merge: true });
 

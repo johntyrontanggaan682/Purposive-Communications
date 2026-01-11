@@ -98,7 +98,7 @@
       </nav>
 
       <div class="mt-auto px-4 py-5 border-t border-slate-100">
-        <a href="login.html" class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-rose-600 hover:bg-rose-50">
+        <a href="#" id="logoutLink" class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-rose-600 hover:bg-rose-50">
           <span class="h-9 w-9 rounded-xl bg-rose-50 ring-1 ring-black/5 flex items-center justify-center">
             <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M10 17l5-5-5-5" />
@@ -141,10 +141,10 @@
 
           <div class="flex items-center gap-4">
             <div class="flex items-center gap-3">
-              <div class="h-11 w-11 rounded-full bg-brand-600 text-white font-extrabold flex items-center justify-center">AD</div>
+              <div class="h-11 w-11 rounded-full bg-brand-600 text-white font-extrabold flex items-center justify-center"><span id="adminAvatar">AD</span></div>
               <div class="hidden sm:block">
-                <p class="text-sm font-extrabold text-slate-900 leading-tight">Admin User</p>
-                <p class="text-xs text-slate-500 font-semibold -mt-0.5">Administrator</p>
+                <p class="text-sm font-extrabold text-slate-900 leading-tight"><span id="adminName">Admin User</span></p>
+                <p class="text-xs text-slate-500 font-semibold -mt-0.5"><span id="adminRoleLabel">Administrator</span></p>
               </div>
             </div>
           </div>
@@ -604,7 +604,57 @@
     </div>
   </div>
 
-  <script>
+  <script type="module">
+    import { auth, db } from "./firebase.js";
+    import { onAuthStateChanged, signOut as firebaseSignOut, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+    import { collection, getDocs, query, where, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+    // Force session-only auth (no localStorage)
+    try { await setPersistence(auth, browserSessionPersistence); } catch (_) {}
+
+    async function requireAdmin() {
+      return await new Promise((resolve) => {
+        const unsub = onAuthStateChanged(auth, async (user) => {
+          if (!user) {
+            window.location.href = 'login.html?msg=' + encodeURIComponent('Please log in with an admin account.');
+            return;
+          }
+          let profile = {};
+          try {
+            const snap = await getDoc(doc(db, 'users', user.uid));
+            profile = snap.exists() ? (snap.data() || {}) : {};
+          } catch (_) {}
+          const role = String(profile.role || 'student').toLowerCase();
+          if (role !== 'admin' && role !== 'teacher') {
+            window.location.href = 'index.html';
+            return;
+          }
+          // Update header UI
+          const name = String(profile.fullName || user.displayName || 'Admin').trim() || 'Admin';
+          const email = String(profile.email || user.email || '').trim();
+          const initials = (name.split(/\s+/).filter(Boolean).slice(0,2).map(s => s[0]).join('') || (email[0] || 'A')).toUpperCase();
+          const nameEl = document.getElementById('adminName');
+          const roleEl = document.getElementById('adminRoleLabel');
+          const avEl = document.getElementById('adminAvatar');
+          if (nameEl) nameEl.textContent = name;
+          if (roleEl) roleEl.textContent = 'Administrator';
+          if (avEl) avEl.textContent = initials;
+
+          const logout = document.getElementById('logoutLink');
+          logout?.addEventListener('click', async (e) => {
+            e.preventDefault();
+            try { await firebaseSignOut(auth); } catch (_) {}
+            window.location.href = 'login.html';
+          });
+
+          unsub();
+          resolve({ user, profile });
+        });
+      });
+    }
+
+    const __admin = await requireAdmin();
+
     // ==========================================================
     // STORAGE
     // ==========================================================
@@ -794,14 +844,144 @@
       return list;
     }
 
-    function loadStudents() {
+    async function loadStudents() {
+      // Keep admin-entered assessment notes (rubric/feedback) from localStorage
+      const saved = safeJSON(localStorage.getItem(STORAGE_KEY), []);
+      const savedList = Array.isArray(saved) ? saved : [];
+      const savedByEmail = new Map(savedList.map(s => [String(s?.email || "").toLowerCase(), s]));
+
+      const tsToMs = (v) => {
+        if (!v) return 0;
+        if (typeof v === "number") return v;
+        if (v instanceof Date) return v.getTime();
+        if (typeof v === "object" && typeof v.toMillis === "function") return v.toMillis(); // Firestore Timestamp
+        return 0;
+      };
+
+      const msToISO = (ms) => (ms ? new Date(ms).toISOString() : "");
+
+      async function fetchStudentLearning(uid) {
+        const [progSnap, lessonSnap] = await Promise.all([
+          getDocs(collection(db, "users", uid, "progress")),
+          getDocs(collection(db, "users", uid, "lessons"))
+        ]);
+
+        const progressById = {};
+        progSnap.forEach(d => { progressById[d.id] = d.data() || {}; });
+
+        const lessonById = {};
+        lessonSnap.forEach(d => { lessonById[d.id] = d.data() || {}; });
+
+        const lessons = [1, 2, 3, 4].map((n) => {
+          const meta = LESSON_META[n];
+          const partsTotal = meta?.parts || 0;
+          const lKey = `lesson${n}`;
+          const lessonState = lessonById[lKey] || {};
+          const partsDoneArr = Array.isArray(lessonState.partsDone) ? lessonState.partsDone : [];
+          const partsDone = partsDoneArr.filter(Boolean).length;
+
+          const prog = progressById[lKey] || {};
+          const pctRaw = (prog.progress != null) ? prog.progress : (partsTotal ? Math.round((partsDone / partsTotal) * 100) : 0);
+          const pct = clamp(parseInt(pctRaw || 0, 10) || 0, 0, 100);
+
+          let state = "Not started";
+          if (pct === 100) state = "Completed";
+          else if (pct > 0) state = "In progress";
+
+          return {
+            key: `l${n}`,
+            title: meta?.title || `Lesson ${n}`,
+            pct,
+            partsDone,
+            partsTotal,
+            state,
+            startedAt: "",
+            completedAt: "",
+            timeSpentMin: 0,
+          };
+        });
+
+        const pctList = lessons.map(l => Number(l.pct || 0));
+        const overallProgress = pctList.length ? Math.round(pctList.reduce((a, b) => a + b, 0) / pctList.length) : 0;
+
+        // Submissions (Lesson 1 + 4) from lesson state
+        const submissions = [];
+        [1, 4].forEach((n) => {
+          const lKey = `lesson${n}`;
+          const st = lessonById[lKey] || {};
+          const fileName = String(st.assessmentFile || "").trim();
+          if (!fileName) return;
+          const submittedAt = msToISO(tsToMs(st.updatedAt) || Date.now());
+          submissions.push({ lesson: n, fileName, submittedAt, size: 0 });
+        });
+        submissions.sort((a, b) => String(b.submittedAt || "").localeCompare(String(a.submittedAt || "")));
+
+        const assessment = {
+          status: submissions.length ? "Submitted" : "Not started",
+          submittedAt: submissions[0]?.submittedAt || "",
+          reviewedAt: "",
+          gradedAt: "",
+          reviewer: "",
+          feedback: "",
+          submissions,
+          rubric: { clarity: 0, audience: 0, tone: 0, organization: 0, grammar: 0, purpose: 0 },
+        };
+
+        const quiz = { avgScore: 0, attempts: 0, failedAttempts: 0, lastAttemptAt: "" };
+
+        return { lessons, overallProgress, assessment, quiz };
+      }
+
       try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        const saved = raw ? safeJSON(raw, []) : [];
-        const base = Array.isArray(saved) ? saved : [];
-        return mergeRegisteredUsersIntoStudents(base);
-      } catch {
-        return mergeRegisteredUsersIntoStudents([]);
+        const q = query(collection(db, "users"), where("role", "==", "student"));
+        const snap = await getDocs(q);
+
+        const list = await Promise.all(snap.docs.map(async (d) => {
+          const data = d.data() || {};
+          const uid = d.id;
+
+          const email = String(data.email || "").toLowerCase().trim();
+          const name = String(data.fullName || data.displayName || "Student").trim() || "Student";
+          const course = data.course || "—";
+          const year = data.yearLevel || "—";
+          const id = String(data.studentId || `STU-${uid.slice(0, 6).toUpperCase()}`);
+
+          const lastSeenMs = tsToMs(data.lastSeenAt) || tsToMs(data.lastLoginAt) || 0;
+          const lastActive = relTimeFromTs(lastSeenMs);
+          const daysInactive = lastSeenMs ? Math.floor((Date.now() - lastSeenMs) / (24 * 60 * 60 * 1000)) : 9999;
+          const status = daysInactive <= rules.riskInactiveDays ? "Active" : "Inactive";
+
+          const learning = await fetchStudentLearning(uid);
+
+          const s = {
+            uid,
+            id,
+            name,
+            email,
+            course,
+            year,
+            lastActive,
+            status,
+            progress: learning.overallProgress,
+            lessons: learning.lessons,
+            quiz: learning.quiz,
+            assessment: learning.assessment,
+          };
+
+          // Merge admin-entered assessment notes (local only)
+          const savedRow = savedByEmail.get(email);
+          if (savedRow?.assessment) {
+            s.assessment = { ...s.assessment, ...savedRow.assessment };
+          }
+
+          return s;
+        }));
+
+        list.sort((a, b) => String(a.name).localeCompare(String(b.name)));
+        return list;
+      } catch (e) {
+        console.error("Admin loadStudents (Firestore) failed:", e);
+        return [];
       }
     }
 
@@ -809,9 +989,7 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify(students));
     }
 
-    let students = loadStudents();
-    // Persist merged/normalized view so dashboards stay updated across refresh
-    saveStudents();
+    let students = [];
 
 
     // ==========================================================
@@ -1558,20 +1736,19 @@ Write a professional email requesting an extension for a project deadline. Use p
     // ==========================================================
     // INIT
     // ==========================================================
-    renderCourseOptions();
-    computeStats(students);
-    renderDashboardRisk();
-    renderLessonStatesPanel();
-    applyStudentFilters();
-    wireTabs();
+    (async () => {
+      students = await loadStudents();
+      saveStudents();
 
-    $("sRubricMax").textContent = "60";
-  </script>
+      renderCourseOptions();
+      computeStats(students);
+      renderDashboardRisk();
+      renderLessonStatesPanel();
+      applyStudentFilters();
+      wireTabs();
 
-  <script type="module" src="./app.js"></script>
-  <script>
-    // Ensure sign-out uses Firebase
-    window.signOut = () => window.__pcSignOut?.();
+      $("sRubricMax").textContent = "60";
+    })();
   </script>
 </body>
 </html>

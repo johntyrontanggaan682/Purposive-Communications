@@ -825,6 +825,9 @@
           return;
         }
 
+
+      // Update activity for Admin Dashboard
+      try { await setDoc(doc(db, 'users', __currentUser.uid), { email: __currentUser.email || '', lastSeenAt: Date.now() }, { merge: true }); } catch (_) {}
         // ✅ Show logged-in UI instantly (no waiting for Firestore)
         __profile = null;
         applyAuthUI();

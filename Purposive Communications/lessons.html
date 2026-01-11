@@ -1,15 +1,12 @@
-<!-- lessons.html (Main Lessons Page - 4 Lesson Cards, Lock After Lesson 1) -->
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Purposive Communication | Lessons</title>
+  <title>Purposive Communication | Profile</title>
 
   <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-
   <script>
     tailwind.config = {
       theme: {
@@ -37,16 +34,22 @@
   </script>
 
   <style>
-    .page-bg {
-      background: radial-gradient(1200px 500px at 10% -10%, rgba(19, 168, 154, 0.12), transparent 55%),
-        radial-gradient(900px 450px at 100% 0%, rgba(19, 168, 154, 0.10), transparent 50%),
-        #fff;
+    .page-bg{
+      background:
+        radial-gradient(1200px 520px at 10% -10%, rgba(19,168,154,0.16), transparent 55%),
+        radial-gradient(900px 450px at 100% 0%, rgba(19,168,154,0.12), transparent 50%),
+        #E7F7F5;
     }
+    /* Simple modal animation */
+    .fade-in { animation: fadeIn .18s ease-out; }
+    .scale-in { animation: scaleIn .18s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes scaleIn { from { transform: translateY(8px) scale(.98); } to { transform: translateY(0) scale(1); } }
   </style>
 </head>
 
 <body class="page-bg text-slate-800">
-  <!-- NAVBAR -->
+  <!-- NAVBAR ✅ includes same login/user dropdown like index.html + lessons.html -->
   <header class="sticky top-0 z-50 bg-white/80 backdrop-blur border-b border-slate-100">
     <nav class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
       <!-- Brand -->
@@ -63,7 +66,7 @@
       <!-- Desktop Links + Login/User Dropdown -->
       <div class="hidden items-center gap-8 md:flex">
         <a href="index.html" class="text-sm font-medium text-slate-700 hover:text-brand-700">Home</a>
-        <a href="lessons.html" class="text-sm font-semibold text-brand-700">Lessons</a>
+        <a href="lessons.html" class="text-sm font-medium text-slate-700 hover:text-brand-700">Lessons</a>
 
         <!-- Login (GUEST ONLY) -->
         <a href="login.html" id="openLoginBtn"
@@ -156,9 +159,11 @@
           <a href="index.html"
             class="rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">Home</a>
           <a href="lessons.html"
-            class="rounded-xl px-3 py-2 text-sm font-semibold text-brand-700 bg-brand-50">Lessons</a>
+            class="rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">Lessons</a>
           <a href="profile.html"
-            class="rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">Profile</a>
+            class="rounded-xl px-3 py-2 text-sm font-semibold text-brand-700 bg-brand-50">Profile</a>
+          <a href="settings.html"
+            class="rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">Settings</a>
 
           <!-- Login (GUEST ONLY) -->
           <a href="login.html" id="openLoginMobile"
@@ -180,11 +185,9 @@
             </div>
             <div class="mt-3 grid grid-cols-2 gap-2">
               <a href="profile.html"
-                class="rounded-xl bg-brand-800 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-brand-900">View
-                profile</a>
+                class="rounded-xl bg-brand-800 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-brand-900">View profile</a>
               <button id="mSignOutBtn"
-                class="rounded-xl bg-slate-100 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-200">Sign
-                out</button>
+                class="rounded-xl bg-slate-100 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-200">Sign out</button>
             </div>
           </div>
         </div>
@@ -192,277 +195,218 @@
     </div>
   </header>
 
-  <!-- HERO STRIP ✅ smaller like profile -->
+  <!-- HERO STRIP (Profile) -->
   <section class="bg-brand-700">
     <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-      <h1 class="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">All Lessons</h1>
+      <h1 class="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">My Profile</h1>
       <p class="mt-3 max-w-3xl text-base text-white/85">
-        Master purposive communication through comprehensive, self-paced courses
+        View your account details and track your learning progress.
       </p>
     </div>
   </section>
 
-  <!-- LESSON GRID -->
   <main class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-    <div class="grid gap-10 lg:grid-cols-3">
-      <!-- LESSON 1 (Always unlocked) -->
-      <a href="lesson-1.html"
-        class="group overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-brand-200">
-        <div class="relative">
-          <img class="h-56 w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
-            src="./assets/lesson-1.jpg" alt="Introduction to Purposive Communication"
-            onerror="this.src='https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1400&q=80';" />
-          <div
-            class="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-slate-900/20 to-transparent">
-          </div>
+    <!-- PROFILE CARD -->
+    <section class="overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/5">
+      <div class="h-20 bg-gradient-to-r from-brand-600 to-brand-500"></div>
+
+      <div class="relative px-5 pb-6 pt-0 sm:px-7">
+        <div class="-mt-12">
+          <!-- Clickable Avatar -->
+          <button id="avatarBtn" type="button"
+            class="group relative h-24 w-24 rounded-3xl bg-white shadow-soft ring-1 ring-black/5 flex items-center justify-center focus:outline-none focus:ring-4 focus:ring-brand-200"
+            aria-haspopup="dialog" aria-expanded="false">
+            <div id="avatarView" class="flex items-center justify-center">
+              <span class="text-3xl font-extrabold text-brand-700">MS</span>
+            </div>
+
+            <div class="pointer-events-none absolute inset-0 rounded-3xl bg-slate-900/0 group-hover:bg-slate-900/10 transition"></div>
+            <div class="pointer-events-none absolute -bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-white px-3 py-1 text-[11px] font-extrabold text-slate-700 shadow-soft ring-1 ring-black/5 opacity-0 group-hover:opacity-100 transition">
+              Change
+            </div>
+          </button>
         </div>
 
-        <div class="p-7">
-          <h3 class="text-xl font-extrabold text-slate-900 transition-colors group-hover:text-brand-700">
-            Introduction to Purposive Communication
-          </h3>
-          <p class="mt-3 text-sm leading-relaxed text-slate-600">
-            Understanding the fundamentals of communication and its purpose in various contexts
-          </p>
+        <div class="mt-4 flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <h2 id="profileName" class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">Maria Santos</h2>
+            <p class="mt-1 text-sm font-semibold text-slate-500">
+              <span id="profileStudentId">STU-2024-001</span>
+            </p>
+          </div>
 
-          <div class="mt-6 rounded-2xl bg-slate-50 p-4 ring-1 ring-black/5">
-            <div class="flex items-center justify-between text-sm">
-              <span class="font-semibold text-slate-700">Progress</span>
-              <span id="p1Text" class="font-bold text-brand-700">0%</span>
-            </div>
-            <div class="mt-3 h-2.5 w-full rounded-full bg-slate-200 overflow-hidden">
-              <div id="p1Bar" class="h-2.5 w-0 rounded-full bg-brand-500 transition-all"></div>
+          <!-- Sign out button -->
+          <button id="profileSignOutBtn" type="button"
+            class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-slate-100 px-4 py-2.5 text-sm font-extrabold text-slate-700 ring-1 ring-black/5 hover:bg-slate-200 focus:outline-none focus:ring-4 focus:ring-brand-200 sm:w-auto">
+            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10 17l5-5-5-5" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12H3" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 00-9-9" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9 9 0 009-9" />
+            </svg>
+            Sign out
+          </button>
+        </div>
+
+        <div class="mt-5 grid gap-3 md:grid-cols-3">
+          <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-4">
+            <div class="flex items-center gap-3">
+              <div class="h-10 w-10 rounded-2xl bg-brand-100 ring-1 ring-black/5 flex items-center justify-center text-brand-700">
+                <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 4h16v16H4V4z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M22 6l-10 7L2 6" />
+                </svg>
+              </div>
+              <div>
+                <p class="text-[11px] font-extrabold text-slate-400 uppercase">Email</p>
+                <p id="profileEmail" class="mt-1 text-sm font-extrabold text-slate-900">maria.santos@student.edu</p>
+              </div>
             </div>
           </div>
 
-          <div class="mt-5 flex items-center justify-between text-sm text-slate-500">
-            <span class="inline-flex items-center gap-2">
-              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="9"></circle>
-                <path d="M12 7v5l3 2"></path>
-              </svg>
-              3 Parts
-            </span>
-            <span class="inline-flex items-center gap-2">
-              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M8 4h10a2 2 0 012 2v14H8a2 2 0 01-2-2V6a2 2 0 012-2z"></path>
-                <path d="M6 6h2"></path>
-              </svg>
-              1 Assessment
-            </span>
+          <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-4">
+            <div class="flex items-center gap-3">
+              <div class="h-10 w-10 rounded-2xl bg-emerald-100 ring-1 ring-black/5 flex items-center justify-center text-emerald-700">
+                <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 4h12v16H6V4z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6M9 11h6M9 15h6" />
+                </svg>
+              </div>
+              <div>
+                <p class="text-[11px] font-extrabold text-slate-400 uppercase">Course</p>
+                <p id="profileCourse" class="mt-1 text-sm font-extrabold text-slate-900">BS Computer Science</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-4">
+            <div class="flex items-center gap-3">
+              <div class="h-10 w-10 rounded-2xl bg-sky-100 ring-1 ring-black/5 flex items-center justify-center text-sky-700">
+                <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l6.16-3.422A12.083 12.083 0 0112 21.5c-2.305 0-4.454-.651-6.16-1.922L12 14z" />
+                </svg>
+              </div>
+              <div>
+                <p class="text-[11px] font-extrabold text-slate-400 uppercase">Year Level</p>
+                <p id="profileYearLevel" class="mt-1 text-sm font-extrabold text-slate-900">2nd Year</p>
+              </div>
+            </div>
           </div>
         </div>
-      </a>
+      </div>
+    </section>
 
-      <!-- LESSON 2 -->
-      <div id="lesson2Card" class="relative">
-        <div id="lesson2LockOverlay"
-          class="absolute inset-0 z-20 flex items-center justify-center rounded-3xl bg-white/70 backdrop-blur-sm ring-1 ring-black/5 transition-opacity duration-500 opacity-100">
-          <div class="text-center">
-            <div
-              class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-700 text-white shadow-soft">
-              <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M7 11V8a5 5 0 0110 0v3" />
-                <rect x="5" y="11" width="14" height="10" rx="2" />
-              </svg>
+    <!-- OVERALL COMPLETION -->
+    <section class="mt-6 rounded-3xl bg-white shadow-soft ring-1 ring-black/5 p-6 sm:p-7">
+      <div class="flex items-center justify-between">
+        <p class="text-sm font-extrabold text-slate-700">Overall Completion</p>
+        <p id="overallPct" class="text-2xl font-extrabold text-brand-700">0%</p>
+      </div>
+
+      <div class="mt-3 h-3.5 w-full rounded-full bg-slate-200 overflow-hidden">
+        <div id="overallBar" class="h-3.5 w-0 rounded-full bg-brand-600"></div>
+      </div>
+    </section>
+
+    <!-- MY LESSONS PROGRESS -->
+    <section class="mt-6 rounded-3xl bg-white shadow-soft ring-1 ring-black/5 p-6 sm:p-7">
+      <h2 class="text-3xl font-extrabold text-slate-900 sm:text-4xl">My Lessons Progress</h2>
+
+      <div class="mt-6 grid gap-5 lg:grid-cols-2">
+        <!-- LESSON 1 -->
+        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm min-h-[170px] flex flex-col">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <p class="text-sm font-extrabold text-slate-900">Lesson 1: Introduction to Communication</p>
+              <span id="l1Badge" class="mt-3 inline-flex items-center rounded-full bg-emerald-100 px-4 py-1.5 text-sm font-extrabold text-emerald-800">
+                Completed
+              </span>
             </div>
-            <p class="mt-4 text-sm font-semibold text-slate-900">Locked</p>
-            <p id="lesson2LockMsg" class="mt-1 text-xs text-slate-600">Finish Lesson 1 to unlock</p>
-            <button id="lockedToastBtn" type="button"
-              class="mt-4 rounded-xl bg-brand-500 px-4 py-2 text-xs font-semibold text-white hover:bg-brand-600">
-              Why is this locked?
+            <button id="l1Btn" class="rounded-2xl bg-emerald-100 px-8 py-2.5 text-sm font-extrabold text-emerald-800 hover:bg-emerald-200">
+              Review
             </button>
           </div>
-        </div>
 
-        <div id="lesson2Inner"
-          class="group overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-lg">
-          <div class="relative">
-            <img id="lesson2Img"
-              class="h-56 w-full object-cover transition-[filter,transform] duration-500 group-hover:scale-[1.02]"
-              src="./assets/lesson-2.jpg" alt="Verbal and Non-Verbal Communication"
-              onerror="this.src='https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1400&q=80';" />
-            <div
-              class="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-slate-900/20 to-transparent">
+          <div class="mt-auto pt-5 flex items-center gap-5">
+            <div class="h-2.5 w-full rounded-full bg-slate-200 overflow-hidden">
+              <div id="l1Bar" class="h-2.5 w-full bg-brand-700"></div>
             </div>
-          </div>
-
-          <div class="p-7">
-            <h3 class="text-xl font-extrabold text-slate-900 transition-colors group-hover:text-brand-700">
-              Verbal and Non-Verbal Communication
-            </h3>
-            <p class="mt-3 text-sm leading-relaxed text-slate-600">
-              Mastering the art of spoken and unspoken messages in effective communication
-            </p>
-
-            <div class="mt-6 rounded-2xl bg-slate-50 p-4 ring-1 ring-black/5">
-              <div class="flex items-center justify-between text-sm">
-                <span class="font-semibold text-slate-700">Progress</span>
-                <span id="p2Text" class="font-bold text-brand-700">0%</span>
-              </div>
-              <div class="mt-3 h-2.5 w-full rounded-full bg-slate-200 overflow-hidden">
-                <div id="p2Bar" class="h-2.5 w-0 rounded-full bg-brand-500 transition-all"></div>
-              </div>
-            </div>
-
-            <div class="mt-5 flex items-center justify-between text-sm text-slate-500">
-              <span class="inline-flex items-center gap-2">
-                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <circle cx="12" cy="12" r="9"></circle>
-                  <path d="M12 7v5l3 2"></path>
-                </svg>
-                3 Parts
-              </span>
-              <span class="inline-flex items-center gap-2">
-                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M8 4h10a2 2 0 012 2v14H8a2 2 0 01-2-2V6a2 2 0 012-2z"></path>
-                  <path d="M6 6h2"></path>
-                </svg>
-                1 Assessment
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- LESSON 3 -->
-      <div id="lesson3Card" class="relative">
-        <div id="lesson3LockOverlay"
-          class="absolute inset-0 z-20 flex items-center justify-center rounded-3xl bg-white/70 backdrop-blur-sm ring-1 ring-black/5 transition-opacity duration-500 opacity-100">
-          <div class="text-center">
-            <div
-              class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-700 text-white shadow-soft">
-              <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M7 11V8a5 5 0 0110 0v3" />
-                <rect x="5" y="11" width="14" height="10" rx="2" />
-              </svg>
-            </div>
-            <p class="mt-4 text-sm font-semibold text-slate-900">Locked</p>
-            <p id="lesson3LockMsg" class="mt-1 text-xs text-slate-600">Finish Lesson 1 to unlock</p>
+            <p id="l1Pct" class="text-sm font-extrabold text-slate-900">100%</p>
           </div>
         </div>
 
-        <div id="lesson3Inner"
-          class="group overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-lg">
-          <div class="relative">
-            <img id="lesson3Img"
-              class="h-56 w-full object-cover transition-[filter,transform] duration-500 group-hover:scale-[1.02]"
-              src="./assets/lesson-3.jpg" alt="Written Communication Excellence"
-              onerror="this.src='https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=1400&q=80';" />
-            <div
-              class="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-slate-900/20 to-transparent">
+        <!-- LESSON 3 -->
+        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm min-h-[170px] flex flex-col">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <p class="text-sm font-extrabold text-slate-900">Lesson 3: Written Communication Skills</p>
+              <span id="l3Badge" class="mt-3 inline-flex items-center rounded-full bg-sky-100 px-4 py-1.5 text-sm font-extrabold text-sky-800">
+                In Progress
+              </span>
             </div>
+            <button id="l3Btn" class="rounded-2xl bg-brand-500 px-8 py-2.5 text-sm font-extrabold text-white hover:bg-brand-600">
+              Continue
+            </button>
           </div>
 
-          <div class="p-7">
-            <h3 class="text-xl font-extrabold text-slate-900 transition-colors group-hover:text-brand-700">
-              Written Communication Excellence
-            </h3>
-            <p class="mt-3 text-sm leading-relaxed text-slate-600">
-              Developing professional writing skills for academic and business contexts
-            </p>
-
-            <div class="mt-6 rounded-2xl bg-slate-50 p-4 ring-1 ring-black/5">
-              <div class="flex items-center justify-between text-sm">
-                <span class="font-semibold text-slate-700">Progress</span>
-                <span id="p3Text" class="font-bold text-brand-700">0%</span>
-              </div>
-              <div class="mt-3 h-2.5 w-full rounded-full bg-slate-200 overflow-hidden">
-                <div id="p3Bar" class="h-2.5 w-0 rounded-full bg-brand-500 transition-all"></div>
-              </div>
+          <div class="mt-auto pt-5 flex items-center gap-5">
+            <div class="h-2.5 w-full rounded-full bg-slate-200 overflow-hidden">
+              <div id="l3Bar" class="h-2.5 w-[45%] bg-brand-700"></div>
             </div>
+            <p id="l3Pct" class="text-sm font-extrabold text-slate-900">45%</p>
+          </div>
+        </div>
 
-            <div class="mt-5 flex items-center justify-between text-sm text-slate-500">
-              <span class="inline-flex items-center gap-2">
-                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <circle cx="12" cy="12" r="9"></circle>
-                  <path d="M12 7v5l3 2"></path>
-                </svg>
-                3 Parts
-              </span>
-              <span class="inline-flex items-center gap-2">
-                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M8 4h10a2 2 0 012 2v14H8a2 2 0 01-2-2V6a2 2 0 012-2z"></path>
-                  <path d="M6 6h2"></path>
-                </svg>
-                1 Assessment
+        <!-- LESSON 2 -->
+        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm min-h-[170px] flex flex-col">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <p class="text-sm font-extrabold text-slate-900">Lesson 2: Verbal and Non-Verbal Communication</p>
+              <span id="l2Badge" class="mt-3 inline-flex items-center rounded-full bg-emerald-100 px-4 py-1.5 text-sm font-extrabold text-emerald-800">
+                Completed
               </span>
             </div>
+            <button id="l2Btn" class="rounded-2xl bg-emerald-100 px-8 py-2.5 text-sm font-extrabold text-emerald-800 hover:bg-emerald-200">
+              Review
+            </button>
+          </div>
+
+          <div class="mt-auto pt-5 flex items-center gap-5">
+            <div class="h-2.5 w-full rounded-full bg-slate-200 overflow-hidden">
+              <div id="l2Bar" class="h-2.5 w-full bg-brand-700"></div>
+            </div>
+            <p id="l2Pct" class="text-sm font-extrabold text-slate-900">100%</p>
+          </div>
+        </div>
+
+        <!-- LESSON 4 -->
+        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm min-h-[170px] flex flex-col">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <p class="text-sm font-extrabold text-slate-900">Lesson 4: Presentation and Public Speaking</p>
+              <span id="l4Badge" class="mt-3 inline-flex items-center rounded-full bg-slate-100 px-4 py-1.5 text-sm font-extrabold text-slate-800">
+                Not Started
+              </span>
+            </div>
+            <button id="l4Btn" class="rounded-2xl bg-slate-100 px-8 py-2.5 text-sm font-extrabold text-slate-800 hover:bg-slate-200">
+              Start
+            </button>
+          </div>
+
+          <div class="mt-auto pt-5 flex items-center gap-5">
+            <div class="h-2.5 w-full rounded-full bg-slate-200 overflow-hidden">
+              <div id="l4Bar" class="h-2.5 w-[0%] bg-brand-700"></div>
+            </div>
+            <p id="l4Pct" class="text-sm font-extrabold text-slate-900">0%</p>
           </div>
         </div>
       </div>
-
-      <!-- LESSON 4 -->
-      <div id="lesson4Card" class="relative">
-        <div id="lesson4LockOverlay"
-          class="absolute inset-0 z-20 flex items-center justify-center rounded-3xl bg-white/70 backdrop-blur-sm ring-1 ring-black/5 transition-opacity duration-500 opacity-100">
-          <div class="text-center">
-            <div
-              class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-700 text-white shadow-soft">
-              <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M7 11V8a5 5 0 0110 0v3" />
-                <rect x="5" y="11" width="14" height="10" rx="2" />
-              </svg>
-            </div>
-            <p class="mt-4 text-sm font-semibold text-slate-900">Locked</p>
-            <p id="lesson4LockMsg" class="mt-1 text-xs text-slate-600">Finish Lesson 1 to unlock</p>
-          </div>
-        </div>
-
-        <div id="lesson4Inner"
-          class="group overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-lg">
-          <div class="relative">
-            <img id="lesson4Img"
-              class="h-56 w-full object-cover transition-[filter,transform] duration-500 group-hover:scale-[1.02]"
-              src="./assets/lesson-4.jpg" alt="Digital and Academic Communication"
-              onerror="this.src='https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1400&q=80';" />
-            <div
-              class="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-slate-900/20 to-transparent">
-            </div>
-          </div>
-
-          <div class="p-7">
-            <h3 class="text-xl font-extrabold text-slate-900 transition-colors group-hover:text-brand-700">
-              Digital and Academic Communication
-            </h3>
-            <p class="mt-3 text-sm leading-relaxed text-slate-600">
-              Communicating effectively in digital platforms, academic settings, and online collaboration
-            </p>
-
-            <div class="mt-6 rounded-2xl bg-slate-50 p-4 ring-1 ring-black/5">
-              <div class="flex items-center justify-between text-sm">
-                <span class="font-semibold text-slate-700">Progress</span>
-                <span id="p4Text" class="font-bold text-brand-700">0%</span>
-              </div>
-              <div class="mt-3 h-2.5 w-full rounded-full bg-slate-200 overflow-hidden">
-                <div id="p4Bar" class="h-2.5 w-0 rounded-full bg-brand-500 transition-all"></div>
-              </div>
-            </div>
-
-            <div class="mt-5 flex items-center justify-between text-sm text-slate-500">
-              <span class="inline-flex items-center gap-2">
-                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <circle cx="12" cy="12" r="9"></circle>
-                  <path d="M12 7v5l3 2"></path>
-                </svg>
-                3 Parts
-              </span>
-              <span class="inline-flex items-center gap-2">
-                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M8 4h10a2 2 0 012 2v14H8a2 2 0 01-2-2V6a2 2 0 012-2z"></path>
-                  <path d="M6 6h2"></path>
-                </svg>
-                1 Assessment
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    </section>
   </main>
 
-  <!-- Toast -->
-  <div id="toast" class="fixed bottom-6 left-1/2 z-[60] hidden -translate-x-1/2">
+  <!-- ✅ Bottom popup toast (locked message) -->
+  <div id="lockToast" class="fixed bottom-6 left-1/2 z-[90] hidden -translate-x-1/2">
     <div class="flex items-start gap-3 rounded-2xl bg-slate-900 px-5 py-4 text-white shadow-soft ring-1 ring-white/10">
       <div class="mt-0.5">
         <svg class="h-5 w-5 text-brand-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -472,11 +416,11 @@
         </svg>
       </div>
       <div class="text-sm">
-        <p class="font-semibold">Locked lesson</p>
-        <p class="mt-0.5 text-white/80">Complete Lesson 1 to unlock the next lessons.</p>
+        <p class="font-semibold">Locked</p>
+        <p id="lockToastMsg" class="mt-0.5 text-white/80">Finish the required lesson to unlock.</p>
       </div>
-      <button id="toastClose" class="ml-2 rounded-lg p-1 text-white/70 hover:bg-white/10 hover:text-white"
-        aria-label="Close">
+      <button id="lockToastClose"
+        class="ml-2 rounded-lg p-1 text-white/70 hover:bg-white/10 hover:text-white" aria-label="Close">
         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
         </svg>
@@ -484,13 +428,14 @@
     </div>
   </div>
 
-  <!-- ✅ SIGN OUT CONFIRM MODAL (same style as index.html) -->
-  <div id="signOutModal" class="fixed inset-0 z-[70] hidden">
-    <div id="signOutBackdrop" class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+  <!-- ✅ SIGN OUT CONFIRM MODAL (same as index.html) -->
+  <div id="signOutModal" class="fixed inset-0 z-[95] hidden">
+    <div id="signOutBackdrop" class="absolute inset-0 bg-black/40 backdrop-blur-sm fade-in"></div>
 
     <div class="relative mx-auto flex min-h-full max-w-md items-center justify-center px-4 py-10">
-      <div class="w-full rounded-3xl bg-white shadow-soft ring-1 ring-black/10">
+      <div class="w-full rounded-3xl bg-white shadow-soft ring-1 ring-black/10 scale-in">
         <div class="p-5 sm:p-6 text-center">
+          <!-- icon on top center -->
           <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 ring-1 ring-black/5">
             <svg viewBox="0 0 24 24" class="h-6 w-6 text-brand-700" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="12" cy="12" r="10" />
@@ -499,8 +444,10 @@
             </svg>
           </div>
 
+          <!-- ✅ removed extra text "You will be logged out..." -->
           <h3 class="mt-3 text-base font-extrabold text-slate-900">Are you sure you want to sign out?</h3>
 
+          <!-- ✅ same size buttons beside -->
           <div class="mt-5 grid grid-cols-2 gap-3">
             <button id="signOutNo" type="button"
               class="w-full rounded-xl bg-slate-100 px-5 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-200 ring-1 ring-black/5">
@@ -517,7 +464,52 @@
     </div>
   </div>
 
-  <!-- ✅ Firebase logic only (NO localStorage) -->
+  <!-- AVATAR PICKER MODAL -->
+  <div id="avatarModal" class="fixed inset-0 z-[80] hidden">
+    <div id="avatarBackdrop" class="absolute inset-0 bg-slate-900/45 backdrop-blur-sm fade-in"></div>
+
+    <div class="relative mx-auto flex min-h-full max-w-3xl items-center justify-center px-4 py-10">
+      <div class="w-full rounded-3xl bg-white shadow-soft ring-1 ring-black/10 scale-in">
+        <div class="flex items-center justify-between border-b border-slate-100 px-6 py-5">
+          <div>
+            <p class="text-lg font-extrabold text-slate-900">Choose your profile icon</p>
+            <p class="mt-1 text-sm font-semibold text-slate-500">Pick one to personalize your account.</p>
+          </div>
+          <button id="avatarClose" class="rounded-xl p-2 text-slate-600 hover:bg-slate-100" aria-label="Close">
+            <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="px-6 pt-5">
+          <div class="flex flex-wrap gap-2">
+            <button data-tab="characters"
+              class="avatar-tab rounded-full bg-brand-50 px-4 py-2 text-sm font-extrabold text-brand-800 ring-1 ring-black/5">
+              Characters
+            </button>
+            <button data-tab="animals"
+              class="avatar-tab rounded-full bg-white px-4 py-2 text-sm font-extrabold text-slate-700 ring-1 ring-black/5 hover:bg-slate-50">
+              Animals
+            </button>
+          </div>
+        </div>
+
+        <div class="px-6 pb-6 pt-5">
+          <div id="avatarGrid" class="grid grid-cols-3 gap-4 sm:grid-cols-4 md:grid-cols-6"></div>
+
+          <div class="mt-6 flex items-center justify-end gap-3">
+            <button id="avatarCancel"
+              class="rounded-xl bg-slate-100 px-5 py-3 text-sm font-extrabold text-slate-800 hover:bg-slate-200">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ Firebase only (NO localStorage) -->
   <script type="module">
     import { auth, db } from "./firebase.js";
     import {
@@ -527,17 +519,30 @@
       browserSessionPersistence
     } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 
-    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+    import {
+      doc,
+      getDoc,
+      setDoc
+    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
-    // ✅ Force Firebase auth to NOT use localStorage (session only)
-    try { await setPersistence(auth, browserSessionPersistence); } catch (_) { }
+    // ✅ session only
+    try { await setPersistence(auth, browserSessionPersistence); } catch (_) {}
 
-    // ===== Auth dropdown UI (Firebase) =====
+    // ===== Mobile menu =====
+    const menuBtn = document.getElementById("menuBtn");
+    const mobileMenu = document.getElementById("mobileMenu");
+    menuBtn?.addEventListener("click", () => {
+      const isOpen = !mobileMenu.classList.contains("hidden");
+      mobileMenu.classList.toggle("hidden");
+      menuBtn.setAttribute("aria-expanded", String(!isOpen));
+    });
+
+    // ===== Auth dropdown =====
     const guestEls = Array.from(document.querySelectorAll(".auth-guest"));
     const userEls = Array.from(document.querySelectorAll(".auth-user"));
 
-    const userMenuBtn = document.getElementById("userMenuBtn");
-    const userDropdown = document.getElementById("userDropdown");
+    const userMenuBtn2 = document.getElementById("userMenuBtn");
+    const userDropdown2 = document.getElementById("userDropdown");
     const navCaret = document.getElementById("navCaret");
 
     const navName = document.getElementById("navName");
@@ -554,13 +559,12 @@
 
     const signOutBtn = document.getElementById("signOutBtn");
     const mSignOutBtn = document.getElementById("mSignOutBtn");
+    const profileSignOutBtn = document.getElementById("profileSignOutBtn");
 
     let __currentUser = null;
     let __profile = null;
 
-    function isLoggedIn() {
-      return !!__currentUser;
-    }
+    function isLoggedIn() { return !!__currentUser; }
 
     function getInitials(nameOrEmail) {
       const n = (nameOrEmail || "").trim();
@@ -570,60 +574,90 @@
       return (parts[0][0] || "U").toUpperCase();
     }
 
-    function getAvatarText(fullName, email) {
-      const emoji = (__profile?.avatar?.type === "emoji") ? (__profile?.avatar?.value || "") : "";
-      if (emoji) return emoji;
-      return getInitials(fullName || email);
-    }
-
     function setAvatarEl(el, text) {
       if (!el) return;
       el.textContent = text || "U";
     }
 
     function closeUserDropdown() {
-      if (!userDropdown || !userMenuBtn) return;
-      userDropdown.classList.add("hidden");
-      userMenuBtn.setAttribute("aria-expanded", "false");
+      if (!userDropdown2 || !userMenuBtn2) return;
+      userDropdown2.classList.add("hidden");
+      userMenuBtn2.setAttribute("aria-expanded", "false");
       navCaret?.classList.remove("rotate-180");
     }
 
     function openUserDropdown() {
-      if (!userDropdown || !userMenuBtn) return;
-      userDropdown.classList.remove("hidden");
-      userMenuBtn.setAttribute("aria-expanded", "true");
+      if (!userDropdown2 || !userMenuBtn2) return;
+      userDropdown2.classList.remove("hidden");
+      userMenuBtn2.setAttribute("aria-expanded", "true");
       navCaret?.classList.add("rotate-180");
     }
 
     function toggleUserDropdown() {
-      if (!userDropdown) return;
-      const isOpen = !userDropdown.classList.contains("hidden");
+      if (!userDropdown2) return;
+      const isOpen = !userDropdown2.classList.contains("hidden");
       if (isOpen) closeUserDropdown();
       else openUserDropdown();
     }
 
-    userMenuBtn?.addEventListener("click", (e) => {
-      e.preventDefault();
-      toggleUserDropdown();
-    });
-
+    userMenuBtn2?.addEventListener("click", (e) => { e.preventDefault(); toggleUserDropdown(); });
     document.addEventListener("click", (e) => {
-      if (!userDropdown || userDropdown.classList.contains("hidden")) return;
-      const wrapper = userMenuBtn?.parentElement; // .auth-user
+      if (!userDropdown2 || userDropdown2.classList.contains("hidden")) return;
+      const wrapper = userMenuBtn2?.parentElement;
       if (wrapper && e.target instanceof Node && !wrapper.contains(e.target)) closeUserDropdown();
     });
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeUserDropdown(); });
 
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") closeUserDropdown();
-    });
-
-    async function loadProfile(uid) {
+    // ✅ IMPORTANT: do not hide errors anymore
+    async function loadProfileOrExplain(uid) {
       try {
-        const snap = await getDoc(doc(db, "users", uid));
-        return snap.exists() ? (snap.data() || {}) : {};
-      } catch (_) {
+        const ref = doc(db, "users", uid);
+        const snap = await getDoc(ref);
+
+        if (snap.exists()) return snap.data() || {};
+
+        // If missing doc, create minimal doc so you can see that Firestore works
+        if (__currentUser) {
+          await setDoc(ref, {
+            fullName: (__currentUser.displayName || "").trim(),
+            email: (__currentUser.email || "").trim(),
+            studentId: "",
+            course: "",
+            yearLevel: "",
+            role: "student"
+          }, { merge: true });
+
+          const snap2 = await getDoc(ref);
+          return snap2.exists() ? (snap2.data() || {}) : {};
+        }
+
+        return {};
+      } catch (err) {
+        console.error("Firestore profile load failed:", err);
+        alert(
+          "PROFILE ERROR: Cannot read users/" + uid + " from Firestore.\n\n" +
+          "Open DevTools > Console to see the exact error.\n" +
+          "Common causes:\n" +
+          "1) Firestore rules not deployed in Firestore (not Realtime DB)\n" +
+          "2) Wrong firebase project config in firebase.js\n" +
+          "3) Firestore not enabled\n"
+        );
         return {};
       }
+    }
+
+    function pickProfileField(obj, keys, fallback = "") {
+      for (const k of keys) {
+        const v = obj?.[k];
+        if (typeof v === "string" && v.trim()) return v.trim();
+      }
+      return fallback;
+    }
+
+    function getAvatarDisplayText(fullName, email) {
+      const emoji = __profile?.avatar?.type === "emoji" ? (__profile?.avatar?.value || "") : "";
+      if (emoji) return { type: "emoji", value: emoji };
+      return { type: "initials", value: getInitials(fullName || email) };
     }
 
     function applyAuthUI() {
@@ -637,26 +671,317 @@
         return;
       }
 
-      const fullName = (__profile?.fullName || __currentUser?.displayName || "Student").trim() || "Student";
-      const email = (__profile?.email || __currentUser?.email || "").trim();
-      const studentId = (__profile?.studentId || "").trim();
+      const fullName = pickProfileField(__profile, ["fullName", "fullname", "name"], (__currentUser?.displayName || "Student")).trim() || "Student";
+      const email = pickProfileField(__profile, ["email"], (__currentUser?.email || "")).trim();
+      const studentId = pickProfileField(__profile, ["studentId", "studentID", "id", "student_id"], "");
 
-      const avatarText = getAvatarText(fullName, email);
+      const avatar = getAvatarDisplayText(fullName, email);
 
       if (navName) navName.textContent = fullName;
       if (ddName) ddName.textContent = fullName;
       if (ddEmail) ddEmail.textContent = email;
       if (ddId) ddId.textContent = studentId ? studentId : "—";
 
-      setAvatarEl(navAvatar, avatarText);
-      setAvatarEl(ddAvatar, avatarText);
+      setAvatarEl(navAvatar, avatar.value);
+      setAvatarEl(ddAvatar, avatar.value);
 
       if (mNavName) mNavName.textContent = fullName;
       if (mNavEmail) mNavEmail.textContent = email;
-      setAvatarEl(mNavAvatar, avatarText);
+      setAvatarEl(mNavAvatar, avatar.value);
     }
 
-    // ===== Sign out confirm modal (same as index.html) =====
+    function applyProfileData() {
+      if (!__currentUser) return;
+
+      const fullName = pickProfileField(__profile, ["fullName", "fullname", "name"], (__currentUser.displayName || "Student")).trim() || "Student";
+      const studentId = pickProfileField(__profile, ["studentId", "studentID", "id", "student_id"], "—").trim() || "—";
+      const course = pickProfileField(__profile, ["course", "courseProgram", "program", "course_name", "courseName"], "—").trim() || "—";
+      const yearLevel = pickProfileField(__profile, ["yearLevel", "year_level", "year", "yrLevel", "yearlvl"], "—").trim() || "—";
+      const email = pickProfileField(__profile, ["email"], (__currentUser.email || "")).trim();
+
+      const elName = document.getElementById("profileName");
+      const elId = document.getElementById("profileStudentId");
+      const elEmail = document.getElementById("profileEmail");
+      const elCourse = document.getElementById("profileCourse");
+      const elYear = document.getElementById("profileYearLevel");
+
+      if (elName) elName.textContent = fullName;
+      if (elId) elId.textContent = studentId;
+      if (elEmail) elEmail.textContent = email;
+      if (elCourse) elCourse.textContent = course;
+      if (elYear) elYear.textContent = yearLevel;
+    }
+
+    // ===== Lesson progress (unchanged logic, Firestore) =====
+    const PROGRESS_DOCS = { 1: "lesson1", 2: "lesson2", 3: "lesson3", 4: "lesson4" };
+    function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
+
+    async function loadLessonProgress(uid) {
+      const empty = {
+        1: { progress: 0, complete: false },
+        2: { progress: 0, complete: false },
+        3: { progress: 0, complete: false },
+        4: { progress: 0, complete: false },
+      };
+
+      try {
+        const refs = [1,2,3,4].map(n => doc(db, "users", uid, "progress", PROGRESS_DOCS[n]));
+        const snaps = await Promise.all(refs.map(r => getDoc(r)));
+
+        snaps.forEach((snap, idx) => {
+          const n = idx + 1;
+          if (!snap.exists()) return;
+          const d = snap.data() || {};
+          const p = typeof d.progress === "number" ? d.progress : (parseInt(d.progress || "0", 10) || 0);
+          empty[n] = { progress: clamp(p, 0, 100), complete: !!d.complete };
+        });
+
+        return empty;
+      } catch (err) {
+        console.error("Firestore progress load failed:", err);
+        return empty;
+      }
+    }
+
+    function getIsComplete(state, n) {
+      const s = state[n] || { progress: 0, complete: false };
+      return !!s.complete || (s.progress >= 100);
+    }
+
+    function setBadgeAndBtn(lessonNo, badgeEl, btnEl, pct, isComplete, isLocked) {
+      if (!badgeEl || !btnEl) return;
+
+      if (isLocked) {
+        badgeEl.textContent = "Locked";
+        badgeEl.className = "mt-3 inline-flex items-center rounded-full bg-slate-100 px-4 py-1.5 text-sm font-extrabold text-slate-800";
+      } else if (isComplete) {
+        badgeEl.textContent = "Completed";
+        badgeEl.className = "mt-3 inline-flex items-center rounded-full bg-emerald-100 px-4 py-1.5 text-sm font-extrabold text-emerald-800";
+      } else if (pct > 0) {
+        badgeEl.textContent = "In Progress";
+        badgeEl.className = "mt-3 inline-flex items-center rounded-full bg-sky-100 px-4 py-1.5 text-sm font-extrabold text-sky-800";
+      } else {
+        badgeEl.textContent = "Not Started";
+        badgeEl.className = "mt-3 inline-flex items-center rounded-full bg-slate-100 px-4 py-1.5 text-sm font-extrabold text-slate-800";
+      }
+
+      if (isLocked) {
+        btnEl.textContent = "Locked";
+        btnEl.disabled = false;
+        btnEl.className = "rounded-2xl bg-slate-100 px-8 py-2.5 text-sm font-extrabold text-slate-800 hover:bg-slate-200";
+        btnEl.onclick = () => showLockToast(`Finish Lesson ${lessonNo - 1} first to unlock Lesson ${lessonNo}.`);
+        return;
+      }
+
+      if (isComplete) {
+        btnEl.textContent = "Review";
+        btnEl.className = "rounded-2xl bg-emerald-100 px-8 py-2.5 text-sm font-extrabold text-emerald-800 hover:bg-emerald-200";
+      } else if (pct > 0) {
+        btnEl.textContent = "Continue";
+        btnEl.className = "rounded-2xl bg-brand-500 px-8 py-2.5 text-sm font-extrabold text-white hover:bg-brand-600";
+      } else {
+        btnEl.textContent = "Start";
+        btnEl.className = "rounded-2xl bg-slate-100 px-8 py-2.5 text-sm font-extrabold text-slate-800 hover:bg-slate-200";
+      }
+
+      btnEl.onclick = () => { window.location.href = `lesson-${lessonNo}.html`; };
+    }
+
+    function applyProgressUI(state) {
+      const p1 = clamp(state?.[1]?.progress || 0, 0, 100);
+      const p2 = clamp(state?.[2]?.progress || 0, 0, 100);
+      const p3 = clamp(state?.[3]?.progress || 0, 0, 100);
+      const p4 = clamp(state?.[4]?.progress || 0, 0, 100);
+
+      const overall = Math.round((p1 + p2 + p3 + p4) / 4);
+
+      const overallPct = document.getElementById("overallPct");
+      const overallBar = document.getElementById("overallBar");
+      if (overallPct) overallPct.textContent = `${overall}%`;
+      if (overallBar) overallBar.style.width = `${overall}%`;
+
+      const rows = [
+        { n: 1, pct: p1, bar: "l1Bar", pctEl: "l1Pct", badge: "l1Badge", btn: "l1Btn" },
+        { n: 2, pct: p2, bar: "l2Bar", pctEl: "l2Pct", badge: "l2Badge", btn: "l2Btn" },
+        { n: 3, pct: p3, bar: "l3Bar", pctEl: "l3Pct", badge: "l3Badge", btn: "l3Btn" },
+        { n: 4, pct: p4, bar: "l4Bar", pctEl: "l4Pct", badge: "l4Badge", btn: "l4Btn" },
+      ];
+
+      rows.forEach(r => {
+        const bar = document.getElementById(r.bar);
+        const pctEl = document.getElementById(r.pctEl);
+        if (bar) bar.style.width = `${r.pct}%`;
+        if (pctEl) pctEl.textContent = `${r.pct}%`;
+
+        const isComplete = getIsComplete(state, r.n);
+        const isLocked = r.n > 1 && !getIsComplete(state, r.n - 1);
+
+        setBadgeAndBtn(r.n, document.getElementById(r.badge), document.getElementById(r.btn), r.pct, isComplete, isLocked);
+      });
+    }
+
+    // ===== Avatar picker (same UI, Firestore save) =====
+    const avatarBtn = document.getElementById("avatarBtn");
+    const avatarModal = document.getElementById("avatarModal");
+    const avatarBackdrop = document.getElementById("avatarBackdrop");
+    const avatarClose = document.getElementById("avatarClose");
+    const avatarCancel = document.getElementById("avatarCancel");
+    const avatarGrid = document.getElementById("avatarGrid");
+    const avatarView = document.getElementById("avatarView");
+    const tabs = Array.from(document.querySelectorAll(".avatar-tab"));
+
+    const AVATARS = {
+      characters: [
+        { type: "emoji", value: "🧑‍🎓", label: "Student" },
+        { type: "emoji", value: "🧑‍💻", label: "Coder" },
+        { type: "emoji", value: "👩‍🏫", label: "Learner" },
+        { type: "emoji", value: "🧑‍🔬", label: "Research" },
+        { type: "emoji", value: "🧑‍🎨", label: "Creative" },
+        { type: "emoji", value: "🧑‍🚀", label: "Explorer" },
+        { type: "emoji", value: "🧑‍🍳", label: "Chef" },
+        { type: "emoji", value: "🧑‍⚕️", label: "Medic" },
+        { type: "emoji", value: "🧑‍🌾", label: "Grower" },
+        { type: "emoji", value: "🕵️", label: "Detective" },
+        { type: "emoji", value: "🧝", label: "Fantasy" },
+        { type: "emoji", value: "🧑‍✈️", label: "Pilot" },
+      ],
+      animals: [
+        { type: "emoji", value: "🦊", label: "Fox" },
+        { type: "emoji", value: "🐼", label: "Panda" },
+        { type: "emoji", value: "🐯", label: "Tiger" },
+        { type: "emoji", value: "🦁", label: "Lion" },
+        { type: "emoji", value: "🐶", label: "Dog" },
+        { type: "emoji", value: "🐱", label: "Cat" },
+        { type: "emoji", value: "🐸", label: "Frog" },
+        { type: "emoji", value: "🐵", label: "Monkey" },
+        { type: "emoji", value: "🦄", label: "Unicorn" },
+        { type: "emoji", value: "🐙", label: "Octopus" },
+        { type: "emoji", value: "🐧", label: "Penguin" },
+        { type: "emoji", value: "🦉", label: "Owl" },
+      ],
+    };
+
+    function openAvatarModal() {
+      avatarModal.classList.remove("hidden");
+      avatarBtn.setAttribute("aria-expanded", "true");
+      setActiveTab("characters");
+      setTimeout(() => avatarClose.focus(), 0);
+      document.addEventListener("keydown", onEsc);
+    }
+    function closeAvatarModal() {
+      avatarModal.classList.add("hidden");
+      avatarBtn.setAttribute("aria-expanded", "false");
+      avatarBtn.focus();
+      document.removeEventListener("keydown", onEsc);
+    }
+    function onEsc(e) { if (e.key === "Escape") closeAvatarModal(); }
+
+    function setActiveTab(tabKey) {
+      tabs.forEach(btn => {
+        const isActive = btn.getAttribute("data-tab") === tabKey;
+        btn.className = "avatar-tab rounded-full px-4 py-2 text-sm font-extrabold ring-1 ring-black/5 " +
+          (isActive ? "bg-brand-50 text-brand-800" : "bg-white text-slate-700 hover:bg-slate-50");
+      });
+      renderGrid(tabKey);
+    }
+
+    function renderGrid(tabKey) {
+      avatarGrid.innerHTML = "";
+      const list = AVATARS[tabKey] || [];
+
+      list.forEach((a) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className =
+          "group flex flex-col items-center justify-center rounded-2xl bg-slate-50 p-3 ring-1 ring-black/5 hover:bg-white hover:shadow-soft focus:outline-none focus:ring-4 focus:ring-brand-200 transition";
+
+        const tile = document.createElement("div");
+        tile.className = "flex h-14 w-14 items-center justify-center rounded-2xl bg-white ring-1 ring-black/5";
+        tile.innerHTML = `<span class="text-3xl">${a.value}</span>`;
+
+        const label = document.createElement("div");
+        label.className = "mt-2 text-[11px] font-extrabold text-slate-600 group-hover:text-slate-800";
+        label.textContent = a.label;
+
+        btn.appendChild(tile);
+        btn.appendChild(label);
+
+        btn.addEventListener("click", async () => {
+          if (!__currentUser) return;
+          try {
+            await setDoc(doc(db, "users", __currentUser.uid), { avatar: { type: "emoji", value: a.value } }, { merge: true });
+            __profile = await loadProfileOrExplain(__currentUser.uid);
+            applyAuthUI();
+            applyProfileData();
+            applyAvatar();
+          } catch (err) {
+            console.error("Avatar save failed:", err);
+            alert("Avatar save failed. Check console.");
+          }
+          closeAvatarModal();
+        });
+
+        avatarGrid.appendChild(btn);
+      });
+    }
+
+    function applyAvatar() {
+      if (!__currentUser) return;
+
+      const fullName = pickProfileField(__profile, ["fullName", "fullname", "name"], (__currentUser.displayName || "Student")).trim() || "Student";
+      const email = pickProfileField(__profile, ["email"], (__currentUser.email || "")).trim();
+
+      const saved = __profile?.avatar;
+      if (saved && saved.type === "emoji" && saved.value) {
+        avatarView.innerHTML = `<span class="text-3xl">${saved.value}</span>`;
+      } else {
+        avatarView.innerHTML = `<span class="text-3xl font-extrabold text-brand-700">${getInitials(fullName || email)}</span>`;
+      }
+    }
+
+    avatarBtn?.addEventListener("click", openAvatarModal);
+    avatarBackdrop?.addEventListener("click", closeAvatarModal);
+    avatarClose?.addEventListener("click", closeAvatarModal);
+    avatarCancel?.addEventListener("click", closeAvatarModal);
+    tabs.forEach(btn => btn.addEventListener("click", () => setActiveTab(btn.getAttribute("data-tab"))));
+
+    // ===== Toast helpers =====
+    const lockToast = document.getElementById("lockToast");
+    const lockToastMsg = document.getElementById("lockToastMsg");
+    const lockToastClose = document.getElementById("lockToastClose");
+    let __lockToastTimer = null;
+
+    function showLockToast(message) {
+      if (!lockToast || !lockToastMsg) return;
+
+      lockToastMsg.textContent = message;
+      lockToast.classList.remove("hidden");
+
+      lockToast.style.opacity = "1";
+      lockToast.style.transform = "translateX(-50%)";
+
+      clearTimeout(__lockToastTimer);
+
+      __lockToastTimer = setTimeout(() => {
+        lockToast.style.transition = "opacity 280ms ease, transform 280ms ease";
+        lockToast.style.opacity = "0";
+        lockToast.style.transform = "translateX(-50%) translateY(6px)";
+
+        setTimeout(() => {
+          lockToast.classList.add("hidden");
+          lockToast.style.transition = "";
+          lockToast.style.opacity = "";
+          lockToast.style.transform = "";
+        }, 300);
+      }, 2200);
+    }
+
+    lockToastClose?.addEventListener("click", () => {
+      lockToast?.classList.add("hidden");
+      clearTimeout(__lockToastTimer);
+    });
+
+    // ===== Sign-out modal wiring (WHAT TO CHANGE/UPDATE) =====
     const signOutModal = document.getElementById("signOutModal");
     const signOutBackdrop = document.getElementById("signOutBackdrop");
     const signOutYes = document.getElementById("signOutYes");
@@ -667,7 +992,6 @@
       signOutModal?.classList.remove("hidden");
       document.body.classList.add("overflow-hidden");
     }
-
     function closeSignOutModal() {
       signOutModal?.classList.add("hidden");
       document.body.classList.remove("overflow-hidden");
@@ -675,15 +999,12 @@
 
     signOutNo?.addEventListener("click", closeSignOutModal);
     signOutBackdrop?.addEventListener("click", closeSignOutModal);
-
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && signOutModal && !signOutModal.classList.contains("hidden")) {
-        closeSignOutModal();
-      }
+      if (e.key === "Escape" && signOutModal && !signOutModal.classList.contains("hidden")) closeSignOutModal();
     });
 
     async function doSignOut() {
-      try { await firebaseSignOut(auth); } catch (_) { }
+      try { await firebaseSignOut(auth); } catch (_) {}
       __currentUser = null;
       __profile = null;
       closeUserDropdown();
@@ -692,256 +1013,48 @@
       window.location.href = "index.html";
     }
 
-    // expose (keeps your existing bottom helper pattern)
+    // expose for other pages
     window.__pcSignOut = doSignOut;
 
-    // ✅ open confirm modal instead of instant signout
+    // ✅ update: open modal instead of direct sign out (dropdown + profile button)
     signOutBtn?.addEventListener("click", (e) => { e.preventDefault(); openSignOutModal(); });
     mSignOutBtn?.addEventListener("click", (e) => { e.preventDefault(); openSignOutModal(); });
+    profileSignOutBtn?.addEventListener("click", (e) => { e.preventDefault(); openSignOutModal(); });
 
+    // ✅ Yes button confirms sign out
     signOutYes?.addEventListener("click", async () => {
       closeSignOutModal();
       await doSignOut();
     });
 
-    // ===== Lessons progress/locking (Firestore per user; no localStorage) =====
-    const PROGRESS_DOCS = {
-      l1: "lesson1",
-      l2: "lesson2",
-      l3: "lesson3",
-      l4: "lesson4",
-    };
-
-    function clamp(n, min, max) {
-      return Math.max(min, Math.min(max, n));
-    }
-
-    function setProgress(barId, textId, value) {
-      const v = clamp(parseInt(value || "0", 10), 0, 100);
-      const bar = document.getElementById(barId);
-      const txt = document.getElementById(textId);
-      if (bar) bar.style.width = v + "%";
-      if (txt) txt.textContent = v + "%";
-    }
-
-    function showToast() {
-      const toast = document.getElementById("toast");
-      toast.classList.remove("hidden");
-      clearTimeout(window.__toastTimer);
-      window.__toastTimer = setTimeout(() => toast.classList.add("hidden"), 2800);
-    }
-
-    function closeToast() {
-      document.getElementById("toast").classList.add("hidden");
-    }
-
-    document.getElementById("lockedToastBtn")?.addEventListener("click", showToast);
-    document.getElementById("toastClose")?.addEventListener("click", closeToast);
-
-    // Mobile menu
-    const btn = document.getElementById("menuBtn");
-    const menu = document.getElementById("mobileMenu");
-    btn?.addEventListener("click", () => {
-      const isOpen = !menu.classList.contains("hidden");
-      menu.classList.toggle("hidden");
-      btn.setAttribute("aria-expanded", String(!isOpen));
-    });
-
-    function fadeOutOverlay(overlay) {
-      if (!overlay) return;
-      overlay.classList.remove("opacity-100");
-      overlay.classList.add("opacity-0", "pointer-events-none");
-
-      const onEnd = (e) => {
-        if (e.propertyName !== "opacity") return;
-        overlay.classList.add("hidden");
-        overlay.removeEventListener("transitionend", onEnd);
-      };
-      overlay.addEventListener("transitionend", onEnd);
-    }
-
-    function ensureInnerDirect(containerId, innerEl) {
-      const container = document.getElementById(containerId);
-      if (!container || !innerEl) return;
-      const wrapper = container.querySelector("a[data-unlocked='true']");
-      if (wrapper) {
-        wrapper.remove();
-        container.appendChild(innerEl);
-      }
-    }
-
-    function lockCard(containerId, innerEl, imgElId, overlayElId) {
-      const img = document.getElementById(imgElId);
-      const overlay = document.getElementById(overlayElId);
-
-      ensureInnerDirect(containerId, innerEl);
-
-      if (img) img.classList.add("blur-[1px]");
-
-      if (overlay) {
-        overlay.classList.remove("hidden");
-        overlay.classList.remove("opacity-0", "pointer-events-none");
-        overlay.classList.add("opacity-100");
-      }
-    }
-
-    function unlockCard(containerId, innerEl, overlayElId, href) {
-      const container = document.getElementById(containerId);
-      const overlay = document.getElementById(overlayElId);
-
-      fadeOutOverlay(overlay);
-
-      const img = container?.querySelector("img");
-      if (img) img.classList.remove("blur-[1px]");
-
-      if (!container || !innerEl) return;
-
-      const existing = container.querySelector("a[data-unlocked='true']");
-      if (existing) {
-        existing.href = href;
-        return;
-      }
-
-      const link = document.createElement("a");
-      link.href = href;
-      link.setAttribute("data-unlocked", "true");
-      link.className =
-        "group block focus:outline-none focus:ring-4 focus:ring-brand-200 rounded-3xl transition hover:-translate-y-1 hover:shadow-lg";
-
-      link.appendChild(innerEl);
-      container.appendChild(link);
-    }
-
-    async function loadLessonProgress(uid) {
-      const empty = {
-        lesson1: { progress: 0, complete: false },
-        lesson2: { progress: 0, complete: false },
-        lesson3: { progress: 0, complete: false },
-        lesson4: { progress: 0, complete: false },
-      };
-
-      try {
-        const refs = [
-          doc(db, "users", uid, "progress", PROGRESS_DOCS.l1),
-          doc(db, "users", uid, "progress", PROGRESS_DOCS.l2),
-          doc(db, "users", uid, "progress", PROGRESS_DOCS.l3),
-          doc(db, "users", uid, "progress", PROGRESS_DOCS.l4),
-        ];
-
-        const snaps = await Promise.all(refs.map(r => getDoc(r)));
-
-        const keys = ["lesson1", "lesson2", "lesson3", "lesson4"];
-        snaps.forEach((snap, i) => {
-          if (!snap.exists()) return;
-          const d = snap.data() || {};
-          empty[keys[i]] = {
-            progress: typeof d.progress === "number" ? d.progress : parseInt(d.progress || "0", 10) || 0,
-            complete: !!d.complete
-          };
-        });
-
-        return empty;
-      } catch (_) {
-        return empty;
-      }
-    }
-
-    function setLockMessages(state) {
-      const l1 = !!state.lesson1.complete;
-      const l2 = !!state.lesson2.complete;
-      const l3 = !!state.lesson3.complete;
-
-      let nextLocked = null;
-      if (!l1) nextLocked = 2;
-      else if (!l2) nextLocked = 3;
-      else if (!l3) nextLocked = 4;
-      else nextLocked = null;
-
-      const m2 = document.getElementById("lesson2LockMsg");
-      const m3 = document.getElementById("lesson3LockMsg");
-      const m4 = document.getElementById("lesson4LockMsg");
-
-      [m2, m3, m4].forEach(m => m && m.classList.add("hidden"));
-
-      if (nextLocked === 2 && m2) {
-        m2.textContent = "Finish Lesson 1 to unlock";
-        m2.classList.remove("hidden");
-      }
-      if (nextLocked === 3 && m3) {
-        m3.textContent = "Finish Lesson 2 to unlock";
-        m3.classList.remove("hidden");
-      }
-      if (nextLocked === 4 && m4) {
-        m4.textContent = "Finish Lesson 3 to unlock";
-        m4.classList.remove("hidden");
-      }
-    }
-
-    function renderLocking(state) {
-      const l1 = !!state.lesson1.complete;
-      const l2 = !!state.lesson2.complete;
-      const l3 = !!state.lesson3.complete;
-
-      if (l1) unlockCard("lesson2Card", document.getElementById("lesson2Inner"), "lesson2LockOverlay", "lesson-2.html");
-      else lockCard("lesson2Card", document.getElementById("lesson2Inner"), "lesson2Img", "lesson2LockOverlay");
-
-      if (l2) unlockCard("lesson3Card", document.getElementById("lesson3Inner"), "lesson3LockOverlay", "lesson-3.html");
-      else lockCard("lesson3Card", document.getElementById("lesson3Inner"), "lesson3Img", "lesson3LockOverlay");
-
-      if (l3) unlockCard("lesson4Card", document.getElementById("lesson4Inner"), "lesson4LockOverlay", "lesson-4.html");
-      else lockCard("lesson4Card", document.getElementById("lesson4Inner"), "lesson4Img", "lesson4LockOverlay");
-    }
-
-    function renderProgress(state) {
-      setProgress("p1Bar", "p1Text", state.lesson1.progress);
-      setProgress("p2Bar", "p2Text", state.lesson2.progress);
-      setProgress("p3Bar", "p3Text", state.lesson3.progress);
-      setProgress("p4Bar", "p4Text", state.lesson4.progress);
-    }
-
-    function renderGuestDefaults() {
-      setProgress("p1Bar", "p1Text", 0);
-      setProgress("p2Bar", "p2Text", 0);
-      setProgress("p3Bar", "p3Text", 0);
-      setProgress("p4Bar", "p4Text", 0);
-
-      lockCard("lesson2Card", document.getElementById("lesson2Inner"), "lesson2Img", "lesson2LockOverlay");
-      lockCard("lesson3Card", document.getElementById("lesson3Inner"), "lesson3Img", "lesson3LockOverlay");
-      lockCard("lesson4Card", document.getElementById("lesson4Inner"), "lesson4Img", "lesson4LockOverlay");
-
-      const m2 = document.getElementById("lesson2LockMsg");
-      const m3 = document.getElementById("lesson3LockMsg");
-      const m4 = document.getElementById("lesson4LockMsg");
-      if (m2) m2.textContent = "Finish Lesson 1 to unlock";
-      if (m3) m3.textContent = "Finish Lesson 1 to unlock";
-      if (m4) m4.textContent = "Finish Lesson 1 to unlock";
-    }
-
-    // ✅ Firebase auth listener: update dropdown + progress/locking
+    // ✅ Auth listener
     onAuthStateChanged(auth, async (user) => {
       __currentUser = user || null;
 
-      // ✅ Show correct UI instantly (no waiting for Firestore)
-      __profile = null;
-      applyAuthUI();
-
-      if (!user) {
-        renderGuestDefaults();
+      if (!__currentUser) {
+        window.location.href = "login.html";
         return;
       }
 
-      // Load profile + progress after UI is already updated
-      const [profile, state] = await Promise.all([
-        loadProfile(user.uid),
-        loadLessonProgress(user.uid),
+      // show UI instantly
+      __profile = null;
+      applyAuthUI();
+      applyProfileData();
+      applyAvatar();
+
+      // load profile + progress
+      const [profile, progressState] = await Promise.all([
+        loadProfileOrExplain(__currentUser.uid),
+        loadLessonProgress(__currentUser.uid),
       ]);
 
       __profile = profile || {};
-      applyAuthUI();
+      console.log("Loaded profile doc users/" + __currentUser.uid, __profile);
 
-      renderProgress(state);
-      setLockMessages(state);
-      renderLocking(state);
+      applyAuthUI();
+      applyProfileData();
+      applyAvatar();
+      applyProgressUI(progressState);
     });
   </script>
 
@@ -951,5 +1064,4 @@
     window.signOut = () => window.__pcSignOut?.();
   </script>
 </body>
-
 </html>
