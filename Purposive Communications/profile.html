@@ -297,19 +297,19 @@
       </div>
     </section>
 
-    <!-- OVERALL COMPLETION ✅ smaller -->
+    <!-- OVERALL COMPLETION ✅ auto compute -->
     <section class="mt-6 rounded-3xl bg-white shadow-soft ring-1 ring-black/5 p-6 sm:p-7">
       <div class="flex items-center justify-between">
         <p class="text-sm font-extrabold text-slate-700">Overall Completion</p>
-        <p class="text-2xl font-extrabold text-brand-700">68%</p>
+        <p id="overallPct" class="text-2xl font-extrabold text-brand-700">0%</p>
       </div>
 
       <div class="mt-3 h-3.5 w-full rounded-full bg-slate-200 overflow-hidden">
-        <div class="h-3.5 w-[68%] rounded-full bg-brand-600"></div>
+        <div id="overallBar" class="h-3.5 w-0 rounded-full bg-brand-600"></div>
       </div>
     </section>
 
-    <!-- MY LESSONS PROGRESS ✅ smaller -->
+    <!-- MY LESSONS PROGRESS ✅ auto from lessons -->
     <section class="mt-6 rounded-3xl bg-white shadow-soft ring-1 ring-black/5 p-6 sm:p-7">
       <h2 class="text-3xl font-extrabold text-slate-900 sm:text-4xl">My Lessons Progress</h2>
 
@@ -319,20 +319,20 @@
           <div class="flex items-start justify-between gap-4">
             <div>
               <p class="text-sm font-extrabold text-slate-900">Lesson 1: Introduction to Communication</p>
-              <span class="mt-3 inline-flex items-center rounded-full bg-emerald-100 px-4 py-1.5 text-sm font-extrabold text-emerald-800">
+              <span id="l1Badge" class="mt-3 inline-flex items-center rounded-full bg-emerald-100 px-4 py-1.5 text-sm font-extrabold text-emerald-800">
                 Completed
               </span>
             </div>
-            <button class="rounded-2xl bg-emerald-100 px-8 py-2.5 text-sm font-extrabold text-emerald-800 hover:bg-emerald-200">
+            <button id="l1Btn" class="rounded-2xl bg-emerald-100 px-8 py-2.5 text-sm font-extrabold text-emerald-800 hover:bg-emerald-200">
               Review
             </button>
           </div>
 
           <div class="mt-auto pt-5 flex items-center gap-5">
             <div class="h-2.5 w-full rounded-full bg-slate-200 overflow-hidden">
-              <div class="h-2.5 w-full bg-brand-700"></div>
+              <div id="l1Bar" class="h-2.5 w-full bg-brand-700"></div>
             </div>
-            <p class="text-sm font-extrabold text-slate-900">100%</p>
+            <p id="l1Pct" class="text-sm font-extrabold text-slate-900">100%</p>
           </div>
         </div>
 
@@ -341,20 +341,20 @@
           <div class="flex items-start justify-between gap-4">
             <div>
               <p class="text-sm font-extrabold text-slate-900">Lesson 3: Written Communication Skills</p>
-              <span class="mt-3 inline-flex items-center rounded-full bg-sky-100 px-4 py-1.5 text-sm font-extrabold text-sky-800">
+              <span id="l3Badge" class="mt-3 inline-flex items-center rounded-full bg-sky-100 px-4 py-1.5 text-sm font-extrabold text-sky-800">
                 In Progress
               </span>
             </div>
-            <button class="rounded-2xl bg-brand-500 px-8 py-2.5 text-sm font-extrabold text-white hover:bg-brand-600">
+            <button id="l3Btn" class="rounded-2xl bg-brand-500 px-8 py-2.5 text-sm font-extrabold text-white hover:bg-brand-600">
               Continue
             </button>
           </div>
 
           <div class="mt-auto pt-5 flex items-center gap-5">
             <div class="h-2.5 w-full rounded-full bg-slate-200 overflow-hidden">
-              <div class="h-2.5 w-[45%] bg-brand-700"></div>
+              <div id="l3Bar" class="h-2.5 w-[45%] bg-brand-700"></div>
             </div>
-            <p class="text-sm font-extrabold text-slate-900">45%</p>
+            <p id="l3Pct" class="text-sm font-extrabold text-slate-900">45%</p>
           </div>
         </div>
 
@@ -363,20 +363,20 @@
           <div class="flex items-start justify-between gap-4">
             <div>
               <p class="text-sm font-extrabold text-slate-900">Lesson 2: Verbal and Non-Verbal Communication</p>
-              <span class="mt-3 inline-flex items-center rounded-full bg-emerald-100 px-4 py-1.5 text-sm font-extrabold text-emerald-800">
+              <span id="l2Badge" class="mt-3 inline-flex items-center rounded-full bg-emerald-100 px-4 py-1.5 text-sm font-extrabold text-emerald-800">
                 Completed
               </span>
             </div>
-            <button class="rounded-2xl bg-emerald-100 px-8 py-2.5 text-sm font-extrabold text-emerald-800 hover:bg-emerald-200">
+            <button id="l2Btn" class="rounded-2xl bg-emerald-100 px-8 py-2.5 text-sm font-extrabold text-emerald-800 hover:bg-emerald-200">
               Review
             </button>
           </div>
 
           <div class="mt-auto pt-5 flex items-center gap-5">
             <div class="h-2.5 w-full rounded-full bg-slate-200 overflow-hidden">
-              <div class="h-2.5 w-full bg-brand-700"></div>
+              <div id="l2Bar" class="h-2.5 w-full bg-brand-700"></div>
             </div>
-            <p class="text-sm font-extrabold text-slate-900">100%</p>
+            <p id="l2Pct" class="text-sm font-extrabold text-slate-900">100%</p>
           </div>
         </div>
 
@@ -385,25 +385,49 @@
           <div class="flex items-start justify-between gap-4">
             <div>
               <p class="text-sm font-extrabold text-slate-900">Lesson 4: Presentation and Public Speaking</p>
-              <span class="mt-3 inline-flex items-center rounded-full bg-slate-100 px-4 py-1.5 text-sm font-extrabold text-slate-800">
+              <span id="l4Badge" class="mt-3 inline-flex items-center rounded-full bg-slate-100 px-4 py-1.5 text-sm font-extrabold text-slate-800">
                 Not Started
               </span>
             </div>
-            <button class="rounded-2xl bg-slate-100 px-8 py-2.5 text-sm font-extrabold text-slate-800 hover:bg-slate-200">
+            <button id="l4Btn" class="rounded-2xl bg-slate-100 px-8 py-2.5 text-sm font-extrabold text-slate-800 hover:bg-slate-200">
               Start
             </button>
           </div>
 
           <div class="mt-auto pt-5 flex items-center gap-5">
             <div class="h-2.5 w-full rounded-full bg-slate-200 overflow-hidden">
-              <div class="h-2.5 w-[0%] bg-brand-700"></div>
+              <div id="l4Bar" class="h-2.5 w-[0%] bg-brand-700"></div>
             </div>
-            <p class="text-sm font-extrabold text-slate-900">0%</p>
+            <p id="l4Pct" class="text-sm font-extrabold text-slate-900">0%</p>
           </div>
         </div>
       </div>
     </section>
   </main>
+
+  <!-- ✅ NEW: Bottom popup toast (replaces alert for locked) -->
+  <div id="lockToast" class="fixed bottom-6 left-1/2 z-[90] hidden -translate-x-1/2">
+    <div id="lockToastInner"
+      class="flex items-start gap-3 rounded-2xl bg-slate-900 px-5 py-4 text-white shadow-soft ring-1 ring-white/10">
+      <div class="mt-0.5">
+        <svg class="h-5 w-5 text-brand-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10" />
+          <path d="M12 16v-4" />
+          <path d="M12 8h.01" />
+        </svg>
+      </div>
+      <div class="text-sm">
+        <p class="font-semibold">Locked</p>
+        <p id="lockToastMsg" class="mt-0.5 text-white/80">Finish the required lesson to unlock.</p>
+      </div>
+      <button id="lockToastClose"
+        class="ml-2 rounded-lg p-1 text-white/70 hover:bg-white/10 hover:text-white" aria-label="Close">
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+  </div>
 
   <!-- AVATAR PICKER MODAL -->
   <div id="avatarModal" class="fixed inset-0 z-[80] hidden">
@@ -605,11 +629,9 @@
     window.addEventListener("storage", (e) => {
       if (e.key === LS_AUTH.session || e.key === LS_AUTH.avatar) {
         applyAuthUI();
+        applyProgressUI();
       }
     });
-
-    applyAuthUI();
-    window.addEventListener("focus", applyAuthUI);
 
     // ===== Mobile menu =====
     const menuBtn = document.getElementById("menuBtn");
@@ -625,7 +647,8 @@
       users: "pc_users",
       session: "pc_session",
       avatarGlobal: "pc_profile_avatar",
-      avatarPrefix: "pc_profile_avatar:"
+      avatarPrefix: "pc_profile_avatar:",
+      userPrefix: "pc_user:"
     };
 
     function getCurrentUser() {
@@ -636,6 +659,10 @@
       const users = safeParseJSON(localStorage.getItem(LS.users), []) || [];
       const user = users.find(u => (u.email || "").trim().toLowerCase() === email) || null;
       return { session, user, email };
+    }
+
+    function uKey(emailLower, baseKey) {
+      return `${LS.userPrefix}${emailLower}:${baseKey}`;
     }
 
     function perUserAvatarKey(emailLower) {
@@ -685,6 +712,140 @@
       if (existing) {
         localStorage.setItem(LS.avatarGlobal, JSON.stringify(existing));
       }
+    }
+
+    // ✅ NEW: Toast helpers (fade out)
+    const lockToast = document.getElementById("lockToast");
+    const lockToastMsg = document.getElementById("lockToastMsg");
+    const lockToastClose = document.getElementById("lockToastClose");
+    let __lockToastTimer = null;
+
+    function showLockToast(message) {
+      if (!lockToast || !lockToastMsg) return;
+
+      lockToastMsg.textContent = message;
+      lockToast.classList.remove("hidden");
+
+      // reset opacity (in case it was fading)
+      lockToast.style.opacity = "1";
+      lockToast.style.transform = "translateX(-50%)";
+
+      clearTimeout(__lockToastTimer);
+
+      // fade out smoothly
+      __lockToastTimer = setTimeout(() => {
+        lockToast.style.transition = "opacity 280ms ease, transform 280ms ease";
+        lockToast.style.opacity = "0";
+        lockToast.style.transform = "translateX(-50%) translateY(6px)";
+
+        setTimeout(() => {
+          lockToast.classList.add("hidden");
+          lockToast.style.transition = "";
+          lockToast.style.opacity = "";
+          lockToast.style.transform = "";
+        }, 300);
+      }, 2200);
+    }
+
+    lockToastClose?.addEventListener("click", () => {
+      lockToast?.classList.add("hidden");
+      clearTimeout(__lockToastTimer);
+    });
+
+    // ===== Per-user lesson progress -> profile UI =====
+    function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
+
+    function getLessonProgress(emailLower, lessonNo) {
+      const raw = localStorage.getItem(uKey(emailLower, `pc_lesson${lessonNo}_progress`)) || "0";
+      return clamp(parseInt(raw, 10) || 0, 0, 100);
+    }
+
+    function getLessonComplete(emailLower, lessonNo) {
+      const done = localStorage.getItem(uKey(emailLower, `pc_lesson${lessonNo}_complete`)) === "true";
+      return done || getLessonProgress(emailLower, lessonNo) === 100;
+    }
+
+    function setBadgeAndBtn(lessonNo, badgeEl, btnEl, pct, isComplete, isLocked) {
+      if (!badgeEl || !btnEl) return;
+
+      // Badge
+      if (isLocked) {
+        badgeEl.textContent = "Locked";
+        badgeEl.className = "mt-3 inline-flex items-center rounded-full bg-slate-100 px-4 py-1.5 text-sm font-extrabold text-slate-800";
+      } else if (isComplete) {
+        badgeEl.textContent = "Completed";
+        badgeEl.className = "mt-3 inline-flex items-center rounded-full bg-emerald-100 px-4 py-1.5 text-sm font-extrabold text-emerald-800";
+      } else if (pct > 0) {
+        badgeEl.textContent = "In Progress";
+        badgeEl.className = "mt-3 inline-flex items-center rounded-full bg-sky-100 px-4 py-1.5 text-sm font-extrabold text-sky-800";
+      } else {
+        badgeEl.textContent = "Not Started";
+        badgeEl.className = "mt-3 inline-flex items-center rounded-full bg-slate-100 px-4 py-1.5 text-sm font-extrabold text-slate-800";
+      }
+
+      // Button
+      if (isLocked) {
+        btnEl.textContent = "Locked";
+        btnEl.disabled = false; // clickable -> toast
+        btnEl.className = "rounded-2xl bg-slate-100 px-8 py-2.5 text-sm font-extrabold text-slate-800 hover:bg-slate-200";
+
+        btnEl.onclick = () => {
+          // ✅ no alert. show bottom popup.
+          showLockToast(`Finish Lesson ${lessonNo - 1} first to unlock Lesson ${lessonNo}.`);
+        };
+        return;
+      }
+
+      if (isComplete) {
+        btnEl.textContent = "Review";
+        btnEl.className = "rounded-2xl bg-emerald-100 px-8 py-2.5 text-sm font-extrabold text-emerald-800 hover:bg-emerald-200";
+      } else if (pct > 0) {
+        btnEl.textContent = "Continue";
+        btnEl.className = "rounded-2xl bg-brand-500 px-8 py-2.5 text-sm font-extrabold text-white hover:bg-brand-600";
+      } else {
+        btnEl.textContent = "Start";
+        btnEl.className = "rounded-2xl bg-slate-100 px-8 py-2.5 text-sm font-extrabold text-slate-800 hover:bg-slate-200";
+      }
+
+      btnEl.onclick = () => {
+        window.location.href = `lesson-${lessonNo}.html`;
+      };
+    }
+
+    function applyProgressUI() {
+      const { email } = getCurrentUser();
+      if (!email) return;
+
+      const p1 = getLessonProgress(email, 1);
+      const p2 = getLessonProgress(email, 2);
+      const p3 = getLessonProgress(email, 3);
+      const p4 = getLessonProgress(email, 4);
+
+      const overall = Math.round((p1 + p2 + p3 + p4) / 4);
+
+      const overallPct = document.getElementById("overallPct");
+      const overallBar = document.getElementById("overallBar");
+      if (overallPct) overallPct.textContent = `${overall}%`;
+      if (overallBar) overallBar.style.width = `${overall}%`;
+
+      const rows = [
+        { n: 1, pct: p1, bar: "l1Bar", pctEl: "l1Pct", badge: "l1Badge", btn: "l1Btn" },
+        { n: 2, pct: p2, bar: "l2Bar", pctEl: "l2Pct", badge: "l2Badge", btn: "l2Btn" },
+        { n: 3, pct: p3, bar: "l3Bar", pctEl: "l3Pct", badge: "l3Badge", btn: "l3Btn" },
+        { n: 4, pct: p4, bar: "l4Bar", pctEl: "l4Pct", badge: "l4Badge", btn: "l4Btn" },
+      ];
+
+      rows.forEach(r => {
+        const bar = document.getElementById(r.bar);
+        const pctEl = document.getElementById(r.pctEl);
+        if (bar) bar.style.width = `${r.pct}%`;
+        if (pctEl) pctEl.textContent = `${r.pct}%`;
+
+        const isComplete = getLessonComplete(email, r.n);
+        const isLocked = r.n > 1 && !getLessonComplete(email, r.n - 1);
+
+        setBadgeAndBtn(r.n, document.getElementById(r.badge), document.getElementById(r.btn), r.pct, isComplete, isLocked);
+      });
     }
 
     // --- Avatar Picker ---
@@ -785,7 +946,7 @@
 
           saveUserAvatar(email, { type: "emoji", value: a.value });
           applyAvatar();
-          applyAuthUI(); // update header instantly
+          applyAuthUI();
           closeAvatarModal();
         });
 
@@ -818,6 +979,8 @@
     applyProfileData();
     applyAvatar();
     applyAuthUI();
+    applyProgressUI();
+    window.addEventListener("focus", applyProgressUI);
   </script>
 </body>
 </html>

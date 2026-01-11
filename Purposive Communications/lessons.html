@@ -64,7 +64,7 @@
       <div class="hidden items-center gap-8 md:flex">
         <a href="index.html" class="text-sm font-medium text-slate-700 hover:text-brand-700">Home</a>
         <a href="lessons.html" class="text-sm font-semibold text-brand-700">Lessons</a>
-       
+
         <!-- Login (GUEST ONLY) -->
         <a href="login.html" id="openLoginBtn"
           class="auth-guest rounded-xl bg-brand-500 px-5 py-2.5 text-sm font-semibold text-white shadow-soft hover:bg-brand-600">
@@ -623,6 +623,27 @@
     window.addEventListener("focus", applyAuthUI);
 
     // ===== Existing Lessons locking/progress logic (unchanged) =====
+// ===== Per-user progress keys (so each account has its own progress) =====
+function getCurrentEmailLower() {
+  const s = getSession();
+  return (s?.email || "").trim().toLowerCase();
+}
+function uKey(baseKey) {
+  const em = getCurrentEmailLower();
+  // If not logged in, don't persist progress; treat as empty progress.
+  return em ? `pc_user:${em}:${baseKey}` : null;
+}
+function getUserItem(baseKey, fallback) {
+  const k = uKey(baseKey);
+  if (!k) return fallback;
+  const v = localStorage.getItem(k);
+  return v === null ? fallback : v;
+}
+function setUserItem(baseKey, value) {
+  const k = uKey(baseKey);
+  if (!k) return;
+  localStorage.setItem(k, value);
+}
     const LS_KEYS = {
       lesson1Complete: "pc_lesson1_complete",
       lesson2Complete: "pc_lesson2_complete",
@@ -636,15 +657,17 @@
     };
 
     function initDefaults() {
-      if (localStorage.getItem(LS_KEYS.lesson1Complete) === null) localStorage.setItem(LS_KEYS.lesson1Complete, "false");
-      if (localStorage.getItem(LS_KEYS.lesson2Complete) === null) localStorage.setItem(LS_KEYS.lesson2Complete, "false");
-      if (localStorage.getItem(LS_KEYS.lesson3Complete) === null) localStorage.setItem(LS_KEYS.lesson3Complete, "false");
-      if (localStorage.getItem(LS_KEYS.lesson4Complete) === null) localStorage.setItem(LS_KEYS.lesson4Complete, "false");
+      // Only initialize per-user defaults when logged in
+      if (!getCurrentEmailLower()) return;
+      if (getUserItem(LS_KEYS.lesson1Complete, null) === null) setUserItem(LS_KEYS.lesson1Complete, "false");
+      if (getUserItem(LS_KEYS.lesson2Complete, null) === null) setUserItem(LS_KEYS.lesson2Complete, "false");
+      if (getUserItem(LS_KEYS.lesson3Complete, null) === null) setUserItem(LS_KEYS.lesson3Complete, "false");
+      if (getUserItem(LS_KEYS.lesson4Complete, null) === null) setUserItem(LS_KEYS.lesson4Complete, "false");
 
-      if (localStorage.getItem(LS_KEYS.lesson1Progress) === null) localStorage.setItem(LS_KEYS.lesson1Progress, "0");
-      if (localStorage.getItem(LS_KEYS.lesson2Progress) === null) localStorage.setItem(LS_KEYS.lesson2Progress, "0");
-      if (localStorage.getItem(LS_KEYS.lesson3Progress) === null) localStorage.setItem(LS_KEYS.lesson3Progress, "0");
-      if (localStorage.getItem(LS_KEYS.lesson4Progress) === null) localStorage.setItem(LS_KEYS.lesson4Progress, "0");
+      if (getUserItem(LS_KEYS.lesson1Progress, null) === null) setUserItem(LS_KEYS.lesson1Progress, "0");
+      if (getUserItem(LS_KEYS.lesson2Progress, null) === null) setUserItem(LS_KEYS.lesson2Progress, "0");
+      if (getUserItem(LS_KEYS.lesson3Progress, null) === null) setUserItem(LS_KEYS.lesson3Progress, "0");
+      if (getUserItem(LS_KEYS.lesson4Progress, null) === null) setUserItem(LS_KEYS.lesson4Progress, "0");
     }
 
     function clamp(n, min, max) {
@@ -670,56 +693,102 @@
       document.getElementById("toast").classList.add("hidden");
     }
 
-    function lockCard(imgElId, overlayElId) {
-      const img = document.getElementById(imgElId);
-      const overlay = document.getElementById(overlayElId);
+    function ensureInnerDirect(containerId, innerEl) {
+  const container = document.getElementById(containerId);
+  if (!container || !innerEl) return;
+  const wrapper = container.querySelector("a[data-unlocked='true']");
+  if (wrapper) {
+    wrapper.remove();
+    container.appendChild(innerEl);
+  }
+}
 
-      if (img) img.classList.add("blur-[1px]");
+function lockCard(containerId, innerEl, imgElId, overlayElId) {
+  const img = document.getElementById(imgElId);
+  const overlay = document.getElementById(overlayElId);
 
-      if (overlay) {
-        overlay.classList.remove("hidden");
-        overlay.classList.remove("opacity-0", "pointer-events-none");
-        overlay.classList.add("opacity-100");
-      }
-    }
+  ensureInnerDirect(containerId, innerEl);
 
-    function fadeOutOverlay(overlay) {
-      if (!overlay) return;
-      overlay.classList.remove("opacity-100");
-      overlay.classList.add("opacity-0", "pointer-events-none");
+  if (img) img.classList.add("blur-[1px]");
 
-      const onEnd = (e) => {
-        if (e.propertyName !== "opacity") return;
-        overlay.classList.add("hidden");
-        overlay.removeEventListener("transitionend", onEnd);
-      };
-      overlay.addEventListener("transitionend", onEnd);
-    }
+  if (overlay) {
+    overlay.classList.remove("hidden");
+    overlay.classList.remove("opacity-0", "pointer-events-none");
+    overlay.classList.add("opacity-100");
+  }
+}
 
-    function unlockCard(cardContainerId, innerEl, overlayElId, href) {
-      const container = document.getElementById(cardContainerId);
-      const overlay = document.getElementById(overlayElId);
+function ensureInnerDirect(containerId, innerEl) {
+  const container = document.getElementById(containerId);
+  if (!container || !innerEl) return;
+  const wrapper = container.querySelector("a[data-unlocked='true']");
+  if (wrapper) {
+    wrapper.remove();
+    container.appendChild(innerEl);
+  }
+}
 
-      fadeOutOverlay(overlay);
+function lockCard(containerId, innerEl, imgElId, overlayElId) {
+  const img = document.getElementById(imgElId);
+  const overlay = document.getElementById(overlayElId);
 
-      const img = container?.querySelector("img");
-      if (img) img.classList.remove("blur-[1px]");
+  ensureInnerDirect(containerId, innerEl);
 
-      if (container && innerEl && !container.querySelector("a[data-unlocked='true']")) {
-        const link = document.createElement("a");
-        link.href = href;
-        link.setAttribute("data-unlocked", "true");
-        link.className =
-          "group block focus:outline-none focus:ring-4 focus:ring-brand-200 rounded-3xl transition hover:-translate-y-1 hover:shadow-lg";
-        link.appendChild(innerEl);
-        container.appendChild(link);
-      }
-    }
+  if (img) img.classList.add("blur-[1px]");
 
-    function setLockMessages() {
-      const l1 = localStorage.getItem(LS_KEYS.lesson1Complete) === "true";
-      const l2 = localStorage.getItem(LS_KEYS.lesson2Complete) === "true";
-      const l3 = localStorage.getItem(LS_KEYS.lesson3Complete) === "true";
+  if (overlay) {
+    overlay.classList.remove("hidden");
+    overlay.classList.remove("opacity-0", "pointer-events-none");
+    overlay.classList.add("opacity-100");
+  }
+}
+
+function fadeOutOverlay(overlay) {
+  if (!overlay) return;
+  overlay.classList.remove("opacity-100");
+  overlay.classList.add("opacity-0", "pointer-events-none");
+
+  const onEnd = (e) => {
+    if (e.propertyName !== "opacity") return;
+    overlay.classList.add("hidden");
+    overlay.removeEventListener("transitionend", onEnd);
+  };
+  overlay.addEventListener("transitionend", onEnd);
+}
+
+function unlockCard(containerId, innerEl, overlayElId, href) {
+  const container = document.getElementById(containerId);
+  const overlay = document.getElementById(overlayElId);
+
+  fadeOutOverlay(overlay);
+
+  const img = container?.querySelector("img");
+  if (img) img.classList.remove("blur-[1px]");
+
+  if (!container || !innerEl) return;
+
+  // If already wrapped, ensure correct href and return
+  const existing = container.querySelector("a[data-unlocked='true']");
+  if (existing) {
+    existing.href = href;
+    return;
+  }
+
+  const link = document.createElement("a");
+  link.href = href;
+  link.setAttribute("data-unlocked", "true");
+  link.className =
+    "group block focus:outline-none focus:ring-4 focus:ring-brand-200 rounded-3xl transition hover:-translate-y-1 hover:shadow-lg";
+
+  link.appendChild(innerEl);
+  container.appendChild(link);
+}
+
+
+function setLockMessages() {
+      const l1 = getUserItem(LS_KEYS.lesson1Complete, "false") === "true";
+      const l2 = getUserItem(LS_KEYS.lesson2Complete, "false") === "true";
+      const l3 = getUserItem(LS_KEYS.lesson3Complete, "false") === "true";
 
       let nextLocked = null;
       if (!l1) nextLocked = 2;
@@ -748,25 +817,25 @@
     }
 
     function renderLocking() {
-      const l1 = localStorage.getItem(LS_KEYS.lesson1Complete) === "true";
-      const l2 = localStorage.getItem(LS_KEYS.lesson2Complete) === "true";
-      const l3 = localStorage.getItem(LS_KEYS.lesson3Complete) === "true";
+      const l1 = getUserItem(LS_KEYS.lesson1Complete, "false") === "true";
+      const l2 = getUserItem(LS_KEYS.lesson2Complete, "false") === "true";
+      const l3 = getUserItem(LS_KEYS.lesson3Complete, "false") === "true";
 
       if (l1) unlockCard("lesson2Card", document.getElementById("lesson2Inner"), "lesson2LockOverlay", "lesson-2.html");
-      else lockCard("lesson2Img", "lesson2LockOverlay");
+      else lockCard("lesson2Card", document.getElementById("lesson2Inner"), "lesson2Img", "lesson2LockOverlay");
 
       if (l2) unlockCard("lesson3Card", document.getElementById("lesson3Inner"), "lesson3LockOverlay", "lesson-3.html");
-      else lockCard("lesson3Img", "lesson3LockOverlay");
+      else lockCard("lesson3Card", document.getElementById("lesson3Inner"), "lesson3Img", "lesson3LockOverlay");
 
       if (l3) unlockCard("lesson4Card", document.getElementById("lesson4Inner"), "lesson4LockOverlay", "lesson-4.html");
-      else lockCard("lesson4Img", "lesson4LockOverlay");
+      else lockCard("lesson4Card", document.getElementById("lesson4Inner"), "lesson4Img", "lesson4LockOverlay");
     }
 
     function renderProgress() {
-      setProgress("p1Bar", "p1Text", localStorage.getItem(LS_KEYS.lesson1Progress));
-      setProgress("p2Bar", "p2Text", localStorage.getItem(LS_KEYS.lesson2Progress));
-      setProgress("p3Bar", "p3Text", localStorage.getItem(LS_KEYS.lesson3Progress));
-      setProgress("p4Bar", "p4Text", localStorage.getItem(LS_KEYS.lesson4Progress));
+      setProgress("p1Bar", "p1Text", getUserItem(LS_KEYS.lesson1Progress, "0"));
+      setProgress("p2Bar", "p2Text", getUserItem(LS_KEYS.lesson2Progress, "0"));
+      setProgress("p3Bar", "p3Text", getUserItem(LS_KEYS.lesson3Progress, "0"));
+      setProgress("p4Bar", "p4Text", getUserItem(LS_KEYS.lesson4Progress, "0"));
     }
 
     // Mobile menu

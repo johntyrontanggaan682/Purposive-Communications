@@ -188,12 +188,32 @@
     // =====================
     const LESSON_NO = 1;
 
-    const LS = {
-      partDone: (p) => `pc_lesson${LESSON_NO}_part${p}_done`,
-      progress: `pc_lesson${LESSON_NO}_progress`,
-      complete: `pc_lesson${LESSON_NO}_complete`,
-      assessmentFile: `pc_lesson${LESSON_NO}_assessment_file`,
-    };
+// ===== Per-user storage (separate progress per account) =====
+const AUTH = { session: "pc_session" };
+function safeParseJSON(v, fallback) { try { return JSON.parse(v); } catch { return fallback; } }
+function getSession() {
+  const raw = localStorage.getItem(AUTH.session);
+  return raw ? safeParseJSON(raw, null) : null;
+}
+const __session = getSession();
+const __email = (__session?.email || "").trim().toLowerCase();
+if (!__email) {
+  alert("Please log in first.");
+  window.location.href = "login.html";
+  throw new Error("Not logged in");
+}
+function uKey(baseKey) {
+  return `pc_user:${__email}:${baseKey}`;
+}
+
+
+
+          const LS = {
+        partDone: (p) => uKey(`pc_lesson${LESSON_NO}_part${p}_done`),
+        progress: uKey(`pc_lesson${LESSON_NO}_progress`),
+        complete: uKey(`pc_lesson${LESSON_NO}_complete`),
+        assessmentFile: uKey(`pc_lesson${LESSON_NO}_assessment_file`),
+      };
 
     const parts = [
       {
@@ -381,9 +401,8 @@
 
       // ✅ FIX: Mark lesson complete when 100%
       if (pct === 100) localStorage.setItem(LS.complete, "true");
-      else localStorage.setItem(LS.complete, "false");
-
-      return pct;
+        else localStorage.setItem(LS.complete, "false");
+        return pct;
     }
 
 
