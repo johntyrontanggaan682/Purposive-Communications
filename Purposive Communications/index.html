@@ -37,9 +37,19 @@
   </script>
 
   <style>
+    html.pc-auth-pending .auth-guest,
+    html.pc-auth-pending .auth-user {
+      visibility: hidden !important;
+    }
+
+    html.pc-auth-ready .auth-guest,
+    html.pc-auth-ready .auth-user {
+      visibility: visible !important;
+    }
+
     /* ✅ Anchor scroll offset for fixed header */
     html {
-      scroll-padding-top: calc(var(--header-h, 80px) + 12px);
+      scroll-padding-top: 90px;
     }
 
     /* ✅ Reduced motion */
@@ -49,12 +59,6 @@
       }
     }
 
-    /* =========================================
-       ✅ HERO FULLSCREEN (All screen sizes)
-       - Hero = full viewport height
-       - Top padding = fixed header height
-       - Next section NOT visible until scroll
-    ========================================== */
     :root {
       --header-h: 80px;
     }
@@ -72,70 +76,36 @@
     }
 
     /* =========================================
-       ✅ FULL SCREEN ONLY for About + Contact
-       - These sections take 1 screen only
-       - Other sections won't "peek"
-       - If content is longer, it scrolls INSIDE the section (not showing next section)
+       ✅ SMOOTH CROSSFADE (2-layer)
     ========================================== */
-    .screen-only {
-      height: 100vh;
-      box-sizing: border-box;
-      padding-top: calc(var(--header-h) + 24px);
-      padding-bottom: 24px;
-      overflow-y: auto;
-      overscroll-behavior: contain;
-    }
+    .xfade-layer {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
 
-    @supports (height: 100svh) {
-      .screen-only {
-        height: 100svh;
-      }
-    }
-
-    /* ✅ Fade animation (reusable) */
-    .fade-img {
-      opacity: 1;
-      transition: opacity 220ms ease;
-      will-change: opacity;
-    }
-
-    .fade-img.is-fading {
       opacity: 0;
-    }
-
-    /* =========================================
-       ✅ IMPROVED HERO TRANSITION (Premium)
-       - Fade + slight slide + blur + soft zoom
-       - HERO ONLY (does NOT affect other images)
-    ========================================== */
-    #heroCarouselImg.fade-img {
-      opacity: 1;
-      transform: translate3d(0, 0, 0) scale(1.06);
+      transform: scale(1.06);
       filter: blur(0px);
+
       transition:
-        opacity 850ms cubic-bezier(.22, 1, .36, 1),
-        transform 1200ms cubic-bezier(.22, 1, .36, 1),
-        filter 850ms cubic-bezier(.22, 1, .36, 1);
+        opacity 900ms cubic-bezier(.22, 1, .36, 1),
+        transform 1400ms cubic-bezier(.22, 1, .36, 1),
+        filter 900ms cubic-bezier(.22, 1, .36, 1);
       will-change: opacity, transform, filter;
+      backface-visibility: hidden;
     }
 
-    #heroCarouselImg.fade-img.is-fading {
-      opacity: 0;
-      filter: blur(8px);
-    }
-
-    #heroCarouselImg[data-dir="next"].fade-img.is-fading {
-      transform: translate3d(-18px, 0, 0) scale(1.03);
-    }
-
-    #heroCarouselImg[data-dir="prev"].fade-img.is-fading {
-      transform: translate3d(18px, 0, 0) scale(1.03);
-    }
-
-    #heroCarouselImg.fade-img.is-active {
+    .xfade-layer.is-active {
       opacity: 1;
+      transform: scale(1.10);
       filter: blur(0px);
-      transform: translate3d(0, 0, 0) scale(1.10);
+    }
+
+    .xfade-layer.is-out {
+      filter: blur(8px);
+      transform: scale(1.03);
     }
 
     /* =========================================
@@ -239,7 +209,6 @@
       }
     }
 
-    /* Respect reduced motion */
     @media (prefers-reduced-motion: reduce) {
 
       .pc-card,
@@ -247,10 +216,11 @@
       .pc-card::after,
       .pc-card .pc-icon,
       .pc-card .tap-ripple span,
-      .fade-img {
+      .xfade-layer {
         transition: none !important;
         animation: none !important;
         transform: none !important;
+        filter: none !important;
       }
 
       .reveal {
@@ -259,14 +229,6 @@
 
       .pc-card::after {
         opacity: 0 !important;
-      }
-
-      .fade-img.is-fading {
-        opacity: 1 !important;
-      }
-
-      #heroCarouselImg {
-        filter: none !important;
       }
     }
   </style>
@@ -287,8 +249,6 @@
       <!-- Desktop Links -->
       <div class="hidden md:flex items-center gap-8 ml-auto">
         <a href="index.html#home" class="text-sm font-semibold text-brand-700 hover:text-brand-800">Home</a>
-        <a href="index.html#about" class="text-sm font-medium text-slate-600 hover:text-brand-700">About Us</a>
-        <a href="index.html#contact" class="text-sm font-medium text-slate-600 hover:text-brand-700">Contact</a>
         <a href="lessons.html" class="text-sm font-medium text-slate-600 hover:text-brand-700">Lessons</a>
       </div>
 
@@ -381,13 +341,6 @@
         <div class="flex flex-col gap-2">
           <a href="index.html#home"
             class="rounded-xl px-3 py-3 text-sm font-semibold text-brand-700 bg-brand-50 active:bg-brand-100">Home</a>
-
-          <!-- ✅ accessible kahit guest -->
-          <a href="index.html#about"
-            class="rounded-xl px-3 py-3 text-sm font-medium text-slate-700 hover:bg-slate-100 active:bg-slate-200">About Us</a>
-          <a href="index.html#contact"
-            class="rounded-xl px-3 py-3 text-sm font-medium text-slate-700 hover:bg-slate-100 active:bg-slate-200">Contact</a>
-
           <a href="lessons.html"
             class="rounded-xl px-3 py-3 text-sm font-medium text-slate-700 hover:bg-slate-100 active:bg-slate-200">Lessons</a>
           <a href="profile.html"
@@ -429,10 +382,16 @@
   <section id="home" class="hero-full relative overflow-hidden">
     <div class="absolute inset-0">
       <div class="relative h-full w-full overflow-hidden group" id="heroCarousel">
-        <img id="heroCarouselImg"
+        <img id="heroImgA"
           src="https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=1800&q=80"
           alt="Purposive Communication hero"
-          class="fade-img h-full w-full object-cover"
+          class="xfade-layer is-active"
+          loading="eager"
+          decoding="async" />
+        <img id="heroImgB"
+          src="https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=1800&q=80"
+          alt="Purposive Communication hero"
+          class="xfade-layer"
           loading="eager"
           decoding="async" />
 
@@ -455,14 +414,6 @@
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 18l6-6-6-6" />
           </svg>
         </button>
-
-        <div id="heroDots" aria-label="Photo navigation"
-          class="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2 rounded-full bg-black/30 px-3 py-2 backdrop-blur">
-        </div>
-
-        <p id="heroCaption"
-          class="absolute bottom-14 left-1/2 -translate-x-1/2 z-10 text-center text-xs font-semibold text-white/85 px-4">
-        </p>
       </div>
     </div>
 
@@ -557,60 +508,6 @@
     </div>
   </section>
 
-  <!-- ✅ ABOUT US (FULL SCREEN ONLY) -->
-  <section id="about" class="screen-only bg-slate-50">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="grid gap-10 lg:grid-cols-2 lg:items-center">
-        <div>
-          <h2 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">About Us</h2>
-          <p class="mt-4 text-slate-600 leading-relaxed">
-            Purposive Communication E-Learning Platform helps students build real-world communication skills through
-            guided lessons, interactive activities, and assessments. Our goal is to make learning communication clear,
-            practical, and engaging.
-          </p>
-
-          <div class="mt-8 grid gap-4 sm:grid-cols-2">
-            <div class="rounded-3xl bg-white p-6 shadow-soft ring-1 ring-black/5">
-              <h3 class="text-base font-extrabold text-slate-900">Our Mission</h3>
-              <p class="mt-2 text-sm text-slate-600">
-                Make communication learning simple, engaging, and accessible for every learner.
-              </p>
-            </div>
-
-            <div class="rounded-3xl bg-white p-6 shadow-soft ring-1 ring-black/5">
-              <h3 class="text-base font-extrabold text-slate-900">Our Vision</h3>
-              <p class="mt-2 text-sm text-slate-600">
-                Empower students to communicate confidently in academic and professional settings.
-              </p>
-            </div>
-          </div>
-
-          <div class="mt-6 rounded-3xl bg-white p-6 shadow-soft ring-1 ring-black/5">
-            <h3 class="text-base font-extrabold text-slate-900">What you get</h3>
-            <ul class="mt-3 space-y-2 text-sm text-slate-600 list-disc pl-5">
-              <li>Structured lessons with clear outcomes</li>
-              <li>Quizzes and progress tracking</li>
-              <li>Guided practice for real-life communication</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="relative">
-          <div class="absolute -inset-6 rounded-[2rem] bg-brand-50 blur-2xl"></div>
-          <div class="relative overflow-hidden rounded-[2rem] shadow-soft ring-1 ring-black/5">
-            <img
-              src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1400&q=80"
-              alt="Team collaboration"
-              class="h-[260px] w-full object-cover sm:h-[420px]"
-              loading="lazy"
-              decoding="async"
-              onerror="this.src='https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1400&q=80';" />
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- HOW IT WORKS -->
   <section class="bg-white pb-20">
     <div class="mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
@@ -619,8 +516,7 @@
 
         <div class="mt-10 space-y-8">
           <div class="flex gap-5">
-            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white font-bold">
-              1</div>
+            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white font-bold">1</div>
             <div>
               <h3 class="text-lg font-bold text-slate-900">Choose Your Lesson</h3>
               <p class="mt-1 text-sm text-slate-600">Browse through our curated lessons and select the topic you want to master</p>
@@ -628,8 +524,7 @@
           </div>
 
           <div class="flex gap-5">
-            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white font-bold">
-              2</div>
+            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white font-bold">2</div>
             <div>
               <h3 class="text-lg font-bold text-slate-900">Complete Each Part</h3>
               <p class="mt-1 text-sm text-slate-600">Watch videos, read content, and pass quizzes to unlock the next section</p>
@@ -637,8 +532,7 @@
           </div>
 
           <div class="flex gap-5">
-            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white font-bold">
-              3</div>
+            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white font-bold">3</div>
             <div>
               <h3 class="text-lg font-bold text-slate-900">Pass Final Assessment</h3>
               <p class="mt-1 text-sm text-slate-600">Demonstrate your mastery by completing the comprehensive final assessment</p>
@@ -646,8 +540,7 @@
           </div>
 
           <div class="flex gap-5">
-            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white font-bold">
-              4</div>
+            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white font-bold">4</div>
             <div>
               <h3 class="text-lg font-bold text-slate-900">Track Your Progress</h3>
               <p class="mt-1 text-sm text-slate-600">Monitor your achievements and continue building your communication skills</p>
@@ -656,17 +549,24 @@
         </div>
       </div>
 
-      <!-- PHOTO SECTION UPDATED: Carousel -->
       <div class="relative">
         <div class="absolute -inset-6 rounded-[2rem] bg-brand-50 blur-2xl"></div>
 
         <div class="relative overflow-hidden rounded-[2rem] shadow-soft ring-1 ring-black/5 group" id="hwCarousel">
-          <img id="hwCarouselImg"
-            src="./assets/how-it-works.jpg"
-            alt="Student learning"
-            class="fade-img h-[280px] w-full object-cover sm:h-[420px] lg:h-[520px]"
-            loading="lazy"
-            decoding="async" />
+          <div class="relative h-[280px] w-full sm:h-[420px] lg:h-[520px]">
+            <img id="hwImgA"
+              src="./assets/how-it-works.jpg"
+              alt="Student learning"
+              class="xfade-layer is-active"
+              loading="lazy"
+              decoding="async" />
+            <img id="hwImgB"
+              src="./assets/how-it-works.jpg"
+              alt="Student learning"
+              class="xfade-layer"
+              loading="lazy"
+              decoding="async" />
+          </div>
 
           <button id="hwPrev" type="button" aria-label="Previous photo"
             class="absolute left-4 top-1/2 -translate-y-1/2 z-10 inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/90 text-slate-800 ring-1 ring-black/10 shadow-soft
@@ -685,111 +585,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" d="M9 18l6-6-6-6" />
             </svg>
           </button>
-
-          <div class="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2 rounded-full bg-black/30 px-3 py-2 backdrop-blur"
-            id="hwDots" aria-label="Photo navigation"></div>
         </div>
-
-        <p class="mt-3 text-center text-xs font-semibold text-slate-500" id="hwCaption"></p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ✅ CONTACT (FULL SCREEN ONLY) -->
-  <section id="contact" class="screen-only bg-white">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="text-center">
-        <h2 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">Contact Us</h2>
-        <p class="mx-auto mt-4 max-w-2xl text-slate-600">
-          Have questions or feedback? Send us a message or reach out using the details below.
-        </p>
-      </div>
-
-      <div class="mt-10 grid gap-8 lg:grid-cols-2">
-        <!-- Contact Info -->
-        <div class="rounded-3xl bg-slate-50 p-8 shadow-soft ring-1 ring-black/5">
-          <h3 class="text-lg font-extrabold text-slate-900">Get in touch</h3>
-
-          <div class="mt-6 space-y-4 text-sm">
-            <div class="flex items-start gap-3">
-              <div class="mt-0.5 rounded-xl bg-brand-100 p-2 text-brand-700">
-                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M22 16.92v3a2 2 0 01-2.18 2 19.86 19.86 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.86 19.86 0 012.08 4.18 2 2 0 014.06 2h3a2 2 0 012 1.72c.12.86.3 1.7.54 2.52a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.56-1.1a2 2 0 012.11-.45c.82.24 1.66.42 2.52.54A2 2 0 0122 16.92z" />
-                </svg>
-              </div>
-              <div>
-                <p class="font-semibold text-slate-900">Phone</p>
-                <p class="text-slate-600">+63 900 000 0000</p>
-              </div>
-            </div>
-
-            <div class="flex items-start gap-3">
-              <div class="mt-0.5 rounded-xl bg-brand-100 p-2 text-brand-700">
-                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 4h16v16H4V4z" />
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M22 6l-10 7L2 6" />
-                </svg>
-              </div>
-              <div class="min-w-0">
-                <p class="font-semibold text-slate-900">Email</p>
-                <p class="text-slate-600 break-words">support@purposivecommunication.com</p>
-              </div>
-            </div>
-
-            <div class="flex items-start gap-3">
-              <div class="mt-0.5 rounded-xl bg-brand-100 p-2 text-brand-700">
-                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z" />
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 10a3 3 0 100-6 3 3 0 000 6z" />
-                </svg>
-              </div>
-              <div>
-                <p class="font-semibold text-slate-900">Address</p>
-                <p class="text-slate-600">Your School / Campus Address, Philippines</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Contact Form (front-end only) -->
-        <form class="rounded-3xl bg-white p-8 shadow-soft ring-1 ring-black/5"
-          onsubmit="event.preventDefault(); alert('Message sent! (Demo only)'); this.reset();">
-          <h3 class="text-lg font-extrabold text-slate-900">Send a message</h3>
-
-          <div class="mt-6 grid gap-4">
-            <div>
-              <label for="cName" class="text-sm font-semibold text-slate-700">Full name</label>
-              <input id="cName" name="name" required
-                class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 shadow-sm focus:outline-none focus:ring-4 focus:ring-brand-200"
-                placeholder="Juan Dela Cruz" />
-            </div>
-
-            <div>
-              <label for="cEmail" class="text-sm font-semibold text-slate-700">Email</label>
-              <input id="cEmail" name="email" type="email" required
-                class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 shadow-sm focus:outline-none focus:ring-4 focus:ring-brand-200"
-                placeholder="you@example.com" />
-            </div>
-
-            <div>
-              <label for="cMsg" class="text-sm font-semibold text-slate-700">Message</label>
-              <textarea id="cMsg" name="message" rows="5" required
-                class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 shadow-sm focus:outline-none focus:ring-4 focus:ring-brand-200"
-                placeholder="Write your message here..."></textarea>
-            </div>
-
-            <button type="submit"
-              class="mt-2 inline-flex items-center justify-center rounded-2xl bg-brand-500 px-6 py-3 text-sm font-semibold text-white shadow-soft hover:bg-brand-600 focus:outline-none focus:ring-4 focus:ring-brand-200">
-              Send Message
-            </button>
-
-            <p class="text-xs text-slate-500">
-              Demo lang ito (no database). If gusto mo maging real, sabihin mo kung Firebase / PHP / Google Forms ang gagamitin mo.
-            </p>
-          </div>
-        </form>
       </div>
     </div>
   </section>
@@ -832,18 +628,16 @@
         <div class="md:justify-self-center">
           <h3 class="text-base font-semibold">Quick Links</h3>
           <ul class="mt-4 space-y-3 text-sm text-white/80">
-            <li><a class="hover:text-white" href="index.html#home">Home</a></li>
-            <li><a class="hover:text-white" href="index.html#about">About Us</a></li>
-            <li><a class="hover:text-white" href="index.html#contact">Contact</a></li>
-            <li><a class="hover:text-white" href="lessons.html">Lessons</a></li>
+            <li><a class="hover:text-white" href="index.html">Home</a></li>
+            <li><a class="hover:text-white" href="lessons.html">About Us</a></li>
+            <li><a class="hover:text-white" href="profile.html">Contact</a></li>
           </ul>
         </div>
 
-        <!-- ✅ CONNECT LINKS (SAME TAB) -->
         <div class="md:justify-self-end">
           <h3 class="text-base font-semibold">Connect</h3>
           <div class="mt-4 flex items-center gap-4">
-            <a href="https://www.facebook.com/"
+            <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer"
               class="inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/20 hover:bg-white/15"
               aria-label="Facebook">
               <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor" aria-hidden="true">
@@ -852,7 +646,7 @@
               </svg>
             </a>
 
-            <a href="https://x.com/"
+            <a href="https://x.com/" target="_blank" rel="noopener noreferrer"
               class="inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/20 hover:bg-white/15"
               aria-label="Twitter (X)">
               <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor" aria-hidden="true">
@@ -861,7 +655,7 @@
               </svg>
             </a>
 
-            <a href="https://www.linkedin.com/"
+            <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer"
               class="inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/20 hover:bg-white/15"
               aria-label="LinkedIn">
               <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor" aria-hidden="true">
@@ -899,11 +693,64 @@
     </div>
   </div>
 
+  <!-- ✅ SIGN OUT CONFIRM MODAL -->
+  <div id="signOutModal" class="fixed inset-0 z-[70] hidden">
+    <div id="signOutBackdrop" class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+
+    <div class="relative mx-auto flex min-h-full max-w-md items-center justify-center px-4 py-10">
+      <div class="w-full rounded-3xl bg-white shadow-soft ring-1 ring-black/10">
+        <div class="p-5 sm:p-6 text-center">
+<div class="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 ring-1 ring-black/5">
+  <svg viewBox="0 0 24 24" class="h-6 w-6 text-brand-700" fill="none" stroke="currentColor" stroke-width="2">
+    <circle cx="12" cy="12" r="10" />
+    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v5" />
+    <path stroke-linecap="round" stroke-linejoin="round" d="M12 16h.01" />
+  </svg>
+</div>
+
+<h3 class="mt-3 text-base font-extrabold text-slate-900">Are you sure you want to sign out?</h3>
+
+
+          <div class="mt-5 grid grid-cols-2 gap-3">
+            <button id="signOutNo" type="button"
+              class="w-full rounded-xl bg-slate-100 px-5 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-200 ring-1 ring-black/5">
+              No
+            </button>
+
+            <button id="signOutYes" type="button"
+              class="w-full rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-700 ring-1 ring-black/5">
+              Yes
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
+    // ✅ Start in "pending" so nothing auth-related flashes
+    document.documentElement.classList.add("pc-auth-pending");
+  </script>
+
+  <!-- ✅ ALL LOGIC (NO localStorage) -->
+  <script type="module">
+    import { auth, db } from "./firebase.js";
+    import { doc, getDoc, getDocFromCache } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+    import {
+      onAuthStateChanged,
+      signOut as firebaseSignOut,
+      signInWithEmailAndPassword,
+      setPersistence,
+      browserSessionPersistence
+    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+
     // Footer year
     document.getElementById("year").textContent = new Date().getFullYear();
 
-    // ✅ Set CSS variable for the fixed header height (hero full screen + screen-only sections)
+    // ✅ Force Firebase auth to NOT use localStorage (session only)
+    try { await setPersistence(auth, browserSessionPersistence); } catch (_) { }
+
+    // ✅ Set CSS variable for the fixed header height (hero full screen)
     (function setHeaderHeightVar() {
       const header = document.querySelector("header");
       if (!header) return;
@@ -939,33 +786,20 @@
     // Smooth scroll for # links (with reduced-motion support)
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    document.querySelectorAll('a[href^="#"], a[href*="#"]').forEach((a) => {
+    document.querySelectorAll('a[href^="#"]').forEach((a) => {
       a.addEventListener("click", (e) => {
         const href = a.getAttribute("href");
-        if (!href) return;
+        if (!href || href === "#") return;
 
-        // support both "#id" and "index.html#id"
-        const hashIndex = href.indexOf("#");
-        if (hashIndex === -1) return;
-
-        const hash = href.slice(hashIndex);
-        if (!hash || hash === "#") return;
-
-        const el = document.querySelector(hash);
+        const el = document.querySelector(href);
         if (!el) return;
 
-        // if link is same page (or index.html), smooth scroll
-        const beforeHash = href.slice(0, hashIndex);
-        const isSamePage = beforeHash === "" || beforeHash.endsWith("index.html");
+        e.preventDefault();
+        el.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "start" });
 
-        if (isSamePage) {
-          e.preventDefault();
-          el.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "start" });
-
-          if (mobileMenu && !mobileMenu.classList.contains("hidden")) {
-            mobileMenu.classList.add("hidden");
-            menuBtn?.setAttribute("aria-expanded", "false");
-          }
+        if (!mobileMenu.classList.contains("hidden")) {
+          mobileMenu.classList.add("hidden");
+          menuBtn.setAttribute("aria-expanded", "false");
         }
       });
     });
@@ -979,32 +813,32 @@
     const startLearningBtn = document.getElementById("startLearningBtn");
     const signUpFreeBtn = document.getElementById("signUpFreeBtn");
     const getStartedFreeBtn = document.getElementById("getStartedFreeBtn");
+    const loginFrame = document.getElementById("loginFrame");
 
-    function safeParseJSON(v, fallback) {
-      try { return JSON.parse(v); } catch { return fallback; }
-    }
+    // ===== Auth state (Firebase) =====
+    let __currentUser = null;
+    let __profile = null;
 
-    // ===== Auth state =====
-    const LS = {
-      session: "pc_session",
-      users: "pc_users",
-      avatar: "pc_profile_avatar",
-      loggedIn: "pc_logged_in"
-    };
+    async function loadProfile(uid) {
+      const ref = doc(db, "users", uid);
 
-    function getSession() {
-      const raw = localStorage.getItem(LS.session);
-      return raw ? safeParseJSON(raw, null) : null;
-    }
+      // ✅ 1) Try local Firestore cache first (fast, avoids flicker)
+      try {
+        const cached = await getDocFromCache(ref);
+        if (cached.exists()) return cached.data() || {};
+      } catch (_) { }
 
-    function getUsers() {
-      const raw = localStorage.getItem(LS.users);
-      return raw ? safeParseJSON(raw, []) : [];
+      // ✅ 2) Fallback to server
+      try {
+        const snap = await getDoc(ref);
+        return snap.exists() ? (snap.data() || {}) : {};
+      } catch (_) {
+        return {};
+      }
     }
 
     function isLoggedIn() {
-      const s = getSession();
-      return !!(s && s.email);
+      return !!__currentUser;
     }
 
     function openLoginModal(e) {
@@ -1016,16 +850,15 @@
         menuBtn?.setAttribute("aria-expanded", "false");
       }
 
+      if (loginFrame) loginFrame.src = "login.html";
+
       loginModal.classList.remove("hidden");
       document.body.classList.add("overflow-hidden");
-
-      startLoginPoll();
     }
 
     function closeLoginModal() {
       loginModal.classList.add("hidden");
       document.body.classList.remove("overflow-hidden");
-      stopLoginPoll();
     }
 
     openLoginBtn?.addEventListener("click", openLoginModal);
@@ -1039,6 +872,47 @@
 
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && !loginModal.classList.contains("hidden")) {
+        closeLoginModal();
+      }
+    });
+
+    // ✅ Parent performs Firebase sign-in (instant UI update)
+    window.addEventListener("message", async (event) => {
+      const d = event?.data;
+      if (!d || d.type !== "pc-auth") return;
+
+      if (d.action === "sign-in") {
+        try {
+          const cred = await signInWithEmailAndPassword(auth, d.email, d.password);
+
+          __currentUser = cred.user;
+          __profile = null;
+
+          applyAuthUI();
+
+          document.documentElement.classList.remove("pc-auth-pending");
+          document.documentElement.classList.add("pc-auth-ready");
+
+          loadProfile(cred.user.uid).then((p) => {
+            __profile = p || null;
+            applyAuthUI();
+          });
+
+          if (loginModal && !loginModal.classList.contains("hidden")) {
+            closeLoginModal();
+          }
+
+          event.source?.postMessage({ type: "pc-auth", status: "signed-in" }, "*");
+        } catch (err) {
+          event.source?.postMessage(
+            { type: "pc-auth", status: "error", message: err?.message || "Login failed." },
+            "*"
+          );
+        }
+        return;
+      }
+
+      if (d.status === "signed-in") {
         closeLoginModal();
       }
     });
@@ -1065,25 +939,17 @@
     const signOutBtn = document.getElementById("signOutBtn");
     const mSignOutBtn = document.getElementById("mSignOutBtn");
 
-    function getInitials(name) {
-      const n = (name || "").trim();
+    function getInitials(nameOrEmail) {
+      const n = (nameOrEmail || "").trim();
       if (!n) return "U";
       const parts = n.split(/\s+/).filter(Boolean);
-      const first = parts[0]?.[0] || "U";
-      const last = parts.length > 1 ? parts[parts.length - 1][0] : "";
-      return (first + last).toUpperCase();
+      if (parts.length >= 2) return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+      return (parts[0][0] || "U").toUpperCase();
     }
 
-    function getAvatarDisplay(userName) {
-      const raw = localStorage.getItem(LS.avatar);
-      const obj = raw ? safeParseJSON(raw, null) : null;
-      if (obj && obj.type === "emoji" && obj.value) return { type: "emoji", value: obj.value };
-      return { type: "initials", value: getInitials(userName) };
-    }
-
-    function setAvatarEl(el, avatar) {
+    function setAvatarEl(el, text) {
       if (!el) return;
-      el.textContent = avatar.value;
+      el.textContent = text || "U";
     }
 
     function closeUserDropdown() {
@@ -1124,7 +990,6 @@
 
     function applyAuthUI() {
       const loggedIn = isLoggedIn();
-      localStorage.setItem(LS.loggedIn, loggedIn ? "true" : "false");
 
       guestEls.forEach(el => el.classList.toggle("hidden", loggedIn));
       userEls.forEach(el => el.classList.toggle("hidden", !loggedIn));
@@ -1134,66 +999,111 @@
         return;
       }
 
-      const session = getSession();
-      const email = (session?.email || "").toLowerCase();
-      const users = getUsers();
-      const found = users.find(u => (u.email || "").toLowerCase() === email) || null;
+      const fullName = (__profile?.fullName || __currentUser?.displayName || "Student").trim() || "Student";
+      const email = (__profile?.email || __currentUser?.email || "").trim();
+      const studentId = (__profile?.studentId || "").trim();
 
-      const fullName = (session?.fullName || found?.fullName || "Student").trim();
-      const studentId = (found?.studentId || "—").trim() || "—";
-      const avatar = getAvatarDisplay(fullName);
+      const avatarText =
+        (__profile?.avatar?.type === "emoji" && __profile?.avatar?.value)
+          ? __profile.avatar.value
+          : getInitials(fullName || email);
 
       if (navName) navName.textContent = fullName;
       if (ddName) ddName.textContent = fullName;
-      if (ddEmail) ddEmail.textContent = session?.email || found?.email || "";
-      if (ddId) ddId.textContent = studentId;
+      if (ddEmail) ddEmail.textContent = email;
+      if (ddId) ddId.textContent = studentId ? studentId : "—";
 
-      setAvatarEl(navAvatar, avatar);
-      setAvatarEl(ddAvatar, avatar);
+      setAvatarEl(navAvatar, avatarText);
+      setAvatarEl(ddAvatar, avatarText);
 
       if (mNavName) mNavName.textContent = fullName;
-      if (mNavEmail) mNavEmail.textContent = session?.email || found?.email || "";
-      setAvatarEl(mNavAvatar, avatar);
+      if (mNavEmail) mNavEmail.textContent = email;
+      setAvatarEl(mNavAvatar, avatarText);
     }
 
-    function signOut() {
-      localStorage.removeItem(LS.session);
-      localStorage.setItem(LS.loggedIn, "false");
+    // ===== Sign out confirm modal (NEW) =====
+    const signOutModal = document.getElementById("signOutModal");
+    const signOutBackdrop = document.getElementById("signOutBackdrop");
+    const signOutYes = document.getElementById("signOutYes");
+    const signOutNo = document.getElementById("signOutNo");
+
+    function openSignOutModal() {
       closeUserDropdown();
-      applyAuthUI();
-      closeLoginModal();
+      signOutModal?.classList.remove("hidden");
+      document.body.classList.add("overflow-hidden");
     }
 
-    signOutBtn?.addEventListener("click", signOut);
-    mSignOutBtn?.addEventListener("click", signOut);
+    function closeSignOutModal() {
+      signOutModal?.classList.add("hidden");
+      document.body.classList.remove("overflow-hidden");
+    }
 
-    window.addEventListener("storage", (e) => {
-      if (e.key === LS.session || e.key === LS.avatar) {
-        applyAuthUI();
-        if (isLoggedIn() && !loginModal.classList.contains("hidden")) closeLoginModal();
+    signOutNo?.addEventListener("click", closeSignOutModal);
+    signOutBackdrop?.addEventListener("click", closeSignOutModal);
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && signOutModal && !signOutModal.classList.contains("hidden")) {
+        closeSignOutModal();
       }
     });
 
-    let __loginPoll = null;
-    function startLoginPoll() {
-      stopLoginPoll();
-      __loginPoll = setInterval(() => {
-        applyAuthUI();
-        if (isLoggedIn() && !loginModal.classList.contains("hidden")) closeLoginModal();
-      }, 400);
-    }
-    function stopLoginPoll() {
-      if (__loginPoll) clearInterval(__loginPoll);
-      __loginPoll = null;
+    async function doSignOut() {
+      try {
+        await firebaseSignOut(auth);
+      } catch (_) { }
+      __currentUser = null;
+      closeUserDropdown();
+      applyAuthUI();
+      closeLoginModal();
+      closeSignOutModal();
     }
 
-    applyAuthUI();
-    window.addEventListener("focus", applyAuthUI);
+    // expose for your existing bottom script
+    window.__pcSignOut = doSignOut;
 
-    // If user clicks Lessons/Profile while NOT logged in, open login modal.
+    // ✅ Open confirm modal instead of signing out immediately
+    signOutBtn?.addEventListener("click", (e) => {
+      e.preventDefault();
+      openSignOutModal();
+    });
+
+    mSignOutBtn?.addEventListener("click", (e) => {
+      e.preventDefault();
+      openSignOutModal();
+    });
+
+    signOutYes?.addEventListener("click", async () => {
+      closeSignOutModal();
+      await doSignOut();
+    });
+
+    // ✅ Firebase auth listener (keeps state correct)
+    onAuthStateChanged(auth, (user) => {
+      __currentUser = user || null;
+      __profile = null;
+
+      applyAuthUI();
+
+      document.documentElement.classList.remove("pc-auth-pending");
+      document.documentElement.classList.add("pc-auth-ready");
+
+      if (__currentUser) {
+        loadProfile(__currentUser.uid).then((p) => {
+          __profile = p || null;
+          applyAuthUI();
+        });
+      }
+
+      if (__currentUser && loginModal && !loginModal.classList.contains("hidden")) {
+        closeLoginModal();
+      }
+    });
+
     document.querySelectorAll('a[href="lessons.html"], a[href="profile.html"]').forEach((a) => {
       a.addEventListener("click", (e) => {
-        if (!isLoggedIn()) openLoginModal(e);
+        if (!isLoggedIn()) {
+          openLoginModal(e);
+        }
       });
     });
 
@@ -1271,17 +1181,16 @@
     })();
 
     // =========================================
-    // ✅ HERO TOP PHOTO: AUTO SLIDESHOW (IMPROVED TRANSITION)
+    // ✅ HERO TOP PHOTO: AUTO SLIDESHOW (2-LAYER CROSSFADE)
     // =========================================
     (function setupHeroCarousel() {
       const wrap = document.getElementById("heroCarousel");
-      const img = document.getElementById("heroCarouselImg");
+      const imgA = document.getElementById("heroImgA");
+      const imgB = document.getElementById("heroImgB");
       const prevBtn = document.getElementById("heroPrev");
       const nextBtn = document.getElementById("heroNext");
-      const dots = document.getElementById("heroDots");
-      const caption = document.getElementById("heroCaption");
 
-      if (!wrap || !img || !prevBtn || !nextBtn || !dots) return;
+      if (!wrap || !imgA || !imgB || !prevBtn || !nextBtn) return;
 
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -1289,212 +1198,70 @@
         {
           src: "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=1800&q=80",
           fallback: "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=1400&q=80",
-          alt: "Library learning",
-          caption: "Learn with a calm, focused environment"
+          alt: "Library learning"
         },
         {
           src: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1800&q=80",
           fallback: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1400&q=80",
-          alt: "Collaborative learning",
-          caption: "Collaborate and communicate effectively"
+          alt: "Collaborative learning"
         },
         {
           src: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1800&q=80",
           fallback: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1400&q=80",
-          alt: "Online study",
-          caption: "Study anytime, anywhere"
+          alt: "Online study"
         }
       ];
 
       let index = 0;
-      let dir = "next";
-
       const AUTOPLAY_MS = 5000;
       let autoplayTimer = null;
 
-      function buildDots() {
-        dots.innerHTML = "";
-        slides.forEach((_, i) => {
-          const b = document.createElement("button");
-          b.type = "button";
-          b.className = "h-2.5 w-2.5 rounded-full ring-1 ring-white/60 transition";
-          b.setAttribute("aria-label", `Go to photo ${i + 1}`);
-          b.addEventListener("click", () => goTo(i, "next"));
-          dots.appendChild(b);
-        });
+      let active = imgA;
+      let idle = imgB;
+
+      function swapActive() {
+        const tmp = active;
+        active = idle;
+        idle = tmp;
       }
 
-      function setActiveDot() {
-        const children = Array.from(dots.children);
-        children.forEach((el, i) => {
-          el.classList.toggle("bg-white", i === index);
-          el.classList.toggle("bg-white/40", i !== index);
-        });
-      }
-
-      async function setImgAndAnimate(s) {
-        img.dataset.dir = dir;
-
-        if (!reduceMotion) {
-          img.classList.remove("is-active");
-          img.classList.add("is-fading");
-        }
-
-        img.onerror = () => {
-          if (img.src !== s.fallback) img.src = s.fallback;
+      function setImgSrcSafe(el, s) {
+        el.onerror = () => {
+          if (el.src !== s.fallback) el.src = s.fallback;
         };
-
-        img.alt = s.alt || "Hero photo";
-        img.src = s.src;
-
-        if (img.decode) {
-          try { await img.decode(); } catch { }
-        }
-
-        if (!reduceMotion) {
-          requestAnimationFrame(() => {
-            img.classList.remove("is-fading");
-            requestAnimationFrame(() => img.classList.add("is-active"));
-          });
-        }
-
-        if (caption) caption.textContent = s.caption || "";
-        setActiveDot();
+        el.alt = s.alt || "Hero photo";
+        el.src = s.src;
       }
 
       function applySlide(i) {
         const s = slides[i];
+
+        if (reduceMotion) {
+          setImgSrcSafe(active, s);
+          active.classList.add("is-active");
+          idle.classList.remove("is-active", "is-out");
+          return;
+        }
+
+        setImgSrcSafe(idle, s);
+
         const pre = new Image();
         pre.src = s.src;
 
-        pre.onload = () => setImgAndAnimate(s);
-        pre.onerror = () => setImgAndAnimate(s);
-      }
+        pre.onload = () => runFade();
+        pre.onerror = () => runFade();
 
-      function goTo(i, direction) {
-        if (direction) dir = direction;
-        index = (i + slides.length) % slides.length;
-        applySlide(index);
-      }
+        function runFade() {
+          active.classList.add("is-out");
+          idle.classList.add("is-active");
+          idle.classList.remove("is-out");
 
-      function next() { goTo(index + 1, "next"); }
-      function prev() { goTo(index - 1, "prev"); }
-
-      prevBtn.addEventListener("click", prev);
-      nextBtn.addEventListener("click", next);
-
-      wrap.tabIndex = 0;
-      wrap.addEventListener("keydown", (e) => {
-        if (e.key === "ArrowLeft") prev();
-        if (e.key === "ArrowRight") next();
-      });
-
-      let startX = 0;
-      let isDown = false;
-
-      wrap.addEventListener("pointerdown", (e) => {
-        isDown = true;
-        startX = e.clientX;
-      });
-
-      wrap.addEventListener("pointerup", (e) => {
-        if (!isDown) return;
-        isDown = false;
-        const dx = e.clientX - startX;
-        if (Math.abs(dx) < 40) return;
-        if (dx < 0) next();
-        else prev();
-      });
-
-      wrap.addEventListener("pointercancel", () => { isDown = false; });
-
-      function startAutoplay() {
-        if (reduceMotion || slides.length <= 1) return;
-        clearInterval(autoplayTimer);
-        autoplayTimer = setInterval(next, AUTOPLAY_MS);
-      }
-
-      buildDots();
-      goTo(index, "next");
-      setTimeout(startAutoplay, 400);
-    })();
-
-    // =========================================
-    // ✅ HOW IT WORKS: PHOTO CAROUSEL (unchanged)
-    // =========================================
-    (function setupHowItWorksCarousel() {
-      const wrap = document.getElementById("hwCarousel");
-      const img = document.getElementById("hwCarouselImg");
-      const prevBtn = document.getElementById("hwPrev");
-      const nextBtn = document.getElementById("hwNext");
-      const dots = document.getElementById("hwDots");
-      const caption = document.getElementById("hwCaption");
-
-      if (!wrap || !img || !prevBtn || !nextBtn || !dots) return;
-
-      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-      const slides = [
-        {
-          src: "./assets/how-it-works.jpg",
-          fallback: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1400&q=80",
-          alt: "Student learning",
-          caption: "Interactive learning experience"
-        },
-        {
-          src: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1400&q=80",
-          fallback: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1400&q=80",
-          alt: "Online study session",
-          caption: "Study anytime, anywhere"
-        },
-        {
-          src: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1400&q=80",
-          fallback: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1400&q=80",
-          alt: "Classroom discussion",
-          caption: "Practice real communication skills"
+          requestAnimationFrame(() => {
+            active.classList.remove("is-active");
+            active.classList.remove("is-out");
+            swapActive();
+          });
         }
-      ];
-
-      let index = 0;
-
-      function buildDots() {
-        dots.innerHTML = "";
-        slides.forEach((_, i) => {
-          const b = document.createElement("button");
-          b.type = "button";
-          b.className = "h-2.5 w-2.5 rounded-full ring-1 ring-white/60 transition";
-          b.setAttribute("aria-label", `Go to photo ${i + 1}`);
-          b.addEventListener("click", () => goTo(i));
-          dots.appendChild(b);
-        });
-      }
-
-      function setActiveDot() {
-        const children = Array.from(dots.children);
-        children.forEach((el, i) => {
-          el.classList.toggle("bg-white", i === index);
-          el.classList.toggle("bg-white/40", i !== index);
-        });
-      }
-
-      function applySlide(i) {
-        const s = slides[i];
-
-        if (!reduceMotion) img.classList.add("is-fading");
-
-        img.onerror = () => {
-          if (img.src !== s.fallback) img.src = s.fallback;
-        };
-
-        img.onload = () => {
-          if (!reduceMotion) requestAnimationFrame(() => img.classList.remove("is-fading"));
-        };
-
-        img.alt = s.alt || "How it works photo";
-        img.src = s.src;
-
-        if (caption) caption.textContent = s.caption || "";
-        setActiveDot();
       }
 
       function goTo(i) {
@@ -1533,12 +1300,145 @@
 
       wrap.addEventListener("pointercancel", () => { isDown = false; });
 
-      buildDots();
-      applySlide(index);
+      function startAutoplay() {
+        if (reduceMotion || slides.length <= 1) return;
+        clearInterval(autoplayTimer);
+        autoplayTimer = setInterval(next, AUTOPLAY_MS);
+      }
+
+      setImgSrcSafe(active, slides[index]);
+      active.classList.add("is-active");
+      idle.classList.remove("is-active");
+      setTimeout(startAutoplay, 400);
+    })();
+
+    // =========================================
+    // ✅ HOW IT WORKS: PHOTO CAROUSEL (2-LAYER CROSSFADE)
+    // =========================================
+    (function setupHowItWorksCarousel() {
+      const wrap = document.getElementById("hwCarousel");
+      const imgA = document.getElementById("hwImgA");
+      const imgB = document.getElementById("hwImgB");
+      const prevBtn = document.getElementById("hwPrev");
+      const nextBtn = document.getElementById("hwNext");
+
+      if (!wrap || !imgA || !imgB || !prevBtn || !nextBtn) return;
+
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      const slides = [
+        {
+          src: "./assets/how-it-works.jpg",
+          fallback: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1400&q=80",
+          alt: "Student learning"
+        },
+        {
+          src: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1400&q=80",
+          fallback: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1400&q=80",
+          alt: "Online study session"
+        },
+        {
+          src: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1400&q=80",
+          fallback: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1400&q=80",
+          alt: "Classroom discussion"
+        }
+      ];
+
+      let index = 0;
+
+      let active = imgA;
+      let idle = imgB;
+
+      function swapActive() {
+        const tmp = active;
+        active = idle;
+        idle = tmp;
+      }
+
+      function setImgSrcSafe(el, s) {
+        el.onerror = () => {
+          if (el.src !== s.fallback) el.src = s.fallback;
+        };
+        el.alt = s.alt || "How it works photo";
+        el.src = s.src;
+      }
+
+      function applySlide(i) {
+        const s = slides[i];
+
+        if (reduceMotion) {
+          setImgSrcSafe(active, s);
+          active.classList.add("is-active");
+          idle.classList.remove("is-active", "is-out");
+          return;
+        }
+
+        setImgSrcSafe(idle, s);
+
+        const pre = new Image();
+        pre.src = s.src;
+
+        pre.onload = () => runFade();
+        pre.onerror = () => runFade();
+
+        function runFade() {
+          active.classList.add("is-out");
+          idle.classList.add("is-active");
+          idle.classList.remove("is-out");
+
+          requestAnimationFrame(() => {
+            active.classList.remove("is-active");
+            active.classList.remove("is-out");
+            swapActive();
+          });
+        }
+      }
+
+      function goTo(i) {
+        index = (i + slides.length) % slides.length;
+        applySlide(index);
+      }
+
+      function next() { goTo(index + 1); }
+      function prev() { goTo(index - 1); }
+
+      prevBtn.addEventListener("click", prev);
+      nextBtn.addEventListener("click", next);
+
+      wrap.tabIndex = 0;
+      wrap.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowLeft") prev();
+        if (e.key === "ArrowRight") next();
+      });
+
+      let startX = 0;
+      let isDown = false;
+
+      wrap.addEventListener("pointerdown", (e) => {
+        isDown = true;
+        startX = e.clientX;
+      });
+
+      wrap.addEventListener("pointerup", (e) => {
+        if (!isDown) return;
+        isDown = false;
+        const dx = e.clientX - startX;
+        if (Math.abs(dx) < 40) return;
+        if (dx < 0) next();
+        else prev();
+      });
+
+      wrap.addEventListener("pointercancel", () => { isDown = false; });
+
+      setImgSrcSafe(active, slides[index]);
+      active.classList.add("is-active");
+      idle.classList.remove("is-active");
     })();
   </script>
 
+  <!-- keep your existing app.js include -->
   <script type="module" src="./app.js"></script>
+
   <script>
     // Ensure sign-out uses Firebase
     window.signOut = () => window.__pcSignOut?.();

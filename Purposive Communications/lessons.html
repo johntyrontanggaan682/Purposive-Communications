@@ -67,7 +67,7 @@
 
         <!-- Login (GUEST ONLY) -->
         <a href="login.html" id="openLoginBtn"
-          class="auth-guest rounded-xl bg-brand-500 px-5 py-2.5 text-sm font-semibold text-white shadow-soft hover:bg-brand-600">
+          class="auth-guest hidden rounded-xl bg-brand-500 px-5 py-2.5 text-sm font-semibold text-white shadow-soft hover:bg-brand-600">
           Login
         </a>
 
@@ -162,7 +162,7 @@
 
           <!-- Login (GUEST ONLY) -->
           <a href="login.html" id="openLoginMobile"
-            class="auth-guest mt-2 rounded-xl bg-brand-500 px-4 py-2.5 text-center text-sm font-semibold text-white hover:bg-brand-600">
+            class="auth-guest hidden mt-2 rounded-xl bg-brand-500 px-4 py-2.5 text-center text-sm font-semibold text-white hover:bg-brand-600">
             Login
           </a>
 
@@ -205,14 +205,16 @@
   <!-- LESSON GRID -->
   <main class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
     <div class="grid gap-10 lg:grid-cols-3">
-      <!-- LESSON 1 (Always unlocked) ✅ same design + hover green title -->
+      <!-- LESSON 1 (Always unlocked) -->
       <a href="lesson-1.html"
         class="group overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-brand-200">
         <div class="relative">
-          <img class="h-56 w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]" src="./assets/lesson-1.jpg"
-            alt="Introduction to Purposive Communication"
+          <img class="h-56 w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+            src="./assets/lesson-1.jpg" alt="Introduction to Purposive Communication"
             onerror="this.src='https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1400&q=80';" />
-          <div class="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-slate-900/20 to-transparent"></div>
+          <div
+            class="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-slate-900/20 to-transparent">
+          </div>
         </div>
 
         <div class="p-7">
@@ -252,12 +254,13 @@
         </div>
       </a>
 
-      <!-- LESSON 2 (Locked until Lesson 1 complete) ✅ same design + hover green title -->
+      <!-- LESSON 2 -->
       <div id="lesson2Card" class="relative">
         <div id="lesson2LockOverlay"
           class="absolute inset-0 z-20 flex items-center justify-center rounded-3xl bg-white/70 backdrop-blur-sm ring-1 ring-black/5 transition-opacity duration-500 opacity-100">
           <div class="text-center">
-            <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-700 text-white shadow-soft">
+            <div
+              class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-700 text-white shadow-soft">
               <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M7 11V8a5 5 0 0110 0v3" />
                 <rect x="5" y="11" width="14" height="10" rx="2" />
@@ -275,10 +278,13 @@
         <div id="lesson2Inner"
           class="group overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-lg">
           <div class="relative">
-            <img id="lesson2Img" class="h-56 w-full object-cover transition-[filter,transform] duration-500 group-hover:scale-[1.02]"
+            <img id="lesson2Img"
+              class="h-56 w-full object-cover transition-[filter,transform] duration-500 group-hover:scale-[1.02]"
               src="./assets/lesson-2.jpg" alt="Verbal and Non-Verbal Communication"
               onerror="this.src='https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1400&q=80';" />
-            <div class="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-slate-900/20 to-transparent"></div>
+            <div
+              class="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-slate-900/20 to-transparent">
+            </div>
           </div>
 
           <div class="p-7">
@@ -319,12 +325,13 @@
         </div>
       </div>
 
-      <!-- LESSON 3 (Locked until Lesson 1 complete) ✅ same design + hover green title -->
+      <!-- LESSON 3 -->
       <div id="lesson3Card" class="relative">
         <div id="lesson3LockOverlay"
           class="absolute inset-0 z-20 flex items-center justify-center rounded-3xl bg-white/70 backdrop-blur-sm ring-1 ring-black/5 transition-opacity duration-500 opacity-100">
           <div class="text-center">
-            <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-700 text-white shadow-soft">
+            <div
+              class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-700 text-white shadow-soft">
               <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M7 11V8a5 5 0 0110 0v3" />
                 <rect x="5" y="11" width="14" height="10" rx="2" />
@@ -338,10 +345,13 @@
         <div id="lesson3Inner"
           class="group overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-lg">
           <div class="relative">
-            <img id="lesson3Img" class="h-56 w-full object-cover transition-[filter,transform] duration-500 group-hover:scale-[1.02]"
+            <img id="lesson3Img"
+              class="h-56 w-full object-cover transition-[filter,transform] duration-500 group-hover:scale-[1.02]"
               src="./assets/lesson-3.jpg" alt="Written Communication Excellence"
               onerror="this.src='https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=1400&q=80';" />
-            <div class="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-slate-900/20 to-transparent"></div>
+            <div
+              class="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-slate-900/20 to-transparent">
+            </div>
           </div>
 
           <div class="p-7">
@@ -382,12 +392,13 @@
         </div>
       </div>
 
-      <!-- LESSON 4 (Locked until Lesson 1 complete) ✅ same design + hover green title -->
+      <!-- LESSON 4 -->
       <div id="lesson4Card" class="relative">
         <div id="lesson4LockOverlay"
           class="absolute inset-0 z-20 flex items-center justify-center rounded-3xl bg-white/70 backdrop-blur-sm ring-1 ring-black/5 transition-opacity duration-500 opacity-100">
           <div class="text-center">
-            <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-700 text-white shadow-soft">
+            <div
+              class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-700 text-white shadow-soft">
               <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M7 11V8a5 5 0 0110 0v3" />
                 <rect x="5" y="11" width="14" height="10" rx="2" />
@@ -401,10 +412,13 @@
         <div id="lesson4Inner"
           class="group overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-lg">
           <div class="relative">
-            <img id="lesson4Img" class="h-56 w-full object-cover transition-[filter,transform] duration-500 group-hover:scale-[1.02]"
+            <img id="lesson4Img"
+              class="h-56 w-full object-cover transition-[filter,transform] duration-500 group-hover:scale-[1.02]"
               src="./assets/lesson-4.jpg" alt="Digital and Academic Communication"
               onerror="this.src='https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1400&q=80';" />
-            <div class="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-slate-900/20 to-transparent"></div>
+            <div
+              class="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-slate-900/20 to-transparent">
+            </div>
           </div>
 
           <div class="p-7">
@@ -470,15 +484,55 @@
     </div>
   </div>
 
-  <script>
-    // ===== Auth dropdown logic (same behavior as index.html) =====
-    const LS = {
-      session: "pc_session",
-      users: "pc_users",
-      avatar: "pc_profile_avatar",
-      loggedIn: "pc_logged_in"
-    };
+  <!-- ✅ SIGN OUT CONFIRM MODAL (same style as index.html) -->
+  <div id="signOutModal" class="fixed inset-0 z-[70] hidden">
+    <div id="signOutBackdrop" class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
 
+    <div class="relative mx-auto flex min-h-full max-w-md items-center justify-center px-4 py-10">
+      <div class="w-full rounded-3xl bg-white shadow-soft ring-1 ring-black/10">
+        <div class="p-5 sm:p-6 text-center">
+          <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 ring-1 ring-black/5">
+            <svg viewBox="0 0 24 24" class="h-6 w-6 text-brand-700" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v5" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 16h.01" />
+            </svg>
+          </div>
+
+          <h3 class="mt-3 text-base font-extrabold text-slate-900">Are you sure you want to sign out?</h3>
+
+          <div class="mt-5 grid grid-cols-2 gap-3">
+            <button id="signOutNo" type="button"
+              class="w-full rounded-xl bg-slate-100 px-5 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-200 ring-1 ring-black/5">
+              No
+            </button>
+
+            <button id="signOutYes" type="button"
+              class="w-full rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-700 ring-1 ring-black/5">
+              Yes
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ Firebase logic only (NO localStorage) -->
+  <script type="module">
+    import { auth, db } from "./firebase.js";
+    import {
+      onAuthStateChanged,
+      signOut as firebaseSignOut,
+      setPersistence,
+      browserSessionPersistence
+    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+
+    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+    // ✅ Force Firebase auth to NOT use localStorage (session only)
+    try { await setPersistence(auth, browserSessionPersistence); } catch (_) { }
+
+    // ===== Auth dropdown UI (Firebase) =====
     const guestEls = Array.from(document.querySelectorAll(".auth-guest"));
     const userEls = Array.from(document.querySelectorAll(".auth-user"));
 
@@ -501,51 +555,46 @@
     const signOutBtn = document.getElementById("signOutBtn");
     const mSignOutBtn = document.getElementById("mSignOutBtn");
 
-    function safeParseJSON(v, fallback) {
-      try { return JSON.parse(v); } catch { return fallback; }
-    }
-    function getSession() {
-      const raw = localStorage.getItem(LS.session);
-      return raw ? safeParseJSON(raw, null) : null;
-    }
-    function getUsers() {
-      const raw = localStorage.getItem(LS.users);
-      return raw ? safeParseJSON(raw, []) : [];
-    }
+    let __currentUser = null;
+    let __profile = null;
+
     function isLoggedIn() {
-      const s = getSession();
-      return !!(s && s.email);
+      return !!__currentUser;
     }
-    function getInitials(name) {
-      const n = (name || "").trim();
+
+    function getInitials(nameOrEmail) {
+      const n = (nameOrEmail || "").trim();
       if (!n) return "U";
       const parts = n.split(/\s+/).filter(Boolean);
-      const first = parts[0]?.[0] || "U";
-      const last = parts.length > 1 ? parts[parts.length - 1][0] : "";
-      return (first + last).toUpperCase();
+      if (parts.length >= 2) return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+      return (parts[0][0] || "U").toUpperCase();
     }
-    function getAvatarDisplay(userName) {
-      const raw = localStorage.getItem(LS.avatar);
-      const obj = raw ? safeParseJSON(raw, null) : null;
-      if (obj && obj.type === "emoji" && obj.value) return { type: "emoji", value: obj.value };
-      return { type: "initials", value: getInitials(userName) };
+
+    function getAvatarText(fullName, email) {
+      const emoji = (__profile?.avatar?.type === "emoji") ? (__profile?.avatar?.value || "") : "";
+      if (emoji) return emoji;
+      return getInitials(fullName || email);
     }
-    function setAvatarEl(el, avatar) {
+
+    function setAvatarEl(el, text) {
       if (!el) return;
-      el.textContent = avatar.value;
+      el.textContent = text || "U";
     }
+
     function closeUserDropdown() {
       if (!userDropdown || !userMenuBtn) return;
       userDropdown.classList.add("hidden");
       userMenuBtn.setAttribute("aria-expanded", "false");
       navCaret?.classList.remove("rotate-180");
     }
+
     function openUserDropdown() {
       if (!userDropdown || !userMenuBtn) return;
       userDropdown.classList.remove("hidden");
       userMenuBtn.setAttribute("aria-expanded", "true");
       navCaret?.classList.add("rotate-180");
     }
+
     function toggleUserDropdown() {
       if (!userDropdown) return;
       const isOpen = !userDropdown.classList.contains("hidden");
@@ -568,9 +617,17 @@
       if (e.key === "Escape") closeUserDropdown();
     });
 
+    async function loadProfile(uid) {
+      try {
+        const snap = await getDoc(doc(db, "users", uid));
+        return snap.exists() ? (snap.data() || {}) : {};
+      } catch (_) {
+        return {};
+      }
+    }
+
     function applyAuthUI() {
       const loggedIn = isLoggedIn();
-      localStorage.setItem(LS.loggedIn, loggedIn ? "true" : "false");
 
       guestEls.forEach(el => el.classList.toggle("hidden", loggedIn));
       userEls.forEach(el => el.classList.toggle("hidden", !loggedIn));
@@ -580,95 +637,80 @@
         return;
       }
 
-      const session = getSession();
-      const email = (session?.email || "").toLowerCase();
-      const users = getUsers();
-      const found = users.find(u => (u.email || "").toLowerCase() === email) || null;
+      const fullName = (__profile?.fullName || __currentUser?.displayName || "Student").trim() || "Student";
+      const email = (__profile?.email || __currentUser?.email || "").trim();
+      const studentId = (__profile?.studentId || "").trim();
 
-      const fullName = (session?.fullName || found?.fullName || "Student").trim();
-      const studentId = (found?.studentId || "—").trim() || "—";
-
-      const avatar = getAvatarDisplay(fullName);
+      const avatarText = getAvatarText(fullName, email);
 
       if (navName) navName.textContent = fullName;
       if (ddName) ddName.textContent = fullName;
-      if (ddEmail) ddEmail.textContent = session?.email || found?.email || "";
-      if (ddId) ddId.textContent = studentId;
+      if (ddEmail) ddEmail.textContent = email;
+      if (ddId) ddId.textContent = studentId ? studentId : "—";
 
-      setAvatarEl(navAvatar, avatar);
-      setAvatarEl(ddAvatar, avatar);
+      setAvatarEl(navAvatar, avatarText);
+      setAvatarEl(ddAvatar, avatarText);
 
       if (mNavName) mNavName.textContent = fullName;
-      if (mNavEmail) mNavEmail.textContent = session?.email || found?.email || "";
-      setAvatarEl(mNavAvatar, avatar);
+      if (mNavEmail) mNavEmail.textContent = email;
+      setAvatarEl(mNavAvatar, avatarText);
     }
 
-    function signOut() {
-      localStorage.removeItem(LS.session);
-      localStorage.setItem(LS.loggedIn, "false");
+    // ===== Sign out confirm modal (same as index.html) =====
+    const signOutModal = document.getElementById("signOutModal");
+    const signOutBackdrop = document.getElementById("signOutBackdrop");
+    const signOutYes = document.getElementById("signOutYes");
+    const signOutNo = document.getElementById("signOutNo");
+
+    function openSignOutModal() {
       closeUserDropdown();
-      applyAuthUI();
+      signOutModal?.classList.remove("hidden");
+      document.body.classList.add("overflow-hidden");
     }
 
-    signOutBtn?.addEventListener("click", signOut);
-    mSignOutBtn?.addEventListener("click", signOut);
+    function closeSignOutModal() {
+      signOutModal?.classList.add("hidden");
+      document.body.classList.remove("overflow-hidden");
+    }
 
-    window.addEventListener("storage", (e) => {
-      if (e.key === LS.session || e.key === LS.avatar) {
-        applyAuthUI();
+    signOutNo?.addEventListener("click", closeSignOutModal);
+    signOutBackdrop?.addEventListener("click", closeSignOutModal);
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && signOutModal && !signOutModal.classList.contains("hidden")) {
+        closeSignOutModal();
       }
     });
 
-    applyAuthUI();
-    window.addEventListener("focus", applyAuthUI);
-
-    // ===== Existing Lessons locking/progress logic (unchanged) =====
-// ===== Per-user progress keys (so each account has its own progress) =====
-function getCurrentEmailLower() {
-  const s = getSession();
-  return (s?.email || "").trim().toLowerCase();
-}
-function uKey(baseKey) {
-  const em = getCurrentEmailLower();
-  // If not logged in, don't persist progress; treat as empty progress.
-  return em ? `pc_user:${em}:${baseKey}` : null;
-}
-function getUserItem(baseKey, fallback) {
-  const k = uKey(baseKey);
-  if (!k) return fallback;
-  const v = localStorage.getItem(k);
-  return v === null ? fallback : v;
-}
-function setUserItem(baseKey, value) {
-  const k = uKey(baseKey);
-  if (!k) return;
-  localStorage.setItem(k, value);
-}
-    const LS_KEYS = {
-      lesson1Complete: "pc_lesson1_complete",
-      lesson2Complete: "pc_lesson2_complete",
-      lesson3Complete: "pc_lesson3_complete",
-      lesson4Complete: "pc_lesson4_complete",
-
-      lesson1Progress: "pc_lesson1_progress",
-      lesson2Progress: "pc_lesson2_progress",
-      lesson3Progress: "pc_lesson3_progress",
-      lesson4Progress: "pc_lesson4_progress",
-    };
-
-    function initDefaults() {
-      // Only initialize per-user defaults when logged in
-      if (!getCurrentEmailLower()) return;
-      if (getUserItem(LS_KEYS.lesson1Complete, null) === null) setUserItem(LS_KEYS.lesson1Complete, "false");
-      if (getUserItem(LS_KEYS.lesson2Complete, null) === null) setUserItem(LS_KEYS.lesson2Complete, "false");
-      if (getUserItem(LS_KEYS.lesson3Complete, null) === null) setUserItem(LS_KEYS.lesson3Complete, "false");
-      if (getUserItem(LS_KEYS.lesson4Complete, null) === null) setUserItem(LS_KEYS.lesson4Complete, "false");
-
-      if (getUserItem(LS_KEYS.lesson1Progress, null) === null) setUserItem(LS_KEYS.lesson1Progress, "0");
-      if (getUserItem(LS_KEYS.lesson2Progress, null) === null) setUserItem(LS_KEYS.lesson2Progress, "0");
-      if (getUserItem(LS_KEYS.lesson3Progress, null) === null) setUserItem(LS_KEYS.lesson3Progress, "0");
-      if (getUserItem(LS_KEYS.lesson4Progress, null) === null) setUserItem(LS_KEYS.lesson4Progress, "0");
+    async function doSignOut() {
+      try { await firebaseSignOut(auth); } catch (_) { }
+      __currentUser = null;
+      __profile = null;
+      closeUserDropdown();
+      applyAuthUI();
+      closeSignOutModal();
+      window.location.href = "index.html";
     }
+
+    // expose (keeps your existing bottom helper pattern)
+    window.__pcSignOut = doSignOut;
+
+    // ✅ open confirm modal instead of instant signout
+    signOutBtn?.addEventListener("click", (e) => { e.preventDefault(); openSignOutModal(); });
+    mSignOutBtn?.addEventListener("click", (e) => { e.preventDefault(); openSignOutModal(); });
+
+    signOutYes?.addEventListener("click", async () => {
+      closeSignOutModal();
+      await doSignOut();
+    });
+
+    // ===== Lessons progress/locking (Firestore per user; no localStorage) =====
+    const PROGRESS_DOCS = {
+      l1: "lesson1",
+      l2: "lesson2",
+      l3: "lesson3",
+      l4: "lesson4",
+    };
 
     function clamp(n, min, max) {
       return Math.max(min, Math.min(max, n));
@@ -693,102 +735,121 @@ function setUserItem(baseKey, value) {
       document.getElementById("toast").classList.add("hidden");
     }
 
+    document.getElementById("lockedToastBtn")?.addEventListener("click", showToast);
+    document.getElementById("toastClose")?.addEventListener("click", closeToast);
+
+    // Mobile menu
+    const btn = document.getElementById("menuBtn");
+    const menu = document.getElementById("mobileMenu");
+    btn?.addEventListener("click", () => {
+      const isOpen = !menu.classList.contains("hidden");
+      menu.classList.toggle("hidden");
+      btn.setAttribute("aria-expanded", String(!isOpen));
+    });
+
+    function fadeOutOverlay(overlay) {
+      if (!overlay) return;
+      overlay.classList.remove("opacity-100");
+      overlay.classList.add("opacity-0", "pointer-events-none");
+
+      const onEnd = (e) => {
+        if (e.propertyName !== "opacity") return;
+        overlay.classList.add("hidden");
+        overlay.removeEventListener("transitionend", onEnd);
+      };
+      overlay.addEventListener("transitionend", onEnd);
+    }
+
     function ensureInnerDirect(containerId, innerEl) {
-  const container = document.getElementById(containerId);
-  if (!container || !innerEl) return;
-  const wrapper = container.querySelector("a[data-unlocked='true']");
-  if (wrapper) {
-    wrapper.remove();
-    container.appendChild(innerEl);
-  }
-}
+      const container = document.getElementById(containerId);
+      if (!container || !innerEl) return;
+      const wrapper = container.querySelector("a[data-unlocked='true']");
+      if (wrapper) {
+        wrapper.remove();
+        container.appendChild(innerEl);
+      }
+    }
 
-function lockCard(containerId, innerEl, imgElId, overlayElId) {
-  const img = document.getElementById(imgElId);
-  const overlay = document.getElementById(overlayElId);
+    function lockCard(containerId, innerEl, imgElId, overlayElId) {
+      const img = document.getElementById(imgElId);
+      const overlay = document.getElementById(overlayElId);
 
-  ensureInnerDirect(containerId, innerEl);
+      ensureInnerDirect(containerId, innerEl);
 
-  if (img) img.classList.add("blur-[1px]");
+      if (img) img.classList.add("blur-[1px]");
 
-  if (overlay) {
-    overlay.classList.remove("hidden");
-    overlay.classList.remove("opacity-0", "pointer-events-none");
-    overlay.classList.add("opacity-100");
-  }
-}
+      if (overlay) {
+        overlay.classList.remove("hidden");
+        overlay.classList.remove("opacity-0", "pointer-events-none");
+        overlay.classList.add("opacity-100");
+      }
+    }
 
-function ensureInnerDirect(containerId, innerEl) {
-  const container = document.getElementById(containerId);
-  if (!container || !innerEl) return;
-  const wrapper = container.querySelector("a[data-unlocked='true']");
-  if (wrapper) {
-    wrapper.remove();
-    container.appendChild(innerEl);
-  }
-}
+    function unlockCard(containerId, innerEl, overlayElId, href) {
+      const container = document.getElementById(containerId);
+      const overlay = document.getElementById(overlayElId);
 
-function lockCard(containerId, innerEl, imgElId, overlayElId) {
-  const img = document.getElementById(imgElId);
-  const overlay = document.getElementById(overlayElId);
+      fadeOutOverlay(overlay);
 
-  ensureInnerDirect(containerId, innerEl);
+      const img = container?.querySelector("img");
+      if (img) img.classList.remove("blur-[1px]");
 
-  if (img) img.classList.add("blur-[1px]");
+      if (!container || !innerEl) return;
 
-  if (overlay) {
-    overlay.classList.remove("hidden");
-    overlay.classList.remove("opacity-0", "pointer-events-none");
-    overlay.classList.add("opacity-100");
-  }
-}
+      const existing = container.querySelector("a[data-unlocked='true']");
+      if (existing) {
+        existing.href = href;
+        return;
+      }
 
-function fadeOutOverlay(overlay) {
-  if (!overlay) return;
-  overlay.classList.remove("opacity-100");
-  overlay.classList.add("opacity-0", "pointer-events-none");
+      const link = document.createElement("a");
+      link.href = href;
+      link.setAttribute("data-unlocked", "true");
+      link.className =
+        "group block focus:outline-none focus:ring-4 focus:ring-brand-200 rounded-3xl transition hover:-translate-y-1 hover:shadow-lg";
 
-  const onEnd = (e) => {
-    if (e.propertyName !== "opacity") return;
-    overlay.classList.add("hidden");
-    overlay.removeEventListener("transitionend", onEnd);
-  };
-  overlay.addEventListener("transitionend", onEnd);
-}
+      link.appendChild(innerEl);
+      container.appendChild(link);
+    }
 
-function unlockCard(containerId, innerEl, overlayElId, href) {
-  const container = document.getElementById(containerId);
-  const overlay = document.getElementById(overlayElId);
+    async function loadLessonProgress(uid) {
+      const empty = {
+        lesson1: { progress: 0, complete: false },
+        lesson2: { progress: 0, complete: false },
+        lesson3: { progress: 0, complete: false },
+        lesson4: { progress: 0, complete: false },
+      };
 
-  fadeOutOverlay(overlay);
+      try {
+        const refs = [
+          doc(db, "users", uid, "progress", PROGRESS_DOCS.l1),
+          doc(db, "users", uid, "progress", PROGRESS_DOCS.l2),
+          doc(db, "users", uid, "progress", PROGRESS_DOCS.l3),
+          doc(db, "users", uid, "progress", PROGRESS_DOCS.l4),
+        ];
 
-  const img = container?.querySelector("img");
-  if (img) img.classList.remove("blur-[1px]");
+        const snaps = await Promise.all(refs.map(r => getDoc(r)));
 
-  if (!container || !innerEl) return;
+        const keys = ["lesson1", "lesson2", "lesson3", "lesson4"];
+        snaps.forEach((snap, i) => {
+          if (!snap.exists()) return;
+          const d = snap.data() || {};
+          empty[keys[i]] = {
+            progress: typeof d.progress === "number" ? d.progress : parseInt(d.progress || "0", 10) || 0,
+            complete: !!d.complete
+          };
+        });
 
-  // If already wrapped, ensure correct href and return
-  const existing = container.querySelector("a[data-unlocked='true']");
-  if (existing) {
-    existing.href = href;
-    return;
-  }
+        return empty;
+      } catch (_) {
+        return empty;
+      }
+    }
 
-  const link = document.createElement("a");
-  link.href = href;
-  link.setAttribute("data-unlocked", "true");
-  link.className =
-    "group block focus:outline-none focus:ring-4 focus:ring-brand-200 rounded-3xl transition hover:-translate-y-1 hover:shadow-lg";
-
-  link.appendChild(innerEl);
-  container.appendChild(link);
-}
-
-
-function setLockMessages() {
-      const l1 = getUserItem(LS_KEYS.lesson1Complete, "false") === "true";
-      const l2 = getUserItem(LS_KEYS.lesson2Complete, "false") === "true";
-      const l3 = getUserItem(LS_KEYS.lesson3Complete, "false") === "true";
+    function setLockMessages(state) {
+      const l1 = !!state.lesson1.complete;
+      const l2 = !!state.lesson2.complete;
+      const l3 = !!state.lesson3.complete;
 
       let nextLocked = null;
       if (!l1) nextLocked = 2;
@@ -816,10 +877,10 @@ function setLockMessages() {
       }
     }
 
-    function renderLocking() {
-      const l1 = getUserItem(LS_KEYS.lesson1Complete, "false") === "true";
-      const l2 = getUserItem(LS_KEYS.lesson2Complete, "false") === "true";
-      const l3 = getUserItem(LS_KEYS.lesson3Complete, "false") === "true";
+    function renderLocking(state) {
+      const l1 = !!state.lesson1.complete;
+      const l2 = !!state.lesson2.complete;
+      const l3 = !!state.lesson3.complete;
 
       if (l1) unlockCard("lesson2Card", document.getElementById("lesson2Inner"), "lesson2LockOverlay", "lesson-2.html");
       else lockCard("lesson2Card", document.getElementById("lesson2Inner"), "lesson2Img", "lesson2LockOverlay");
@@ -831,29 +892,57 @@ function setLockMessages() {
       else lockCard("lesson4Card", document.getElementById("lesson4Inner"), "lesson4Img", "lesson4LockOverlay");
     }
 
-    function renderProgress() {
-      setProgress("p1Bar", "p1Text", getUserItem(LS_KEYS.lesson1Progress, "0"));
-      setProgress("p2Bar", "p2Text", getUserItem(LS_KEYS.lesson2Progress, "0"));
-      setProgress("p3Bar", "p3Text", getUserItem(LS_KEYS.lesson3Progress, "0"));
-      setProgress("p4Bar", "p4Text", getUserItem(LS_KEYS.lesson4Progress, "0"));
+    function renderProgress(state) {
+      setProgress("p1Bar", "p1Text", state.lesson1.progress);
+      setProgress("p2Bar", "p2Text", state.lesson2.progress);
+      setProgress("p3Bar", "p3Text", state.lesson3.progress);
+      setProgress("p4Bar", "p4Text", state.lesson4.progress);
     }
 
-    // Mobile menu
-    const btn = document.getElementById("menuBtn");
-    const menu = document.getElementById("mobileMenu");
-    btn?.addEventListener("click", () => {
-      const isOpen = !menu.classList.contains("hidden");
-      menu.classList.toggle("hidden");
-      btn.setAttribute("aria-expanded", String(!isOpen));
+    function renderGuestDefaults() {
+      setProgress("p1Bar", "p1Text", 0);
+      setProgress("p2Bar", "p2Text", 0);
+      setProgress("p3Bar", "p3Text", 0);
+      setProgress("p4Bar", "p4Text", 0);
+
+      lockCard("lesson2Card", document.getElementById("lesson2Inner"), "lesson2Img", "lesson2LockOverlay");
+      lockCard("lesson3Card", document.getElementById("lesson3Inner"), "lesson3Img", "lesson3LockOverlay");
+      lockCard("lesson4Card", document.getElementById("lesson4Inner"), "lesson4Img", "lesson4LockOverlay");
+
+      const m2 = document.getElementById("lesson2LockMsg");
+      const m3 = document.getElementById("lesson3LockMsg");
+      const m4 = document.getElementById("lesson4LockMsg");
+      if (m2) m2.textContent = "Finish Lesson 1 to unlock";
+      if (m3) m3.textContent = "Finish Lesson 1 to unlock";
+      if (m4) m4.textContent = "Finish Lesson 1 to unlock";
+    }
+
+    // ✅ Firebase auth listener: update dropdown + progress/locking
+    onAuthStateChanged(auth, async (user) => {
+      __currentUser = user || null;
+
+      // ✅ Show correct UI instantly (no waiting for Firestore)
+      __profile = null;
+      applyAuthUI();
+
+      if (!user) {
+        renderGuestDefaults();
+        return;
+      }
+
+      // Load profile + progress after UI is already updated
+      const [profile, state] = await Promise.all([
+        loadProfile(user.uid),
+        loadLessonProgress(user.uid),
+      ]);
+
+      __profile = profile || {};
+      applyAuthUI();
+
+      renderProgress(state);
+      setLockMessages(state);
+      renderLocking(state);
     });
-
-    document.getElementById("lockedToastBtn")?.addEventListener("click", showToast);
-    document.getElementById("toastClose")?.addEventListener("click", closeToast);
-
-    initDefaults();
-    renderProgress();
-    setLockMessages();
-    renderLocking();
   </script>
 
   <script type="module" src="./app.js"></script>
