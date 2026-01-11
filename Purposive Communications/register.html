@@ -64,11 +64,13 @@
   </style>
 </head>
 
-<body class="page-bg min-h-screen flex items-start justify-center px-4 py-10 text-slate-800">
+<!-- ✅ CHANGED: min-h-[100svh] + overflow-y-auto + centered so it always fits even on small laptop screens -->
+<body class="page-bg min-h-[100svh] flex items-center justify-center px-4 py-6 text-slate-800 overflow-y-auto">
   <main class="w-full max-w-md">
-    <section class="overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/5">
+    <!-- ✅ CHANGED: max-h so footer link won't get cut + internal scroll if needed -->
+    <section class="overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/5 max-h-[92svh] flex flex-col">
       <!-- Header -->
-      <div class="bg-gradient-to-r from-brand-600 to-brand-500 px-8 pt-10 pb-9 text-center">
+      <div class="bg-gradient-to-r from-brand-600 to-brand-500 px-8 pt-10 pb-9 text-center flex-shrink-0">
         <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-white/95 ring-1 ring-black/5">
           <svg viewBox="0 0 24 24" class="h-7 w-7 text-brand-700" fill="none" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M4 19a2 2 0 002 2h12" />
@@ -82,7 +84,8 @@
       </div>
 
       <!-- Body -->
-      <div class="px-7 sm:px-8 pt-7 pb-8">
+      <!-- ✅ CHANGED: make body scrollable inside card when screen is short -->
+      <div class="px-7 sm:px-8 pt-7 pb-8 overflow-y-auto">
         <form id="registerForm" class="space-y-4" action="#" method="post">
           <div>
             <label class="block text-xs font-semibold text-slate-700">Full Name</label>
@@ -257,7 +260,6 @@
     const LS = {
       users: "pc_users",
       prefillEmail: "pc_prefill_email",
-
       // ✅ flash message shown on login page
       flash: "pc_flash_notice"
     };
