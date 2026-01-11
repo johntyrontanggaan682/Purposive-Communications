@@ -60,7 +60,7 @@
         <span class="text-lg font-semibold tracking-tight text-slate-900">Purposive Communication</span>
       </a>
 
-      <!-- Desktop Links + Login/User Dropdown (same as index.html) -->
+      <!-- Desktop Links + Login/User Dropdown -->
       <div class="hidden items-center gap-8 md:flex">
         <a href="index.html" class="text-sm font-medium text-slate-700 hover:text-brand-700">Home</a>
         <a href="lessons.html" class="text-sm font-semibold text-brand-700">Lessons</a>
@@ -75,7 +75,7 @@
         <!-- User dropdown (LOGGED IN ONLY) -->
         <div class="auth-user hidden relative">
           <button id="userMenuBtn" type="button"
-            class="inline-flex items-center gap-3 rounded-2xl bg-white px-2 py-1.5 ring-1 ring-black/5 hover:bg-slate-50"
+            class="inline-flex items-center gap-3 rounded-2xl bg-white px-2 py-1.5 ring-1 ring-black/5 shadow-sm hover:bg-slate-50 hover:shadow-soft transition"
             aria-haspopup="menu" aria-expanded="false">
             <div id="navAvatar"
               class="h-9 w-9 rounded-full bg-slate-100 ring-1 ring-black/5 flex items-center justify-center text-slate-700 font-extrabold">
@@ -90,46 +90,48 @@
 
           <!-- Dropdown panel -->
           <div id="userDropdown"
-            class="absolute right-[-10px] mt-3 hidden w-[320px] overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/10">
-            <div class="p-4">
-              <div class="flex items-start gap-4">
-                <div id="ddAvatar"
-                  class="h-12 w-12 rounded-full bg-slate-100 ring-1 ring-black/5 flex items-center justify-center text-slate-700 font-extrabold text-lg">
-                </div>
-                <div class="min-w-0">
-                  <p id="ddName" class="truncate text-base font-extrabold text-slate-900">Student</p>
-                  <p class="text-sm font-semibold text-slate-500">Student</p>
+            class="absolute right-[-10px] mt-3 hidden w-[290px] overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/10">
+            <div class="p-3">
+              <div class="rounded-2xl bg-brand-50 p-3 ring-1 ring-brand-100">
+                <div class="flex items-start gap-3">
+                  <div id="ddAvatar"
+                    class="h-11 w-11 rounded-full bg-slate-100 ring-1 ring-black/5 flex items-center justify-center text-slate-700 font-extrabold text-lg">
+                  </div>
+                  <div class="min-w-0">
+                    <p id="ddName" class="truncate text-sm font-extrabold text-slate-900">Student</p>
+                    <p class="text-xs font-semibold text-slate-500">Student</p>
+                  </div>
                 </div>
               </div>
 
-              <div class="mt-4 space-y-3 text-sm">
-                <div class="flex items-center gap-3 text-slate-700">
+              <div class="mt-3 space-y-2 text-sm">
+                <div class="flex items-center gap-3 rounded-xl bg-white px-3 py-2 ring-1 ring-black/5">
                   <svg class="h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4 4h16v16H4V4z" />
                     <path stroke-linecap="round" stroke-linejoin="round" d="M22 6l-10 7L2 6" />
                   </svg>
-                  <span id="ddEmail" class="truncate">email@example.com</span>
+                  <span id="ddEmail" class="truncate text-slate-700">email@example.com</span>
                 </div>
 
-                <div class="flex items-center gap-3 text-slate-700">
+                <div class="flex items-center gap-3 rounded-xl bg-white px-3 py-2 ring-1 ring-black/5">
                   <svg class="h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     stroke-width="2">
                     <rect x="3" y="5" width="18" height="14" rx="2" />
                     <path stroke-linecap="round" stroke-linejoin="round" d="M7 15h4" />
                     <path stroke-linecap="round" stroke-linejoin="round" d="M7 9h10" />
                   </svg>
-                  <span> ID: <span id="ddId" class="font-semibold text-slate-800">—</span></span>
+                  <span class="text-slate-700">ID: <span id="ddId" class="font-semibold text-slate-800">—</span></span>
                 </div>
               </div>
 
-              <div class="mt-5 grid grid-cols-2 gap-3">
+              <div class="mt-3 grid grid-cols-2 gap-2">
                 <a href="profile.html"
-                  class="inline-flex items-center justify-center rounded-2xl bg-brand-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-900">
+                  class="inline-flex items-center justify-center rounded-2xl bg-brand-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-900 transition">
                   View profile
                 </a>
                 <button id="signOutBtn" type="button"
-                  class="inline-flex items-center justify-center rounded-2xl bg-slate-100 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-200">
+                  class="inline-flex items-center justify-center rounded-2xl bg-slate-100 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-200 transition">
                   Sign out
                 </button>
               </div>
@@ -159,7 +161,6 @@
           <a href="profile.html"
             class="rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">Profile</a>
 
-
           <!-- Login (GUEST ONLY) -->
           <a href="login.html" id="openLoginMobile"
             class="auth-guest mt-2 rounded-xl bg-brand-500 px-4 py-2.5 text-center text-sm font-semibold text-white hover:bg-brand-600">
@@ -180,9 +181,11 @@
             </div>
             <div class="mt-3 grid grid-cols-2 gap-2">
               <a href="profile.html"
-                class="rounded-xl bg-brand-800 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-brand-900">View profile</a>
+                class="rounded-xl bg-brand-800 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-brand-900">View
+                profile</a>
               <button id="mSignOutBtn"
-                class="rounded-xl bg-slate-100 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-200">Sign out</button>
+                class="rounded-xl bg-slate-100 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-200">Sign
+                out</button>
             </div>
           </div>
         </div>
@@ -190,47 +193,48 @@
     </div>
   </header>
 
-  <!-- HERO STRIP -->
+  <!-- HERO STRIP ✅ smaller like profile -->
   <section class="bg-brand-700">
-    <div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-      <h1 class="text-5xl font-extrabold tracking-tight text-white">All Lessons</h1>
-      <p class="mt-5 max-w-3xl text-lg text-white/85">
+    <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+      <h1 class="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">All Lessons</h1>
+      <p class="mt-3 max-w-3xl text-base text-white/85">
         Master purposive communication through comprehensive, self-paced courses
       </p>
     </div>
   </section>
 
   <!-- LESSON GRID -->
-  <main class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+  <main class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
     <div class="grid gap-10 lg:grid-cols-3">
-      <!-- LESSON 1 (Always unlocked) -->
+      <!-- LESSON 1 (Always unlocked) ✅ same design + hover green title -->
       <a href="lesson-1.html"
         class="group overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-brand-200">
         <div class="relative">
-          <img class="h-56 w-full object-cover" src="./assets/lesson-1.jpg"
+          <img class="h-56 w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]" src="./assets/lesson-1.jpg"
             alt="Introduction to Purposive Communication"
             onerror="this.src='https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1400&q=80';" />
+          <div class="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-slate-900/20 to-transparent"></div>
         </div>
 
         <div class="p-7">
-          <h3 class="text-xl font-extrabold text-slate-900 group-hover:text-brand-700">
+          <h3 class="text-xl font-extrabold text-slate-900 transition-colors group-hover:text-brand-700">
             Introduction to Purposive Communication
           </h3>
           <p class="mt-3 text-sm leading-relaxed text-slate-600">
             Understanding the fundamentals of communication and its purpose in various contexts
           </p>
 
-          <div class="mt-6">
+          <div class="mt-6 rounded-2xl bg-slate-50 p-4 ring-1 ring-black/5">
             <div class="flex items-center justify-between text-sm">
               <span class="font-semibold text-slate-700">Progress</span>
               <span id="p1Text" class="font-bold text-brand-700">0%</span>
             </div>
-            <div class="mt-3 h-2.5 w-full rounded-full bg-slate-200">
+            <div class="mt-3 h-2.5 w-full rounded-full bg-slate-200 overflow-hidden">
               <div id="p1Bar" class="h-2.5 w-0 rounded-full bg-brand-500 transition-all"></div>
             </div>
           </div>
 
-          <div class="mt-6 flex items-center justify-between text-sm text-slate-500">
+          <div class="mt-5 flex items-center justify-between text-sm text-slate-500">
             <span class="inline-flex items-center gap-2">
               <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="12" r="9"></circle>
@@ -249,13 +253,12 @@
         </div>
       </a>
 
-      <!-- LESSON 2 (Locked until Lesson 1 complete) -->
+      <!-- LESSON 2 (Locked until Lesson 1 complete) ✅ same design + hover green title -->
       <div id="lesson2Card" class="relative">
         <div id="lesson2LockOverlay"
           class="absolute inset-0 z-20 flex items-center justify-center rounded-3xl bg-white/70 backdrop-blur-sm ring-1 ring-black/5 transition-opacity duration-500 opacity-100">
           <div class="text-center">
-            <div
-              class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-700 text-white shadow-soft">
+            <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-700 text-white shadow-soft">
               <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M7 11V8a5 5 0 0110 0v3" />
                 <rect x="5" y="11" width="14" height="10" rx="2" />
@@ -270,30 +273,34 @@
           </div>
         </div>
 
-        <div id="lesson2Inner" class="overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/5 transition">
+        <div id="lesson2Inner"
+          class="group overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-lg">
           <div class="relative">
-            <img id="lesson2Img" class="h-56 w-full object-cover transition-[filter] duration-500"
+            <img id="lesson2Img" class="h-56 w-full object-cover transition-[filter,transform] duration-500 group-hover:scale-[1.02]"
               src="./assets/lesson-2.jpg" alt="Verbal and Non-Verbal Communication"
               onerror="this.src='https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1400&q=80';" />
+            <div class="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-slate-900/20 to-transparent"></div>
           </div>
 
           <div class="p-7">
-            <h3 class="text-xl font-extrabold text-slate-900">Verbal and Non-Verbal Communication</h3>
+            <h3 class="text-xl font-extrabold text-slate-900 transition-colors group-hover:text-brand-700">
+              Verbal and Non-Verbal Communication
+            </h3>
             <p class="mt-3 text-sm leading-relaxed text-slate-600">
               Mastering the art of spoken and unspoken messages in effective communication
             </p>
 
-            <div class="mt-6">
+            <div class="mt-6 rounded-2xl bg-slate-50 p-4 ring-1 ring-black/5">
               <div class="flex items-center justify-between text-sm">
                 <span class="font-semibold text-slate-700">Progress</span>
                 <span id="p2Text" class="font-bold text-brand-700">0%</span>
               </div>
-              <div class="mt-3 h-2.5 w-full rounded-full bg-slate-200">
+              <div class="mt-3 h-2.5 w-full rounded-full bg-slate-200 overflow-hidden">
                 <div id="p2Bar" class="h-2.5 w-0 rounded-full bg-brand-500 transition-all"></div>
               </div>
             </div>
 
-            <div class="mt-6 flex items-center justify-between text-sm text-slate-500">
+            <div class="mt-5 flex items-center justify-between text-sm text-slate-500">
               <span class="inline-flex items-center gap-2">
                 <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <circle cx="12" cy="12" r="9"></circle>
@@ -313,13 +320,12 @@
         </div>
       </div>
 
-      <!-- LESSON 3 (Locked until Lesson 1 complete) -->
+      <!-- LESSON 3 (Locked until Lesson 1 complete) ✅ same design + hover green title -->
       <div id="lesson3Card" class="relative">
         <div id="lesson3LockOverlay"
           class="absolute inset-0 z-20 flex items-center justify-center rounded-3xl bg-white/70 backdrop-blur-sm ring-1 ring-black/5 transition-opacity duration-500 opacity-100">
           <div class="text-center">
-            <div
-              class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-700 text-white shadow-soft">
+            <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-700 text-white shadow-soft">
               <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M7 11V8a5 5 0 0110 0v3" />
                 <rect x="5" y="11" width="14" height="10" rx="2" />
@@ -330,30 +336,34 @@
           </div>
         </div>
 
-        <div id="lesson3Inner" class="overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/5 transition">
+        <div id="lesson3Inner"
+          class="group overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-lg">
           <div class="relative">
-            <img id="lesson3Img" class="h-56 w-full object-cover transition-[filter] duration-500"
+            <img id="lesson3Img" class="h-56 w-full object-cover transition-[filter,transform] duration-500 group-hover:scale-[1.02]"
               src="./assets/lesson-3.jpg" alt="Written Communication Excellence"
               onerror="this.src='https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=1400&q=80';" />
+            <div class="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-slate-900/20 to-transparent"></div>
           </div>
 
           <div class="p-7">
-            <h3 class="text-xl font-extrabold text-slate-900">Written Communication Excellence</h3>
+            <h3 class="text-xl font-extrabold text-slate-900 transition-colors group-hover:text-brand-700">
+              Written Communication Excellence
+            </h3>
             <p class="mt-3 text-sm leading-relaxed text-slate-600">
               Developing professional writing skills for academic and business contexts
             </p>
 
-            <div class="mt-6">
+            <div class="mt-6 rounded-2xl bg-slate-50 p-4 ring-1 ring-black/5">
               <div class="flex items-center justify-between text-sm">
                 <span class="font-semibold text-slate-700">Progress</span>
                 <span id="p3Text" class="font-bold text-brand-700">0%</span>
               </div>
-              <div class="mt-3 h-2.5 w-full rounded-full bg-slate-200">
+              <div class="mt-3 h-2.5 w-full rounded-full bg-slate-200 overflow-hidden">
                 <div id="p3Bar" class="h-2.5 w-0 rounded-full bg-brand-500 transition-all"></div>
               </div>
             </div>
 
-            <div class="mt-6 flex items-center justify-between text-sm text-slate-500">
+            <div class="mt-5 flex items-center justify-between text-sm text-slate-500">
               <span class="inline-flex items-center gap-2">
                 <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <circle cx="12" cy="12" r="9"></circle>
@@ -373,13 +383,12 @@
         </div>
       </div>
 
-      <!-- LESSON 4 (Locked until Lesson 1 complete) -->
+      <!-- LESSON 4 (Locked until Lesson 1 complete) ✅ same design + hover green title -->
       <div id="lesson4Card" class="relative">
         <div id="lesson4LockOverlay"
           class="absolute inset-0 z-20 flex items-center justify-center rounded-3xl bg-white/70 backdrop-blur-sm ring-1 ring-black/5 transition-opacity duration-500 opacity-100">
           <div class="text-center">
-            <div
-              class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-700 text-white shadow-soft">
+            <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-700 text-white shadow-soft">
               <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M7 11V8a5 5 0 0110 0v3" />
                 <rect x="5" y="11" width="14" height="10" rx="2" />
@@ -390,30 +399,34 @@
           </div>
         </div>
 
-        <div id="lesson4Inner" class="overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/5 transition">
+        <div id="lesson4Inner"
+          class="group overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-lg">
           <div class="relative">
-            <img id="lesson4Img" class="h-56 w-full object-cover transition-[filter] duration-500"
+            <img id="lesson4Img" class="h-56 w-full object-cover transition-[filter,transform] duration-500 group-hover:scale-[1.02]"
               src="./assets/lesson-4.jpg" alt="Digital and Academic Communication"
               onerror="this.src='https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1400&q=80';" />
+            <div class="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-slate-900/20 to-transparent"></div>
           </div>
 
           <div class="p-7">
-            <h3 class="text-xl font-extrabold text-slate-900">Digital and Academic Communication</h3>
+            <h3 class="text-xl font-extrabold text-slate-900 transition-colors group-hover:text-brand-700">
+              Digital and Academic Communication
+            </h3>
             <p class="mt-3 text-sm leading-relaxed text-slate-600">
               Communicating effectively in digital platforms, academic settings, and online collaboration
             </p>
 
-            <div class="mt-6">
+            <div class="mt-6 rounded-2xl bg-slate-50 p-4 ring-1 ring-black/5">
               <div class="flex items-center justify-between text-sm">
                 <span class="font-semibold text-slate-700">Progress</span>
                 <span id="p4Text" class="font-bold text-brand-700">0%</span>
               </div>
-              <div class="mt-3 h-2.5 w-full rounded-full bg-slate-200">
+              <div class="mt-3 h-2.5 w-full rounded-full bg-slate-200 overflow-hidden">
                 <div id="p4Bar" class="h-2.5 w-0 rounded-full bg-brand-500 transition-all"></div>
               </div>
             </div>
 
-            <div class="mt-6 flex items-center justify-between text-sm text-slate-500">
+            <div class="mt-5 flex items-center justify-between text-sm text-slate-500">
               <span class="inline-flex items-center gap-2">
                 <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <circle cx="12" cy="12" r="9"></circle>
