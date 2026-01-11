@@ -609,6 +609,16 @@
     // STORAGE
     // ==========================================================
     const STORAGE_KEY = "pc_admin_students_state_v1";
+
+    // Rules (Settings tab removed)
+    const rules = {
+      riskInactiveDays: 7,
+      riskProgressThreshold: 40,
+      riskQuizFails: 3,
+    };
+    // ==========================================================
+    // DATA SOURCES (LocalStorage)
+    // ==========================================================
     const USERS_STORE_KEY = "pc_users";
 
     const LESSON_META = {
@@ -619,7 +629,11 @@
     };
 
     function safeJSON(v, fallback) { try { return JSON.parse(v); } catch { return fallback; } }
-    function uKey(email, baseKey) { return `pc_user:${String(email||"").toLowerCase()}:${baseKey}`; }
+    function uKey(email, baseKey) {
+      const e = String(email || "").trim().toLowerCase();
+      return `pc_user:${e}:${baseKey}`;
+    }
+
     function relTimeFromTs(ts) {
       const n = Number(ts || 0);
       if (!n) return "—";
@@ -632,23 +646,23 @@
       return `${diffDay} days ago`;
     }
 
+    function getTimeSpentMin(email, n) {
+      const ms = Number(localStorage.getItem(uKey(email, `pc_lesson${n}_time_spent_ms`)) || 0);
+      return Math.max(0, Math.round(ms / 60000));
+    }
+
     function computeLessonFromLS(email, n) {
       const meta = LESSON_META[n];
-      const partsTotal = meta.parts;
+      const partsTotal = meta?.parts || 0;
       let partsDone = 0;
       for (let p = 1; p <= partsTotal; p++) {
         if (localStorage.getItem(uKey(email, `pc_lesson${n}_part${p}_done`)) === "true") partsDone++;
       }
-      const pct = Math.round((partsDone / partsTotal) * 100);
+      const pct = partsTotal ? Math.round((partsDone / partsTotal) * 100) : 0;
 
-      // Keep keys consistent if older versions didn't save progress/complete
-      localStorage.setItem(uKey(email, `pc_lesson${n}_progress`), String(pct));
-      localStorage.setItem(uKey(email, `pc_lesson${n}_complete`), pct === 100 ? "true" : "false");
-
+      // Optional timestamps (set by some lesson versions)
       const startedAt = localStorage.getItem(uKey(email, `pc_lesson${n}_started_at`)) || "";
       const completedAt = localStorage.getItem(uKey(email, `pc_lesson${n}_completed_at`)) || "";
-      const timeMs = Number(localStorage.getItem(uKey(email, `pc_lesson${n}_time_spent_ms`)) || 0);
-      const timeSpentMin = Math.max(0, Math.round(timeMs / 60000));
 
       let state = "Not started";
       if (pct === 100) state = "Completed";
@@ -656,14 +670,14 @@
 
       return {
         key: `l${n}`,
-        title: meta.title,
+        title: meta?.title || `Lesson ${n}`,
         pct,
         partsDone,
         partsTotal,
         state,
         startedAt,
         completedAt,
-        timeSpentMin,
+        timeSpentMin: getTimeSpentMin(email, n),
       };
     }
 
@@ -678,11 +692,24 @@
 
     function submissionsFromLS(email) {
       const subs = [];
+
+      // Newer lessons may store a structured submission object
       [1, 4].forEach((n) => {
         const raw = localStorage.getItem(uKey(email, `pc_lesson${n}_submission`));
         const obj = safeJSON(raw, null);
-        if (obj && obj.fileName) subs.push({ lesson: n, ...obj });
+        if (obj && obj.fileName) {
+          subs.push({ lesson: n, ...obj });
+          return;
+        }
+
+        // Current prototype stores only file name (pc_lessonX_assessment_file)
+        const fileName = localStorage.getItem(uKey(email, `pc_lesson${n}_assessment_file`)) || "";
+        if (fileName) {
+          const submittedAt = localStorage.getItem(uKey(email, `pc_lesson${n}_assessment_submitted_at`)) || "";
+          subs.push({ lesson: n, fileName, submittedAt, size: 0 });
+        }
       });
+
       subs.sort((a, b) => String(b.submittedAt || "").localeCompare(String(a.submittedAt || "")));
       return subs;
     }
@@ -707,11 +734,19 @@
             course: u.course || "—",
             year: u.yearLevel || "—",
             lastActive: "—",
-            status: "Active",
+            status: "Inactive",
             progress: 0,
             lessons: [1, 2, 3, 4].map(n => computeLessonFromLS(email, n)),
             quiz: { avgScore: 0, attempts: 0, failedAttempts: 0, lastAttemptAt: "" },
-            assessment: { status: "Not started", submittedAt: "", reviewedAt: "", gradedAt: "", reviewer: "", feedback: "", rubric: { clarity: 0, audience: 0, tone: 0, organization: 0, grammar: 0, purpose: 0 } },
+            assessment: {
+              status: "Not started",
+              submittedAt: "",
+              reviewedAt: "",
+              gradedAt: "",
+              reviewer: "",
+              feedback: "",
+              rubric: { clarity: 0, audience: 0, tone: 0, organization: 0, grammar: 0, purpose: 0 },
+            },
           };
           list.push(s);
         }
@@ -723,21 +758,22 @@
         s.course = u.course || s.course || "—";
         s.year = u.yearLevel || s.year || "—";
 
-        // Activity + status
+        // Lessons + overall progress
+        s.lessons = [1, 2, 3, 4].map(n => computeLessonFromLS(email, n));
+        const pctList = (s.lessons || []).map(l => Number(l.pct || 0));
+        s.progress = pctList.length ? Math.round(pctList.reduce((a, b) => a + b, 0) / pctList.length) : 0;
+
+        // Activity
         const lastTs = localStorage.getItem(uKey(email, "pc_last_active_ts"));
         s.lastActive = relTimeFromTs(lastTs);
-        const days = Math.floor((Date.now() - Number(lastTs || 0)) / (24 * 60 * 60 * 1000));
+        const days = lastTs ? Math.floor((Date.now() - Number(lastTs || 0)) / (24 * 60 * 60 * 1000)) : 9999;
         s.status = days <= 7 ? "Active" : "Inactive";
 
-        // Lessons
-        s.lessons = [1, 2, 3, 4].map(n => computeLessonFromLS(email, n));
-        s.progress = Math.round(s.lessons.reduce((a, l) => a + (l.pct || 0), 0) / 4);
-
-        // Quiz (Lesson 2 + 3)
+        // Quiz aggregate (Lesson 2 + 3)
         const q2 = quizStatFromLS(email, 2);
         const q3 = quizStatFromLS(email, 3);
-        const scores = [q2.lastScore, q3.lastScore].filter(x => Number(x) > 0);
-        const avgScore = scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 0;
+        const scoreVals = [q2.lastScore, q3.lastScore].filter(x => Number(x) > 0);
+        const avgScore = scoreVals.length ? Math.round(scoreVals.reduce((a, b) => a + b, 0) / scoreVals.length) : 0;
         s.quiz = {
           avgScore,
           attempts: (q2.attempts || 0) + (q3.attempts || 0),
@@ -750,40 +786,25 @@
         s.assessment = s.assessment || { status: "Not started" };
         s.assessment.submissions = subs;
         if (subs.length) {
-          const st = s.assessment.status || "Not started";
-          if (st === "Not started") s.assessment.status = "Submitted";
-          if (!s.assessment.submittedAt) s.assessment.submittedAt = subs[0].submittedAt || new Date().toISOString();
+          if ((s.assessment.status || "Not started") === "Not started") s.assessment.status = "Submitted";
+          if (!s.assessment.submittedAt) s.assessment.submittedAt = subs[0].submittedAt || "";
         }
       });
 
       return list;
     }
 
-    // Rules (Settings tab removed)
-    const rules = {
-      riskInactiveDays: 7,
-      riskProgressThreshold: 40,
-      riskQuizFails: 3,
-    };
-
-    // ==========================================================
-    // Students are loaded from localStorage (no seeded sample records)
-
     function loadStudents() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
         const saved = raw ? safeJSON(raw, []) : [];
         const base = Array.isArray(saved) ? saved : [];
-
-        // If there are registered users (pc_users), show them and their real progress
-        const merged = mergeRegisteredUsersIntoStudents(base);
-        return (merged && merged.length) ? merged : base;
+        return mergeRegisteredUsersIntoStudents(base);
       } catch {
-        // If storage is corrupted, still try to render registered users if possible
-        const merged = mergeRegisteredUsersIntoStudents([]);
-        return (merged && merged.length) ? merged : [];
+        return mergeRegisteredUsersIntoStudents([]);
       }
     }
+
     function saveStudents() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(students));
     }
@@ -791,6 +812,7 @@
     let students = loadStudents();
     // Persist merged/normalized view so dashboards stay updated across refresh
     saveStudents();
+
 
     // ==========================================================
     // HELPERS
@@ -1309,22 +1331,11 @@
       $("sStudentLine").textContent = `${student.name} • ${student.id}`;
       $("sDate").textContent = student.assessment?.submittedAt ? fmtDateTime(student.assessment.submittedAt) : "—";
 
-      const subs = student.assessment?.submissions || [];
-      if (subs.length) {
-        const lines = subs.map(x => {
-          const lessonLabel = x.lesson === 1 ? "Lesson 1 (Task Submission)" : (x.lesson === 4 ? "Lesson 4 (Task Submission)" : `Lesson ${x.lesson}`);
-          const when = x.submittedAt ? fmtDateTime(x.submittedAt) : "—";
-          const sizeKB = x.size ? `${Math.round(Number(x.size) / 1024)} KB` : "";
-          return `• ${lessonLabel}: ${x.fileName || "(file)"}${sizeKB ? ` (${sizeKB})` : ""} — ${when}`;
-        });
-        $("sEssayPreview").textContent = `Submitted files (prototype):\n\n${lines.join("\n")}\n\nNote: Files are not uploaded in this prototype. This list is saved in localStorage.`;
-      } else {
-        $("sEssayPreview").textContent =
+      $("sEssayPreview").textContent =
 `[Prototype submission]
-No file submissions found yet.
+Write a professional email requesting an extension for a project deadline. Use proper tone, structure, and clarity.
 
-(Students will appear here after submitting a file in Lesson 1 or Lesson 4.)`;
-      }
+(Replace this with real submission content from your database later.)`;
 
       setRubricUIFromStudent(student);
 
@@ -1547,24 +1558,6 @@ No file submissions found yet.
     // ==========================================================
     // INIT
     // ==========================================================
-    function refreshFromStorage() {
-      students = loadStudents();
-      saveStudents();
-      renderCourseOptions();
-      computeStats(students);
-      renderDashboardRisk();
-      renderLessonStatesPanel();
-      applyStudentFilters();
-    }
-
-    // Live updates when student pages save to localStorage (another tab/window)
-    window.addEventListener("storage", (e) => {
-      const k = e.key || "";
-      if (k === STORAGE_KEY || k === USERS_STORE_KEY || k.startsWith("pc_user:")) {
-        refreshFromStorage();
-      }
-    });
-
     renderCourseOptions();
     computeStats(students);
     renderDashboardRisk();
@@ -1573,6 +1566,12 @@ No file submissions found yet.
     wireTabs();
 
     $("sRubricMax").textContent = "60";
+  </script>
+
+  <script type="module" src="./app.js"></script>
+  <script>
+    // Ensure sign-out uses Firebase
+    window.signOut = () => window.__pcSignOut?.();
   </script>
 </body>
 </html>

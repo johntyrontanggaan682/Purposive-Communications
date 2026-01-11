@@ -978,5 +978,11 @@
     applyProgressUI();
     window.addEventListener("focus", applyProgressUI);
   </script>
+
+  <script type="module" src="./app.js"></script>
+  <script>
+    // Ensure sign-out uses Firebase
+    window.signOut = () => window.__pcSignOut?.();
+  </script>
 </body>
 </html>
