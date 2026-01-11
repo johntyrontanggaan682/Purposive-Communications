@@ -67,7 +67,6 @@
       <div class="hidden items-center gap-8 md:flex">
         <a href="index.html" class="text-sm font-medium text-slate-700 hover:text-brand-700">Home</a>
         <a href="lessons.html" class="text-sm font-medium text-slate-700 hover:text-brand-700">Lessons</a>
-        <a href="profile.html" class="text-sm font-semibold text-brand-700">Profile</a>
 
         <!-- Login (GUEST ONLY) -->
         <a href="login.html" id="openLoginBtn"
@@ -238,13 +237,16 @@
             </p>
           </div>
 
-          <button type="button"
-            class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand-500 px-4 py-2.5 text-sm font-extrabold text-white shadow-soft hover:bg-brand-600 focus:outline-none focus:ring-4 focus:ring-brand-200 sm:w-auto">
+          <!-- ✅ REPLACED: Edit Profile -> Sign out button -->
+          <button id="profileSignOutBtn" type="button"
+            class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-slate-100 px-4 py-2.5 text-sm font-extrabold text-slate-700 ring-1 ring-black/5 hover:bg-slate-200 focus:outline-none focus:ring-4 focus:ring-brand-200 sm:w-auto">
             <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 20h9" />
-              <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4 12.5-12.5z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10 17l5-5-5-5" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12H3" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 00-9-9" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9 9 0 009-9" />
             </svg>
-            Edit Profile
+            Sign out
           </button>
         </div>
 
@@ -405,9 +407,9 @@
     </section>
   </main>
 
-  <!-- ✅ NEW: Bottom popup toast (replaces alert for locked) -->
+  <!-- ✅ Bottom popup toast (locked message) -->
   <div id="lockToast" class="fixed bottom-6 left-1/2 z-[90] hidden -translate-x-1/2">
-    <div id="lockToastInner"
+    <div
       class="flex items-start gap-3 rounded-2xl bg-slate-900 px-5 py-4 text-white shadow-soft ring-1 ring-white/10">
       <div class="mt-0.5">
         <svg class="h-5 w-5 text-brand-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -504,6 +506,7 @@
 
     const signOutBtn = document.getElementById("signOutBtn");
     const mSignOutBtn = document.getElementById("mSignOutBtn");
+    const profileSignOutBtn = document.getElementById("profileSignOutBtn");
 
     function safeParseJSON(v, fallback) {
       try { return JSON.parse(v); } catch { return fallback; }
@@ -625,6 +628,7 @@
 
     signOutBtn?.addEventListener("click", signOut);
     mSignOutBtn?.addEventListener("click", signOut);
+    profileSignOutBtn?.addEventListener("click", signOut);
 
     window.addEventListener("storage", (e) => {
       if (e.key === LS_AUTH.session || e.key === LS_AUTH.avatar) {
@@ -714,7 +718,7 @@
       }
     }
 
-    // ✅ NEW: Toast helpers (fade out)
+    // ✅ Toast helpers (fade out)
     const lockToast = document.getElementById("lockToast");
     const lockToastMsg = document.getElementById("lockToastMsg");
     const lockToastClose = document.getElementById("lockToastClose");
@@ -726,13 +730,11 @@
       lockToastMsg.textContent = message;
       lockToast.classList.remove("hidden");
 
-      // reset opacity (in case it was fading)
       lockToast.style.opacity = "1";
       lockToast.style.transform = "translateX(-50%)";
 
       clearTimeout(__lockToastTimer);
 
-      // fade out smoothly
       __lockToastTimer = setTimeout(() => {
         lockToast.style.transition = "opacity 280ms ease, transform 280ms ease";
         lockToast.style.opacity = "0";
@@ -768,7 +770,6 @@
     function setBadgeAndBtn(lessonNo, badgeEl, btnEl, pct, isComplete, isLocked) {
       if (!badgeEl || !btnEl) return;
 
-      // Badge
       if (isLocked) {
         badgeEl.textContent = "Locked";
         badgeEl.className = "mt-3 inline-flex items-center rounded-full bg-slate-100 px-4 py-1.5 text-sm font-extrabold text-slate-800";
@@ -783,16 +784,11 @@
         badgeEl.className = "mt-3 inline-flex items-center rounded-full bg-slate-100 px-4 py-1.5 text-sm font-extrabold text-slate-800";
       }
 
-      // Button
       if (isLocked) {
         btnEl.textContent = "Locked";
-        btnEl.disabled = false; // clickable -> toast
+        btnEl.disabled = false;
         btnEl.className = "rounded-2xl bg-slate-100 px-8 py-2.5 text-sm font-extrabold text-slate-800 hover:bg-slate-200";
-
-        btnEl.onclick = () => {
-          // ✅ no alert. show bottom popup.
-          showLockToast(`Finish Lesson ${lessonNo - 1} first to unlock Lesson ${lessonNo}.`);
-        };
+        btnEl.onclick = () => showLockToast(`Finish Lesson ${lessonNo - 1} first to unlock Lesson ${lessonNo}.`);
         return;
       }
 
