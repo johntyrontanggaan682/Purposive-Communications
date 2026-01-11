@@ -37,18 +37,221 @@
   </script>
 
   <style>
-    .hero-bg {
-      background-image: linear-gradient(to bottom,
-          rgba(0, 0, 0, 0.45),
-          rgba(0, 0, 0, 0.35)),
-        url("https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=1800&q=80");
-      background-size: cover;
-      background-position: center;
+    /* ✅ Anchor scroll offset for fixed header */
+    html {
+      scroll-padding-top: 90px;
+    }
+
+    /* ✅ Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+    }
+
+    /* =========================================
+       ✅ HERO FULLSCREEN (All screen sizes)
+       - Hero = full viewport height
+       - Top padding = fixed header height
+       - Next section NOT visible until scroll
+    ========================================== */
+    :root {
+      --header-h: 80px;
+    }
+
+    .hero-full {
+      height: 100vh;
+      padding-top: var(--header-h);
+      box-sizing: border-box;
+    }
+
+    @supports (height: 100svh) {
+      .hero-full {
+        height: 100svh;
+      }
+    }
+
+    /* ✅ Fade animation (reusable) */
+    .fade-img {
+      opacity: 1;
+      transition: opacity 220ms ease;
+      will-change: opacity;
+    }
+
+    .fade-img.is-fading {
+      opacity: 0;
+    }
+
+    /* =========================================
+       ✅ IMPROVED HERO TRANSITION (Premium)
+       - Fade + slight slide + blur + soft zoom
+       - HERO ONLY (does NOT affect other images)
+    ========================================== */
+    #heroCarouselImg.fade-img {
+      opacity: 1;
+      transform: translate3d(0, 0, 0) scale(1.06);
+      filter: blur(0px);
+      transition:
+        opacity 850ms cubic-bezier(.22, 1, .36, 1),
+        transform 1200ms cubic-bezier(.22, 1, .36, 1),
+        filter 850ms cubic-bezier(.22, 1, .36, 1);
+      will-change: opacity, transform, filter;
+    }
+
+    #heroCarouselImg.fade-img.is-fading {
+      opacity: 0;
+      filter: blur(8px);
+    }
+
+    #heroCarouselImg[data-dir="next"].fade-img.is-fading {
+      transform: translate3d(-18px, 0, 0) scale(1.03);
+    }
+
+    #heroCarouselImg[data-dir="prev"].fade-img.is-fading {
+      transform: translate3d(18px, 0, 0) scale(1.03);
+    }
+
+    #heroCarouselImg.fade-img.is-active {
+      opacity: 1;
+      filter: blur(0px);
+      transform: translate3d(0, 0, 0) scale(1.10);
+    }
+
+    /* =========================================
+       ✅ Cards: hover lift + glow + shine + icon pop
+       ✅ Reveal on scroll (fade-up)
+       ✅ Tap ripple on touch
+       ✅ Keyboard focus styling
+    ========================================== */
+
+    .pc-card {
+      position: relative;
+      overflow: hidden;
+      transform: translateZ(0);
+      transition: transform 220ms ease, box-shadow 220ms ease, background-color 220ms ease, border-color 220ms ease;
+      will-change: transform, box-shadow;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .pc-card:hover {
+        transform: translateY(-6px) scale(1.02);
+        box-shadow: 0 14px 40px rgba(0, 0, 0, 0.14);
+      }
+    }
+
+    @media (hover: none) {
+      .pc-card:active {
+        transform: scale(0.99);
+      }
+    }
+
+    .pc-card:focus-within,
+    .pc-card:focus {
+      outline: 3px solid rgba(19, 168, 154, 0.35);
+      outline-offset: 4px;
+    }
+
+    .pc-card .pc-icon {
+      transition: transform 220ms ease;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .pc-card:hover .pc-icon {
+        transform: scale(1.08) rotate(-2deg);
+      }
+    }
+
+    .pc-card::after {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.55), transparent 60%);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 250ms ease, transform 250ms ease;
+      pointer-events: none;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .pc-card:hover::after {
+        opacity: 0.35;
+        transform: translateY(0);
+      }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 600ms ease, transform 600ms ease;
+      transition-delay: var(--d, 0ms);
+    }
+
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .pc-card .tap-ripple {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .pc-card .tap-ripple span {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      transform: translate(-50%, -50%) scale(0);
+      opacity: 0.25;
+      background: rgba(255, 255, 255, 0.9);
+      animation: ripple 520ms ease-out;
+    }
+
+    @keyframes ripple {
+      to {
+        transform: translate(-50%, -50%) scale(18);
+        opacity: 0;
+      }
+    }
+
+    /* Respect reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+
+      .pc-card,
+      .reveal,
+      .pc-card::after,
+      .pc-card .pc-icon,
+      .pc-card .tap-ripple span,
+      .fade-img {
+        transition: none !important;
+        animation: none !important;
+        transform: none !important;
+      }
+
+      .reveal {
+        opacity: 1 !important;
+      }
+
+      .pc-card::after {
+        opacity: 0 !important;
+      }
+
+      .fade-img.is-fading {
+        opacity: 1 !important;
+      }
+
+      #heroCarouselImg {
+        filter: none !important;
+      }
     }
   </style>
 </head>
 
-<body class="bg-white text-slate-800">
+<body class="bg-white text-slate-800 overflow-x-hidden">
   <!-- NAVBAR -->
   <header class="fixed inset-x-0 top-0 z-50 bg-white/95 backdrop-blur border-b border-slate-200">
     <nav class="mx-auto flex max-w-7xl items-center px-4 py-4 sm:px-6 lg:px-8">
@@ -61,23 +264,18 @@
       </a>
 
       <!-- Desktop Links -->
-      <!-- Desktop Right Side -->
-      <!-- Desktop Links -->
       <div class="hidden md:flex items-center gap-8 ml-auto">
         <a href="index.html#home" class="text-sm font-semibold text-brand-700 hover:text-brand-800">Home</a>
         <a href="lessons.html" class="text-sm font-medium text-slate-600 hover:text-brand-700">Lessons</a>
-        
       </div>
 
-
-
-      <!-- Login (GUEST ONLY)  ✅ MOVED RIGHT -->
+      <!-- Login (GUEST ONLY) -->
       <a href="login.html" id="openLoginBtn"
         class="auth-guest ml-6 rounded-xl bg-brand-500 px-5 py-2.5 text-sm font-semibold text-white shadow-soft hover:bg-brand-600">
         Login
       </a>
 
-      <!-- User dropdown (LOGGED IN ONLY) ✅ MOVED RIGHT -->
+      <!-- User dropdown (LOGGED IN ONLY) -->
       <div class="auth-user hidden relative ml-6">
         <button id="userMenuBtn" type="button"
           class="inline-flex items-center gap-3 rounded-2xl bg-white px-2 py-1.5 ring-1 ring-black/5 shadow-sm hover:bg-slate-50 hover:shadow-soft transition"
@@ -86,14 +284,14 @@
             class="h-9 w-9 rounded-full bg-slate-100 ring-1 ring-black/5 flex items-center justify-center text-slate-700 font-extrabold">
             U
           </div>
-          <span id="navName" class="text-sm font-semibold text-slate-900">Student</span>
+          <span id="navName" class="text-sm font-semibold text-slate-900 max-w-[140px] truncate">Student</span>
           <svg id="navCaret" class="h-4 w-4 text-slate-500 transition-transform" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6" />
           </svg>
         </button>
 
-        <!-- Dropdown panel ✅ smaller + readable -->
+        <!-- Dropdown panel -->
         <div id="userDropdown"
           class="absolute right-[-10px] mt-3 hidden w-[290px] overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/10">
           <div class="p-3">
@@ -103,7 +301,7 @@
                   class="h-11 w-11 rounded-full bg-slate-100 ring-1 ring-black/5 flex items-center justify-center text-slate-700 font-extrabold text-lg">
                 </div>
                 <div class="min-w-0">
-                  <p id="ddName" class="truncate text-sm font-extrabold text-slate-900">Student</p>
+                  <p id="ddName" class="truncate text-sm font-extrabold text-slate-900 max-w-[210px]">Student</p>
                   <p class="text-xs font-semibold text-slate-500">Student</p>
                 </div>
               </div>
@@ -116,7 +314,7 @@
                   <path stroke-linecap="round" stroke-linejoin="round" d="M4 4h16v16H4V4z" />
                   <path stroke-linecap="round" stroke-linejoin="round" d="M22 6l-10 7L2 6" />
                 </svg>
-                <span id="ddEmail" class="truncate text-slate-700">email@example.com</span>
+                <span id="ddEmail" class="truncate text-slate-700 max-w-[210px]">email@example.com</span>
               </div>
 
               <div class="flex items-center gap-3 rounded-xl bg-white px-3 py-2 ring-1 ring-black/5">
@@ -143,7 +341,6 @@
           </div>
         </div>
       </div>
-      </div>
 
       <!-- Mobile menu button -->
       <button id="menuBtn"
@@ -159,15 +356,16 @@
     <div id="mobileMenu" class="mx-auto hidden max-w-7xl px-4 pb-4 sm:px-6 lg:px-8 md:hidden">
       <div class="rounded-2xl bg-white p-4 shadow-soft ring-1 ring-black/5">
         <div class="flex flex-col gap-2">
-          <a href="index.html#home" class="rounded-xl px-3 py-2 text-sm font-semibold text-brand-700 bg-brand-50">Home</a>
+          <a href="index.html#home"
+            class="rounded-xl px-3 py-3 text-sm font-semibold text-brand-700 bg-brand-50 active:bg-brand-100">Home</a>
           <a href="lessons.html"
-            class="rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">Lessons</a>
+            class="rounded-xl px-3 py-3 text-sm font-medium text-slate-700 hover:bg-slate-100 active:bg-slate-200">Lessons</a>
           <a href="profile.html"
-            class="rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">Profile</a>
+            class="rounded-xl px-3 py-3 text-sm font-medium text-slate-700 hover:bg-slate-100 active:bg-slate-200">Profile</a>
 
           <!-- Login (GUEST ONLY) -->
           <a href="login.html" id="openLoginMobile"
-            class="auth-guest mt-2 rounded-xl bg-brand-500 px-4 py-2.5 text-center text-sm font-semibold text-white hover:bg-brand-600">
+            class="auth-guest mt-2 rounded-xl bg-brand-500 px-4 py-3 text-center text-sm font-semibold text-white hover:bg-brand-600 active:bg-brand-700">
             Login
           </a>
 
@@ -179,16 +377,16 @@
                 U
               </div>
               <div class="min-w-0">
-                <p id="mNavName" class="truncate text-sm font-extrabold text-slate-900">Student</p>
-                <p id="mNavEmail" class="truncate text-xs font-semibold text-slate-500">email@example.com</p>
+                <p id="mNavName" class="truncate text-sm font-extrabold text-slate-900 max-w-[200px]">Student</p>
+                <p id="mNavEmail" class="truncate text-xs font-semibold text-slate-500 max-w-[200px]">email@example.com</p>
               </div>
             </div>
             <div class="mt-3 grid grid-cols-2 gap-2">
               <a href="profile.html"
-                class="rounded-xl bg-brand-800 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-brand-900">View
+                class="rounded-xl bg-brand-800 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-brand-900 active:bg-brand-900">View
                 profile</a>
               <button id="mSignOutBtn"
-                class="rounded-xl bg-slate-100 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-200">Sign
+                class="rounded-xl bg-slate-100 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-200 active:bg-slate-300">Sign
                 out</button>
             </div>
           </div>
@@ -197,22 +395,59 @@
     </div>
   </header>
 
-  <!-- HERO -->
-  <section id="home" class="hero-bg relative min-h-[78vh]">
-    <div class="mx-auto flex max-w-7xl flex-col items-center justify-center px-4 pb-24 pt-28 text-center sm:px-6 lg:px-8">
-      <h1 class="mt-10 max-w-4xl text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">
+  <!-- HERO (FULLSCREEN + AUTO SLIDESHOW) -->
+  <section id="home" class="hero-full relative overflow-hidden">
+    <div class="absolute inset-0">
+      <div class="relative h-full w-full overflow-hidden group" id="heroCarousel">
+        <img id="heroCarouselImg"
+          src="https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=1800&q=80"
+          alt="Purposive Communication hero"
+          class="fade-img h-full w-full object-cover"
+          loading="eager"
+          decoding="async" />
+
+        <div class="absolute inset-0 bg-gradient-to-b from-black/45 to-black/35"></div>
+
+        <button id="heroPrev" type="button" aria-label="Previous photo"
+          class="absolute left-4 top-1/2 -translate-y-1/2 z-10 inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/90 text-slate-800 ring-1 ring-black/10 shadow-soft
+                 hover:bg-white focus:outline-none focus:ring-4 focus:ring-brand-200
+                 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6" />
+          </svg>
+        </button>
+
+        <button id="heroNext" type="button" aria-label="Next photo"
+          class="absolute right-4 top-1/2 -translate-y-1/2 z-10 inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/90 text-slate-800 ring-1 ring-black/10 shadow-soft
+                 hover:bg-white focus:outline-none focus:ring-4 focus:ring-brand-200
+                 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 18l6-6-6-6" />
+          </svg>
+        </button>
+
+        <div id="heroDots" aria-label="Photo navigation"
+          class="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2 rounded-full bg-black/30 px-3 py-2 backdrop-blur">
+        </div>
+
+        <p id="heroCaption"
+          class="absolute bottom-14 left-1/2 -translate-x-1/2 z-10 text-center text-xs font-semibold text-white/85 px-4">
+        </p>
+      </div>
+    </div>
+
+    <div class="relative mx-auto max-w-7xl h-full flex flex-col items-center justify-center px-4 text-center sm:px-6 lg:px-8">
+      <h1 class="max-w-4xl text-3xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">
         Master Purposive <br class="hidden sm:block" />
         Communication
       </h1>
 
-      <p class="mt-6 max-w-3xl text-base leading-relaxed text-white/85 sm:text-lg">
+      <p class="mt-5 max-w-3xl text-sm leading-relaxed text-white/85 sm:text-lg">
         Develop essential communication skills through self-paced learning with interactive lessons, quizzes, and
-        real-time
-        progress tracking.
+        real-time progress tracking.
       </p>
 
-      <!-- GUEST ONLY -->
-      <div id="heroGuestButtons" class="auth-guest mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+      <div id="heroGuestButtons" class="auth-guest mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
         <a href="login.html" id="startLearningBtn"
           class="w-full rounded-2xl bg-brand-500 px-8 py-3.5 text-sm font-semibold text-white shadow-soft hover:bg-brand-600 focus:outline-none focus:ring-4 focus:ring-brand-200 sm:w-auto">
           Start Learning
@@ -236,9 +471,12 @@
         </p>
       </div>
 
-      <div class="mt-12 grid gap-8 md:grid-cols-3">
-        <div class="rounded-3xl bg-brand-50 p-10 text-center shadow-soft ring-1 ring-black/5">
-          <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-brand-500 text-white">
+      <div class="mt-12 grid gap-8 sm:grid-cols-2 md:grid-cols-3">
+        <div
+          class="pc-card reveal rounded-3xl bg-brand-50 p-10 text-center shadow-soft ring-1 ring-black/5 cursor-pointer hover:ring-brand-200 hover:bg-brand-100/50"
+          data-reveal data-card-action="lessons" tabindex="0" role="button" aria-label="Self-Paced Learning">
+          <div class="tap-ripple" aria-hidden="true"></div>
+          <div class="pc-icon mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-brand-500 text-white">
             <svg viewBox="0 0 24 24" class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
               <circle cx="12" cy="7" r="4" />
@@ -250,8 +488,11 @@
           </p>
         </div>
 
-        <div class="rounded-3xl bg-brand-50 p-10 text-center shadow-soft ring-1 ring-black/5">
-          <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-brand-500 text-white">
+        <div
+          class="pc-card reveal rounded-3xl bg-brand-50 p-10 text-center shadow-soft ring-1 ring-black/5 cursor-pointer hover:ring-brand-200 hover:bg-brand-100/50"
+          data-reveal data-card-action="lessons" tabindex="0" role="button" aria-label="Progress Tracking">
+          <div class="tap-ripple" aria-hidden="true"></div>
+          <div class="pc-icon mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-brand-500 text-white">
             <svg viewBox="0 0 24 24" class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M4 19h16" />
               <path stroke-linecap="round" stroke-linejoin="round" d="M7 16V9" />
@@ -265,8 +506,11 @@
           </p>
         </div>
 
-        <div class="rounded-3xl bg-brand-50 p-10 text-center shadow-soft ring-1 ring-black/5">
-          <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-brand-500 text-white">
+        <div
+          class="pc-card reveal rounded-3xl bg-brand-50 p-10 text-center shadow-soft ring-1 ring-black/5 cursor-pointer hover:ring-brand-200 hover:bg-brand-100/50"
+          data-reveal data-card-action="lessons" tabindex="0" role="button" aria-label="Sequential Learning">
+          <div class="tap-ripple" aria-hidden="true"></div>
+          <div class="pc-icon mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-brand-500 text-white">
             <svg viewBox="0 0 24 24" class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round"
                 d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5 9 6.343 9 8s1.343 3 3 3z" />
@@ -291,57 +535,79 @@
 
         <div class="mt-10 space-y-8">
           <div class="flex gap-5">
-            <div
-              class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white font-bold">
+            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white font-bold">
               1</div>
             <div>
               <h3 class="text-lg font-bold text-slate-900">Choose Your Lesson</h3>
-              <p class="mt-1 text-sm text-slate-600">Browse through our curated lessons and select the topic you want to
-                master</p>
+              <p class="mt-1 text-sm text-slate-600">Browse through our curated lessons and select the topic you want to master</p>
             </div>
           </div>
 
           <div class="flex gap-5">
-            <div
-              class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white font-bold">
+            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white font-bold">
               2</div>
             <div>
               <h3 class="text-lg font-bold text-slate-900">Complete Each Part</h3>
-              <p class="mt-1 text-sm text-slate-600">Watch videos, read content, and pass quizzes to unlock the next
-                section</p>
+              <p class="mt-1 text-sm text-slate-600">Watch videos, read content, and pass quizzes to unlock the next section</p>
             </div>
           </div>
 
           <div class="flex gap-5">
-            <div
-              class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white font-bold">
+            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white font-bold">
               3</div>
             <div>
               <h3 class="text-lg font-bold text-slate-900">Pass Final Assessment</h3>
-              <p class="mt-1 text-sm text-slate-600">Demonstrate your mastery by completing the comprehensive final
-                assessment</p>
+              <p class="mt-1 text-sm text-slate-600">Demonstrate your mastery by completing the comprehensive final assessment</p>
             </div>
           </div>
 
           <div class="flex gap-5">
-            <div
-              class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white font-bold">
+            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white font-bold">
               4</div>
             <div>
               <h3 class="text-lg font-bold text-slate-900">Track Your Progress</h3>
-              <p class="mt-1 text-sm text-slate-600">Monitor your achievements and continue building your communication
-                skills</p>
+              <p class="mt-1 text-sm text-slate-600">Monitor your achievements and continue building your communication skills</p>
             </div>
           </div>
         </div>
       </div>
 
+      <!-- PHOTO SECTION UPDATED: Carousel -->
       <div class="relative">
         <div class="absolute -inset-6 rounded-[2rem] bg-brand-50 blur-2xl"></div>
-        <div class="relative overflow-hidden rounded-[2rem] shadow-soft ring-1 ring-black/5">
-          <img src="./assets/how-it-works.jpg" alt="Student learning" class="h-[420px] w-full object-cover sm:h-[520px]"
-            onerror="this.src='https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1400&q=80';" />
+
+        <div class="relative overflow-hidden rounded-[2rem] shadow-soft ring-1 ring-black/5 group" id="hwCarousel">
+          <img id="hwCarouselImg"
+            src="./assets/how-it-works.jpg"
+            alt="Student learning"
+            class="fade-img h-[280px] w-full object-cover sm:h-[420px] lg:h-[520px]"
+            loading="lazy"
+            decoding="async" />
+
+          <button id="hwPrev" type="button" aria-label="Previous photo"
+            class="absolute left-4 top-1/2 -translate-y-1/2 z-10 inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/90 text-slate-800 ring-1 ring-black/10 shadow-soft
+                   hover:bg-white focus:outline-none focus:ring-4 focus:ring-brand-200
+                   opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6" />
+            </svg>
+          </button>
+
+          <button id="hwNext" type="button" aria-label="Next photo"
+            class="absolute right-4 top-1/2 -translate-y-1/2 z-10 inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/90 text-slate-800 ring-1 ring-black/10 shadow-soft
+                   hover:bg-white focus:outline-none focus:ring-4 focus:ring-brand-200
+                   opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 18l6-6-6-6" />
+            </svg>
+          </button>
+
+          <div class="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2 rounded-full bg-black/30 px-3 py-2 backdrop-blur"
+            id="hwDots" aria-label="Photo navigation">
+          </div>
         </div>
+
+        <p class="mt-3 text-center text-xs font-semibold text-slate-500" id="hwCaption"></p>
       </div>
     </div>
   </section>
@@ -349,8 +615,7 @@
   <!-- CTA BAND (GUEST ONLY) -->
   <section id="ctaBand" class="auth-guest bg-brand-700 py-20">
     <div class="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
-      <h2 class="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">Ready to Start Your Learning Journey?
-      </h2>
+      <h2 class="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">Ready to Start Your Learning Journey?</h2>
       <p class="mx-auto mt-4 max-w-2xl text-white/85">
         Join thousands of learners mastering purposive communication skills
       </p>
@@ -391,10 +656,13 @@
           </ul>
         </div>
 
+        <!-- ✅ CONNECT LINKS (WORKING) -->
         <div class="md:justify-self-end">
           <h3 class="text-base font-semibold">Connect</h3>
           <div class="mt-4 flex items-center gap-4">
-            <a href="#"
+            <!-- Facebook -->
+            <a href="https://www.facebook.com/"
+              target="_blank" rel="noopener noreferrer"
               class="inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/20 hover:bg-white/15"
               aria-label="Facebook">
               <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor" aria-hidden="true">
@@ -403,16 +671,20 @@
               </svg>
             </a>
 
-            <a href="#"
+            <!-- Twitter / X -->
+            <a href="https://x.com/"
+              target="_blank" rel="noopener noreferrer"
               class="inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/20 hover:bg-white/15"
-              aria-label="Twitter">
+              aria-label="Twitter (X)">
               <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor" aria-hidden="true">
                 <path
                   d="M21 7.2c-.7.3-1.5.5-2.3.6.8-.5 1.4-1.2 1.7-2.1-.8.4-1.6.8-2.5.9A3.9 3.9 0 0015.1 5c-2.1 0-3.8 1.7-3.8 3.8 0 .3 0 .6.1.9-3.2-.2-6-1.7-7.9-4.1-.3.6-.5 1.2-.5 1.9 0 1.3.7 2.5 1.7 3.2-.6 0-1.2-.2-1.7-.5v.1c0 1.9 1.4 3.5 3.2 3.8-.3.1-.7.1-1.1.1-.2 0-.5 0-.7-.1.5 1.7 2.1 2.9 3.9 2.9A7.9 7.9 0 013 18.6 11.2 11.2 0 009 20.3c7.3 0 11.3-6.1 11.3-11.3v-.5c.8-.6 1.4-1.2 1.9-2z" />
               </svg>
             </a>
 
-            <a href="#"
+            <!-- LinkedIn -->
+            <a href="https://www.linkedin.com/"
+              target="_blank" rel="noopener noreferrer"
               class="inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/20 hover:bg-white/15"
               aria-label="LinkedIn">
               <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor" aria-hidden="true">
@@ -445,7 +717,7 @@
         </button>
 
         <iframe id="loginFrame" src="login.html" title="Login"
-          class="h-[720px] w-full overflow-hidden rounded-3xl bg-transparent shadow-soft ring-1 ring-black/10"></iframe>
+          class="h-[75vh] sm:h-[720px] w-full overflow-hidden rounded-3xl bg-transparent shadow-soft ring-1 ring-black/10"></iframe>
       </div>
     </div>
   </div>
@@ -453,6 +725,19 @@
   <script>
     // Footer year
     document.getElementById("year").textContent = new Date().getFullYear();
+
+    // ✅ Set CSS variable for the fixed header height (hero full screen)
+    (function setHeaderHeightVar() {
+      const header = document.querySelector("header");
+      if (!header) return;
+
+      function apply() {
+        document.documentElement.style.setProperty("--header-h", header.offsetHeight + "px");
+      }
+
+      apply();
+      window.addEventListener("resize", apply);
+    })();
 
     // Mobile menu toggle
     const menuBtn = document.getElementById("menuBtn");
@@ -463,7 +748,20 @@
       menuBtn.setAttribute("aria-expanded", String(!isOpen));
     });
 
-    // Smooth scroll for # links
+    // ✅ close mobile menu when resizing to desktop (md+)
+    function closeMobileMenuOnDesktop() {
+      if (!mobileMenu || !menuBtn) return;
+      if (window.matchMedia("(min-width: 768px)").matches) {
+        mobileMenu.classList.add("hidden");
+        menuBtn.setAttribute("aria-expanded", "false");
+      }
+    }
+    window.addEventListener("resize", closeMobileMenuOnDesktop);
+    closeMobileMenuOnDesktop();
+
+    // Smooth scroll for # links (with reduced-motion support)
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
     document.querySelectorAll('a[href^="#"]').forEach((a) => {
       a.addEventListener("click", (e) => {
         const href = a.getAttribute("href");
@@ -473,7 +771,7 @@
         if (!el) return;
 
         e.preventDefault();
-        el.scrollIntoView({ behavior: "smooth", block: "start" });
+        el.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "start" });
 
         if (!mobileMenu.classList.contains("hidden")) {
           mobileMenu.classList.add("hidden");
@@ -491,6 +789,33 @@
     const startLearningBtn = document.getElementById("startLearningBtn");
     const signUpFreeBtn = document.getElementById("signUpFreeBtn");
     const getStartedFreeBtn = document.getElementById("getStartedFreeBtn");
+
+    function safeParseJSON(v, fallback) {
+      try { return JSON.parse(v); } catch { return fallback; }
+    }
+
+    // ===== Auth state =====
+    const LS = {
+      session: "pc_session",
+      users: "pc_users",
+      avatar: "pc_profile_avatar",
+      loggedIn: "pc_logged_in"
+    };
+
+    function getSession() {
+      const raw = localStorage.getItem(LS.session);
+      return raw ? safeParseJSON(raw, null) : null;
+    }
+
+    function getUsers() {
+      const raw = localStorage.getItem(LS.users);
+      return raw ? safeParseJSON(raw, []) : [];
+    }
+
+    function isLoggedIn() {
+      const s = getSession();
+      return !!(s && s.email);
+    }
 
     function openLoginModal(e) {
       e?.preventDefault?.();
@@ -528,14 +853,6 @@
       }
     });
 
-    // ===== Auth state =====
-    const LS = {
-      session: "pc_session",
-      users: "pc_users",
-      avatar: "pc_profile_avatar",
-      loggedIn: "pc_logged_in"
-    };
-
     const guestEls = Array.from(document.querySelectorAll(".auth-guest"));
     const userEls = Array.from(document.querySelectorAll(".auth-user"));
 
@@ -557,25 +874,6 @@
 
     const signOutBtn = document.getElementById("signOutBtn");
     const mSignOutBtn = document.getElementById("mSignOutBtn");
-
-    function safeParseJSON(v, fallback) {
-      try { return JSON.parse(v); } catch { return fallback; }
-    }
-
-    function getSession() {
-      const raw = localStorage.getItem(LS.session);
-      return raw ? safeParseJSON(raw, null) : null;
-    }
-
-    function getUsers() {
-      const raw = localStorage.getItem(LS.users);
-      return raw ? safeParseJSON(raw, []) : [];
-    }
-
-    function isLoggedIn() {
-      const s = getSession();
-      return !!(s && s.email);
-    }
 
     function getInitials(name) {
       const n = (name || "").trim();
@@ -702,8 +1000,7 @@
     applyAuthUI();
     window.addEventListener("focus", applyAuthUI);
 
-    // ✅ NEW: If user clicks Lessons/Profile while NOT logged in, open login modal.
-    // (When logged in, it navigates normally.)
+    // If user clicks Lessons/Profile while NOT logged in, open login modal.
     document.querySelectorAll('a[href="lessons.html"], a[href="profile.html"]').forEach((a) => {
       a.addEventListener("click", (e) => {
         if (!isLoggedIn()) {
@@ -711,6 +1008,346 @@
         }
       });
     });
+
+    // ===== Reveal on scroll (IntersectionObserver) + auto-stagger =====
+    (function setupReveal() {
+      const els = Array.from(document.querySelectorAll("[data-reveal]"));
+      if (!els.length) return;
+
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (reduceMotion) {
+        els.forEach(el => el.classList.add("is-visible"));
+        return;
+      }
+
+      els.forEach((el, i) => el.style.setProperty("--d", `${i * 120}ms`));
+
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.15 });
+
+      els.forEach(el => io.observe(el));
+    })();
+
+    // ===== Tap ripple (mobile) =====
+    (function setupTapRipple() {
+      const cards = Array.from(document.querySelectorAll(".pc-card"));
+      if (!cards.length) return;
+
+      cards.forEach(card => {
+        card.addEventListener("pointerdown", (e) => {
+          if (window.matchMedia("(hover:hover) and (pointer:fine)").matches) return;
+
+          const layer = card.querySelector(".tap-ripple");
+          if (!layer) return;
+
+          const span = document.createElement("span");
+          const rect = card.getBoundingClientRect();
+
+          span.style.left = `${e.clientX - rect.left}px`;
+          span.style.top = `${e.clientY - rect.top}px`;
+
+          layer.appendChild(span);
+          setTimeout(() => span.remove(), 600);
+        });
+      });
+    })();
+
+    // ===== Make cards act like buttons (keyboard + click) =====
+    (function setupCardButtons() {
+      const cards = Array.from(document.querySelectorAll(".pc-card[role='button']"));
+      if (!cards.length) return;
+
+      function runAction(card, e) {
+        const action = card.getAttribute("data-card-action");
+        if (action === "lessons") {
+          if (isLoggedIn()) window.location.href = "lessons.html";
+          else openLoginModal(e);
+        }
+      }
+
+      cards.forEach(card => {
+        card.addEventListener("click", (e) => runAction(card, e));
+        card.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            runAction(card, e);
+          }
+        });
+      });
+    })();
+
+    // =========================================
+    // ✅ HERO TOP PHOTO: AUTO SLIDESHOW (IMPROVED TRANSITION)
+    // =========================================
+    (function setupHeroCarousel() {
+      const wrap = document.getElementById("heroCarousel");
+      const img = document.getElementById("heroCarouselImg");
+      const prevBtn = document.getElementById("heroPrev");
+      const nextBtn = document.getElementById("heroNext");
+      const dots = document.getElementById("heroDots");
+      const caption = document.getElementById("heroCaption");
+
+      if (!wrap || !img || !prevBtn || !nextBtn || !dots) return;
+
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      const slides = [
+        {
+          src: "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=1800&q=80",
+          fallback: "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=1400&q=80",
+          alt: "Library learning",
+          caption: "Learn with a calm, focused environment"
+        },
+        {
+          src: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1800&q=80",
+          fallback: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1400&q=80",
+          alt: "Collaborative learning",
+          caption: "Collaborate and communicate effectively"
+        },
+        {
+          src: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1800&q=80",
+          fallback: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1400&q=80",
+          alt: "Online study",
+          caption: "Study anytime, anywhere"
+        }
+      ];
+
+      let index = 0;
+      let dir = "next";
+
+      const AUTOPLAY_MS = 5000;
+      let autoplayTimer = null;
+
+      function buildDots() {
+        dots.innerHTML = "";
+        slides.forEach((_, i) => {
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className = "h-2.5 w-2.5 rounded-full ring-1 ring-white/60 transition";
+          b.setAttribute("aria-label", `Go to photo ${i + 1}`);
+          b.addEventListener("click", () => goTo(i, "next"));
+          dots.appendChild(b);
+        });
+      }
+
+      function setActiveDot() {
+        const children = Array.from(dots.children);
+        children.forEach((el, i) => {
+          el.classList.toggle("bg-white", i === index);
+          el.classList.toggle("bg-white/40", i !== index);
+        });
+      }
+
+      async function setImgAndAnimate(s) {
+        img.dataset.dir = dir;
+
+        if (!reduceMotion) {
+          img.classList.remove("is-active");
+          img.classList.add("is-fading");
+        }
+
+        img.onerror = () => {
+          if (img.src !== s.fallback) img.src = s.fallback;
+        };
+
+        img.alt = s.alt || "Hero photo";
+        img.src = s.src;
+
+        if (img.decode) {
+          try { await img.decode(); } catch { }
+        }
+
+        if (!reduceMotion) {
+          requestAnimationFrame(() => {
+            img.classList.remove("is-fading");
+            requestAnimationFrame(() => img.classList.add("is-active"));
+          });
+        }
+
+        if (caption) caption.textContent = s.caption || "";
+        setActiveDot();
+      }
+
+      function applySlide(i) {
+        const s = slides[i];
+        const pre = new Image();
+        pre.src = s.src;
+
+        pre.onload = () => setImgAndAnimate(s);
+        pre.onerror = () => setImgAndAnimate(s);
+      }
+
+      function goTo(i, direction) {
+        if (direction) dir = direction;
+        index = (i + slides.length) % slides.length;
+        applySlide(index);
+      }
+
+      function next() { goTo(index + 1, "next"); }
+      function prev() { goTo(index - 1, "prev"); }
+
+      prevBtn.addEventListener("click", prev);
+      nextBtn.addEventListener("click", next);
+
+      wrap.tabIndex = 0;
+      wrap.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowLeft") prev();
+        if (e.key === "ArrowRight") next();
+      });
+
+      let startX = 0;
+      let isDown = false;
+
+      wrap.addEventListener("pointerdown", (e) => {
+        isDown = true;
+        startX = e.clientX;
+      });
+
+      wrap.addEventListener("pointerup", (e) => {
+        if (!isDown) return;
+        isDown = false;
+        const dx = e.clientX - startX;
+        if (Math.abs(dx) < 40) return;
+        if (dx < 0) next();
+        else prev();
+      });
+
+      wrap.addEventListener("pointercancel", () => { isDown = false; });
+
+      function startAutoplay() {
+        if (reduceMotion || slides.length <= 1) return;
+        clearInterval(autoplayTimer);
+        autoplayTimer = setInterval(next, AUTOPLAY_MS);
+      }
+
+      buildDots();
+      goTo(index, "next");
+      setTimeout(startAutoplay, 400);
+    })();
+
+    // =========================================
+    // ✅ HOW IT WORKS: PHOTO CAROUSEL (unchanged)
+    // =========================================
+    (function setupHowItWorksCarousel() {
+      const wrap = document.getElementById("hwCarousel");
+      const img = document.getElementById("hwCarouselImg");
+      const prevBtn = document.getElementById("hwPrev");
+      const nextBtn = document.getElementById("hwNext");
+      const dots = document.getElementById("hwDots");
+      const caption = document.getElementById("hwCaption");
+
+      if (!wrap || !img || !prevBtn || !nextBtn || !dots) return;
+
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      const slides = [
+        {
+          src: "./assets/how-it-works.jpg",
+          fallback: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1400&q=80",
+          alt: "Student learning",
+          caption: "Interactive learning experience"
+        },
+        {
+          src: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1400&q=80",
+          fallback: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1400&q=80",
+          alt: "Online study session",
+          caption: "Study anytime, anywhere"
+        },
+        {
+          src: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1400&q=80",
+          fallback: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1400&q=80",
+          alt: "Classroom discussion",
+          caption: "Practice real communication skills"
+        }
+      ];
+
+      let index = 0;
+
+      function buildDots() {
+        dots.innerHTML = "";
+        slides.forEach((_, i) => {
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className = "h-2.5 w-2.5 rounded-full ring-1 ring-white/60 transition";
+          b.setAttribute("aria-label", `Go to photo ${i + 1}`);
+          b.addEventListener("click", () => goTo(i));
+          dots.appendChild(b);
+        });
+      }
+
+      function setActiveDot() {
+        const children = Array.from(dots.children);
+        children.forEach((el, i) => {
+          el.classList.toggle("bg-white", i === index);
+          el.classList.toggle("bg-white/40", i !== index);
+        });
+      }
+
+      function applySlide(i) {
+        const s = slides[i];
+
+        if (!reduceMotion) img.classList.add("is-fading");
+
+        img.onerror = () => {
+          if (img.src !== s.fallback) img.src = s.fallback;
+        };
+
+        img.onload = () => {
+          if (!reduceMotion) requestAnimationFrame(() => img.classList.remove("is-fading"));
+        };
+
+        img.alt = s.alt || "How it works photo";
+        img.src = s.src;
+
+        if (caption) caption.textContent = s.caption || "";
+        setActiveDot();
+      }
+
+      function goTo(i) {
+        index = (i + slides.length) % slides.length;
+        applySlide(index);
+      }
+
+      function next() { goTo(index + 1); }
+      function prev() { goTo(index - 1); }
+
+      prevBtn.addEventListener("click", prev);
+      nextBtn.addEventListener("click", next);
+
+      wrap.tabIndex = 0;
+      wrap.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowLeft") prev();
+        if (e.key === "ArrowRight") next();
+      });
+
+      let startX = 0;
+      let isDown = false;
+
+      wrap.addEventListener("pointerdown", (e) => {
+        isDown = true;
+        startX = e.clientX;
+      });
+
+      wrap.addEventListener("pointerup", (e) => {
+        if (!isDown) return;
+        isDown = false;
+        const dx = e.clientX - startX;
+        if (Math.abs(dx) < 40) return;
+        if (dx < 0) next();
+        else prev();
+      });
+
+      wrap.addEventListener("pointercancel", () => { isDown = false; });
+
+      buildDots();
+      applySlide(index);
+    })();
   </script>
 </body>
 
