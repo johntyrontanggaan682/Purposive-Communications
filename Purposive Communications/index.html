@@ -7,6 +7,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Purposive Communication | Welcome</title>
 
+  <!-- ✅ Performance: preconnect -->
+  <link rel="preconnect" href="https://images.unsplash.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- ✅ Optional nicer font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
   <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 
@@ -14,6 +22,9 @@
     tailwind.config = {
       theme: {
         extend: {
+          fontFamily: {
+            sans: ["Inter", "ui-sans-serif", "system-ui", "Segoe UI", "Roboto", "Helvetica", "Arial", "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji"],
+          },
           colors: {
             brand: {
               50: "#E7F7F5",
@@ -75,9 +86,9 @@
       }
     }
 
-    /* ✅ FULL SCREEN ONLY for About + Contact (NO internal scrolling) */
+    /* ✅ FULL SCREEN for About + Contact */
     .screen-only {
-      height: auto;
+      min-height: 100vh;
       box-sizing: border-box;
       padding-top: calc(var(--header-h) + 24px);
       padding-bottom: 24px;
@@ -87,7 +98,7 @@
 
     @supports (height: 100svh) {
       .screen-only {
-        height: auto;
+        min-height: 100svh;
       }
     }
 
@@ -125,12 +136,8 @@
     }
 
     /* =========================================
-       ✅ Cards: hover lift + glow + shine + icon pop
-       ✅ Reveal on scroll (fade-up)
-       ✅ Tap ripple on touch
-       ✅ Keyboard focus styling
+       ✅ Cards / reveal
     ========================================== */
-
     .pc-card {
       position: relative;
       overflow: hidden;
@@ -189,8 +196,8 @@
 
     .reveal {
       opacity: 0;
-      transform: translateY(14px);
-      transition: opacity 600ms ease, transform 600ms ease;
+      transform: translateY(16px);
+      transition: opacity 650ms cubic-bezier(.22, 1, .36, 1), transform 650ms cubic-bezier(.22, 1, .36, 1);
       transition-delay: var(--d, 0ms);
     }
 
@@ -225,32 +232,129 @@
       }
     }
 
-    @media (prefers-reduced-motion: reduce) {
+    /* =========================================
+       ✅ Extra animations / shine / glow
+    ========================================== */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
+    @keyframes floaty {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-10px) scale(1.03); }
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-120%); opacity: 0; }
+      30% { opacity: 0.35; }
+      100% { transform: translateX(120%); opacity: 0; }
+    }
+
+    .anim-fade-up { animation: fadeUp 850ms cubic-bezier(.22,1,.36,1) both; }
+    .anim-delay-1 { animation-delay: 120ms; }
+    .anim-delay-2 { animation-delay: 240ms; }
+    .anim-delay-3 { animation-delay: 360ms; }
+
+    .hero-glow {
+      position: absolute;
+      inset: -30%;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(19,168,154,0.35), transparent 55%),
+        radial-gradient(circle at 70% 70%, rgba(255,255,255,0.12), transparent 55%);
+      filter: blur(24px);
+      animation: floaty 6.5s ease-in-out infinite;
+      pointer-events: none;
+      will-change: transform;
+    }
+
+    .hero-parallax {
+      transform: translateY(var(--hero-parallax, 0px));
+      transition: transform 120ms linear;
+      will-change: transform;
+    }
+
+    .btn-shine { position: relative; overflow: hidden; }
+    .btn-shine::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(110deg, transparent 20%, rgba(255,255,255,0.55) 50%, transparent 80%);
+      transform: translateX(-120%);
+      opacity: 0;
+    }
+
+    @media (hover:hover) and (pointer:fine) {
+      .btn-shine:hover::after { animation: shimmer 900ms ease; }
+    }
+
+    /* ✅ Navbar shrink on scroll */
+    header.is-scrolled nav { padding-top: 0.75rem !important; padding-bottom: 0.75rem !important; }
+    header.is-scrolled { box-shadow: 0 12px 30px rgba(0,0,0,0.08); }
+
+    /* ✅ Active nav link */
+    .nav-link.is-active {
+      color: #0B665C !important;
+      font-weight: 700 !important;
+    }
+    .nav-link.is-active::after {
+      content: "";
+      display: block;
+      height: 3px;
+      border-radius: 999px;
+      background: rgba(19, 168, 154, 0.8);
+      margin-top: 6px;
+      width: 100%;
+    }
+
+    /* ✅ Selection */
+    ::selection { background: rgba(19,168,154,0.25); }
+
+    /* ✅ Divider helper */
+    .section-divider svg { display: block; width: 100%; height: auto; }
+
+    @media (prefers-reduced-motion: reduce) {
       .pc-card,
       .reveal,
       .pc-card::after,
       .pc-card .pc-icon,
       .pc-card .tap-ripple span,
-      .xfade-layer {
+      .xfade-layer,
+      .anim-fade-up,
+      .hero-glow,
+      .btn-shine::after,
+      .hero-parallax {
         transition: none !important;
         animation: none !important;
         transform: none !important;
         filter: none !important;
       }
-
-      .reveal {
-        opacity: 1 !important;
-      }
-
-      .pc-card::after {
-        opacity: 0 !important;
-      }
+      .reveal { opacity: 1 !important; }
+      .pc-card::after { opacity: 0 !important; }
     }
   </style>
 </head>
 
-<body class="bg-white text-slate-800 overflow-x-hidden">
+<body class="bg-white font-sans text-slate-800 overflow-x-hidden text-[17px] sm:text-[18px] lg:text-[19px] leading-relaxed">
+  <!-- ✅ Skip to content (a11y) -->
+  <a href="#home"
+    class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[90] focus:bg-white focus:px-4 focus:py-2 focus:rounded-xl focus:shadow-soft focus:ring-2 focus:ring-brand-200">
+    Skip to content
+  </a>
+
+  <!-- ✅ Scroll progress bar -->
+  <div id="scrollBar" class="fixed top-0 left-0 z-[80] h-[3px] w-0 bg-brand-500"></div>
+
+  <!-- ✅ Back to top -->
+  <button id="backToTop" type="button"
+    class="fixed bottom-5 right-5 z-[80] hidden items-center gap-2 rounded-2xl bg-white/95 px-4 py-3 text-sm font-semibold text-slate-800 shadow-soft ring-1 ring-black/10 backdrop-blur hover:bg-white focus:outline-none focus:ring-4 focus:ring-brand-200">
+    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M12 19V5" />
+      <path stroke-linecap="round" stroke-linejoin="round" d="M5 12l7-7 7 7" />
+    </svg>
+    Top
+  </button>
+
   <!-- NAVBAR -->
   <header class="fixed inset-x-0 top-0 z-50 bg-white/95 backdrop-blur border-b border-slate-200">
     <nav class="mx-auto flex max-w-7xl items-center px-4 py-4 sm:px-6 lg:px-8">
@@ -259,20 +363,20 @@
         <img src="./assets/logo.png" alt="Purposive Communication Logo"
           class="h-10 w-10 rounded-full ring-1 ring-black/10 object-cover"
           onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png';" />
-        <span class="text-lg font-semibold tracking-tight text-slate-900">Purposive Communication</span>
+        <span class="text-lg sm:text-xl font-semibold tracking-tight text-slate-900">Purposive Communication</span>
       </a>
 
-      <!-- Desktop Links (guest-accessible) -->
+      <!-- Desktop Links -->
       <div class="hidden md:flex items-center gap-8 ml-auto">
-        <a href="#home" class="text-sm font-semibold text-brand-700 hover:text-brand-800">Home</a>
-        <a href="#about" class="text-sm font-medium text-slate-600 hover:text-brand-700">About Us</a>
-        <a href="#contact" class="text-sm font-medium text-slate-600 hover:text-brand-700">Contact</a>
+        <a href="#home" class="nav-link text-sm font-semibold text-brand-700 hover:text-brand-800">Home</a>
+        <a href="#about" class="nav-link text-sm font-medium text-slate-600 hover:text-brand-700">About Us</a>
+        <a href="#contact" class="nav-link text-sm font-medium text-slate-600 hover:text-brand-700">Contact</a>
         <a href="lessons.html" class="text-sm font-medium text-slate-600 hover:text-brand-700">Lessons</a>
       </div>
 
       <!-- Login (GUEST ONLY) -->
       <a href="login.html" id="openLoginBtn"
-        class="auth-guest ml-6 rounded-xl bg-brand-500 px-5 py-2.5 text-sm font-semibold text-white shadow-soft hover:bg-brand-600">
+        class="btn-shine auth-guest ml-6 rounded-xl bg-brand-500 px-5 py-2.5 text-sm font-semibold text-white shadow-soft hover:bg-brand-600">
         Login
       </a>
 
@@ -331,7 +435,7 @@
 
             <div class="mt-3 grid grid-cols-2 gap-2">
               <a href="profile.html"
-                class="inline-flex items-center justify-center rounded-2xl bg-brand-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-900 transition">
+                class="btn-shine inline-flex items-center justify-center rounded-2xl bg-brand-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-900 transition">
                 View profile
               </a>
               <button id="signOutBtn" type="button"
@@ -358,13 +462,12 @@
       <div class="rounded-2xl bg-white p-4 shadow-soft ring-1 ring-black/5">
         <div class="flex flex-col gap-2">
           <a href="#home"
-            class="rounded-xl px-3 py-3 text-sm font-semibold text-brand-700 bg-brand-50 active:bg-brand-100">Home</a>
+            class="nav-link rounded-xl px-3 py-3 text-sm font-semibold text-brand-700 bg-brand-50 active:bg-brand-100">Home</a>
 
-          <!-- ✅ guest-accessible -->
           <a href="#about"
-            class="rounded-xl px-3 py-3 text-sm font-medium text-slate-700 hover:bg-slate-100 active:bg-slate-200">About Us</a>
+            class="nav-link rounded-xl px-3 py-3 text-sm font-medium text-slate-700 hover:bg-slate-100 active:bg-slate-200">About Us</a>
           <a href="#contact"
-            class="rounded-xl px-3 py-3 text-sm font-medium text-slate-700 hover:bg-slate-100 active:bg-slate-200">Contact</a>
+            class="nav-link rounded-xl px-3 py-3 text-sm font-medium text-slate-700 hover:bg-slate-100 active:bg-slate-200">Contact</a>
 
           <a href="lessons.html"
             class="rounded-xl px-3 py-3 text-sm font-medium text-slate-700 hover:bg-slate-100 active:bg-slate-200">Lessons</a>
@@ -373,7 +476,7 @@
 
           <!-- Login (GUEST ONLY) -->
           <a href="login.html" id="openLoginMobile"
-            class="auth-guest mt-2 rounded-xl bg-brand-500 px-4 py-3 text-center text-sm font-semibold text-white hover:bg-brand-600 active:bg-brand-700">
+            class="btn-shine auth-guest mt-2 rounded-xl bg-brand-500 px-4 py-3 text-center text-sm font-semibold text-white hover:bg-brand-600 active:bg-brand-700">
             Login
           </a>
 
@@ -391,11 +494,9 @@
             </div>
             <div class="mt-3 grid grid-cols-2 gap-2">
               <a href="profile.html"
-                class="rounded-xl bg-brand-800 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-brand-900 active:bg-brand-900">View
-                profile</a>
+                class="btn-shine rounded-xl bg-brand-800 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-brand-900 active:bg-brand-900">View profile</a>
               <button id="mSignOutBtn"
-                class="rounded-xl bg-slate-100 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-200 active:bg-slate-300">Sign
-                out</button>
+                class="rounded-xl bg-slate-100 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-200 active:bg-slate-300">Sign out</button>
             </div>
           </div>
         </div>
@@ -403,15 +504,18 @@
     </div>
   </header>
 
-  <!-- HERO (FULLSCREEN + AUTO SLIDESHOW) -->
+  <!-- HERO -->
   <section id="home" class="hero-full relative overflow-hidden">
-    <div class="absolute inset-0">
+    <div class="absolute inset-0 hero-parallax">
+      <div class="hero-glow" id="heroGlow"></div>
+
       <div class="relative h-full w-full overflow-hidden group" id="heroCarousel">
         <img id="heroImgA"
           src="https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=1800&q=80"
           alt="Purposive Communication hero"
           class="xfade-layer is-active"
           loading="eager"
+          fetchpriority="high"
           decoding="async" />
         <img id="heroImgB"
           src="https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=1800&q=80"
@@ -420,7 +524,7 @@
           loading="eager"
           decoding="async" />
 
-        <div class="absolute inset-0 bg-gradient-to-b from-black/45 to-black/35"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-black/55 to-black/35" id="heroOverlay"></div>
 
         <button id="heroPrev" type="button" aria-label="Previous photo"
           class="absolute left-4 top-1/2 -translate-y-1/2 z-10 inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/90 text-slate-800 ring-1 ring-black/10 shadow-soft
@@ -443,58 +547,79 @@
     </div>
 
     <div class="relative mx-auto max-w-7xl h-full flex flex-col items-center justify-center px-4 text-center sm:px-6 lg:px-8">
-      <h1 class="max-w-4xl text-3xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">
+      <h1 class="max-w-5xl text-4xl font-extrabold tracking-tight text-white sm:text-6xl lg:text-7xl anim-fade-up anim-delay-1">
         Master Purposive <br class="hidden sm:block" />
         Communication
       </h1>
 
-      <p class="mt-5 max-w-3xl text-sm leading-relaxed text-white/85 sm:text-lg">
+      <p class="mt-6 max-w-3xl text-base text-white/90 sm:text-xl anim-fade-up anim-delay-2">
         Develop essential communication skills through self-paced learning with interactive lessons, quizzes, and
         real-time progress tracking.
       </p>
 
-      <div id="heroGuestButtons" class="auth-guest mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+      <div id="heroGuestButtons" class="auth-guest mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row anim-fade-up anim-delay-3">
         <a href="login.html" id="startLearningBtn"
-          class="w-full rounded-2xl bg-brand-500 px-8 py-3.5 text-sm font-semibold text-white shadow-soft hover:bg-brand-600 focus:outline-none focus:ring-4 focus:ring-brand-200 sm:w-auto">
+          class="btn-shine w-full rounded-2xl bg-brand-500 px-9 py-4 text-base font-semibold text-white shadow-soft hover:bg-brand-600 focus:outline-none focus:ring-4 focus:ring-brand-200 sm:w-auto">
           Start Learning
         </a>
 
         <a href="login.html" id="signUpFreeBtn"
-          class="w-full rounded-2xl border border-white/60 bg-white/10 px-8 py-3.5 text-sm font-semibold text-white backdrop-blur hover:bg-white/15 focus:outline-none focus:ring-4 focus:ring-white/20 sm:w-auto">
+          class="btn-shine w-full rounded-2xl border border-white/60 bg-white/10 px-9 py-4 text-base font-semibold text-white backdrop-blur hover:bg-white/15 focus:outline-none focus:ring-4 focus:ring-white/20 sm:w-auto">
           Sign Up Free
         </a>
+      </div>
+
+      <!-- ✅ mini features strip -->
+      <div class="mt-10 grid w-full max-w-4xl gap-3 sm:grid-cols-3">
+        <div class="reveal rounded-2xl bg-white/10 p-4 text-left text-white ring-1 ring-white/15 backdrop-blur" data-reveal>
+          <p class="text-sm font-extrabold">Self-paced</p>
+          <p class="text-sm text-white/80">Learn anytime, anywhere.</p>
+        </div>
+        <div class="reveal rounded-2xl bg-white/10 p-4 text-left text-white ring-1 ring-white/15 backdrop-blur" data-reveal>
+          <p class="text-sm font-extrabold">Quizzes</p>
+          <p class="text-sm text-white/80">Practice and unlock lessons.</p>
+        </div>
+        <div class="reveal rounded-2xl bg-white/10 p-4 text-left text-white ring-1 ring-white/15 backdrop-blur" data-reveal>
+          <p class="text-sm font-extrabold">Progress tracking</p>
+          <p class="text-sm text-white/80">See growth in real-time.</p>
+        </div>
       </div>
     </div>
   </section>
 
+  <!-- Divider -->
+  <div class="section-divider">
+    <svg viewBox="0 0 1440 80" preserveAspectRatio="none">
+      <path fill="#ffffff" d="M0,32 C240,80 480,0 720,32 C960,64 1200,96 1440,32 L1440,80 L0,80 Z"></path>
+    </svg>
+  </div>
+
   <!-- WHY CHOOSE -->
-  <section class="bg-white py-20">
+  <section class="bg-white py-16 sm:py-24">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="text-center">
-        <h2 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">Why Choose Our Platform?</h2>
-        <p class="mx-auto mt-4 max-w-2xl text-slate-600">
+        <h2 class="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">Why Choose Our Platform?</h2>
+        <p class="mx-auto mt-4 max-w-2xl text-lg text-slate-600">
           Experience a comprehensive learning journey designed for your success
         </p>
       </div>
 
       <div class="mt-12 grid gap-8 sm:grid-cols-2 md:grid-cols-3">
-        <!-- ✅ CHANGED: removed clickable behavior + green focus/hover ring on these 3 cards -->
-        <div class="pc-card reveal rounded-3xl bg-brand-50 p-10 text-center shadow-soft ring-1 ring-black/5"
-          data-reveal>
+        <div class="pc-card reveal rounded-3xl bg-brand-50 p-10 text-center shadow-soft ring-1 ring-black/5" data-reveal>
           <div class="pc-icon mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-brand-500 text-white">
             <svg viewBox="0 0 24 24" class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
               <circle cx="12" cy="7" r="4" />
             </svg>
           </div>
-          <h3 class="mt-6 text-xl font-bold text-slate-900">Self-Paced Learning</h3>
-          <p class="mt-3 text-sm leading-relaxed text-slate-600">
+          <h3 class="mt-6 text-2xl font-bold text-slate-900">Self-Paced Learning</h3>
+          <p class="mt-3 text-base text-slate-600">
             Learn at your own pace with flexible scheduling that fits your lifestyle and commitments
           </p>
+          <div class="tap-ripple"></div>
         </div>
 
-        <div class="pc-card reveal rounded-3xl bg-brand-50 p-10 text-center shadow-soft ring-1 ring-black/5"
-          data-reveal>
+        <div class="pc-card reveal rounded-3xl bg-brand-50 p-10 text-center shadow-soft ring-1 ring-black/5" data-reveal>
           <div class="pc-icon mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-brand-500 text-white">
             <svg viewBox="0 0 24 24" class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M4 19h16" />
@@ -503,14 +628,14 @@
               <path stroke-linecap="round" stroke-linejoin="round" d="M17 16v-7" />
             </svg>
           </div>
-          <h3 class="mt-6 text-xl font-bold text-slate-900">Progress Tracking</h3>
-          <p class="mt-3 text-sm leading-relaxed text-slate-600">
+          <h3 class="mt-6 text-2xl font-bold text-slate-900">Progress Tracking</h3>
+          <p class="mt-3 text-base text-slate-600">
             Monitor your advancement with real-time progress bars and detailed performance analytics
           </p>
+          <div class="tap-ripple"></div>
         </div>
 
-        <div class="pc-card reveal rounded-3xl bg-brand-50 p-10 text-center shadow-soft ring-1 ring-black/5"
-          data-reveal>
+        <div class="pc-card reveal rounded-3xl bg-brand-50 p-10 text-center shadow-soft ring-1 ring-black/5" data-reveal>
           <div class="pc-icon mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-brand-500 text-white">
             <svg viewBox="0 0 24 24" class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round"
@@ -519,46 +644,47 @@
               <path stroke-linecap="round" stroke-linejoin="round" d="M7 11h10v8H7z" />
             </svg>
           </div>
-          <h3 class="mt-6 text-xl font-bold text-slate-900">Sequential Learning</h3>
-          <p class="mt-3 text-sm leading-relaxed text-slate-600">
+          <h3 class="mt-6 text-2xl font-bold text-slate-900">Sequential Learning</h3>
+          <p class="mt-3 text-base text-slate-600">
             Master each concept before moving forward with our structured unlock system
           </p>
+          <div class="tap-ripple"></div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ✅ ABOUT US (FULL SCREEN, guest-accessible) -->
+  <!-- ✅ ABOUT US (FULL SCREEN) -->
   <section id="about" class="screen-only bg-slate-50">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="grid gap-10 lg:grid-cols-2 lg:items-center">
         <div>
-          <h2 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">About Us</h2>
-          <p class="mt-4 text-slate-600 leading-relaxed">
+          <h2 class="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">About Us</h2>
+          <p class="mt-5 text-lg text-slate-600">
             Purposive Communication E-Learning Platform helps students build real-world communication skills through
             guided lessons, interactive activities, and assessments. Our goal is to make learning communication clear,
             practical, and engaging.
           </p>
 
           <div class="mt-8 grid gap-4 sm:grid-cols-2">
-            <div class="rounded-3xl bg-white p-6 shadow-soft ring-1 ring-black/5">
-              <h3 class="text-base font-extrabold text-slate-900">Our Mission</h3>
-              <p class="mt-2 text-sm text-slate-600">
+            <div class="reveal rounded-3xl bg-white p-6 shadow-soft ring-1 ring-black/5" data-reveal>
+              <h3 class="text-lg font-extrabold text-slate-900">Our Mission</h3>
+              <p class="mt-2 text-base text-slate-600">
                 Make communication learning simple, engaging, and accessible for every learner.
               </p>
             </div>
 
-            <div class="rounded-3xl bg-white p-6 shadow-soft ring-1 ring-black/5">
-              <h3 class="text-base font-extrabold text-slate-900">Our Vision</h3>
-              <p class="mt-2 text-sm text-slate-600">
+            <div class="reveal rounded-3xl bg-white p-6 shadow-soft ring-1 ring-black/5" data-reveal>
+              <h3 class="text-lg font-extrabold text-slate-900">Our Vision</h3>
+              <p class="mt-2 text-base text-slate-600">
                 Empower students to communicate confidently in academic and professional settings.
               </p>
             </div>
           </div>
 
-          <div class="mt-6 rounded-3xl bg-white p-6 shadow-soft ring-1 ring-black/5">
-            <h3 class="text-base font-extrabold text-slate-900">What you get</h3>
-            <ul class="mt-3 space-y-2 text-sm text-slate-600 list-disc pl-5">
+          <div class="mt-6 reveal rounded-3xl bg-white p-6 shadow-soft ring-1 ring-black/5" data-reveal>
+            <h3 class="text-lg font-extrabold text-slate-900">What you get</h3>
+            <ul class="mt-3 space-y-2 text-base text-slate-600 list-disc pl-5">
               <li>Structured lessons with clear outcomes</li>
               <li>Quizzes and progress tracking</li>
               <li>Guided practice for real-life communication</li>
@@ -583,41 +709,41 @@
   </section>
 
   <!-- HOW IT WORKS -->
-  <section class="bg-white pb-20">
+  <section class="bg-white pb-16 sm:pb-24">
     <div class="mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
       <div>
-        <h2 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">How It Works</h2>
+        <h2 class="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">How It Works</h2>
 
         <div class="mt-10 space-y-8">
-          <div class="flex gap-5">
+          <div class="reveal flex gap-5" data-reveal>
             <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white font-bold">1</div>
             <div>
-              <h3 class="text-lg font-bold text-slate-900">Choose Your Lesson</h3>
-              <p class="mt-1 text-sm text-slate-600">Browse through our curated lessons and select the topic you want to master</p>
+              <h3 class="text-xl font-bold text-slate-900">Choose Your Lesson</h3>
+              <p class="mt-1 text-base text-slate-600">Browse curated lessons and select what you want to master</p>
             </div>
           </div>
 
-          <div class="flex gap-5">
+          <div class="reveal flex gap-5" data-reveal>
             <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white font-bold">2</div>
             <div>
-              <h3 class="text-lg font-bold text-slate-900">Complete Each Part</h3>
-              <p class="mt-1 text-sm text-slate-600">Watch videos, read content, and pass quizzes to unlock the next section</p>
+              <h3 class="text-xl font-bold text-slate-900">Complete Each Part</h3>
+              <p class="mt-1 text-base text-slate-600">Watch/read content and pass quizzes to unlock the next section</p>
             </div>
           </div>
 
-          <div class="flex gap-5">
+          <div class="reveal flex gap-5" data-reveal>
             <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white font-bold">3</div>
             <div>
-              <h3 class="text-lg font-bold text-slate-900">Pass Final Assessment</h3>
-              <p class="mt-1 text-sm text-slate-600">Demonstrate your mastery by completing the comprehensive final assessment</p>
+              <h3 class="text-xl font-bold text-slate-900">Pass Final Assessment</h3>
+              <p class="mt-1 text-base text-slate-600">Demonstrate mastery through the final assessment</p>
             </div>
           </div>
 
-          <div class="flex gap-5">
+          <div class="reveal flex gap-5" data-reveal>
             <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white font-bold">4</div>
             <div>
-              <h3 class="text-lg font-bold text-slate-900">Track Your Progress</h3>
-              <p class="mt-1 text-sm text-slate-600">Monitor your achievements and continue building your communication skills</p>
+              <h3 class="text-xl font-bold text-slate-900">Track Your Progress</h3>
+              <p class="mt-1 text-base text-slate-600">Monitor achievements and keep building your skills</p>
             </div>
           </div>
         </div>
@@ -664,22 +790,28 @@
     </div>
   </section>
 
-  <!-- ✅ CONTACT (FULL SCREEN, guest-accessible) -->
+  <!-- ✅ CONTACT (FULL SCREEN) -->
   <section id="contact" class="screen-only bg-white">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="text-center">
-        <h2 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">Contact Us</h2>
-        <p class="mx-auto mt-4 max-w-2xl text-slate-600">
+        <h2 class="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">Contact Us</h2>
+        <p class="mx-auto mt-4 max-w-2xl text-lg text-slate-600">
           Have questions or feedback? Send us a message or reach out using the details below.
         </p>
       </div>
 
-      <div class="mt-10 grid gap-8 lg:grid-cols-2">
-        <!-- Contact Info -->
-        <div class="rounded-3xl bg-slate-50 p-8 shadow-soft ring-1 ring-black/5">
-          <h3 class="text-lg font-extrabold text-slate-900">Get in touch</h3>
+      <!-- ✅ Inline success message -->
+      <div id="contactToast" class="mt-8 hidden rounded-3xl bg-brand-50 p-5 ring-1 ring-brand-100 text-left" aria-live="polite">
+        <p class="font-extrabold text-brand-900">Message sent!</p>
+        <p class="text-sm text-brand-800">Thanks for reaching out. (Demo only)</p>
+      </div>
 
-          <div class="mt-6 space-y-4 text-sm">
+      <div class="mt-10 grid gap-6 lg:gap-10 lg:grid-cols-2">
+        <!-- Contact Info -->
+        <div class="rounded-3xl bg-slate-50 p-6 sm:p-8 shadow-soft ring-1 ring-black/5">
+          <h3 class="text-xl font-extrabold text-slate-900">Get in touch</h3>
+
+          <div class="mt-6 space-y-4 text-base">
             <div class="flex items-start gap-3">
               <div class="mt-0.5 rounded-xl bg-brand-100 p-2 text-brand-700">
                 <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -722,55 +854,56 @@
           </div>
         </div>
 
-        <!-- Contact Form (front-end only) -->
-        <form class="rounded-3xl bg-white p-8 shadow-soft ring-1 ring-black/5"
-          onsubmit="event.preventDefault(); alert('Message sent! (Demo only)'); this.reset();">
-          <h3 class="text-lg font-extrabold text-slate-900">Send a message</h3>
+        <!-- Contact Form (front-end demo) -->
+        <form id="contactForm" class="rounded-3xl bg-white p-6 sm:p-8 shadow-soft ring-1 ring-black/5" novalidate>
+          <h3 class="text-xl font-extrabold text-slate-900">Send a message</h3>
 
           <div class="mt-6 grid gap-4">
             <div>
-              <label for="cName" class="text-sm font-semibold text-slate-700">Full name</label>
+              <label for="cName" class="text-base font-semibold text-slate-700">Full name</label>
               <input id="cName" name="name" required
-                class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 shadow-sm focus:outline-none focus:ring-4 focus:ring-brand-200"
+                class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-base text-slate-800 shadow-sm focus:outline-none focus:ring-4 focus:ring-brand-200"
                 placeholder="Juan Dela Cruz" />
+              <p id="errName" class="mt-2 hidden text-sm font-semibold text-red-600">Please enter your name.</p>
             </div>
 
             <div>
-              <label for="cEmail" class="text-sm font-semibold text-slate-700">Email</label>
+              <label for="cEmail" class="text-base font-semibold text-slate-700">Email</label>
               <input id="cEmail" name="email" type="email" required
-                class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 shadow-sm focus:outline-none focus:ring-4 focus:ring-brand-200"
+                class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-base text-slate-800 shadow-sm focus:outline-none focus:ring-4 focus:ring-brand-200"
                 placeholder="you@example.com" />
+              <p id="errEmail" class="mt-2 hidden text-sm font-semibold text-red-600">Please enter a valid email.</p>
             </div>
 
             <div>
-              <label for="cMsg" class="text-sm font-semibold text-slate-700">Message</label>
-              <textarea id="cMsg" name="message" rows="5" required
-                class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 shadow-sm focus:outline-none focus:ring-4 focus:ring-brand-200"
+              <label for="cMsg" class="text-base font-semibold text-slate-700">Message</label>
+              <textarea id="cMsg" name="message" rows="3" required
+                class="mt-2 w-full resize-none overflow-y-auto rounded-2xl border border-slate-200 bg-white px-4 py-3 text-base text-slate-800 shadow-sm focus:outline-none focus:ring-4 focus:ring-brand-200"
+                style="max-height: 220px;"
                 placeholder="Write your message here..."></textarea>
+              <p id="errMsg" class="mt-2 hidden text-sm font-semibold text-red-600">Please type a message.</p>
             </div>
 
-            <button type="submit"
-              class="mt-2 inline-flex items-center justify-center rounded-2xl bg-brand-500 px-6 py-3 text-sm font-semibold text-white shadow-soft hover:bg-brand-600 focus:outline-none focus:ring-4 focus:ring-brand-200">
-              Send Message
+            <button id="contactSubmit" type="submit"
+              class="btn-shine mt-2 inline-flex items-center justify-center rounded-2xl bg-brand-500 px-6 py-3 text-base font-semibold text-white shadow-soft hover:bg-brand-600 focus:outline-none focus:ring-4 focus:ring-brand-200">
+              <span id="contactBtnText">Send Message</span>
             </button>
-
-            
           </div>
         </form>
       </div>
     </div>
   </section>
 
-  <!-- ✅ CTA BAND (GUEST ONLY) - GET STARTED FREE (RESTORED) -->
-  <section id="ctaBand" class="auth-guest bg-brand-700 py-20">
+  <!-- ✅ CTA BAND (GUEST ONLY) -->
+  <section id="ctaBand" class="auth-guest bg-brand-700 py-16 sm:py-24">
     <div class="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
-      <h2 class="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">Ready to Start Your Learning Journey?</h2>
-      <p class="mx-auto mt-4 max-w-2xl text-white/85">
+      <h2 class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl">Ready to Start Your Learning Journey?</h2>
+      <p class="mx-auto mt-4 max-w-2xl text-lg text-white/85">
         Join thousands of learners mastering purposive communication skills
       </p>
 
       <a href="login.html" id="getStartedFreeBtn"
-        class="mt-10 inline-flex items-center justify-center rounded-2xl bg-white px-10 py-3.5 text-sm font-semibold text-brand-700 shadow-soft hover:bg-brand-50 focus:outline-none focus:ring-4 focus:ring-white/30">
+        class="btn-shine mt-10 inline-flex items-center justify-center rounded-2xl bg-white px-10 py-4 text-base font-semibold text-brand-700 shadow-soft hover:bg-brand-50 focus:outline-none focus:ring-4 focus:ring-white/30">
         Get Started Free
       </a>
     </div>
@@ -790,15 +923,15 @@
             </div>
             <span class="text-lg font-semibold">Purposive Communication</span>
           </div>
-          <p class="mt-4 max-w-sm text-sm leading-relaxed text-white/80">
+          <p class="mt-4 max-w-sm text-base leading-relaxed text-white/80">
             Master the art of effective communication through our comprehensive self-paced learning platform. Build
             essential skills for academic and professional success.
           </p>
         </div>
 
         <div class="md:justify-self-center">
-          <h3 class="text-base font-semibold">Quick Links</h3>
-          <ul class="mt-4 space-y-3 text-sm text-white/80">
+          <h3 class="text-lg font-semibold">Quick Links</h3>
+          <ul class="mt-4 space-y-3 text-base text-white/80">
             <li><a class="hover:text-white" href="#home">Home</a></li>
             <li><a class="hover:text-white" href="#about">About Us</a></li>
             <li><a class="hover:text-white" href="#contact">Contact</a></li>
@@ -807,7 +940,7 @@
         </div>
 
         <div class="md:justify-self-end">
-          <h3 class="text-base font-semibold">Connect</h3>
+          <h3 class="text-lg font-semibold">Connect</h3>
           <div class="mt-4 flex items-center gap-4">
             <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer"
               class="inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/20 hover:bg-white/15"
@@ -839,7 +972,7 @@
         </div>
       </div>
 
-      <div class="mt-12 border-t border-white/15 pt-6 text-center text-sm text-white/75">
+      <div class="mt-12 border-t border-white/15 pt-6 text-center text-base text-white/75">
         © <span id="year"></span> Purposive Communication E-Learning Platform. All rights reserved.
       </div>
     </div>
@@ -880,16 +1013,16 @@
             </svg>
           </div>
 
-          <h3 class="mt-3 text-base font-extrabold text-slate-900">Are you sure you want to sign out?</h3>
+          <h3 class="mt-3 text-lg font-extrabold text-slate-900">Are you sure you want to sign out?</h3>
 
           <div class="mt-5 grid grid-cols-2 gap-3">
             <button id="signOutNo" type="button"
-              class="w-full rounded-xl bg-slate-100 px-5 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-200 ring-1 ring-black/5">
+              class="w-full rounded-xl bg-slate-100 px-5 py-3 text-base font-semibold text-slate-700 hover:bg-slate-200 ring-1 ring-black/5">
               No
             </button>
 
             <button id="signOutYes" type="button"
-              class="w-full rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-700 ring-1 ring-black/5">
+              class="w-full rounded-xl bg-brand-600 px-5 py-3 text-base font-semibold text-white hover:bg-brand-700 ring-1 ring-black/5">
               Yes
             </button>
           </div>
@@ -921,7 +1054,9 @@
     // ✅ Force Firebase auth to NOT use localStorage (session only)
     try { await setPersistence(auth, browserSessionPersistence); } catch (_) { }
 
-    // ✅ Set CSS variable for the fixed header height (hero full screen)
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // ✅ Set CSS variable for the fixed header height
     (function setHeaderHeightVar() {
       const header = document.querySelector("header");
       if (!header) return;
@@ -932,6 +1067,41 @@
 
       apply();
       window.addEventListener("resize", apply);
+    })();
+
+    // ✅ Scroll progress + navbar shrink + back-to-top
+    (function scrollUX() {
+      const bar = document.getElementById("scrollBar");
+      const header = document.querySelector("header");
+      const topBtn = document.getElementById("backToTop");
+
+      function onScroll() {
+        const doc = document.documentElement;
+        const max = doc.scrollHeight - doc.clientHeight;
+        const pct = max > 0 ? (doc.scrollTop / max) * 100 : 0;
+
+        if (bar) bar.style.width = pct + "%";
+        if (header) header.classList.toggle("is-scrolled", doc.scrollTop > 10);
+
+        if (topBtn) {
+          const show = pct > 25;
+          topBtn.classList.toggle("hidden", !show);
+          topBtn.classList.toggle("flex", show);
+        }
+
+        // subtle hero parallax
+        if (!reduceMotion) {
+          const p = Math.min(26, doc.scrollTop * 0.06);
+          document.documentElement.style.setProperty("--hero-parallax", `${p}px`);
+        }
+      }
+
+      window.addEventListener("scroll", onScroll, { passive: true });
+      onScroll();
+
+      topBtn?.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
+      });
     })();
 
     // Mobile menu toggle
@@ -954,9 +1124,7 @@
     window.addEventListener("resize", closeMobileMenuOnDesktop);
     closeMobileMenuOnDesktop();
 
-    // Smooth scroll for # links (with reduced-motion support)
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
+    // Smooth scroll for # links
     document.querySelectorAll('a[href^="#"]').forEach((a) => {
       a.addEventListener("click", (e) => {
         const href = a.getAttribute("href");
@@ -966,14 +1134,45 @@
         if (!el) return;
 
         e.preventDefault();
-        el.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "start" });
+        el.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
 
-        if (!mobileMenu.classList.contains("hidden")) {
+        if (mobileMenu && !mobileMenu.classList.contains("hidden")) {
           mobileMenu.classList.add("hidden");
-          menuBtn.setAttribute("aria-expanded", "false");
+          menuBtn?.setAttribute("aria-expanded", "false");
         }
       });
     });
+
+    // ✅ Active nav highlight
+    (function setupActiveNav() {
+      const links = Array.from(document.querySelectorAll(".nav-link"));
+      const map = new Map();
+      links.forEach(a => {
+        const href = a.getAttribute("href");
+        if (href && href.startsWith("#")) map.set(href, a);
+      });
+
+      const sections = ["#home", "#about", "#contact"]
+        .map(id => document.querySelector(id))
+        .filter(Boolean);
+
+      if (!sections.length) return;
+
+      const io = new IntersectionObserver((entries) => {
+        const visible = entries
+          .filter(e => e.isIntersecting)
+          .sort((a, b) => (b.intersectionRatio - a.intersectionRatio))[0];
+
+        if (!visible) return;
+
+        const id = "#" + visible.target.id;
+        links.forEach(a => a.classList.remove("is-active"));
+        const active = map.get(id);
+        active?.classList.add("is-active");
+      }, { threshold: [0.25, 0.5, 0.75] });
+
+      sections.forEach(s => io.observe(s));
+    })();
 
     // ===== Login modal logic =====
     const loginModal = document.getElementById("loginModal");
@@ -993,13 +1192,13 @@
     async function loadProfile(uid) {
       const ref = doc(db, "users", uid);
 
-      // ✅ 1) Try local Firestore cache first (fast, avoids flicker)
+      // ✅ Try local Firestore cache first
       try {
         const cached = await getDocFromCache(ref);
         if (cached.exists()) return cached.data() || {};
       } catch (_) { }
 
-      // ✅ 2) Fallback to server
+      // ✅ Fallback to server
       try {
         const snap = await getDoc(ref);
         return snap.exists() ? (snap.data() || {}) : {};
@@ -1012,12 +1211,11 @@
       return String(profile?.role || "student").toLowerCase().trim();
     }
 
-    // ✅ ROLE-BASED ROUTING (ADMIN/TEACHER -> admin.html)
+    // ✅ ROLE-BASED ROUTING
     function routeByRole() {
       if (!__currentUser) return;
       const role = normalizeRole(__profile);
       if (role === "admin" || role === "teacher") {
-        // prevent flicker and loop if already navigating
         if (!location.pathname.toLowerCase().endsWith("/admin.html") && !location.href.toLowerCase().endsWith("admin.html")) {
           window.location.href = "admin.html";
         }
@@ -1068,14 +1266,12 @@
       const d = event?.data;
       if (!d || d.type !== "pc-auth") return;
 
-      // ✅ allow route messages from iframe after role is confirmed
       if (d.action === "route") {
         const role = String(d.role || "").toLowerCase().trim();
         if (role === "admin" || role === "teacher") window.location.href = "admin.html";
         return;
       }
 
-      // Only accept expected action
       if (d.action !== "sign-in") return;
 
       const email = String(d.email || "").trim();
@@ -1099,18 +1295,14 @@
         document.documentElement.classList.remove("pc-auth-pending");
         document.documentElement.classList.add("pc-auth-ready");
 
-        // load profile then role route
         const p = await loadProfile(cred.user.uid);
         __profile = p || null;
         applyAuthUI();
 
-        // tell iframe success
         event.source?.postMessage({ type: "pc-auth", status: "signed-in" }, "*");
 
-        // close modal
         if (loginModal && !loginModal.classList.contains("hidden")) closeLoginModal();
 
-        // ✅ route admin/teacher
         routeByRole();
       } catch (err) {
         const code = err?.code || "";
@@ -1232,7 +1424,7 @@
       setAvatarEl(mNavAvatar, avatarText);
     }
 
-    // ===== Sign out confirm modal (NEW) =====
+    // ===== Sign out confirm modal =====
     const signOutModal = document.getElementById("signOutModal");
     const signOutBackdrop = document.getElementById("signOutBackdrop");
     const signOutYes = document.getElementById("signOutYes");
@@ -1278,7 +1470,7 @@
       await doSignOut();
     });
 
-    // ✅ Firebase auth listener (keeps state correct) + ROLE ROUTE
+    // ✅ Firebase auth listener + ROLE ROUTE
     onAuthStateChanged(auth, (user) => {
       __currentUser = user || null;
       __profile = null;
@@ -1301,25 +1493,30 @@
       }
     });
 
-    // Gate Lessons/Profile when not logged-in (About/Contact remain accessible)
+    // Gate Lessons/Profile when not logged-in
     document.querySelectorAll('a[href="lessons.html"], a[href="profile.html"]').forEach((a) => {
       a.addEventListener("click", (e) => {
         if (!isLoggedIn()) openLoginModal(e);
       });
     });
 
-    // ===== Reveal on scroll (IntersectionObserver) + auto-stagger =====
+    // ✅ Reveal on scroll (IntersectionObserver) + stagger per SECTION
     (function setupReveal() {
       const els = Array.from(document.querySelectorAll("[data-reveal]"));
       if (!els.length) return;
 
-      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       if (reduceMotion) {
         els.forEach(el => el.classList.add("is-visible"));
         return;
       }
 
-      els.forEach((el, i) => el.style.setProperty("--d", `${i * 120}ms`));
+      const sectionIndex = new Map();
+      els.forEach((el) => {
+        const sec = el.closest("section") || document.body;
+        const idx = sectionIndex.get(sec) || 0;
+        el.style.setProperty("--d", `${idx * 110}ms`);
+        sectionIndex.set(sec, idx + 1);
+      });
 
       const io = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
@@ -1328,17 +1525,23 @@
             io.unobserve(entry.target);
           }
         });
-      }, { threshold: 0.15 });
+      }, { threshold: 0.14 });
 
       els.forEach(el => io.observe(el));
     })();
 
-    // ===== Tap ripple (mobile) =====
+    // ✅ Tap ripple (mobile)
     (function setupTapRipple() {
       const cards = Array.from(document.querySelectorAll(".pc-card"));
       if (!cards.length) return;
 
       cards.forEach(card => {
+        if (!card.querySelector(".tap-ripple")) {
+          const layer = document.createElement("div");
+          layer.className = "tap-ripple";
+          card.appendChild(layer);
+        }
+
         card.addEventListener("pointerdown", (e) => {
           if (window.matchMedia("(hover:hover) and (pointer:fine)").matches) return;
 
@@ -1357,6 +1560,95 @@
       });
     })();
 
+    // ✅ Contact: auto-expand capped + internal scroll
+    (function autoExpandMessageCapped() {
+      const ta = document.getElementById("cMsg");
+      if (!ta) return;
+
+      const MAX_PX = 220;
+
+      const resize = () => {
+        ta.style.height = "auto";
+        const next = Math.min(ta.scrollHeight, MAX_PX);
+        ta.style.height = next + "px";
+        ta.style.overflowY = (ta.scrollHeight > MAX_PX) ? "auto" : "hidden";
+      };
+
+      ta.addEventListener("input", resize);
+      window.addEventListener("load", resize);
+      resize();
+    })();
+
+    // ✅ Contact: inline success + validation UI + disable button while sending
+    (function contactFormUX() {
+      const form = document.getElementById("contactForm");
+      const toast = document.getElementById("contactToast");
+      const btn = document.getElementById("contactSubmit");
+      const btnText = document.getElementById("contactBtnText");
+
+      const cName = document.getElementById("cName");
+      const cEmail = document.getElementById("cEmail");
+      const cMsg = document.getElementById("cMsg");
+
+      const errName = document.getElementById("errName");
+      const errEmail = document.getElementById("errEmail");
+      const errMsg = document.getElementById("errMsg");
+
+      if (!form || !btn || !btnText || !cName || !cEmail || !cMsg) return;
+
+      function setErr(input, el, show) {
+        if (!el) return;
+        el.classList.toggle("hidden", !show);
+        input.classList.toggle("ring-2", show);
+        input.classList.toggle("ring-red-400", show);
+        input.classList.toggle("border-red-300", show);
+      }
+
+      function clearAll() {
+        setErr(cName, errName, false);
+        setErr(cEmail, errEmail, false);
+        setErr(cMsg, errMsg, false);
+      }
+
+      [cName, cEmail, cMsg].forEach((inp) => {
+        inp.addEventListener("input", () => {
+          toast?.classList.add("hidden");
+          clearAll();
+        });
+      });
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        toast?.classList.add("hidden");
+        clearAll();
+
+        const nameOk = cName.value.trim().length > 1;
+        const emailOk = cEmail.validity.valid && cEmail.value.trim().length > 3;
+        const msgOk = cMsg.value.trim().length > 2;
+
+        setErr(cName, errName, !nameOk);
+        setErr(cEmail, errEmail, !emailOk);
+        setErr(cMsg, errMsg, !msgOk);
+
+        if (!nameOk || !emailOk || !msgOk) return;
+
+        btn.disabled = true;
+        btn.classList.add("opacity-70", "cursor-not-allowed");
+        btnText.textContent = "Sending...";
+
+        await new Promise(r => setTimeout(r, 700));
+
+        btn.disabled = false;
+        btn.classList.remove("opacity-70", "cursor-not-allowed");
+        btnText.textContent = "Send Message";
+
+        form.reset();
+        toast?.classList.remove("hidden");
+
+        if (!reduceMotion) toast?.scrollIntoView({ behavior: "smooth", block: "center" });
+      });
+    })();
+
     // =========================================
     // ✅ HERO TOP PHOTO: AUTO SLIDESHOW (2-LAYER CROSSFADE)
     // =========================================
@@ -1368,8 +1660,6 @@
       const nextBtn = document.getElementById("heroNext");
 
       if (!wrap || !imgA || !imgB || !prevBtn || !nextBtn) return;
-
-      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
       const slides = [
         {
@@ -1501,8 +1791,6 @@
 
       if (!wrap || !imgA || !imgB || !prevBtn || !nextBtn) return;
 
-      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
       const slides = [
         {
           src: "./assets/how-it-works.jpg",
@@ -1522,7 +1810,6 @@
       ];
 
       let index = 0;
-
       let active = imgA;
       let idle = imgB;
 
