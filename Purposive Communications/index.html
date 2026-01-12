@@ -75,19 +75,19 @@
       }
     }
 
-    /* ✅ FULL SCREEN ONLY for About + Contact */
+    /* ✅ FULL SCREEN ONLY for About + Contact (NO internal scrolling) */
     .screen-only {
-      height: 100vh;
+      height: auto;
       box-sizing: border-box;
       padding-top: calc(var(--header-h) + 24px);
       padding-bottom: 24px;
-      overflow-y: auto;
-      overscroll-behavior: contain;
+      overflow: visible;
+      overscroll-behavior: auto;
     }
 
     @supports (height: 100svh) {
       .screen-only {
-        height: 100svh;
+        height: auto;
       }
     }
 
@@ -478,10 +478,9 @@
       </div>
 
       <div class="mt-12 grid gap-8 sm:grid-cols-2 md:grid-cols-3">
-        <div
-          class="pc-card reveal rounded-3xl bg-brand-50 p-10 text-center shadow-soft ring-1 ring-black/5 cursor-pointer hover:ring-brand-200 hover:bg-brand-100/50"
-          data-reveal data-card-action="lessons" tabindex="0" role="button" aria-label="Self-Paced Learning">
-          <div class="tap-ripple" aria-hidden="true"></div>
+        <!-- ✅ CHANGED: removed clickable behavior + green focus/hover ring on these 3 cards -->
+        <div class="pc-card reveal rounded-3xl bg-brand-50 p-10 text-center shadow-soft ring-1 ring-black/5"
+          data-reveal>
           <div class="pc-icon mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-brand-500 text-white">
             <svg viewBox="0 0 24 24" class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
@@ -494,10 +493,8 @@
           </p>
         </div>
 
-        <div
-          class="pc-card reveal rounded-3xl bg-brand-50 p-10 text-center shadow-soft ring-1 ring-black/5 cursor-pointer hover:ring-brand-200 hover:bg-brand-100/50"
-          data-reveal data-card-action="lessons" tabindex="0" role="button" aria-label="Progress Tracking">
-          <div class="tap-ripple" aria-hidden="true"></div>
+        <div class="pc-card reveal rounded-3xl bg-brand-50 p-10 text-center shadow-soft ring-1 ring-black/5"
+          data-reveal>
           <div class="pc-icon mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-brand-500 text-white">
             <svg viewBox="0 0 24 24" class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M4 19h16" />
@@ -512,10 +509,8 @@
           </p>
         </div>
 
-        <div
-          class="pc-card reveal rounded-3xl bg-brand-50 p-10 text-center shadow-soft ring-1 ring-black/5 cursor-pointer hover:ring-brand-200 hover:bg-brand-100/50"
-          data-reveal data-card-action="lessons" tabindex="0" role="button" aria-label="Sequential Learning">
-          <div class="tap-ripple" aria-hidden="true"></div>
+        <div class="pc-card reveal rounded-3xl bg-brand-50 p-10 text-center shadow-soft ring-1 ring-black/5"
+          data-reveal>
           <div class="pc-icon mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-brand-500 text-white">
             <svg viewBox="0 0 24 24" class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round"
@@ -759,9 +754,7 @@
               Send Message
             </button>
 
-            <p class="text-xs text-slate-500">
-              Demo lang ito (no database). If gusto mo maging real, sabihin mo kung Firebase / PHP / Google Forms ang gagamitin mo.
-            </p>
+            
           </div>
         </form>
       </div>
@@ -1015,6 +1008,22 @@
       }
     }
 
+    function normalizeRole(profile) {
+      return String(profile?.role || "student").toLowerCase().trim();
+    }
+
+    // ✅ ROLE-BASED ROUTING (ADMIN/TEACHER -> admin.html)
+    function routeByRole() {
+      if (!__currentUser) return;
+      const role = normalizeRole(__profile);
+      if (role === "admin" || role === "teacher") {
+        // prevent flicker and loop if already navigating
+        if (!location.pathname.toLowerCase().endsWith("/admin.html") && !location.href.toLowerCase().endsWith("admin.html")) {
+          window.location.href = "admin.html";
+        }
+      }
+    }
+
     function isLoggedIn() {
       return !!__currentUser;
     }
@@ -1059,39 +1068,63 @@
       const d = event?.data;
       if (!d || d.type !== "pc-auth") return;
 
-      if (d.action === "sign-in") {
-        try {
-          const cred = await signInWithEmailAndPassword(auth, d.email, d.password);
-
-          __currentUser = cred.user;
-          __profile = null;
-
-          applyAuthUI();
-
-          document.documentElement.classList.remove("pc-auth-pending");
-          document.documentElement.classList.add("pc-auth-ready");
-
-          loadProfile(cred.user.uid).then((p) => {
-            __profile = p || null;
-            applyAuthUI();
-          });
-
-          if (loginModal && !loginModal.classList.contains("hidden")) {
-            closeLoginModal();
-          }
-
-          event.source?.postMessage({ type: "pc-auth", status: "signed-in" }, "*");
-        } catch (err) {
-          event.source?.postMessage(
-            { type: "pc-auth", status: "error", message: err?.message || "Login failed." },
-            "*"
-          );
-        }
+      // ✅ allow route messages from iframe after role is confirmed
+      if (d.action === "route") {
+        const role = String(d.role || "").toLowerCase().trim();
+        if (role === "admin" || role === "teacher") window.location.href = "admin.html";
         return;
       }
 
-      if (d.status === "signed-in") {
-        closeLoginModal();
+      // Only accept expected action
+      if (d.action !== "sign-in") return;
+
+      const email = String(d.email || "").trim();
+      const password = String(d.password || "");
+
+      if (!email || !password) {
+        event.source?.postMessage(
+          { type: "pc-auth", status: "error", message: "Please enter your email and password." },
+          "*"
+        );
+        return;
+      }
+
+      try {
+        const cred = await signInWithEmailAndPassword(auth, email, password);
+
+        __currentUser = cred.user;
+        __profile = null;
+
+        applyAuthUI();
+        document.documentElement.classList.remove("pc-auth-pending");
+        document.documentElement.classList.add("pc-auth-ready");
+
+        // load profile then role route
+        const p = await loadProfile(cred.user.uid);
+        __profile = p || null;
+        applyAuthUI();
+
+        // tell iframe success
+        event.source?.postMessage({ type: "pc-auth", status: "signed-in" }, "*");
+
+        // close modal
+        if (loginModal && !loginModal.classList.contains("hidden")) closeLoginModal();
+
+        // ✅ route admin/teacher
+        routeByRole();
+      } catch (err) {
+        const code = err?.code || "";
+        let msg = "Login failed.";
+
+        if (code === "auth/invalid-credential") msg = "Incorrect email or password, or account doesn’t exist in Firebase Authentication.";
+        if (code === "auth/user-disabled") msg = "This account is disabled.";
+        if (code === "auth/invalid-email") msg = "Invalid email address format.";
+        if (code === "auth/too-many-requests") msg = "Too many attempts. Try again later.";
+
+        event.source?.postMessage(
+          { type: "pc-auth", status: "error", message: msg, code },
+          "*"
+        );
       }
     });
 
@@ -1245,7 +1278,7 @@
       await doSignOut();
     });
 
-    // ✅ Firebase auth listener (keeps state correct)
+    // ✅ Firebase auth listener (keeps state correct) + ROLE ROUTE
     onAuthStateChanged(auth, (user) => {
       __currentUser = user || null;
       __profile = null;
@@ -1259,6 +1292,7 @@
         loadProfile(__currentUser.uid).then((p) => {
           __profile = p || null;
           applyAuthUI();
+          routeByRole();
         });
       }
 
@@ -1315,34 +1349,10 @@
           const rect = card.getBoundingClientRect();
 
           span.style.left = `${e.clientX - rect.left}px`;
-          span.style.top = `${e.clientX - rect.left}px`;
-
+          span.style.top = `${e.clientY - rect.top}px`;
           layer.appendChild(span);
+
           setTimeout(() => span.remove(), 600);
-        });
-      });
-    })();
-
-    // ===== Make cards act like buttons (keyboard + click) =====
-    (function setupCardButtons() {
-      const cards = Array.from(document.querySelectorAll(".pc-card[role='button']"));
-      if (!cards.length) return;
-
-      function runAction(card, e) {
-        const action = card.getAttribute("data-card-action");
-        if (action === "lessons") {
-          if (isLoggedIn()) window.location.href = "lessons.html";
-          else openLoginModal(e);
-        }
-      }
-
-      cards.forEach(card => {
-        card.addEventListener("click", (e) => runAction(card, e));
-        card.addEventListener("keydown", (e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            runAction(card, e);
-          }
         });
       });
     })();

@@ -41,7 +41,6 @@
         #E7F7F5;
     }
 
-    /* Scrollbar: hidden by default, appears on scroll/hover */
     html, body { height: 100%; }
 
     body { scrollbar-width: thin; scrollbar-color: transparent transparent; }
@@ -64,12 +63,9 @@
 
 <body class="page-bg min-h-screen flex items-center justify-center px-4 py-10 text-slate-800">
   <main class="w-full max-w-md">
-    <!-- Card -->
     <section class="relative overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/5">
 
-      <!-- Header -->
       <div class="relative bg-gradient-to-r from-brand-600 to-brand-500 px-8 pt-10 pb-8 text-center">
-        <!-- ✅ Toast -->
         <div class="pointer-events-none absolute left-4 top-4 z-50">
           <div id="flashToast"
             class="pointer-events-auto flex items-start gap-3 rounded-2xl bg-white/95 px-4 py-3 shadow-soft ring-1 ring-black/10
@@ -109,7 +105,6 @@
         <p class="mt-1 text-xs font-medium text-white/85">E-Learning Platform</p>
       </div>
 
-      <!-- Body -->
       <div class="px-7 sm:px-8 pt-7 pb-8">
         <form id="formStudent" class="space-y-4" action="#" method="post">
           <div>
@@ -175,12 +170,15 @@
         </p>
       </div>
     </section>
-  </main>  <script type="module">
+  </main>
+
+  <script type="module">
     import { auth, db } from "./firebase.js";
     import {
       signInWithEmailAndPassword,
       setPersistence,
-      browserSessionPersistence
+      browserSessionPersistence,
+      onAuthStateChanged
     } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 
     import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
@@ -197,7 +195,6 @@
     try { await setPersistence(auth, browserSessionPersistence); } catch (_) {}
 
     // ✅ ROLE-BASED ACCESS
-    // Put your teacher/admin email(s) here (lowercase). Example: ["purcom2000@gmail.com"]
     const ADMIN_EMAILS = [
       "purcom2000@gmail.com"
     ].map(e => String(e).toLowerCase().trim());
@@ -230,13 +227,25 @@
         await setDoc(ref, { fullName, email, role, createdAt: now, lastLoginAt: now, lastSeenAt: now }, { merge: true });
         return { fullName, email, role };
       } catch (_) {
-        // If Firestore is blocked/misconfigured, fall back to student redirect
         return { role: "student", email };
       }
     }
 
     function isInIframe() {
       try { return window.self !== window.top; } catch { return true; }
+    }
+
+    // ✅ wait until this frame sees auth.currentUser (after parent signs in)
+    function waitForAuthUser(timeoutMs = 8000) {
+      return new Promise((resolve, reject) => {
+        const t = setTimeout(() => reject(new Error("Auth sync timeout.")), timeoutMs);
+        const unsub = onAuthStateChanged(auth, (u) => {
+          if (!u) return;
+          clearTimeout(t);
+          unsub();
+          resolve(u);
+        });
+      });
     }
 
     // Toast
@@ -263,10 +272,9 @@
       clearTimeout(__flashTimer);
     });
 
-    // Show toast + prefill email after register redirect (NO localStorage; uses URL params)
+    // URL params toast/prefill
     (function initFromURL() {
       const params = new URLSearchParams(window.location.search);
-
       const msg = params.get("msg");
       if (msg) setTimeout(() => showFlash(msg), 120);
 
@@ -323,7 +331,7 @@
       loginText.textContent = isLoading ? "Logging in..." : "Login";
     }
 
-    // If in iframe: send credentials to parent so parent logs in (instant UI update)
+    // If in iframe: send credentials to parent so parent logs in
     function requestParentLogin(email, password) {
       return new Promise((resolve, reject) => {
         function onMsg(ev) {
@@ -347,6 +355,16 @@
       });
     }
 
+    // ✅ Tell parent to route once role is confirmed
+    function tellParentToRoute(role) {
+      try {
+        window.parent.postMessage(
+          { type: "pc-auth", action: "route", role: String(role || "").toLowerCase() },
+          "*"
+        );
+      } catch (_) {}
+    }
+
     form?.addEventListener("submit", async (e) => {
       e.preventDefault();
       setLoading(true);
@@ -356,7 +374,17 @@
 
       try {
         if (isInIframe()) {
+          // 1) parent signs in
           await requestParentLogin(email, pass);
+
+          // 2) THIS frame waits until it sees auth.currentUser, then writes role to Firestore
+          const u = await waitForAuthUser();
+          const profile = await ensureUserDoc(u);
+
+          // 3) tell parent to redirect based on role
+          const role = String(profile?.role || "student").toLowerCase();
+          tellParentToRoute(role);
+
           setLoading(false);
           return;
         }
