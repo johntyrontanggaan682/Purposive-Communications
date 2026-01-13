@@ -635,6 +635,19 @@
         } catch (_) {}
       }
 
+      async function saveLessonProgress(uid, pct) {
+        const progress = clamp(parseInt(pct || "0", 10) || 0, 0, 100);
+        const complete = progress === 100;
+
+        try {
+          await setDoc(progressDocRef(uid), {
+            progress,
+            complete,
+            updatedAt: Date.now()
+          }, { merge: true });
+        } catch (_) {}
+      }
+
       function computeProgressPct(state) {
         const doneCount = state.partsDone.reduce((acc, v) => acc + (v ? 1 : 0), 0);
         return Math.round((doneCount / parts.length) * 100);
@@ -738,9 +751,16 @@
               __lessonState.partsDone[1] = true;
               if (__currentUser) await saveLessonState(__currentUser.uid, __lessonState);
 
+              // ✅ also write progress doc so Lesson is marked complete in /progress
+              const pct = computeProgressPct(__lessonState);
+              if (__currentUser) await saveLessonProgress(__currentUser.uid, pct);
+
               renderSidebar();
               await renderProgress();
               pill(true);
+
+              // ✅ update next button to "Next Lesson" when last part is completed
+              renderPart();
             } else {
               result.textContent = `Score: ${score}% — Not passed (needs ${PASSING}%)`;
               result.className = "text-sm font-extrabold text-red-600";
@@ -765,10 +785,25 @@
           partBody.innerHTML = p.html;
         }
 
-        pill(!!__lessonState?.partsDone?.[activePart]);
+        const done = !!__lessonState?.partsDone?.[activePart];
+        pill(done);
 
         prevBtn.disabled = activePart === 0;
-        nextBtn.disabled = activePart === parts.length - 1;
+
+        // ✅ CHANGE: if last part is completed, Next button becomes "Next Lesson" and goes to Lesson 4
+        const atLast = activePart === parts.length - 1;
+        const lastDone = !!__lessonState?.partsDone?.[parts.length - 1];
+
+        if (atLast && lastDone) {
+          nextBtn.disabled = false;
+          nextBtn.textContent = "Next Lesson →";
+          nextBtn.dataset.nextLesson = "1";
+        } else {
+          nextBtn.disabled = atLast;
+          nextBtn.textContent = "Next →";
+          nextBtn.dataset.nextLesson = "";
+        }
+
         prevBtn.classList.toggle("opacity-50", prevBtn.disabled);
         prevBtn.classList.toggle("cursor-not-allowed", prevBtn.disabled);
         nextBtn.classList.toggle("opacity-50", nextBtn.disabled);
@@ -788,12 +823,28 @@
       }
 
       prevBtn.addEventListener("click", async () => { if (activePart > 0) activePart--; await render(); });
-      nextBtn.addEventListener("click", async () => { if (activePart < parts.length - 1) activePart++; await render(); });
+
+      nextBtn.addEventListener("click", async () => {
+        // ✅ CHANGE: if ready for next lesson, go to Lesson 4
+        if (nextBtn.dataset.nextLesson === "1") {
+          window.location.href = "lesson-4.html";
+          return;
+        }
+
+        if (activePart < parts.length - 1) activePart++;
+        await render();
+      });
 
       completeBtn.addEventListener("click", async () => {
         if (!__lessonState) return;
         __lessonState.partsDone[activePart] = true;
-        if (__currentUser) await saveLessonState(__currentUser.uid, __lessonState);
+
+        if (__currentUser) {
+          await saveLessonState(__currentUser.uid, __lessonState);
+          const pct = computeProgressPct(__lessonState);
+          await saveLessonProgress(__currentUser.uid, pct);
+        }
+
         await render();
       });
 
@@ -815,9 +866,8 @@
           return;
         }
 
-
-      // Update activity for Admin Dashboard
-      try { await setDoc(doc(db, 'users', __currentUser.uid), { email: __currentUser.email || '', lastSeenAt: Date.now() }, { merge: true }); } catch (_) {}
+        // Update activity for Admin Dashboard
+        try { await setDoc(doc(db, 'users', __currentUser.uid), { email: __currentUser.email || '', lastSeenAt: Date.now() }, { merge: true }); } catch (_) {}
         // ✅ Show logged-in UI instantly
         __profile = null;
         applyAuthUI();
@@ -839,6 +889,13 @@
         applyAuthUI();
 
         __lessonState = lessonState;
+
+        // ✅ ensure /progress reflects current state on load (optional safe sync)
+        if (__currentUser) {
+          const pct = computeProgressPct(__lessonState);
+          await saveLessonProgress(__currentUser.uid, pct);
+        }
+
         await render();
       });
     </script>

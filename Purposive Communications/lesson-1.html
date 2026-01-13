@@ -789,7 +789,20 @@
       pill(done);
 
       prevBtn.disabled = activePart === 0;
-      nextBtn.disabled = activePart === parts.length - 1;
+
+      // ✅ CHANGE: if last part is completed, Next button becomes "Next Lesson" and goes to Lesson 2
+      const atLast = activePart === parts.length - 1;
+      const lastDone = !!state.partsDone[parts.length - 1];
+
+      if (atLast && lastDone) {
+        nextBtn.disabled = false;
+        nextBtn.textContent = "Next Lesson 2 →";
+        nextBtn.dataset.nextLesson = "1";
+      } else {
+        nextBtn.disabled = atLast;
+        nextBtn.textContent = "Next →";
+        nextBtn.dataset.nextLesson = "";
+      }
 
       prevBtn.classList.toggle("opacity-50", prevBtn.disabled);
       prevBtn.classList.toggle("cursor-not-allowed", prevBtn.disabled);
@@ -848,6 +861,12 @@
     });
 
     nextBtn.addEventListener("click", async () => {
+      // ✅ CHANGE: if ready for next lesson, go to Lesson 2
+      if (nextBtn.dataset.nextLesson === "1") {
+        window.location.href = "lesson-2.html";
+        return;
+      }
+
       if (activePart < parts.length - 1) activePart++;
       if (__lessonState) await render(__lessonState);
     });
