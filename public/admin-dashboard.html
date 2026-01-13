@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Purposive Communication | Admin Dashboard</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: "#E7F7F5",
+              100: "#CFF0EC",
+              200: "#9FE1D9",
+              300: "#6ED2C6",
+              400: "#3EC3B3",
+              500: "#13A89A",
+              600: "#0F877B",
+              700: "#0B665C",
+              800: "#07453E",
+              900: "#032420",
+            },
+          },
+          boxShadow: {
+            soft: "0 18px 45px rgba(2, 8, 23, 0.10)",
+            softer: "0 12px 30px rgba(2, 8, 23, 0.08)",
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    .page-bg{
+      background:
+        radial-gradient(1200px 500px at 10% -10%, rgba(19,168,154,0.16), transparent 55%),
+        radial-gradient(900px 450px at 100% 0%, rgba(19,168,154,0.12), transparent 50%),
+        #E7F7F5;
+    }
+    .nice-scroll::-webkit-scrollbar{ width: 10px; }
+    .nice-scroll::-webkit-scrollbar-thumb{ background: rgba(2,8,23,.15); border-radius: 999px; }
+    .nice-scroll::-webkit-scrollbar-track{ background: transparent; }
+  </style>
+</head>
+
+<body class="page-bg text-slate-800">
+  <div class="min-h-screen flex">
+    <!-- SIDEBAR -->
+    <aside class="hidden lg:flex w-72 shrink-0 flex-col bg-white/80 backdrop-blur border-r border-slate-100">
+      <div class="px-6 py-5 flex items-center gap-3 border-b border-slate-100">
+        <div class="h-11 w-11 rounded-xl bg-brand-500/10 ring-1 ring-black/5 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="h-6 w-6 text-brand-700" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a4 4 0 00-4 4v2a4 4 0 008 0v-2a4 4 0 00-4-4z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 20h12" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 20v-3m8 3v-3" />
+          </svg>
+        </div>
+        <div>
+          <p class="text-base font-extrabold text-slate-900 leading-tight">Purposive Communication</p>
+          <p class="text-xs text-slate-500 font-semibold">Admin Dashboard</p>
+        </div>
+      </div>
+
+      <nav class="px-4 py-4 flex-1" role="tablist" aria-label="Admin sections">
+        <button type="button" data-tab="approvals" role="tab" aria-controls="panel-approvals" aria-selected="true"
+          class="tab-btn w-full text-left flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold">
+          <span class="h-9 w-9 rounded-xl flex items-center justify-center">
+            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+            </svg>
+          </span>
+          Teacher Approvals
+          <span id="badgePending" class="ml-auto hidden rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-extrabold text-amber-800 ring-1 ring-black/5">0</span>
+        </button>
+
+        <button type="button" data-tab="teachers" role="tab" aria-controls="panel-teachers" aria-selected="false"
+          class="tab-btn mt-2 w-full text-left flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold">
+          <span class="h-9 w-9 rounded-xl flex items-center justify-center">
+            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          </span>
+          Teachers
+        </button>
+
+        <a href="teacher-dashboard.html" class="mt-2 block w-full text-left flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold hover:bg-slate-50">
+          <span class="h-9 w-9 rounded-xl flex items-center justify-center">
+            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 13h7V4H4v9zM13 20h7v-7h-7v7zM13 11h7V4h-7v7zM4 20h7v-5H4v5z" />
+            </svg>
+          </span>
+          Go to Teacher Dashboard
+        </a>
+      </nav>
+
+      <div class="mt-auto px-4 py-5 border-t border-slate-100">
+        <a href="#" id="logoutLink" class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-rose-600 hover:bg-rose-50">
+          <span class="h-9 w-9 rounded-xl bg-rose-50 ring-1 ring-black/5 flex items-center justify-center">
+            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10 17l5-5-5-5" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12H3" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21V3" />
+            </svg>
+          </span>
+          Logout
+        </a>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="flex-1 flex flex-col min-w-0">
+      <!-- TOP BAR -->
+      <header class="sticky top-0 z-40 bg-white/80 backdrop-blur border-b border-slate-100">
+        <div class="px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between gap-3">
+          <div class="flex items-center gap-3 min-w-0">
+            <button id="openSidebarBtn"
+              class="lg:hidden inline-flex h-11 w-11 items-center justify-center rounded-xl bg-slate-50 ring-1 ring-black/5 hover:bg-slate-100"
+              aria-label="Open menu" aria-controls="sidebarOverlay" aria-expanded="false">
+              <svg class="h-6 w-6 text-slate-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+
+            <div class="flex items-center gap-3 min-w-0">
+              <div class="hidden sm:flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 ring-1 ring-black/5">
+                <svg viewBox="0 0 24 24" class="h-6 w-6 text-brand-700" fill="none" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                </svg>
+              </div>
+              <div class="min-w-0">
+                <p class="text-lg font-extrabold text-slate-900 leading-tight truncate">Admin Dashboard</p>
+                <p class="text-xs text-slate-500 font-semibold -mt-0.5 truncate">Teacher approvals & management</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-4">
+            <div class="flex items-center gap-3">
+              <div class="h-11 w-11 rounded-full bg-brand-600 text-white font-extrabold flex items-center justify-center"><span id="adminAvatar">AD</span></div>
+              <div class="hidden sm:block">
+                <p class="text-sm font-extrabold text-slate-900 leading-tight"><span id="adminName">Admin</span></p>
+                <p class="text-xs text-slate-500 font-semibold -mt-0.5">Admin</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- TOAST -->
+      <div class="pointer-events-none fixed left-1/2 top-6 z-[9999] -translate-x-1/2">
+        <div id="toast" class="pointer-events-auto hidden rounded-2xl bg-white px-4 py-3 shadow-soft ring-1 ring-black/10">
+          <p id="toastText" class="text-sm font-extrabold text-slate-900">Done</p>
+          <p id="toastSub" class="text-xs font-semibold text-slate-600 mt-0.5">Updated.</p>
+        </div>
+      </div>
+
+      <!-- CONTENT -->
+      <main class="px-4 sm:px-6 lg:px-8 py-8 min-w-0 nice-scroll">
+
+        <!-- APPROVALS -->
+        <section id="panel-approvals" role="tabpanel" aria-label="Teacher approvals">
+          <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            <div class="rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-5 relative overflow-hidden">
+              <span class="absolute inset-y-0 left-0 w-1.5 bg-amber-500"></span>
+              <p class="text-sm font-semibold text-slate-500">Pending Teachers</p>
+              <p id="statPending" class="mt-2 text-3xl font-extrabold text-slate-900">0</p>
+            </div>
+
+            <div class="rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-5 relative overflow-hidden">
+              <span class="absolute inset-y-0 left-0 w-1.5 bg-emerald-500"></span>
+              <p class="text-sm font-semibold text-slate-500">Approved Teachers</p>
+              <p id="statApproved" class="mt-2 text-3xl font-extrabold text-slate-900">0</p>
+            </div>
+
+            <div class="rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-5 relative overflow-hidden">
+              <span class="absolute inset-y-0 left-0 w-1.5 bg-sky-500"></span>
+              <p class="text-sm font-semibold text-slate-500">Total Teachers</p>
+              <p id="statTotalTeachers" class="mt-2 text-3xl font-extrabold text-slate-900">0</p>
+            </div>
+
+            <div class="rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-5 relative overflow-hidden">
+              <span class="absolute inset-y-0 left-0 w-1.5 bg-brand-500"></span>
+              <p class="text-sm font-semibold text-slate-500">Last Sync</p>
+              <p id="statSync" class="mt-2 text-lg font-extrabold text-slate-900">—</p>
+            </div>
+          </div>
+
+          <div class="mt-6 rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-6">
+            <div class="flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
+              <div>
+                <h2 class="text-xl font-extrabold text-slate-900">Pending Teacher Approvals</h2>
+                <p class="mt-1 text-sm text-slate-600">Approve teacher accounts so their dashboard unlocks.</p>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <div class="relative">
+                  <input id="searchPending" type="text" placeholder="Search name or email…"
+                    class="w-full sm:w-72 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-800 shadow-sm outline-none focus:ring-4 focus:ring-brand-200" />
+                  <svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35" />
+                    <circle cx="10" cy="10" r="6" />
+                  </svg>
+                </div>
+                <button id="refreshBtn"
+                  class="inline-flex items-center justify-center rounded-xl bg-slate-100 px-4 py-2.5 text-sm font-extrabold text-slate-800 hover:bg-slate-200">
+                  Refresh
+                </button>
+              </div>
+            </div>
+
+            <div id="pendingEmpty" class="hidden mt-6 rounded-2xl bg-slate-50 ring-1 ring-black/5 p-6 text-center">
+              <p class="text-sm font-extrabold text-slate-900">No pending teachers</p>
+              <p class="mt-1 text-sm text-slate-600">You're all caught up.</p>
+            </div>
+
+            <div id="pendingList" class="mt-6 grid gap-4"></div>
+          </div>
+        </section>
+
+        <!-- TEACHERS -->
+        <section id="panel-teachers" class="hidden" role="tabpanel" aria-label="Teachers">
+          <div class="rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-6">
+            <div class="flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
+              <div>
+                <h2 class="text-xl font-extrabold text-slate-900">Teachers</h2>
+                <p class="mt-1 text-sm text-slate-600">View approved/pending teacher accounts.</p>
+              </div>
+              <div class="relative">
+                <input id="searchTeachers" type="text" placeholder="Search…"
+                  class="w-full sm:w-72 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-800 shadow-sm outline-none focus:ring-4 focus:ring-brand-200" />
+                <svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35" />
+                  <circle cx="10" cy="10" r="6" />
+                </svg>
+              </div>
+            </div>
+
+            <div id="teachersList" class="mt-6 grid gap-3"></div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- MOBILE SIDEBAR OVERLAY -->
+  <div id="sidebarOverlay" class="lg:hidden fixed inset-0 z-50 hidden">
+    <div id="sidebarBackdrop" class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"></div>
+    <div class="absolute left-0 top-0 bottom-0 w-80 max-w-[88vw] bg-white shadow-soft ring-1 ring-black/10">
+      <div class="px-6 py-5 flex items-center justify-between border-b border-slate-100">
+        <div>
+          <p class="text-base font-extrabold text-slate-900 leading-tight">Admin Dashboard</p>
+          <p class="text-xs text-slate-500 font-semibold">Menu</p>
+        </div>
+        <button id="closeSidebarBtn" class="h-11 w-11 rounded-xl bg-slate-50 ring-1 ring-black/5 hover:bg-slate-100 inline-flex items-center justify-center" aria-label="Close menu">
+          <svg class="h-6 w-6 text-slate-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="p-4">
+        <button type="button" data-tab="approvals" class="m-tab w-full text-left rounded-xl px-4 py-3 text-sm font-extrabold hover:bg-slate-50">
+          Teacher Approvals <span id="mBadgePending" class="ml-2 hidden rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-extrabold text-amber-800 ring-1 ring-black/5">0</span>
+        </button>
+        <button type="button" data-tab="teachers" class="m-tab mt-2 w-full text-left rounded-xl px-4 py-3 text-sm font-extrabold hover:bg-slate-50">
+          Teachers
+        </button>
+        <a href="teacher-dashboard.html" class="mt-2 block w-full text-left rounded-xl px-4 py-3 text-sm font-extrabold hover:bg-slate-50">
+          Go to Teacher Dashboard
+        </a>
+
+        <a href="#" id="mLogoutLink" class="mt-4 block w-full text-left rounded-xl px-4 py-3 text-sm font-extrabold text-rose-600 hover:bg-rose-50">
+          Logout
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { auth, db } from "./firebase.js";
+    import { onAuthStateChanged, signOut as firebaseSignOut, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+    import { collection, query, where, doc, getDoc, onSnapshot, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+    // Session-only persistence
+    try { await setPersistence(auth, browserSessionPersistence); } catch (_) {}
+
+    // =============================
+    // Auth gate: ADMIN only
+    // =============================
+    async function requireAdmin() {
+      return await new Promise((resolve) => {
+        const unsub = onAuthStateChanged(auth, async (user) => {
+          if (!user) {
+            window.location.href = "login.html?msg=" + encodeURIComponent("Please log in with an admin account.");
+            return;
+          }
+
+          let profile = {};
+          try {
+            const snap = await getDoc(doc(db, "users", user.uid));
+            profile = snap.exists() ? (snap.data() || {}) : {};
+          } catch (_) {}
+
+          const role = String(profile.role || "student").toLowerCase().trim();
+          if (role !== "admin") {
+            // Route non-admins away
+            if (role === "teacher") window.location.href = "teacher-dashboard.html";
+            else window.location.href = "index.html";
+            return;
+          }
+
+          // Header UI
+          const name = String(profile.fullName || user.displayName || "Admin").trim() || "Admin";
+          const email = String(profile.email || user.email || "").trim();
+          const initials = (name.split(/\\s+/).filter(Boolean).slice(0,2).map(s => s[0]).join("") || (email[0] || "A")).toUpperCase();
+          const __n = document.getElementById("adminName"); if (__n) __n.textContent = name;
+          const __a = document.getElementById("adminAvatar"); if (__a) __a.textContent = initials;
+
+          // Logout
+          const doLogout = async (e) => {
+            e?.preventDefault?.();
+            try { await firebaseSignOut(auth); } catch (_) {}
+            window.location.href = "login.html";
+          };
+          document.getElementById("logoutLink")?.addEventListener("click", doLogout);
+          document.getElementById("mLogoutLink")?.addEventListener("click", doLogout);
+
+          unsub();
+          resolve({ user, profile });
+        });
+      });
+    }
+
+    await requireAdmin();
+
+    // =============================
+    // Tabs (desktop + mobile)
+    // =============================
+    const panels = {
+      approvals: document.getElementById("panel-approvals"),
+      teachers: document.getElementById("panel-teachers"),
+    };
+
+    function setActiveTab(name) {
+      for (const [k, el] of Object.entries(panels)) {
+        el?.classList.toggle("hidden", k !== name);
+      }
+
+      document.querySelectorAll(".tab-btn").forEach((b) => {
+        const active = b.getAttribute("data-tab") === name;
+        b.classList.toggle("bg-brand-50", active);
+        b.classList.toggle("text-brand-800", active);
+        b.classList.toggle("ring-1", active);
+        b.classList.toggle("ring-black/5", active);
+        b.setAttribute("aria-selected", active ? "true" : "false");
+      });
+
+      document.querySelectorAll(".m-tab").forEach((b) => {
+        const active = b.getAttribute("data-tab") === name;
+        b.classList.toggle("bg-brand-50", active);
+        b.classList.toggle("text-brand-800", active);
+      });
+    }
+
+    document.querySelectorAll(".tab-btn").forEach((b) => b.addEventListener("click", () => setActiveTab(b.getAttribute("data-tab"))));
+    document.querySelectorAll(".m-tab").forEach((b) => b.addEventListener("click", () => {
+      setActiveTab(b.getAttribute("data-tab"));
+      closeSidebar();
+    }));
+    setActiveTab("approvals");
+
+    // Mobile sidebar
+    const sidebarOverlay = document.getElementById("sidebarOverlay");
+    const openSidebarBtn = document.getElementById("openSidebarBtn");
+    const closeSidebarBtn = document.getElementById("closeSidebarBtn");
+    const sidebarBackdrop = document.getElementById("sidebarBackdrop");
+
+    function openSidebar() {
+      sidebarOverlay?.classList.remove("hidden");
+      openSidebarBtn?.setAttribute("aria-expanded", "true");
+      document.body.classList.add("overflow-hidden");
+    }
+    function closeSidebar() {
+      sidebarOverlay?.classList.add("hidden");
+      openSidebarBtn?.setAttribute("aria-expanded", "false");
+      document.body.classList.remove("overflow-hidden");
+    }
+    openSidebarBtn?.addEventListener("click", openSidebar);
+    closeSidebarBtn?.addEventListener("click", closeSidebar);
+    sidebarBackdrop?.addEventListener("click", closeSidebar);
+
+    // =============================
+    // Toast
+    // =============================
+    const toast = document.getElementById("toast");
+    const toastText = document.getElementById("toastText");
+    const toastSub = document.getElementById("toastSub");
+    let toastTimer = null;
+
+    function showToast(title, sub) {
+      if (!toast) return;
+      if (toastText) toastText.textContent = title || "Done";
+      if (toastSub) toastSub.textContent = sub || "";
+      toast.classList.remove("hidden");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.add("hidden"), 2500);
+    }
+
+    // =============================
+    // Data & rendering
+    // =============================
+    const pendingList = document.getElementById("pendingList");
+    const pendingEmpty = document.getElementById("pendingEmpty");
+    const teachersList = document.getElementById("teachersList");
+
+    const statPending = document.getElementById("statPending");
+    const statApproved = document.getElementById("statApproved");
+    const statTotalTeachers = document.getElementById("statTotalTeachers");
+    const statSync = document.getElementById("statSync");
+
+    const badgePending = document.getElementById("badgePending");
+    const mBadgePending = document.getElementById("mBadgePending");
+
+    const searchPending = document.getElementById("searchPending");
+    const searchTeachers = document.getElementById("searchTeachers");
+    const refreshBtn = document.getElementById("refreshBtn");
+
+    function tsToText(ts) {
+      if (!ts) return "—";
+      // Firestore Timestamp: { seconds, nanoseconds }
+      if (typeof ts === "object" && ts.seconds) {
+        const d = new Date(ts.seconds * 1000);
+        return d.toLocaleString();
+      }
+      if (typeof ts === "number") return new Date(ts).toLocaleString();
+      return String(ts);
+    }
+
+    function norm(s) { return String(s || "").toLowerCase().trim(); }
+
+    function teacherCard(t, { showActions }) {
+      const name = String(t.fullName || "Teacher").trim() || "Teacher";
+      const email = String(t.email || "").trim();
+      const dept = String(t.department || "").trim();
+      const tid = String(t.teacherId || "").trim();
+      const status = String(t.approvalStatus || (t.approved ? "approved" : "pending")).toLowerCase().trim();
+      const appliedAt = tsToText(t.appliedAt || t.createdAt);
+      const uid = t.__id;
+
+      const pill =
+        status === "approved"
+          ? `<span class="rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-extrabold text-emerald-800 ring-1 ring-black/5">Approved</span>`
+          : status === "rejected"
+            ? `<span class="rounded-full bg-rose-100 px-2 py-0.5 text-[11px] font-extrabold text-rose-800 ring-1 ring-black/5">Rejected</span>`
+            : `<span class="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-extrabold text-amber-800 ring-1 ring-black/5">Pending</span>`;
+
+      return `
+        <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-5">
+          <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+            <div class="min-w-0">
+              <div class="flex items-center gap-2 flex-wrap">
+                <p class="text-sm font-extrabold text-slate-900">${escapeHtml(name)}</p>
+                ${pill}
+              </div>
+              <p class="mt-1 text-sm text-slate-700 break-all">${escapeHtml(email)}</p>
+              <div class="mt-3 grid gap-1 text-xs font-semibold text-slate-600">
+                <p><span class="text-slate-500">Teacher ID:</span> ${escapeHtml(tid || "—")}</p>
+                <p><span class="text-slate-500">Department:</span> ${escapeHtml(dept || "—")}</p>
+                <p><span class="text-slate-500">Applied:</span> ${escapeHtml(appliedAt)}</p>
+              </div>
+            </div>
+
+            ${showActions ? `
+              <div class="flex sm:flex-col gap-2 sm:items-end">
+                <button data-approve="${uid}"
+                  class="inline-flex items-center justify-center rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-extrabold text-white shadow-softer hover:bg-emerald-700 focus:outline-none focus:ring-4 focus:ring-emerald-200">
+                  Approve
+                </button>
+                <button data-reject="${uid}"
+                  class="inline-flex items-center justify-center rounded-xl bg-rose-600 px-4 py-2.5 text-sm font-extrabold text-white shadow-softer hover:bg-rose-700 focus:outline-none focus:ring-4 focus:ring-rose-200">
+                  Reject
+                </button>
+              </div>
+            ` : ``}
+          </div>
+        </div>
+      `;
+    }
+
+    function escapeHtml(s) {
+      return String(s ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    let allTeachers = [];
+
+    function applyFiltersAndRender() {
+      const qPending = norm(searchPending?.value);
+      const qTeachers = norm(searchTeachers?.value);
+
+      const pending = allTeachers.filter(t => !t.approved && norm(t.approvalStatus || "pending") !== "approved");
+      const approved = allTeachers.filter(t => t.approved || norm(t.approvalStatus) === "approved");
+
+      // Stats
+      if (statPending) statPending.textContent = String(pending.length);
+      if (statApproved) statApproved.textContent = String(approved.length);
+      if (statTotalTeachers) statTotalTeachers.textContent = String(allTeachers.length);
+      if (statSync) statSync.textContent = new Date().toLocaleString();
+
+      // Badges
+      const badgeText = String(pending.length);
+      if (badgePending) {
+        badgePending.textContent = badgeText;
+        badgePending.classList.toggle("hidden", pending.length === 0);
+      }
+      if (mBadgePending) {
+        mBadgePending.textContent = badgeText;
+        mBadgePending.classList.toggle("hidden", pending.length === 0);
+      }
+
+      // Pending list
+      const pendingFiltered = pending.filter(t => {
+        const blob = norm(`${t.fullName || ""} ${t.email || ""} ${t.department || ""} ${t.teacherId || ""}`);
+        return !qPending || blob.includes(qPending);
+      });
+
+      if (pendingList) pendingList.innerHTML = pendingFiltered.map(t => teacherCard(t, { showActions: true })).join("");
+      if (pendingEmpty) pendingEmpty.classList.toggle("hidden", pendingFiltered.length !== 0);
+
+      // Teachers list
+      const allFiltered = allTeachers.filter(t => {
+        const blob = norm(`${t.fullName || ""} ${t.email || ""} ${t.department || ""} ${t.teacherId || ""} ${t.approvalStatus || ""}`);
+        return !qTeachers || blob.includes(qTeachers);
+      });
+
+      if (teachersList) {
+        teachersList.innerHTML = allFiltered
+          .sort((a,b) => norm(a.fullName).localeCompare(norm(b.fullName)))
+          .map(t => teacherCard(t, { showActions: false }))
+          .join("");
+      }
+
+      wireActionButtons();
+    }
+
+    async function approveTeacher(uid) {
+      const ref = doc(db, "users", uid);
+      await updateDoc(ref, {
+        approved: true,
+        approvalStatus: "approved",
+        approvedAt: serverTimestamp(),
+        approvedBy: auth.currentUser?.uid || null
+      });
+      showToast("Approved", "Teacher account has been approved.");
+    }
+
+    async function rejectTeacher(uid) {
+      const ref = doc(db, "users", uid);
+      await updateDoc(ref, {
+        approved: false,
+        approvalStatus: "rejected",
+        rejectedAt: serverTimestamp(),
+        rejectedBy: auth.currentUser?.uid || null
+      });
+      showToast("Rejected", "Teacher account has been rejected.");
+    }
+
+    function wireActionButtons() {
+      document.querySelectorAll("[data-approve]").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const uid = btn.getAttribute("data-approve");
+          if (!uid) return;
+          if (!confirm("Approve this teacher account?")) return;
+          try { await approveTeacher(uid); } catch (e) { alert(e?.message || "Approve failed."); }
+        });
+      });
+
+      document.querySelectorAll("[data-reject]").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const uid = btn.getAttribute("data-reject");
+          if (!uid) return;
+          if (!confirm("Reject this teacher account?")) return;
+          try { await rejectTeacher(uid); } catch (e) { alert(e?.message || "Reject failed."); }
+        });
+      });
+    }
+
+    searchPending?.addEventListener("input", applyFiltersAndRender);
+    searchTeachers?.addEventListener("input", applyFiltersAndRender);
+    refreshBtn?.addEventListener("click", () => applyFiltersAndRender());
+
+    // Listen to teachers collection
+    const teachersQ = query(collection(db, "users"), where("role", "==", "teacher"));
+    onSnapshot(teachersQ, (snap) => {
+      const rows = [];
+      snap.forEach(docSnap => {
+        const d = docSnap.data() || {};
+        rows.push({ ...d, __id: docSnap.id });
+      });
+      allTeachers = rows;
+      applyFiltersAndRender();
+    }, (err) => {
+      console.error(err);
+      alert(err?.message || "Failed to load teachers. Check Firestore rules / indexes.");
+    });
+  </script>
+</body>
+</html>

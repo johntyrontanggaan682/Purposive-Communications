@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Purposive Communication | Admin Dashboard</title>
+  <title>Purposive Communication | Teacher Dashboard</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -59,12 +59,12 @@
         </div>
         <div>
           <p class="text-base font-extrabold text-slate-900 leading-tight">Purposive Communication</p>
-          <p class="text-xs text-slate-500 font-semibold">Admin Dashboard</p>
+          <p class="text-xs text-slate-500 font-semibold">Teacher Dashboard</p>
         </div>
       </div>
 
       <!-- Tabs -->
-      <nav class="px-4 py-4 flex-1" role="tablist" aria-label="Admin sections">
+      <nav class="px-4 py-4 flex-1" role="tablist" aria-label="Teacher sections">
         <button type="button" data-tab="dashboard" role="tab" aria-controls="panel-dashboard" aria-selected="true"
           class="tab-btn w-full text-left flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold">
           <span class="h-9 w-9 rounded-xl flex items-center justify-center">
@@ -85,6 +85,19 @@
           </span>
           Students
         </button>
+
+        <button type="button" data-tab="codes" role="tab" aria-controls="panel-codes" aria-selected="false"
+          class="tab-btn mt-2 w-full text-left flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold">
+          <span class="h-9 w-9 rounded-xl flex items-center justify-center">
+            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M7 7h10v10H7z" />
+            </svg>
+          </span>
+          Section Codes
+        </button>
+
 
         <button type="button" data-tab="lessons" role="tab" aria-controls="panel-lessons" aria-selected="false"
           class="tab-btn mt-2 w-full text-left flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold">
@@ -134,7 +147,7 @@
               </div>
               <div class="min-w-0">
                 <p class="text-lg font-extrabold text-slate-900 leading-tight truncate">Purposive Communication</p>
-                <p id="topSubtitle" class="text-xs text-slate-500 font-semibold -mt-0.5 truncate">Admin Dashboard</p>
+                <p id="topSubtitle" class="text-xs text-slate-500 font-semibold -mt-0.5 truncate">Teacher Dashboard</p>
               </div>
             </div>
           </div>
@@ -144,7 +157,7 @@
               <div class="h-11 w-11 rounded-full bg-brand-600 text-white font-extrabold flex items-center justify-center"><span id="adminAvatar">AD</span></div>
               <div class="hidden sm:block">
                 <p class="text-sm font-extrabold text-slate-900 leading-tight"><span id="adminName">Admin User</span></p>
-                <p class="text-xs text-slate-500 font-semibold -mt-0.5"><span id="adminRoleLabel">Administrator</span></p>
+                <p class="text-xs text-slate-500 font-semibold -mt-0.5"><span id="adminRoleLabel">Teacher</span></p>
               </div>
             </div>
           </div>
@@ -184,14 +197,14 @@
 
           <section class="mt-6 grid gap-6 lg:grid-cols-3">
             <div class="lg:col-span-2 rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-6">
-              <h2 class="text-xl font-extrabold text-slate-900">Admin Action Queue</h2>
+              <h2 class="text-xl font-extrabold text-slate-900">Teacher Action Queue</h2>
               <p class="mt-1 text-sm text-slate-600">Prioritize work from assessment workflow + engagement signals.</p>
 
               <div class="mt-5 grid gap-4 sm:grid-cols-2">
                 <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-5">
                   <p class="text-xs font-extrabold text-slate-500 uppercase">Needs Review</p>
                   <p class="mt-2 text-4xl font-extrabold text-slate-900" id="dqNeedsReview">0</p>
-                  <p class="mt-1 text-sm text-slate-600">Submitted → waiting for admin</p>
+                  <p class="mt-1 text-sm text-slate-600">Submitted → waiting for teacher</p>
                 </div>
                 <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-5">
                   <p class="text-xs font-extrabold text-slate-500 uppercase">Needs Revision</p>
@@ -296,7 +309,138 @@
           </section>
         </section>
 
-        <!-- LESSONS PROGRESS -->
+
+        
+<!-- SECTION CODES -->
+<section id="panel-codes" role="tabpanel" aria-label="Section Codes" hidden>
+  <div class="rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-6">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+      <div>
+        <h2 class="text-xl font-extrabold text-slate-900">Class Codes</h2>
+        <p class="mt-1 text-sm text-slate-600">
+          Add a class (Course • Year • Section) and generate a unique 5-digit code. Students must enter the matching details + code during registration.
+        </p>
+      </div>
+
+      <button id="addSectionBtn"
+        class="inline-flex items-center justify-center rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-extrabold text-white shadow-softer hover:bg-brand-700">
+        Add a Section
+      </button>
+    </div>
+
+    <div class="mt-6 overflow-hidden rounded-2xl ring-1 ring-black/5">
+      <div class="bg-slate-50 px-4 py-3 flex items-center justify-between">
+        <p class="text-xs font-extrabold text-slate-600 uppercase">Your sections</p>
+        <button id="refreshCodesBtn" class="text-xs font-extrabold text-brand-700 hover:text-brand-800">Refresh</button>
+      </div>
+
+      <div class="nice-scroll overflow-x-auto">
+        <table class="min-w-full text-left text-sm">
+          <thead class="bg-white sticky top-0 z-10">
+            <tr class="text-[11px] font-extrabold uppercase tracking-wide text-slate-500 border-b border-slate-100">
+              <th class="py-3 px-4">Course</th>
+              <th class="py-3 px-4">Year</th>
+              <th class="py-3 px-4">Section</th>
+              <th class="py-3 px-4">Code</th>
+              <th class="py-3 px-4">Updated</th>
+              <th class="py-3 px-4 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="codesTbody" class="divide-y divide-slate-100 bg-white"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="mt-6 rounded-2xl bg-white ring-1 ring-black/5 p-4">
+      <p class="text-xs text-slate-600 font-semibold">
+        Tip: Re-generating a code will make the old code invalid for new student registrations.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Add Section Modal -->
+<div id="addSectionModal" class="fixed inset-0 z-[70] hidden" role="dialog" aria-modal="true" aria-label="Add section">
+  <div class="absolute inset-0 bg-black/55"></div>
+
+  <div class="relative mx-auto flex min-h-full max-w-lg items-center justify-center px-4 py-10">
+    <div class="w-full rounded-3xl bg-white shadow-soft ring-1 ring-black/10 overflow-hidden">
+      <div class="bg-gradient-to-r from-brand-600 to-brand-500 px-6 py-5 flex items-center justify-between">
+        <div>
+          <p class="text-lg font-extrabold text-white">Add a Section</p>
+          <p class="text-xs font-semibold text-white/85 mt-0.5">Create a class group and generate its code.</p>
+        </div>
+        <button id="closeAddSection" class="h-10 w-10 rounded-xl bg-white/15 ring-1 ring-white/15 text-white flex items-center justify-center hover:bg-white/20" aria-label="Close">
+          <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <form id="addSectionForm" class="p-6 space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700">Course/Program</label>
+          <div class="mt-2 relative flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2.5 shadow-sm focus-within:ring-2 focus-within:ring-brand-200">
+            <select id="secCourse" class="w-full appearance-none bg-transparent text-sm text-slate-800 outline-none pr-8" required>
+              <option value="" selected disabled>Select course</option>
+              <option>BindTech</option>
+              <option>BIT-CPT</option>
+              <option>BTVTED-CP</option>
+              <option>BTVTED-FSM</option>
+              <option>BTVTED-CT</option>
+              <option>BTVTED-ELX</option>
+              <option>BTVTED-ELT</option>
+              <option>BTVTED-AT</option>
+              <option>BTVTED-MT</option>
+            </select>
+            <svg viewBox="0 0 24 24" class="pointer-events-none absolute right-3 h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700">Year Level</label>
+            <div class="mt-2 relative flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2.5 shadow-sm focus-within:ring-2 focus-within:ring-brand-200">
+              <select id="secYear" class="w-full appearance-none bg-transparent text-sm text-slate-800 outline-none pr-8" required>
+                <option value="" selected disabled>Select year</option>
+                <option>1st Year</option>
+                <option>2nd Year</option>
+                <option>3rd Year</option>
+                <option>4th Year</option>
+              </select>
+              <svg viewBox="0 0 24 24" class="pointer-events-none absolute right-3 h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700">Section</label>
+            <div class="mt-2 flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2.5 shadow-sm focus-within:ring-2 focus-within:ring-brand-200">
+              <input id="secSection" type="text" placeholder="e.g., A, B, 1A"
+                class="w-full bg-transparent text-sm text-slate-800 placeholder:text-slate-400 outline-none" required />
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-2">
+          <button type="button" id="cancelAddSection"
+            class="rounded-xl bg-slate-100 px-4 py-2.5 text-sm font-extrabold text-slate-800 hover:bg-slate-200">
+            Cancel
+          </button>
+          <button id="saveAddSection" type="submit"
+            class="rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-extrabold text-white hover:bg-brand-700">
+            Create & Generate Code
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- LESSONS PROGRESS -->
         <section id="panel-lessons" role="tabpanel" aria-label="Lessons Progress" hidden>
           <section class="rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-6">
             <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
@@ -332,7 +476,7 @@
           </div>
           <div>
             <p class="text-sm font-extrabold text-slate-900 leading-tight">Purposive Communication</p>
-            <p class="text-xs text-slate-500 font-semibold -mt-0.5">Admin Dashboard</p>
+            <p class="text-xs text-slate-500 font-semibold -mt-0.5">Teacher Dashboard</p>
           </div>
         </div>
         <button id="closeSidebarBtn" class="h-10 w-10 rounded-xl bg-slate-50 ring-1 ring-black/5 flex items-center justify-center hover:bg-slate-100" aria-label="Close menu">
@@ -342,7 +486,7 @@
         </button>
       </div>
 
-      <div class="p-4" role="tablist" aria-label="Admin sections (mobile)">
+      <div class="p-4" role="tablist" aria-label="Teacher sections (mobile)">
         <div class="space-y-2">
           <button type="button" data-tab="dashboard" role="tab" aria-controls="panel-dashboard" aria-selected="true"
             class="tab-btn-mobile w-full text-left flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold">
@@ -352,6 +496,19 @@
             class="tab-btn-mobile w-full text-left flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold">
             Students
           </button>
+
+          <button type="button" data-tab="codes" role="tab" aria-controls="panel-codes" aria-selected="false"
+            class="tab-btn-mobile w-full text-left flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold">
+            <span class="h-9 w-9 rounded-xl flex items-center justify-center">
+              <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M7 7h10v10H7z" />
+              </svg>
+            </span>
+            Section Codes
+          </button>
+
           <button type="button" data-tab="lessons" role="tab" aria-controls="panel-lessons" aria-selected="false"
             class="tab-btn-mobile w-full text-left flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold">
             Lessons Progress
@@ -464,7 +621,7 @@
           </div>
 
           <h3 class="mt-10 text-lg font-extrabold text-slate-900">Lesson-by-Lesson (State + Progress)</h3>
-          <p class="mt-1 text-sm text-slate-600">State helps admins understand if student is progressing, blocked, or done.</p>
+          <p class="mt-1 text-sm text-slate-600">State helps teachers understand if student is progressing, blocked, or done.</p>
           <div id="lessonProgressList" class="mt-4 space-y-4"></div>
         </div>
       </div>
@@ -527,7 +684,7 @@
 
                 <div>
                   <p class="text-xs font-extrabold text-slate-400 uppercase">Reviewer</p>
-                  <input id="sReviewer" type="text" placeholder="Admin name"
+                  <input id="sReviewer" type="text" placeholder="Teacher name"
                     class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:ring-4 focus:ring-brand-200" />
                 </div>
                 <div>
@@ -625,56 +782,373 @@
     </div>
   </div>
 
+
+  <!-- APPROVAL LOCK (shown for teacher accounts until approved) -->
+  <div id="approvalLock" class="hidden fixed inset-0 z-[999]">
+    <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"></div>
+    <div class="relative min-h-full flex items-center justify-center p-4">
+      <div class="w-full max-w-md rounded-3xl bg-white shadow-soft ring-1 ring-black/10 p-7 text-center">
+        <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-50 ring-1 ring-black/5">
+          <svg viewBox="0 0 24 24" class="h-7 w-7 text-brand-700" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5 9 6.343 9 8s1.343 3 3 3z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M7 11v-1a5 5 0 0110 0v1" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M7 11h10v8H7z" />
+          </svg>
+        </div>
+        <h2 class="mt-4 text-xl font-extrabold text-slate-900">Teacher Account Pending Approval</h2>
+        <p class="mt-2 text-sm text-slate-600">
+          Your dashboard is locked until an admin approves your teacher account.
+        </p>
+        <div class="mt-6 grid grid-cols-2 gap-3">
+          <button id="lockRefreshBtn"
+            class="inline-flex items-center justify-center rounded-xl bg-slate-100 px-4 py-2.5 text-sm font-extrabold text-slate-800 hover:bg-slate-200">
+            Refresh
+          </button>
+          <button id="lockSignOutBtn"
+            class="inline-flex items-center justify-center rounded-xl bg-rose-600 px-4 py-2.5 text-sm font-extrabold text-white shadow-softer hover:bg-rose-700 focus:outline-none focus:ring-4 focus:ring-rose-200">
+            Sign out
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script type="module">
     import { auth, db } from "./firebase.js";
-    import { onAuthStateChanged, signOut as firebaseSignOut, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-    import { collection, getDocs, query, where, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+    import { onAuthStateChanged, signOut as firebaseSignOut, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+    import { collection, getDocs, query, where, doc, getDoc, onSnapshot, setDoc, serverTimestamp, limit } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
     // Force session-only auth (no localStorage)
-    try { await setPersistence(auth, browserLocalPersistence); } catch (_) {}
+    try { await setPersistence(auth, browserSessionPersistence); } catch (_) {}
 
-    async function requireAdmin() {
-      return await new Promise((resolve) => {
-        const unsub = onAuthStateChanged(auth, async (user) => {
-          if (!user) {
-            window.location.href = 'login.html?msg=' + encodeURIComponent('Please log in with an admin account.');
-            return;
-          }
-          let profile = {};
+    function isApproved(profile) {
+  const status = String(profile?.approvalStatus || "").toLowerCase().trim();
+  return profile?.approved === true || status === "approved";
+}
+
+function showApprovalLock(show) {
+  const lock = document.getElementById("approvalLock");
+  lock?.classList.toggle("hidden", !show);
+  document.body.classList.toggle("overflow-hidden", show);
+}
+
+async function requireTeacherOrAdmin() {
+  return await new Promise((resolve) => {
+    const unsub = onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = 'login.html?msg=' + encodeURIComponent('Please log in.');
+        return;
+      }
+
+      const userRef = doc(db, 'users', user.uid);
+      let profile = {};
+      try {
+        const snap = await getDoc(userRef);
+        profile = snap.exists() ? (snap.data() || {}) : {};
+      } catch (_) {}
+
+      const role = String(profile.role || 'student').toLowerCase().trim();
+      if (role !== 'teacher' && role !== 'admin') {
+        window.location.href = 'index.html';
+        return;
+      }
+
+      // Header UI
+      const nameFallback = role === "admin" ? "Admin" : "Teacher";
+      const name = String(profile.fullName || user.displayName || nameFallback).trim() || nameFallback;
+      const email = String(profile.email || user.email || '').trim();
+      const initials =
+        (name.split(/\s+/).filter(Boolean).slice(0, 2).map(s => s[0]).join('') || (email[0] || 'T'))
+          .toUpperCase();
+
+      const __nameEl = document.getElementById('adminName'); if (__nameEl) __nameEl.textContent = name;
+      const __avEl = document.getElementById('adminAvatar'); if (__avEl) __avEl.textContent = initials;
+
+      const roleLabelEl = document.getElementById('adminRoleLabel');
+      if (roleLabelEl) roleLabelEl.textContent = role === "admin" ? "Admin" : "Teacher";
+
+      // Logout
+      document.getElementById('logoutLink')?.addEventListener('click', async (e) => {
+        e.preventDefault();
+        try { await firebaseSignOut(auth); } catch (_) {}
+        window.location.href = 'login.html';
+      });
+
+      // Approval lock (teachers only) + live updates
+      const applyLock = (p) => {
+        const r = String(p?.role || role).toLowerCase().trim();
+        if (r !== "teacher") {
+          showApprovalLock(false);
+          if (roleLabelEl) roleLabelEl.textContent = (role === "admin") ? "Admin" : "Teacher";
+          return;
+        }
+
+        const ok = isApproved(p);
+        showApprovalLock(!ok);
+        if (roleLabelEl) roleLabelEl.textContent = ok ? "Teacher" : "Teacher (Pending)";
+      };
+
+      applyLock(profile);
+
+      try {
+        onSnapshot(userRef, (snap) => {
+          const p = snap.exists() ? (snap.data() || {}) : {};
+          applyLock(p);
+        });
+      } catch (_) {}
+
+      // Lock actions
+      document.getElementById("lockSignOutBtn")?.addEventListener("click", async () => {
+        try { await firebaseSignOut(auth); } catch (_) {}
+        window.location.href = "login.html";
+      });
+      document.getElementById("lockRefreshBtn")?.addEventListener("click", () => {
+        window.location.reload();
+      });
+
+      unsub();
+      resolve({ user, profile, role });
+    });
+  });
+}
+
+const __ctx = await requireTeacherOrAdmin();
+
+
+const __teacherUid = __ctx?.user?.uid || "";
+const __teacherName = String(__ctx?.profile?.fullName || __ctx?.user?.displayName || __ctx?.user?.email || "Teacher").trim();
+
+function random5DigitCode() {
+  // 10000..99999
+  return String(Math.floor(10000 + Math.random() * 90000));
+}
+
+function slug(v) {
+  return String(v || "")
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9\-]/g, "");
+}
+
+function fmtTs(ts) {
+  try {
+    if (!ts) return "—";
+    const d = ts.toDate ? ts.toDate() : (ts.seconds ? new Date(ts.seconds * 1000) : new Date(ts));
+    return d.toLocaleString();
+  } catch { return "—"; }
+}
+
+async function generateUniqueCode(maxTries = 20) {
+  for (let i = 0; i < maxTries; i++) {
+    const c = random5DigitCode();
+    const q = query(collection(db, "classCodes"), where("code", "==", c), where("active", "==", true), limit(1));
+    const snap = await getDocs(q);
+    if (snap.empty) return c;
+  }
+  throw new Error("Could not generate a unique code. Please try again.");
+}
+
+function classDocId(course, yearLevel, section) {
+  const crs = slug(course);
+  const yr = slug(yearLevel);
+  const sec = slug(section);
+  return `${__teacherUid}_${crs}_${yr}_${sec}`;
+}
+
+async function upsertClassCode({ course, yearLevel, section }, forceNew = true) {
+  const crs = String(course || "").trim();
+  const yr = String(yearLevel || "").trim();
+  const sec = String(section || "").trim();
+
+  if (!crs) throw new Error("Course is required.");
+  if (!yr) throw new Error("Year level is required.");
+  if (!sec) throw new Error("Section is required.");
+
+  const id = classDocId(crs, yr, sec);
+  const codeRef = doc(db, "classCodes", id);
+
+  const code = await generateUniqueCode();
+
+  await setDoc(codeRef, {
+    teacherUid: __teacherUid,
+    teacherName: __teacherName,
+    course: crs,
+    yearLevel: yr,
+    section: sec,
+    code,
+    active: true,
+    updatedAt: serverTimestamp(),
+    createdAt: serverTimestamp(),
+  }, { merge: true });
+
+  return { id, code };
+}
+
+function wireSectionCodes() {
+  const role = String(__ctx?.role || "teacher").toLowerCase().trim();
+  const isAdmin = role === "admin";
+  const isTeacher = role === "teacher";
+  const approved = isApproved(__ctx?.profile || {});
+  const canManage = isAdmin || (isTeacher && approved);
+
+  const addBtn = $("addSectionBtn");
+  const modal = $("addSectionModal");
+  const closeBtn = $("closeAddSection");
+  const cancelBtn = $("cancelAddSection");
+  const form = $("addSectionForm");
+  const saveBtn = $("saveAddSection");
+
+  const tbody = $("codesTbody");
+  const refreshBtn = $("refreshCodesBtn");
+
+  function openModal() {
+    if (!canManage) {
+      alert("Your teacher dashboard is locked until an admin approves your account.");
+      return;
+    }
+    modal.classList.remove("hidden");
+    document.body.classList.add("overflow-hidden");
+    $("secCourse").focus();
+  }
+  function closeModal() {
+    modal.classList.add("hidden");
+    document.body.classList.remove("overflow-hidden");
+    form?.reset?.();
+  }
+
+  addBtn?.addEventListener("click", openModal);
+  closeBtn?.addEventListener("click", closeModal);
+  cancelBtn?.addEventListener("click", closeModal);
+  modal?.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
+
+  if (!canManage && addBtn) {
+    addBtn.classList.add("opacity-60", "cursor-not-allowed");
+  }
+
+  function rowHtml(d) {
+    const course = String(d.course || "—");
+    const year = String(d.yearLevel || "—");
+    const section = String(d.section || "—");
+    const code = String(d.code || "-----");
+    const updated = d.updatedAt ? fmtTs(d.updatedAt) : (d.createdAt ? fmtTs(d.createdAt) : "—");
+
+    return `
+      <tr>
+        <td class="py-3 px-4 font-semibold text-slate-800">${course}</td>
+        <td class="py-3 px-4 font-semibold text-slate-800">${year}</td>
+        <td class="py-3 px-4 font-semibold text-slate-800">${section}</td>
+        <td class="py-3 px-4">
+          <span class="font-mono text-base font-extrabold tracking-widest text-slate-900">${/^[0-9]{5}$/.test(code) ? code : "-----"}</span>
+        </td>
+        <td class="py-3 px-4 text-xs font-semibold text-slate-600">${updated}</td>
+        <td class="py-3 px-4">
+          <div class="flex items-center justify-end gap-2">
+            <button data-act="regen" class="rounded-xl bg-brand-600 px-3 py-2 text-xs font-extrabold text-white hover:bg-brand-700 ring-1 ring-black/5 ${canManage ? "" : "opacity-50 cursor-not-allowed"}">
+              Generate
+            </button>
+            <button data-act="copy" class="rounded-xl bg-white px-3 py-2 text-xs font-extrabold text-slate-800 hover:bg-slate-100 ring-1 ring-black/5">
+              Copy
+            </button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }
+
+  function emptyHtml() {
+    return `
+      <tr>
+        <td colspan="6" class="py-10 text-center">
+          <p class="text-sm font-extrabold text-slate-700">No sections yet</p>
+          <p class="mt-1 text-xs font-semibold text-slate-500">Click “Add a Section” to create a code for a class.</p>
+        </td>
+      </tr>
+    `;
+  }
+
+  // Live list for this teacher
+  let unsub = null;
+  function subscribe() {
+    try { unsub?.(); } catch {}
+    const qy = query(collection(db, "classCodes"), where("teacherUid", "==", __teacherUid), limit(200));
+    unsub = onSnapshot(qy, (snap) => {
+      const rows = [];
+      snap.forEach(docSnap => rows.push({ id: docSnap.id, ...(docSnap.data() || {}) }));
+      // Sort newest first (client sort to avoid indexes)
+      rows.sort((a,b) => {
+        const ta = (a.updatedAt?.seconds || a.createdAt?.seconds || 0);
+        const tb = (b.updatedAt?.seconds || b.createdAt?.seconds || 0);
+        return tb - ta;
+      });
+
+      if (!tbody) return;
+      if (!rows.length) {
+        tbody.innerHTML = emptyHtml();
+        return;
+      }
+      tbody.innerHTML = rows.map(r => rowHtml(r)).join("");
+
+      // Wire row actions
+      Array.from(tbody.querySelectorAll("tr")).forEach((tr, idx) => {
+        const d = rows[idx];
+        tr.querySelector('[data-act="regen"]')?.addEventListener("click", async () => {
+          if (!canManage) return;
           try {
-            const snap = await getDoc(doc(db, 'users', user.uid));
-            profile = snap.exists() ? (snap.data() || {}) : {};
-          } catch (_) {}
-          const role = String(profile.role || 'student').toLowerCase();
-          if (role !== 'admin' && role !== 'teacher') {
-            window.location.href = 'index.html';
-            return;
+            const btn = tr.querySelector('[data-act="regen"]');
+            btn.textContent = "Saving...";
+            btn.disabled = true;
+            await upsertClassCode({ course: d.course, yearLevel: d.yearLevel, section: d.section }, true);
+          } catch (e) {
+            alert(e?.message || "Failed to generate code.");
+          } finally {
+            const btn = tr.querySelector('[data-act="regen"]');
+            if (btn) { btn.textContent = "Generate"; btn.disabled = false; }
           }
-          // Update header UI
-          const name = String(profile.fullName || user.displayName || 'Admin').trim() || 'Admin';
-          const email = String(profile.email || user.email || '').trim();
-          const initials = (name.split(/\s+/).filter(Boolean).slice(0,2).map(s => s[0]).join('') || (email[0] || 'A')).toUpperCase();
-          const nameEl = document.getElementById('adminName');
-          const roleEl = document.getElementById('adminRoleLabel');
-          const avEl = document.getElementById('adminAvatar');
-          if (nameEl) nameEl.textContent = name;
-          if (roleEl) roleEl.textContent = 'Administrator';
-          if (avEl) avEl.textContent = initials;
+        });
 
-          const logout = document.getElementById('logoutLink');
-          logout?.addEventListener('click', async (e) => {
-            e.preventDefault();
-            try { await firebaseSignOut(auth); } catch (_) {}
-            window.location.href = 'login.html';
-          });
-
-          unsub();
-          resolve({ user, profile });
+        tr.querySelector('[data-act="copy"]')?.addEventListener("click", async () => {
+          const code = String(d.code || "").trim();
+          if (!/^[0-9]{5}$/.test(code)) return alert("Generate a code first.");
+          try {
+            await navigator.clipboard.writeText(code);
+            const btn = tr.querySelector('[data-act="copy"]');
+            btn.textContent = "Copied!";
+            setTimeout(() => btn.textContent = "Copy", 900);
+          } catch {
+            prompt("Copy this code:", code);
+          }
         });
       });
-    }
+    });
+  }
 
-    const __admin = await requireAdmin();
+  subscribe();
+  refreshBtn?.addEventListener("click", () => subscribe());
+
+  // Create section + generate code
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!canManage) return;
+
+    const course = $("secCourse").value;
+    const yearLevel = $("secYear").value;
+    const section = $("secSection").value;
+
+    try {
+      saveBtn.disabled = true;
+      saveBtn.textContent = "Generating...";
+      await upsertClassCode({ course, yearLevel, section }, true);
+      closeModal();
+    } catch (err) {
+      alert(err?.message || "Failed to create section.");
+    } finally {
+      saveBtn.disabled = false;
+      saveBtn.textContent = "Create & Generate Code";
+    }
+  });
+}
+
 
     // ==========================================================
     // STORAGE
@@ -1886,8 +2360,9 @@ If this is a quiz-only lesson, show the quiz answers and score here.`;
     // TAB SWITCHING
     // ==========================================================
     const TAB_META = {
-      dashboard: { panel: "panel-dashboard", label: "Admin Dashboard" },
+      dashboard: { panel: "panel-dashboard", label: "Teacher Dashboard" },
       students:  { panel: "panel-students",  label: "Students" },
+      codes:     { panel: "panel-codes",     label: "Section Codes" },
       lessons:   { panel: "panel-lessons",   label: "Lessons Progress" },
     };
 
@@ -1898,7 +2373,7 @@ If this is a quiz-only lesson, show the quiz answers and score here.`;
         panel.hidden = k !== tabKey;
       });
 
-      $("topSubtitle").textContent = TAB_META[tabKey]?.label || "Admin Dashboard";
+      $("topSubtitle").textContent = TAB_META[tabKey]?.label || "Teacher Dashboard";
 
       const allBtns = [
         ...document.querySelectorAll(".tab-btn"),
@@ -1928,6 +2403,7 @@ If this is a quiz-only lesson, show the quiz answers and score here.`;
 
     function wireTabs() {
       const clickHandler = (btn) => {
+        if (btn.getAttribute("aria-disabled") === "true") return;
         const key = btn.getAttribute("data-tab");
         if (!TAB_META[key]) return;
         setTabActive(key);
@@ -1992,15 +2468,37 @@ If this is a quiz-only lesson, show the quiz answers and score here.`;
     // INIT
     // ==========================================================
     (async () => {
-      students = await loadStudents();
-      saveStudents();
+      const role = String(__ctx?.role || "teacher").toLowerCase().trim();
+      const isAdmin = role === "admin";
 
-      renderCourseOptions();
+      // ✅ Only admins can load the global student list / progress.
+      // Teachers will still have access to Section Codes and their locked/unlocked dashboard.
+      if (isAdmin) {
+        students = await loadStudents();
+        saveStudents();
+        renderCourseOptions();
+      } else {
+        students = [];
+        // Hide admin-only tabs to prevent permission noise
+        const adminOnlyTabs = ["students", "lessons"];
+        adminOnlyTabs.forEach(k => {
+          document.querySelectorAll(`[data-tab="${k}"]`).forEach(btn => {
+            btn.classList.add("opacity-50", "cursor-not-allowed");
+            btn.setAttribute("aria-disabled", "true");
+            btn.addEventListener("click", (e) => {
+              e.preventDefault();
+              alert("This section is available to admins only.");
+            }, { once: true });
+          });
+        });
+      }
+
       computeStats(students);
       renderDashboardRisk();
       renderLessonStatesPanel();
       applyStudentFilters();
       wireTabs();
+      wireSectionCodes();
 
       $("sRubricMax").textContent = "60";
     })();

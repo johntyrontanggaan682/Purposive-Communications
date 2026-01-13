@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lesson 2 | Multicultural Communication</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400,0,0"
+    />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                50: "#E7F7F5",
+                100: "#CFF0EC",
+                200: "#9FE1D9",
+                300: "#6ED2C6",
+                400: "#3EC3B3",
+                500: "#13A89A",
+                600: "#0F877B",
+                700: "#0B665C",
+                800: "#07453E",
+                900: "#032420",
+              },
+            },
+            boxShadow: { soft: "0 10px 30px rgba(0,0,0,0.10)" },
+          },
+        },
+      };
+    </script>
+    <style>
+      .page-bg {
+        background: radial-gradient(1200px 500px at 10% -10%, rgba(19, 168, 154, 0.12), transparent 55%),
+          radial-gradient(900px 450px at 100% 0%, rgba(19, 168, 154, 0.10), transparent 50%),
+          #fff;
+      }
+
+      /* Simple modal animation (same feel as index/profile) */
+      .fade-in { animation: fadeIn .18s ease-out; }
+      .scale-in { animation: scaleIn .18s ease-out; }
+      @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+      @keyframes scaleIn { from { transform: translateY(8px) scale(.98); } to { transform: translateY(0) scale(1); } }
+    </style>
+  </head>
+
+  <body class="page-bg text-slate-800">
+    <!-- NAVBAR ✅ EXACT SAME as lessons.html -->
+    <header class="sticky top-0 z-50 bg-white/80 backdrop-blur border-b border-slate-100">
+      <nav class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+        <!-- Brand -->
+        <a href="index.html" class="flex items-center gap-3">
+          <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 ring-1 ring-black/5">
+            <svg viewBox="0 0 24 24" class="h-6 w-6 text-brand-700" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 7l8-4 8 4v10l-8 4-8-4V7z"></path>
+              <path d="M8 11l2 2 5-5"></path>
+            </svg>
+          </div>
+          <span class="text-lg font-semibold tracking-tight text-slate-900">Purposive Communication</span>
+        </a>
+
+        <!-- Desktop Links + Login/User Dropdown -->
+        <div class="hidden items-center gap-8 md:flex">
+          <a href="index.html" class="text-sm font-medium text-slate-700 hover:text-brand-700">Home</a>
+          <a href="lessons.html" class="text-sm font-semibold text-brand-700">Lessons</a>
+
+          <!-- Login (GUEST ONLY) -->
+          <a
+            href="login.html"
+            id="openLoginBtn"
+            class="auth-guest hidden rounded-xl bg-brand-500 px-5 py-2.5 text-sm font-semibold text-white shadow-soft hover:bg-brand-600"
+            >Login</a
+          >
+
+          <!-- User dropdown (LOGGED IN ONLY) -->
+          <div class="auth-user hidden relative">
+            <button
+              id="userMenuBtn"
+              type="button"
+              class="inline-flex items-center gap-3 rounded-2xl bg-white px-2 py-1.5 ring-1 ring-black/5 shadow-sm hover:bg-slate-50 hover:shadow-soft transition"
+              aria-haspopup="menu"
+              aria-expanded="false"
+            >
+              <div
+                id="navAvatar"
+                class="h-9 w-9 rounded-full bg-slate-100 ring-1 ring-black/5 flex items-center justify-center text-slate-700 font-extrabold"
+              >
+                U
+              </div>
+              <span id="navName" class="text-sm font-semibold text-slate-900">Student</span>
+              <svg
+                id="navCaret"
+                class="h-4 w-4 text-slate-500 transition-transform"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6" />
+              </svg>
+            </button>
+
+            <!-- Dropdown panel -->
+            <div
+              id="userDropdown"
+              class="absolute right-[-10px] mt-3 hidden w-[290px] overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/10"
+            >
+              <div class="p-3">
+                <div class="rounded-2xl bg-brand-50 p-3 ring-1 ring-brand-100">
+                  <div class="flex items-start gap-3">
+                    <div
+                      id="ddAvatar"
+                      class="h-11 w-11 rounded-full bg-slate-100 ring-1 ring-black/5 flex items-center justify-center text-slate-700 font-extrabold text-lg"
+                    ></div>
+                    <div class="min-w-0">
+                      <p id="ddName" class="truncate text-sm font-extrabold text-slate-900">Student</p>
+                      <p class="text-xs font-semibold text-slate-500">Student</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-3 space-y-2 text-sm">
+                  <div class="flex items-center gap-3 rounded-xl bg-white px-3 py-2 ring-1 ring-black/5">
+                    <svg class="h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M4 4h16v16H4V4z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M22 6l-10 7L2 6" />
+                    </svg>
+                    <span id="ddEmail" class="truncate text-slate-700">email@example.com</span>
+                  </div>
+
+                  <div class="flex items-center gap-3 rounded-xl bg-white px-3 py-2 ring-1 ring-black/5">
+                    <svg class="h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="3" y="5" width="18" height="14" rx="2" />
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M7 15h4" />
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M7 9h10" />
+                    </svg>
+                    <span class="text-slate-700">ID: <span id="ddId" class="font-semibold text-slate-800">—</span></span>
+                  </div>
+                </div>
+
+                <div class="mt-3 grid grid-cols-2 gap-2">
+                  <a
+                    href="profile.html"
+                    class="inline-flex items-center justify-center rounded-2xl bg-brand-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-900 transition"
+                  >
+                    View profile
+                  </a>
+                  <button
+                    id="signOutBtn"
+                    type="button"
+                    class="inline-flex items-center justify-center rounded-2xl bg-slate-100 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-200 transition"
+                  >
+                    Sign out
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mobile -->
+        <button
+          id="menuBtn"
+          class="inline-flex items-center justify-center rounded-xl bg-slate-50 p-2 text-slate-800 ring-1 ring-black/5 hover:bg-slate-100 md:hidden"
+          aria-label="Open menu"
+          aria-expanded="false"
+        >
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </nav>
+
+      <!-- Mobile Menu -->
+      <div id="mobileMenu" class="mx-auto hidden max-w-7xl px-4 pb-4 sm:px-6 lg:px-8 md:hidden">
+        <div class="rounded-2xl bg-white p-4 shadow-soft ring-1 ring-black/5">
+          <div class="flex flex-col gap-2">
+            <a href="index.html" class="rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">Home</a>
+            <a href="lessons.html" class="rounded-xl px-3 py-2 text-sm font-semibold text-brand-700 bg-brand-50">Lessons</a>
+            <a href="profile.html" class="rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">Profile</a>
+
+            <!-- Login (GUEST ONLY) -->
+            <a
+              href="login.html"
+              id="openLoginMobile"
+              class="auth-guest hidden mt-2 rounded-xl bg-brand-500 px-4 py-2.5 text-center text-sm font-semibold text-white hover:bg-brand-600"
+              >Login</a
+            >
+
+            <!-- Logged-in block (MOBILE ONLY) -->
+            <div class="auth-user hidden mt-2 rounded-2xl bg-white ring-1 ring-black/5 p-3">
+              <div class="flex items-center gap-3">
+                <div
+                  id="mNavAvatar"
+                  class="h-10 w-10 rounded-full bg-slate-100 ring-1 ring-black/5 flex items-center justify-center font-extrabold text-slate-700"
+                >
+                  U
+                </div>
+                <div class="min-w-0">
+                  <p id="mNavName" class="truncate text-sm font-extrabold text-slate-900">Student</p>
+                  <p id="mNavEmail" class="truncate text-xs font-semibold text-slate-500">email@example.com</p>
+                </div>
+              </div>
+              <div class="mt-3 grid grid-cols-2 gap-2">
+                <a
+                  href="profile.html"
+                  class="rounded-xl bg-brand-800 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-brand-900"
+                  >View profile</a
+                >
+                <button id="mSignOutBtn" class="rounded-xl bg-slate-100 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-200">
+                  Sign out
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="bg-brand-700">
+      <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+        <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p class="text-white/80 text-sm font-semibold">Lesson 2</p>
+            <h1 class="mt-1 text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
+              Local and Global Communication in Multicultural Settings
+            </h1>
+            <p class="mt-3 max-w-3xl text-white/85">Part 1 (Lesson/Module) • Part 2 (Assessment — Multiple Choice)</p>
+          </div>
+
+          <div class="w-full md:w-[340px]">
+            <div class="rounded-2xl bg-white/10 ring-1 ring-white/15 p-4">
+              <div class="flex items-center justify-between text-sm text-white/90">
+                <span class="font-semibold">Lesson Progress</span>
+                <span id="progressText" class="font-bold">0%</span>
+              </div>
+              <div class="mt-3 h-2.5 w-full rounded-full bg-white/20">
+                <div id="progressBar" class="h-2.5 w-0 rounded-full bg-white transition-all"></div>
+              </div>
+              <p class="mt-2 text-xs text-white/70">MCQ requires passing score to complete.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <main class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+      <div class="grid gap-8 lg:grid-cols-12">
+        <aside class="lg:col-span-3">
+          <div class="rounded-3xl bg-white shadow-soft ring-1 ring-black/5 p-5 sticky top-24">
+            <h2 class="text-sm font-extrabold text-slate-900">Lesson Parts</h2>
+            <div id="partsList" class="mt-4 space-y-2"></div>
+          </div>
+        </aside>
+
+        <section class="lg:col-span-9">
+          <div class="rounded-3xl bg-white shadow-soft ring-1 ring-black/5 p-6 sm:p-8">
+            <div class="flex items-start justify-between gap-4">
+              <div>
+                <h2 id="partTitle" class="text-2xl font-extrabold text-slate-900"></h2>
+                <p id="partSubtitle" class="mt-2 text-sm text-slate-600"></p>
+              </div>
+              <span id="statusPill" class="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ring-1 ring-black/5">
+                Not completed
+              </span>
+            </div>
+
+            <div id="partBody" class="mt-6 space-y-6"></div>
+
+            <div class="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <button id="prevBtn" class="rounded-xl bg-slate-100 px-4 py-2.5 text-sm font-semibold text-slate-800 hover:bg-slate-200 ring-1 ring-black/5">
+                ← Previous
+              </button>
+
+              <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
+                <button id="completeBtn" class="rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-700 ring-1 ring-black/5">
+                  Mark Part as Completed
+                </button>
+                <button id="nextBtn" class="rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800 ring-1 ring-black/5">
+                  Next →
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <p class="mt-4 text-xs text-slate-500">Passing score for the assessment is <strong>70%</strong> to mark it complete.</p>
+        </section>
+      </div>
+    </main>
+
+    <!-- ✅ SIGN OUT CONFIRM MODAL (same as index.html) -->
+    <div id="signOutModal" class="fixed inset-0 z-[95] hidden">
+      <div id="signOutBackdrop" class="absolute inset-0 bg-black/40 backdrop-blur-sm fade-in"></div>
+
+      <div class="relative mx-auto flex min-h-full max-w-md items-center justify-center px-4 py-10">
+        <div class="w-full rounded-3xl bg-white shadow-soft ring-1 ring-black/10 scale-in">
+          <div class="p-5 sm:p-6 text-center">
+            <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 ring-1 ring-black/5">
+              <svg viewBox="0 0 24 24" class="h-6 w-6 text-brand-700" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v5" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 16h.01" />
+              </svg>
+            </div>
+
+            <h3 class="mt-3 text-base font-extrabold text-slate-900">Are you sure you want to sign out?</h3>
+
+            <div class="mt-5 grid grid-cols-2 gap-3">
+              <button id="signOutNo" type="button"
+                class="w-full rounded-xl bg-slate-100 px-5 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-200 ring-1 ring-black/5">
+                No
+              </button>
+
+              <button id="signOutYes" type="button"
+                class="w-full rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-700 ring-1 ring-black/5">
+                Yes
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ✅ Firebase only (NO localStorage) -->
+    <script type="module">
+      import { auth, db } from "./firebase.js";
+      import {
+        onAuthStateChanged,
+        signOut as firebaseSignOut,
+        setPersistence,
+        browserSessionPersistence
+      } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+
+      import {
+        doc,
+        getDoc,
+        setDoc
+      } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+      // ✅ Force Firebase auth to NOT use localStorage (session only)
+      try { await setPersistence(auth, browserSessionPersistence); } catch (_) {}
+
+      // ===== Auth dropdown (Firebase) =====
+      const guestEls = Array.from(document.querySelectorAll(".auth-guest"));
+      const userEls = Array.from(document.querySelectorAll(".auth-user"));
+
+      const userMenuBtn = document.getElementById("userMenuBtn");
+      const userDropdown = document.getElementById("userDropdown");
+      const navCaret = document.getElementById("navCaret");
+
+      const navName = document.getElementById("navName");
+      const navAvatar = document.getElementById("navAvatar");
+
+      const ddName = document.getElementById("ddName");
+      const ddEmail = document.getElementById("ddEmail");
+      const ddId = document.getElementById("ddId");
+      const ddAvatar = document.getElementById("ddAvatar");
+
+      const mNavName = document.getElementById("mNavName");
+      const mNavEmail = document.getElementById("mNavEmail");
+      const mNavAvatar = document.getElementById("mNavAvatar");
+
+      const signOutBtn = document.getElementById("signOutBtn");
+      const mSignOutBtn = document.getElementById("mSignOutBtn");
+
+      let __currentUser = null;
+      let __profile = null;
+
+      function isLoggedIn() { return !!__currentUser; }
+
+      function getInitials(nameOrEmail) {
+        const n = (nameOrEmail || "").trim();
+        if (!n) return "U";
+        const parts = n.split(/\s+/).filter(Boolean);
+        if (parts.length >= 2) return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+        return (parts[0][0] || "U").toUpperCase();
+      }
+
+      function setAvatarEl(el, text) {
+        if (!el) return;
+        el.textContent = text || "U";
+      }
+
+      function closeUserDropdown() {
+        if (!userDropdown || !userMenuBtn) return;
+        userDropdown.classList.add("hidden");
+        userMenuBtn.setAttribute("aria-expanded", "false");
+        navCaret?.classList.remove("rotate-180");
+      }
+
+      function openUserDropdown() {
+        if (!userDropdown || !userMenuBtn) return;
+        userDropdown.classList.remove("hidden");
+        userMenuBtn.setAttribute("aria-expanded", "true");
+        navCaret?.classList.add("rotate-180");
+      }
+
+      function toggleUserDropdown() {
+        if (!userDropdown) return;
+        const isOpen = !userDropdown.classList.contains("hidden");
+        if (isOpen) closeUserDropdown();
+        else openUserDropdown();
+      }
+
+      userMenuBtn?.addEventListener("click", (e) => {
+        e.preventDefault();
+        toggleUserDropdown();
+      });
+
+      document.addEventListener("click", (e) => {
+        if (!userDropdown || userDropdown.classList.contains("hidden")) return;
+        const wrapper = userMenuBtn?.parentElement; // .auth-user
+        if (wrapper && e.target instanceof Node && !wrapper.contains(e.target)) closeUserDropdown();
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeUserDropdown();
+      });
+
+      async function loadProfile(uid) {
+        try {
+          const snap = await getDoc(doc(db, "users", uid));
+          return snap.exists() ? (snap.data() || {}) : {};
+        } catch (_) {
+          return {};
+        }
+      }
+
+      function applyAuthUI() {
+        const loggedIn = isLoggedIn();
+
+        guestEls.forEach(el => el.classList.toggle("hidden", loggedIn));
+        userEls.forEach(el => el.classList.toggle("hidden", !loggedIn));
+
+        if (!loggedIn) {
+          closeUserDropdown();
+          return;
+        }
+
+        const fullName = (__profile?.fullName || __currentUser?.displayName || "Student").trim() || "Student";
+        const email = (__profile?.email || __currentUser?.email || "").trim();
+        const studentId = (__profile?.studentId || "").trim();
+
+        const avatarText = (__profile?.avatar?.type === "emoji" && __profile?.avatar?.value)
+          ? __profile.avatar.value
+          : getInitials(fullName || email);
+
+        if (navName) navName.textContent = fullName;
+        if (ddName) ddName.textContent = fullName;
+        if (ddEmail) ddEmail.textContent = email;
+        if (ddId) ddId.textContent = studentId ? studentId : "—";
+
+        setAvatarEl(navAvatar, avatarText);
+        setAvatarEl(ddAvatar, avatarText);
+
+        if (mNavName) mNavName.textContent = fullName;
+        if (mNavEmail) mNavEmail.textContent = email;
+        setAvatarEl(mNavAvatar, avatarText);
+      }
+
+      // ===== Sign out confirm (WHAT TO CHANGE/UPDATE) =====
+      const signOutModal = document.getElementById("signOutModal");
+      const signOutBackdrop = document.getElementById("signOutBackdrop");
+      const signOutYes = document.getElementById("signOutYes");
+      const signOutNo = document.getElementById("signOutNo");
+
+      function openSignOutModal() {
+        closeUserDropdown();
+        signOutModal?.classList.remove("hidden");
+        document.body.classList.add("overflow-hidden");
+      }
+      function closeSignOutModal() {
+        signOutModal?.classList.add("hidden");
+        document.body.classList.remove("overflow-hidden");
+      }
+
+      signOutNo?.addEventListener("click", closeSignOutModal);
+      signOutBackdrop?.addEventListener("click", closeSignOutModal);
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && signOutModal && !signOutModal.classList.contains("hidden")) closeSignOutModal();
+      });
+
+      async function doSignOut() {
+        try { await firebaseSignOut(auth); } catch (_) {}
+        __currentUser = null;
+        __profile = null;
+        closeUserDropdown();
+        applyAuthUI();
+        closeSignOutModal();
+        window.location.href = "index.html";
+      }
+
+      window.__pcSignOut = doSignOut;
+
+      // ✅ update: open modal instead of direct sign out
+      signOutBtn?.addEventListener("click", (e) => { e.preventDefault(); openSignOutModal(); });
+      mSignOutBtn?.addEventListener("click", (e) => { e.preventDefault(); openSignOutModal(); });
+
+      signOutYes?.addEventListener("click", async () => {
+        closeSignOutModal();
+        await doSignOut();
+      });
+
+      // ===== your existing Lesson 2 script (Firebase version, same UI behavior) =====
+      const LESSON_NO = 2;
+      const PASSING = 70;
+
+      const quiz = [
+        { q: "Which style is highly assertive but less expressive?", options: ["Spirited", "Direct", "Considerate", "Systematic"], answer: 1 },
+        { q: "A team leader motivating workers before a deadline shows which style?", options: ["Spirited", "Systematic", "Direct", "Considerate"], answer: 0 },
+        { q: "A technician carefully documenting safety checks is using which style?", options: ["Considerate", "Systematic", "Spirited", "Direct"], answer: 1 },
+        { q: "A junior intern politely suggesting improvements shows which style?", options: ["Spirited", "Considerate", "Direct", "Systematic"], answer: 1 },
+        { q: "Which style combines high expressiveness and high assertiveness?", options: ["Spirited", "Direct", "Considerate", "Systematic"], answer: 0 },
+        { q: "Which register is used in professional/academic/business writing?", options: ["Casual", "Formal", "Intimate", "Frozen"], answer: 1 },
+        { q: "An excerpt from a safety manual that does not change over time is which register?", options: ["Frozen", "Casual", "Intimate", "Consultative"], answer: 0 },
+        { q: "Speaking with an instructor asking advice is which register?", options: ["Consultative", "Casual", "Formal", "Intimate"], answer: 0 },
+        { q: "Avoid forming expectations based only on your own culture is part of improving…", options: ["Stereotyping", "Intercultural communication", "Jargon use", "Noise filtering"], answer: 1 },
+        { q: "Removing personal biases and stereotypes helps improve…", options: ["Misunderstanding", "Intercultural communication", "Frozen register", "Pidgin"], answer: 1 },
+      ];
+
+      const parts = [
+        {
+          title: "Part 1 — Lesson/Module",
+          subtitle: "Communication styles, language registers, and multicultural communication.",
+          type: "content",
+          html: `
+            <div class="rounded-2xl overflow-hidden ring-1 ring-black/5">
+              <div class="aspect-video bg-black">
+                <iframe class="w-full h-full"
+                  src="https://www.youtube.com/embed/8S0FDjFBj8o"
+                  title="Lesson Video (Fallback)"
+                  frameborder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen></iframe>
+              </div>
+            </div>
+
+            <div class="prose max-w-none prose-slate">
+              <h3>Communication Styles in Technical Work</h3>
+              <p>
+                Communication styles affect teamwork and performance in technical industries. Four styles commonly discussed:
+                <strong>Spirited</strong>, <strong>Considerate</strong>, <strong>Direct</strong>, and <strong>Systematic</strong>.
+                Each style has strengths in specific workplace scenarios, and effective communicators learn to adjust style depending on context.
+              </p>
+
+              <h3>Language Registers</h3>
+              <p>
+                Your language changes depending on setting and audience. Registers include <strong>Formal</strong>, <strong>Casual</strong>,
+                <strong>Intimate</strong>, <strong>Frozen</strong>, and <strong>Consultative</strong>. Choosing the right register builds professionalism,
+                respect, and clarity.
+              </p>
+
+              <h3>Communication in a Multicultural Society</h3>
+              <p>
+                Globalized industries involve diverse cultures and language varieties. Respecting dialects, avoiding stereotypes, and committing to
+                cultural sensitivity improves collaboration and prevents misunderstandings.
+              </p>
+            </div>
+          `,
+        },
+        {
+          title: "Part 2 — Assessment (Multiple Choice)",
+          subtitle: "Answer the questions. Passing score: 70%.",
+          type: "quiz",
+          html: "",
+        },
+      ];
+
+      // Elements
+      const partsList = document.getElementById("partsList");
+      const partTitle = document.getElementById("partTitle");
+      const partSubtitle = document.getElementById("partSubtitle");
+      const partBody = document.getElementById("partBody");
+      const prevBtn = document.getElementById("prevBtn");
+      const nextBtn = document.getElementById("nextBtn");
+      const completeBtn = document.getElementById("completeBtn");
+      const progressText = document.getElementById("progressText");
+      const progressBar = document.getElementById("progressBar");
+      const statusPill = document.getElementById("statusPill");
+
+      let activePart = 0;
+      let __lessonState = null;
+
+      function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
+
+      function lessonDocRef(uid) {
+        return doc(db, "users", uid, "lessons", `lesson${LESSON_NO}`);
+      }
+      function progressDocRef(uid) {
+        return doc(db, "users", uid, "progress", `lesson${LESSON_NO}`);
+      }
+
+      async function mustHaveLesson1Complete(uid) {
+        try {
+          const snap = await getDoc(doc(db, "users", uid, "progress", "lesson1"));
+          const d = snap.exists() ? (snap.data() || {}) : {};
+          return !!d.complete || (parseInt(d.progress || "0", 10) >= 100);
+        } catch (_) {
+          return false;
+        }
+      }
+
+      function defaultLessonState() {
+        return { partsDone: parts.map(() => false), quizAnswers: {} };
+      }
+
+      async function loadLessonState(uid) {
+        try {
+          const snap = await getDoc(lessonDocRef(uid));
+          if (!snap.exists()) return defaultLessonState();
+          const d = snap.data() || {};
+
+          const arr = Array.isArray(d.partsDone) ? d.partsDone : [];
+          const partsDone = parts.map((_, i) => !!arr[i]);
+
+          const qa = (d.quizAnswers && typeof d.quizAnswers === "object") ? d.quizAnswers : {};
+          const quizAnswers = {};
+          Object.keys(qa).forEach(k => { quizAnswers[k] = parseInt(qa[k], 10); });
+
+          return { partsDone, quizAnswers };
+        } catch (_) {
+          return defaultLessonState();
+        }
+      }
+
+      async function saveLessonState(uid, state) {
+        try {
+          await setDoc(lessonDocRef(uid), {
+            partsDone: state.partsDone,
+            quizAnswers: state.quizAnswers || {},
+            updatedAt: Date.now()
+          }, { merge: true });
+        } catch (_) {}
+      }
+
+      function computeProgressPct(state) {
+        const doneCount = state.partsDone.reduce((acc, v) => acc + (v ? 1 : 0), 0);
+        return Math.round((doneCount / parts.length) * 100);
+      }
+
+      function pill(done) {
+        if (done) {
+          statusPill.textContent = "Completed";
+          statusPill.className = "inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold bg-brand-50 text-brand-800 ring-1 ring-black/5";
+        } else {
+          statusPill.textContent = "Not completed";
+          statusPill.className = "inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold bg-slate-100 text-slate-700 ring-1 ring-black/5";
+        }
+      }
+
+      function renderSidebar() {
+        partsList.innerHTML = "";
+        parts.forEach((p, idx) => {
+          const done = !!__lessonState?.partsDone?.[idx];
+          const isActive = idx === activePart;
+
+          const btn = document.createElement("button");
+          btn.className =
+            "w-full flex items-center justify-between gap-3 rounded-2xl px-4 py-3 text-left ring-1 ring-black/5 transition " +
+            (isActive ? "bg-brand-600 text-white" : "bg-slate-50 hover:bg-slate-100 text-slate-900");
+
+          btn.innerHTML = `
+            <span class="text-sm font-semibold">${p.title}</span>
+            <span class="text-xs font-bold ${isActive ? "text-white" : "text-brand-700"}">${done ? "✓" : ""}</span>
+          `;
+
+          btn.addEventListener("click", () => { activePart = idx; render(); });
+          partsList.appendChild(btn);
+        });
+      }
+
+      function renderQuiz() {
+        const saved = (__lessonState && __lessonState.quizAnswers) ? __lessonState.quizAnswers : {};
+
+        const wrap = document.createElement("div");
+        wrap.className = "space-y-5";
+
+        const info = document.createElement("div");
+        info.className = "rounded-2xl bg-slate-50 p-5 ring-1 ring-black/5";
+        info.innerHTML = `
+          <h3 class="text-lg font-extrabold text-slate-900">Assessment</h3>
+          <p class="mt-1 text-sm text-slate-600">Select the best answer for each item, then submit.</p>
+        `;
+        wrap.appendChild(info);
+
+        quiz.forEach((item, i) => {
+          const card = document.createElement("div");
+          card.className = "rounded-2xl bg-white p-5 ring-1 ring-black/5";
+
+          const q = document.createElement("p");
+          q.className = "font-semibold text-slate-900";
+          q.textContent = `${i + 1}. ${item.q}`;
+          card.appendChild(q);
+
+          const opts = document.createElement("div");
+          opts.className = "mt-3 grid gap-2";
+
+          item.options.forEach((opt, idx) => {
+            const row = document.createElement("label");
+            row.className = "flex items-center gap-3 rounded-xl bg-slate-50 px-4 py-3 hover:bg-slate-100 cursor-pointer";
+            row.innerHTML = `
+              <input type="radio" name="q${i}" value="${idx}" class="h-4 w-4 accent-brand-600" />
+              <span class="text-sm text-slate-800">${opt}</span>
+            `;
+            opts.appendChild(row);
+
+            if (String(saved[i]) === String(idx)) row.querySelector("input").checked = true;
+
+            row.querySelector("input").addEventListener("change", async (e) => {
+              saved[i] = parseInt(e.target.value, 10);
+              __lessonState.quizAnswers = saved;
+              if (__currentUser) await saveLessonState(__currentUser.uid, __lessonState);
+            });
+          });
+
+          card.appendChild(opts);
+          wrap.appendChild(card);
+        });
+
+        const actions = document.createElement("div");
+        actions.className = "flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between";
+        actions.innerHTML = `
+          <button id="submitQuizBtn" class="rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800">
+            Submit Answers
+          </button>
+          <p id="quizResult" class="text-sm font-semibold text-slate-700"></p>
+        `;
+        wrap.appendChild(actions);
+
+        setTimeout(() => {
+          document.getElementById("submitQuizBtn").addEventListener("click", async () => {
+            let correct = 0;
+            quiz.forEach((item, i) => { if (saved[i] === item.answer) correct++; });
+            const score = Math.round((correct / quiz.length) * 100);
+            const result = document.getElementById("quizResult");
+
+            if (score >= PASSING) {
+              result.innerHTML = `Score: ${score}% — Passed <span class="material-symbols-rounded align-middle text-emerald-600 text-[18px] leading-none ml-1">check_circle</span> <span class="text-brand-800">(Part Completed)</span>`;
+              result.className = "text-sm font-extrabold text-brand-800";
+
+              __lessonState.partsDone[1] = true;
+              if (__currentUser) await saveLessonState(__currentUser.uid, __lessonState);
+
+              renderSidebar();
+              await renderProgress();
+              pill(true);
+            } else {
+              result.textContent = `Score: ${score}% — Not passed (needs ${PASSING}%)`;
+              result.className = "text-sm font-extrabold text-red-600";
+            }
+          });
+        }, 0);
+
+        return wrap;
+      }
+
+      function renderPart() {
+        const p = parts[activePart];
+        partTitle.textContent = p.title;
+        partSubtitle.textContent = p.subtitle;
+
+        partBody.innerHTML = "";
+        if (p.type === "quiz") {
+          completeBtn.classList.add("hidden");
+          partBody.appendChild(renderQuiz());
+        } else {
+          completeBtn.classList.remove("hidden");
+          partBody.innerHTML = p.html;
+        }
+
+        const done = !!__lessonState?.partsDone?.[activePart];
+        pill(done);
+
+        prevBtn.disabled = activePart === 0;
+        nextBtn.disabled = activePart === parts.length - 1;
+        prevBtn.classList.toggle("opacity-50", prevBtn.disabled);
+        prevBtn.classList.toggle("cursor-not-allowed", prevBtn.disabled);
+        nextBtn.classList.toggle("opacity-50", nextBtn.disabled);
+        nextBtn.classList.toggle("cursor-not-allowed", nextBtn.disabled);
+      }
+
+      async function renderProgress() {
+        const pct = computeProgressPct(__lessonState);
+        progressText.textContent = `${pct}%`;
+        progressBar.style.width = `${pct}%`;
+      }
+
+      async function render() {
+        renderSidebar();
+        renderPart();
+        await renderProgress();
+      }
+
+      prevBtn.addEventListener("click", async () => { if (activePart > 0) activePart--; await render(); });
+      nextBtn.addEventListener("click", async () => { if (activePart < parts.length - 1) activePart++; await render(); });
+
+      completeBtn.addEventListener("click", async () => {
+        if (!__lessonState) return;
+        __lessonState.partsDone[activePart] = true;
+        if (__currentUser) await saveLessonState(__currentUser.uid, __lessonState);
+        await render();
+      });
+
+      // Mobile menu
+      const menuBtnEl = document.getElementById("menuBtn");
+      const mobileMenuEl = document.getElementById("mobileMenu");
+      menuBtnEl?.addEventListener("click", () => {
+        const isOpen = !mobileMenuEl.classList.contains("hidden");
+        mobileMenuEl.classList.toggle("hidden");
+        menuBtnEl.setAttribute("aria-expanded", String(!isOpen));
+      });
+
+      // ✅ Auth entry
+      onAuthStateChanged(auth, async (user) => {
+        __currentUser = user || null;
+
+        // ✅ CHANGED: remove alert popup
+        if (!__currentUser) {
+          window.location.href = "login.html";
+          return;
+        }
+
+
+      // Update activity for Admin Dashboard
+      try { await setDoc(doc(db, 'users', __currentUser.uid), { email: __currentUser.email || '', lastSeenAt: Date.now() }, { merge: true }); } catch (_) {}
+        // ✅ Show logged-in UI instantly (no waiting for Firestore)
+        __profile = null;
+        applyAuthUI();
+
+        // sequential guard (lesson 1 complete) - keep behavior, but no alert
+        const ok = await mustHaveLesson1Complete(__currentUser.uid);
+        if (!ok) {
+          window.location.href = "lessons.html";
+          return;
+        }
+
+        // Load profile + lesson state after UI is already correct
+        const [profile, lessonState] = await Promise.all([
+          loadProfile(__currentUser.uid),
+          loadLessonState(__currentUser.uid),
+        ]);
+
+        __profile = profile || {};
+        applyAuthUI();
+
+        __lessonState = lessonState;
+        await render();
+      });
+    </script>
+
+    <script type="module" src="./app.js"></script>
+    <script>
+      // Ensure sign-out uses Firebase
+      window.signOut = () => window.__pcSignOut?.();
+    </script>
+  </body>
+</html>

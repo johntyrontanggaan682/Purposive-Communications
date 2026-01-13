@@ -1,0 +1,1923 @@
+<!-- index.html (Welcome Page) -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Purposive Communication | Welcome</title>
+
+  <!-- ✅ Performance: preconnect -->
+  <link rel="preconnect" href="https://images.unsplash.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- ✅ Optional nicer font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ["Inter", "ui-sans-serif", "system-ui", "Segoe UI", "Roboto", "Helvetica", "Arial", "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji"],
+          },
+          colors: {
+            brand: {
+              50: "#E7F7F5",
+              100: "#CFF0EC",
+              200: "#9FE1D9",
+              300: "#6ED2C6",
+              400: "#3EC3B3",
+              500: "#13A89A",
+              600: "#0F877B",
+              700: "#0B665C",
+              800: "#07453E",
+              900: "#032420",
+            },
+          },
+          boxShadow: {
+            soft: "0 10px 30px rgba(0,0,0,0.12)",
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    html.pc-auth-pending .auth-guest,
+    html.pc-auth-pending .auth-user {
+      visibility: hidden !important;
+    }
+
+    html.pc-auth-ready .auth-guest,
+    html.pc-auth-ready .auth-user {
+      visibility: visible !important;
+    }
+
+    /* ✅ Anchor scroll offset for fixed header (uses dynamic header height) */
+    html {
+      scroll-padding-top: calc(var(--header-h, 80px) + 12px);
+    }
+
+    /* ✅ Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+    }
+
+    :root {
+      --header-h: 80px;
+    }
+
+    .hero-full {
+      height: 100vh;
+      padding-top: var(--header-h);
+      box-sizing: border-box;
+    }
+
+    @supports (height: 100svh) {
+      .hero-full {
+        height: 100svh;
+      }
+    }
+
+    /* ✅ FULL SCREEN for About + Contact */
+    .screen-only {
+      min-height: 100vh;
+      box-sizing: border-box;
+      padding-top: calc(var(--header-h) + 24px);
+      padding-bottom: 24px;
+      overflow: visible;
+      overscroll-behavior: auto;
+    }
+
+    @supports (height: 100svh) {
+      .screen-only {
+        min-height: 100svh;
+      }
+    }
+
+    /* =========================================
+       ✅ SMOOTH CROSSFADE (2-layer)
+    ========================================== */
+    .xfade-layer {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+
+      opacity: 0;
+      transform: scale(1.06);
+      filter: blur(0px);
+
+      transition:
+        opacity 900ms cubic-bezier(.22, 1, .36, 1),
+        transform 1400ms cubic-bezier(.22, 1, .36, 1),
+        filter 900ms cubic-bezier(.22, 1, .36, 1);
+      will-change: opacity, transform, filter;
+      backface-visibility: hidden;
+    }
+
+    .xfade-layer.is-active {
+      opacity: 1;
+      transform: scale(1.10);
+      filter: blur(0px);
+    }
+
+    .xfade-layer.is-out {
+      filter: blur(8px);
+      transform: scale(1.03);
+    }
+
+    /* =========================================
+       ✅ Cards / reveal
+    ========================================== */
+    .pc-card {
+      position: relative;
+      overflow: hidden;
+      transform: translateZ(0);
+      transition: transform 220ms ease, box-shadow 220ms ease, background-color 220ms ease, border-color 220ms ease;
+      will-change: transform, box-shadow;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .pc-card:hover {
+        transform: translateY(-6px) scale(1.02);
+        box-shadow: 0 14px 40px rgba(0, 0, 0, 0.14);
+      }
+    }
+
+    @media (hover: none) {
+      .pc-card:active {
+        transform: scale(0.99);
+      }
+    }
+
+    .pc-card:focus-within,
+    .pc-card:focus {
+      outline: 3px solid rgba(19, 168, 154, 0.35);
+      outline-offset: 4px;
+    }
+
+    .pc-card .pc-icon {
+      transition: transform 220ms ease;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .pc-card:hover .pc-icon {
+        transform: scale(1.08) rotate(-2deg);
+      }
+    }
+
+    .pc-card::after {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.55), transparent 60%);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 250ms ease, transform 250ms ease;
+      pointer-events: none;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .pc-card:hover::after {
+        opacity: 0.35;
+        transform: translateY(0);
+      }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 650ms cubic-bezier(.22, 1, .36, 1), transform 650ms cubic-bezier(.22, 1, .36, 1);
+      transition-delay: var(--d, 0ms);
+    }
+
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .pc-card .tap-ripple {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .pc-card .tap-ripple span {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      transform: translate(-50%, -50%) scale(0);
+      opacity: 0.25;
+      background: rgba(255, 255, 255, 0.9);
+      animation: ripple 520ms ease-out;
+    }
+
+    @keyframes ripple {
+      to {
+        transform: translate(-50%, -50%) scale(18);
+        opacity: 0;
+      }
+    }
+
+    /* =========================================
+       ✅ Extra animations / shine / glow
+    ========================================== */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes floaty {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-10px) scale(1.03); }
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-120%); opacity: 0; }
+      30% { opacity: 0.35; }
+      100% { transform: translateX(120%); opacity: 0; }
+    }
+
+    .anim-fade-up { animation: fadeUp 850ms cubic-bezier(.22,1,.36,1) both; }
+    .anim-delay-1 { animation-delay: 120ms; }
+    .anim-delay-2 { animation-delay: 240ms; }
+    .anim-delay-3 { animation-delay: 360ms; }
+
+    .hero-glow {
+      position: absolute;
+      inset: -30%;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(19,168,154,0.35), transparent 55%),
+        radial-gradient(circle at 70% 70%, rgba(255,255,255,0.12), transparent 55%);
+      filter: blur(24px);
+      animation: floaty 6.5s ease-in-out infinite;
+      pointer-events: none;
+      will-change: transform;
+    }
+
+    .hero-parallax {
+      transform: translateY(var(--hero-parallax, 0px));
+      transition: transform 120ms linear;
+      will-change: transform;
+    }
+
+    .btn-shine { position: relative; overflow: hidden; }
+    .btn-shine::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(110deg, transparent 20%, rgba(255,255,255,0.55) 50%, transparent 80%);
+      transform: translateX(-120%);
+      opacity: 0;
+    }
+
+    @media (hover:hover) and (pointer:fine) {
+      .btn-shine:hover::after { animation: shimmer 900ms ease; }
+    }
+
+    /* ✅ Navbar shrink on scroll */
+    header.is-scrolled nav { padding-top: 0.75rem !important; padding-bottom: 0.75rem !important; }
+    header.is-scrolled { box-shadow: 0 12px 30px rgba(0,0,0,0.08); }
+
+    /* ✅ Active nav link */
+    .nav-link.is-active {
+      color: #0B665C !important;
+      font-weight: 700 !important;
+    }
+    .nav-link.is-active::after {
+      content: "";
+      display: block;
+      height: 3px;
+      border-radius: 999px;
+      background: rgba(19, 168, 154, 0.8);
+      margin-top: 6px;
+      width: 100%;
+    }
+
+    /* ✅ Selection */
+    ::selection { background: rgba(19,168,154,0.25); }
+
+    /* ✅ Divider helper */
+    .section-divider svg { display: block; width: 100%; height: auto; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .pc-card,
+      .reveal,
+      .pc-card::after,
+      .pc-card .pc-icon,
+      .pc-card .tap-ripple span,
+      .xfade-layer,
+      .anim-fade-up,
+      .hero-glow,
+      .btn-shine::after,
+      .hero-parallax {
+        transition: none !important;
+        animation: none !important;
+        transform: none !important;
+        filter: none !important;
+      }
+      .reveal { opacity: 1 !important; }
+      .pc-card::after { opacity: 0 !important; }
+    }
+  </style>
+</head>
+
+<body class="bg-white font-sans text-slate-800 overflow-x-hidden text-[17px] sm:text-[18px] lg:text-[19px] leading-relaxed">
+  <!-- ✅ Skip to content (a11y) -->
+  <a href="#home"
+    class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[90] focus:bg-white focus:px-4 focus:py-2 focus:rounded-xl focus:shadow-soft focus:ring-2 focus:ring-brand-200">
+    Skip to content
+  </a>
+
+  <!-- ✅ Scroll progress bar -->
+  <div id="scrollBar" class="fixed top-0 left-0 z-[80] h-[3px] w-0 bg-brand-500"></div>
+
+  <!-- ✅ Back to top -->
+  <button id="backToTop" type="button"
+    class="fixed bottom-5 right-5 z-[80] hidden items-center gap-2 rounded-2xl bg-white/95 px-4 py-3 text-sm font-semibold text-slate-800 shadow-soft ring-1 ring-black/10 backdrop-blur hover:bg-white focus:outline-none focus:ring-4 focus:ring-brand-200">
+    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M12 19V5" />
+      <path stroke-linecap="round" stroke-linejoin="round" d="M5 12l7-7 7 7" />
+    </svg>
+    Top
+  </button>
+
+  <!-- NAVBAR -->
+  <header class="fixed inset-x-0 top-0 z-50 bg-white/95 backdrop-blur border-b border-slate-200">
+    <nav class="mx-auto flex max-w-7xl items-center px-4 py-4 sm:px-6 lg:px-8">
+      <!-- Brand -->
+      <a href="index.html" class="flex items-center gap-3">
+        <img src="./assets/logo.png" alt="Purposive Communication Logo"
+          class="h-10 w-10 rounded-full ring-1 ring-black/10 object-cover"
+          onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png';" />
+        <span class="text-lg sm:text-xl font-semibold tracking-tight text-slate-900">Purposive Communication</span>
+      </a>
+
+      <!-- Desktop Links -->
+      <div class="hidden md:flex items-center gap-8 ml-auto">
+        <a href="#home" class="nav-link text-sm font-semibold text-brand-700 hover:text-brand-800">Home</a>
+        <a href="#about" class="nav-link text-sm font-medium text-slate-600 hover:text-brand-700">About Us</a>
+        <a href="#contact" class="nav-link text-sm font-medium text-slate-600 hover:text-brand-700">Contact</a>
+        <a href="lessons.html" class="text-sm font-medium text-slate-600 hover:text-brand-700">Lessons</a>
+      </div>
+
+      <!-- Login (GUEST ONLY) -->
+      <a href="login.html" id="openLoginBtn"
+        class="btn-shine auth-guest ml-6 rounded-xl bg-brand-500 px-5 py-2.5 text-sm font-semibold text-white shadow-soft hover:bg-brand-600">
+        Login
+      </a>
+
+      <!-- User dropdown (LOGGED IN ONLY) -->
+      <div class="auth-user hidden relative ml-6">
+        <button id="userMenuBtn" type="button"
+          class="inline-flex items-center gap-3 rounded-2xl bg-white px-2 py-1.5 ring-1 ring-black/5 shadow-sm hover:bg-slate-50 hover:shadow-soft transition"
+          aria-haspopup="menu" aria-expanded="false">
+          <div id="navAvatar"
+            class="h-9 w-9 rounded-full bg-slate-100 ring-1 ring-black/5 flex items-center justify-center text-slate-700 font-extrabold">
+            U
+          </div>
+          <span id="navName" class="text-sm font-semibold text-slate-900 max-w-[140px] truncate">Student</span>
+          <svg id="navCaret" class="h-4 w-4 text-slate-500 transition-transform" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6" />
+          </svg>
+        </button>
+
+        <!-- Dropdown panel -->
+        <div id="userDropdown"
+          class="absolute right-[-10px] mt-3 hidden w-[290px] overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/10">
+          <div class="p-3">
+            <div class="rounded-2xl bg-brand-50 p-3 ring-1 ring-brand-100">
+              <div class="flex items-start gap-3">
+                <div id="ddAvatar"
+                  class="h-11 w-11 rounded-full bg-slate-100 ring-1 ring-black/5 flex items-center justify-center text-slate-700 font-extrabold text-lg">
+                </div>
+                <div class="min-w-0">
+                  <p id="ddName" class="truncate text-sm font-extrabold text-slate-900 max-w-[210px]">Student</p>
+                  <p class="text-xs font-semibold text-slate-500">Student</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-3 space-y-2 text-sm">
+              <div class="flex items-center gap-3 rounded-xl bg-white px-3 py-2 ring-1 ring-black/5">
+                <svg class="h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 4h16v16H4V4z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M22 6l-10 7L2 6" />
+                </svg>
+                <span id="ddEmail" class="truncate text-slate-700 max-w-[210px]">email@example.com</span>
+              </div>
+
+              <div class="flex items-center gap-3 rounded-xl bg-white px-3 py-2 ring-1 ring-black/5">
+                <svg class="h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2">
+                  <rect x="3" y="5" width="18" height="14" rx="2" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M7 15h4" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M7 9h10" />
+                </svg>
+                <span class="text-slate-700"> ID: <span id="ddId" class="font-semibold text-slate-800">—</span></span>
+              </div>
+            </div>
+
+            <div class="mt-3 grid grid-cols-2 gap-2">
+              <a href="profile.html"
+                class="btn-shine inline-flex items-center justify-center rounded-2xl bg-brand-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-900 transition">
+                View profile
+              </a>
+              <button id="signOutBtn" type="button"
+                class="inline-flex items-center justify-center rounded-2xl bg-slate-100 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-200 transition">
+                Sign out
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile menu button -->
+      <button id="menuBtn"
+        class="inline-flex items-center justify-center rounded-xl bg-slate-50 p-2 text-slate-800 ring-1 ring-black/5 hover:bg-slate-100 md:hidden"
+        aria-label="Open menu" aria-expanded="false">
+        <svg id="menuIcon" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="mx-auto hidden max-w-7xl px-4 pb-4 sm:px-6 lg:px-8 md:hidden">
+      <div class="rounded-2xl bg-white p-4 shadow-soft ring-1 ring-black/5">
+        <div class="flex flex-col gap-2">
+          <a href="#home"
+            class="nav-link rounded-xl px-3 py-3 text-sm font-semibold text-brand-700 bg-brand-50 active:bg-brand-100">Home</a>
+
+          <a href="#about"
+            class="nav-link rounded-xl px-3 py-3 text-sm font-medium text-slate-700 hover:bg-slate-100 active:bg-slate-200">About Us</a>
+          <a href="#contact"
+            class="nav-link rounded-xl px-3 py-3 text-sm font-medium text-slate-700 hover:bg-slate-100 active:bg-slate-200">Contact</a>
+
+          <a href="lessons.html"
+            class="rounded-xl px-3 py-3 text-sm font-medium text-slate-700 hover:bg-slate-100 active:bg-slate-200">Lessons</a>
+          <a href="profile.html"
+            class="rounded-xl px-3 py-3 text-sm font-medium text-slate-700 hover:bg-slate-100 active:bg-slate-200">Profile</a>
+
+          <!-- Login (GUEST ONLY) -->
+          <a href="login.html" id="openLoginMobile"
+            class="btn-shine auth-guest mt-2 rounded-xl bg-brand-500 px-4 py-3 text-center text-sm font-semibold text-white hover:bg-brand-600 active:bg-brand-700">
+            Login
+          </a>
+
+          <!-- Logged-in block (MOBILE ONLY) -->
+          <div class="auth-user hidden mt-2 rounded-2xl bg-white ring-1 ring-black/5 p-3">
+            <div class="flex items-center gap-3">
+              <div id="mNavAvatar"
+                class="h-10 w-10 rounded-full bg-slate-100 ring-1 ring-black/5 flex items-center justify-center font-extrabold text-slate-700">
+                U
+              </div>
+              <div class="min-w-0">
+                <p id="mNavName" class="truncate text-sm font-extrabold text-slate-900 max-w-[200px]">Student</p>
+                <p id="mNavEmail" class="truncate text-xs font-semibold text-slate-500 max-w-[200px]">email@example.com</p>
+              </div>
+            </div>
+            <div class="mt-3 grid grid-cols-2 gap-2">
+              <a href="profile.html"
+                class="btn-shine rounded-xl bg-brand-800 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-brand-900 active:bg-brand-900">View profile</a>
+              <button id="mSignOutBtn"
+                class="rounded-xl bg-slate-100 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-200 active:bg-slate-300">Sign out</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section id="home" class="hero-full relative overflow-hidden">
+    <div class="absolute inset-0 hero-parallax">
+      <div class="hero-glow" id="heroGlow"></div>
+
+      <div class="relative h-full w-full overflow-hidden group" id="heroCarousel">
+        <img id="heroImgA"
+          src="https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=1800&q=80"
+          alt="Purposive Communication hero"
+          class="xfade-layer is-active"
+          loading="eager"
+          fetchpriority="high"
+          decoding="async" />
+        <img id="heroImgB"
+          src="https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=1800&q=80"
+          alt="Purposive Communication hero"
+          class="xfade-layer"
+          loading="eager"
+          decoding="async" />
+
+        <div class="absolute inset-0 bg-gradient-to-b from-black/55 to-black/35" id="heroOverlay"></div>
+
+        <button id="heroPrev" type="button" aria-label="Previous photo"
+          class="absolute left-4 top-1/2 -translate-y-1/2 z-10 inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/90 text-slate-800 ring-1 ring-black/10 shadow-soft
+                 hover:bg-white focus:outline-none focus:ring-4 focus:ring-brand-200
+                 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6" />
+          </svg>
+        </button>
+
+        <button id="heroNext" type="button" aria-label="Next photo"
+          class="absolute right-4 top-1/2 -translate-y-1/2 z-10 inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/90 text-slate-800 ring-1 ring-black/10 shadow-soft
+                 hover:bg-white focus:outline-none focus:ring-4 focus:ring-brand-200
+                 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 18l6-6-6-6" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="relative mx-auto max-w-7xl h-full flex flex-col items-center justify-center px-4 text-center sm:px-6 lg:px-8">
+      <h1 class="max-w-5xl text-4xl font-extrabold tracking-tight text-white sm:text-6xl lg:text-7xl anim-fade-up anim-delay-1">
+        Master Purposive <br class="hidden sm:block" />
+        Communication
+      </h1>
+
+      <p class="mt-6 max-w-3xl text-base text-white/90 sm:text-xl anim-fade-up anim-delay-2">
+        Develop essential communication skills through self-paced learning with interactive lessons, quizzes, and
+        real-time progress tracking.
+      </p>
+
+      <div id="heroGuestButtons" class="auth-guest mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row anim-fade-up anim-delay-3">
+        <a href="login.html" id="startLearningBtn"
+          class="btn-shine w-full rounded-2xl bg-brand-500 px-9 py-4 text-base font-semibold text-white shadow-soft hover:bg-brand-600 focus:outline-none focus:ring-4 focus:ring-brand-200 sm:w-auto">
+          Start Learning
+        </a>
+
+        <a href="login.html" id="signUpFreeBtn"
+          class="btn-shine w-full rounded-2xl border border-white/60 bg-white/10 px-9 py-4 text-base font-semibold text-white backdrop-blur hover:bg-white/15 focus:outline-none focus:ring-4 focus:ring-white/20 sm:w-auto">
+          Sign Up Free
+        </a>
+      </div>
+
+      <!-- ✅ mini features strip -->
+      <div class="mt-10 grid w-full max-w-4xl gap-3 sm:grid-cols-3">
+        <div class="reveal rounded-2xl bg-white/10 p-4 text-left text-white ring-1 ring-white/15 backdrop-blur" data-reveal>
+          <p class="text-sm font-extrabold">Self-paced</p>
+          <p class="text-sm text-white/80">Learn anytime, anywhere.</p>
+        </div>
+        <div class="reveal rounded-2xl bg-white/10 p-4 text-left text-white ring-1 ring-white/15 backdrop-blur" data-reveal>
+          <p class="text-sm font-extrabold">Quizzes</p>
+          <p class="text-sm text-white/80">Practice and unlock lessons.</p>
+        </div>
+        <div class="reveal rounded-2xl bg-white/10 p-4 text-left text-white ring-1 ring-white/15 backdrop-blur" data-reveal>
+          <p class="text-sm font-extrabold">Progress tracking</p>
+          <p class="text-sm text-white/80">See growth in real-time.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Divider -->
+  <div class="section-divider">
+    <svg viewBox="0 0 1440 80" preserveAspectRatio="none">
+      <path fill="#ffffff" d="M0,32 C240,80 480,0 720,32 C960,64 1200,96 1440,32 L1440,80 L0,80 Z"></path>
+    </svg>
+  </div>
+
+  <!-- WHY CHOOSE -->
+  <section class="bg-white py-16 sm:py-24">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="text-center">
+        <h2 class="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">Why Choose Our Platform?</h2>
+        <p class="mx-auto mt-4 max-w-2xl text-lg text-slate-600">
+          Experience a comprehensive learning journey designed for your success
+        </p>
+      </div>
+
+      <div class="mt-12 grid gap-8 sm:grid-cols-2 md:grid-cols-3">
+        <div class="pc-card reveal rounded-3xl bg-brand-50 p-10 text-center shadow-soft ring-1 ring-black/5" data-reveal>
+          <div class="pc-icon mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-brand-500 text-white">
+            <svg viewBox="0 0 24 24" class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          </div>
+          <h3 class="mt-6 text-2xl font-bold text-slate-900">Self-Paced Learning</h3>
+          <p class="mt-3 text-base text-slate-600">
+            Learn at your own pace with flexible scheduling that fits your lifestyle and commitments
+          </p>
+          <div class="tap-ripple"></div>
+        </div>
+
+        <div class="pc-card reveal rounded-3xl bg-brand-50 p-10 text-center shadow-soft ring-1 ring-black/5" data-reveal>
+          <div class="pc-icon mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-brand-500 text-white">
+            <svg viewBox="0 0 24 24" class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 19h16" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M7 16V9" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 16V5" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 16v-7" />
+            </svg>
+          </div>
+          <h3 class="mt-6 text-2xl font-bold text-slate-900">Progress Tracking</h3>
+          <p class="mt-3 text-base text-slate-600">
+            Monitor your advancement with real-time progress bars and detailed performance analytics
+          </p>
+          <div class="tap-ripple"></div>
+        </div>
+
+        <div class="pc-card reveal rounded-3xl bg-brand-50 p-10 text-center shadow-soft ring-1 ring-black/5" data-reveal>
+          <div class="pc-icon mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-brand-500 text-white">
+            <svg viewBox="0 0 24 24" class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5 9 6.343 9 8s1.343 3 3 3z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M7 11v-1a5 5 0 0110 0v1" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M7 11h10v8H7z" />
+            </svg>
+          </div>
+          <h3 class="mt-6 text-2xl font-bold text-slate-900">Sequential Learning</h3>
+          <p class="mt-3 text-base text-slate-600">
+            Master each concept before moving forward with our structured unlock system
+          </p>
+          <div class="tap-ripple"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ✅ ABOUT US (FULL SCREEN) -->
+  <section id="about" class="screen-only bg-slate-50">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="grid gap-10 lg:grid-cols-2 lg:items-center">
+        <div>
+          <h2 class="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">About Us</h2>
+          <p class="mt-5 text-lg text-slate-600">
+            Purposive Communication E-Learning Platform helps students build real-world communication skills through
+            guided lessons, interactive activities, and assessments. Our goal is to make learning communication clear,
+            practical, and engaging.
+          </p>
+
+          <div class="mt-8 grid gap-4 sm:grid-cols-2">
+            <div class="reveal rounded-3xl bg-white p-6 shadow-soft ring-1 ring-black/5" data-reveal>
+              <h3 class="text-lg font-extrabold text-slate-900">Our Mission</h3>
+              <p class="mt-2 text-base text-slate-600">
+                Make communication learning simple, engaging, and accessible for every learner.
+              </p>
+            </div>
+
+            <div class="reveal rounded-3xl bg-white p-6 shadow-soft ring-1 ring-black/5" data-reveal>
+              <h3 class="text-lg font-extrabold text-slate-900">Our Vision</h3>
+              <p class="mt-2 text-base text-slate-600">
+                Empower students to communicate confidently in academic and professional settings.
+              </p>
+            </div>
+          </div>
+
+          <div class="mt-6 reveal rounded-3xl bg-white p-6 shadow-soft ring-1 ring-black/5" data-reveal>
+            <h3 class="text-lg font-extrabold text-slate-900">What you get</h3>
+            <ul class="mt-3 space-y-2 text-base text-slate-600 list-disc pl-5">
+              <li>Structured lessons with clear outcomes</li>
+              <li>Quizzes and progress tracking</li>
+              <li>Guided practice for real-life communication</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="relative">
+          <div class="absolute -inset-6 rounded-[2rem] bg-brand-50 blur-2xl"></div>
+          <div class="relative overflow-hidden rounded-[2rem] shadow-soft ring-1 ring-black/5">
+            <img
+              src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1400&q=80"
+              alt="Team collaboration"
+              class="h-[260px] w-full object-cover sm:h-[420px]"
+              loading="lazy"
+              decoding="async"
+              onerror="this.src='https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1400&q=80';" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="bg-white pb-16 sm:pb-24">
+    <div class="mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
+      <div>
+        <h2 class="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">How It Works</h2>
+
+        <div class="mt-10 space-y-8">
+          <div class="reveal flex gap-5" data-reveal>
+            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white font-bold">1</div>
+            <div>
+              <h3 class="text-xl font-bold text-slate-900">Choose Your Lesson</h3>
+              <p class="mt-1 text-base text-slate-600">Browse curated lessons and select what you want to master</p>
+            </div>
+          </div>
+
+          <div class="reveal flex gap-5" data-reveal>
+            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white font-bold">2</div>
+            <div>
+              <h3 class="text-xl font-bold text-slate-900">Complete Each Part</h3>
+              <p class="mt-1 text-base text-slate-600">Watch/read content and pass quizzes to unlock the next section</p>
+            </div>
+          </div>
+
+          <div class="reveal flex gap-5" data-reveal>
+            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white font-bold">3</div>
+            <div>
+              <h3 class="text-xl font-bold text-slate-900">Pass Final Assessment</h3>
+              <p class="mt-1 text-base text-slate-600">Demonstrate mastery through the final assessment</p>
+            </div>
+          </div>
+
+          <div class="reveal flex gap-5" data-reveal>
+            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white font-bold">4</div>
+            <div>
+              <h3 class="text-xl font-bold text-slate-900">Track Your Progress</h3>
+              <p class="mt-1 text-base text-slate-600">Monitor achievements and keep building your skills</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="relative">
+        <div class="absolute -inset-6 rounded-[2rem] bg-brand-50 blur-2xl"></div>
+
+        <div class="relative overflow-hidden rounded-[2rem] shadow-soft ring-1 ring-black/5 group" id="hwCarousel">
+          <div class="relative h-[280px] w-full sm:h-[420px] lg:h-[520px]">
+            <img id="hwImgA"
+              src="./assets/how-it-works.jpg"
+              alt="Student learning"
+              class="xfade-layer is-active"
+              loading="lazy"
+              decoding="async" />
+            <img id="hwImgB"
+              src="./assets/how-it-works.jpg"
+              alt="Student learning"
+              class="xfade-layer"
+              loading="lazy"
+              decoding="async" />
+          </div>
+
+          <button id="hwPrev" type="button" aria-label="Previous photo"
+            class="absolute left-4 top-1/2 -translate-y-1/2 z-10 inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/90 text-slate-800 ring-1 ring-black/10 shadow-soft
+                   hover:bg-white focus:outline-none focus:ring-4 focus:ring-brand-200
+                   opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6" />
+            </svg>
+          </button>
+
+          <button id="hwNext" type="button" aria-label="Next photo"
+            class="absolute right-4 top-1/2 -translate-y-1/2 z-10 inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/90 text-slate-800 ring-1 ring-black/10 shadow-soft
+                   hover:bg-white focus:outline-none focus:ring-4 focus:ring-brand-200
+                   opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 18l6-6-6-6" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ✅ CONTACT (FULL SCREEN) -->
+  <section id="contact" class="screen-only bg-white">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="text-center">
+        <h2 class="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">Contact Us</h2>
+        <p class="mx-auto mt-4 max-w-2xl text-lg text-slate-600">
+          Have questions or feedback? Send us a message or reach out using the details below.
+        </p>
+      </div>
+
+      <!-- ✅ Inline success message -->
+      <div id="contactToast" class="mt-8 hidden rounded-3xl bg-brand-50 p-5 ring-1 ring-brand-100 text-left" aria-live="polite">
+        <p class="font-extrabold text-brand-900">Message sent!</p>
+        <p class="text-sm text-brand-800">Thanks for reaching out. (Demo only)</p>
+      </div>
+
+      <div class="mt-10 grid gap-6 lg:gap-10 lg:grid-cols-2">
+        <!-- Contact Info -->
+        <div class="rounded-3xl bg-slate-50 p-6 sm:p-8 shadow-soft ring-1 ring-black/5">
+          <h3 class="text-xl font-extrabold text-slate-900">Get in touch</h3>
+
+          <div class="mt-6 space-y-4 text-base">
+            <div class="flex items-start gap-3">
+              <div class="mt-0.5 rounded-xl bg-brand-100 p-2 text-brand-700">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M22 16.92v3a2 2 0 01-2.18 2 19.86 19.86 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.86 19.86 0 012.08 4.18 2 2 0 014.06 2h3a2 2 0 012 1.72c.12.86.3 1.7.54 2.52a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.56-1.1a2 2 0 012.11-.45c.82.24 1.66.42 2.52.54A2 2 0 0122 16.92z" />
+                </svg>
+              </div>
+              <div>
+                <p class="font-semibold text-slate-900">Phone</p>
+                <p class="text-slate-600">+63 900 000 0000</p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3">
+              <div class="mt-0.5 rounded-xl bg-brand-100 p-2 text-brand-700">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 4h16v16H4V4z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M22 6l-10 7L2 6" />
+                </svg>
+              </div>
+              <div class="min-w-0">
+                <p class="font-semibold text-slate-900">Email</p>
+                <p class="text-slate-600 break-words">support@purposivecommunication.com</p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3">
+              <div class="mt-0.5 rounded-xl bg-brand-100 p-2 text-brand-700">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 10a3 3 0 100-6 3 3 0 000 6z" />
+                </svg>
+              </div>
+              <div>
+                <p class="font-semibold text-slate-900">Address</p>
+                <p class="text-slate-600">Your School / Campus Address, Philippines</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact Form (front-end demo) -->
+        <form id="contactForm" class="rounded-3xl bg-white p-6 sm:p-8 shadow-soft ring-1 ring-black/5" novalidate>
+          <h3 class="text-xl font-extrabold text-slate-900">Send a message</h3>
+
+          <div class="mt-6 grid gap-4">
+            <div>
+              <label for="cName" class="text-base font-semibold text-slate-700">Full name</label>
+              <input id="cName" name="name" required
+                class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-base text-slate-800 shadow-sm focus:outline-none focus:ring-4 focus:ring-brand-200"
+                placeholder="Juan Dela Cruz" />
+              <p id="errName" class="mt-2 hidden text-sm font-semibold text-red-600">Please enter your name.</p>
+            </div>
+
+            <div>
+              <label for="cEmail" class="text-base font-semibold text-slate-700">Email</label>
+              <input id="cEmail" name="email" type="email" required
+                class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-base text-slate-800 shadow-sm focus:outline-none focus:ring-4 focus:ring-brand-200"
+                placeholder="you@example.com" />
+              <p id="errEmail" class="mt-2 hidden text-sm font-semibold text-red-600">Please enter a valid email.</p>
+            </div>
+
+            <div>
+              <label for="cMsg" class="text-base font-semibold text-slate-700">Message</label>
+              <textarea id="cMsg" name="message" rows="3" required
+                class="mt-2 w-full resize-none overflow-y-auto rounded-2xl border border-slate-200 bg-white px-4 py-3 text-base text-slate-800 shadow-sm focus:outline-none focus:ring-4 focus:ring-brand-200"
+                style="max-height: 220px;"
+                placeholder="Write your message here..."></textarea>
+              <p id="errMsg" class="mt-2 hidden text-sm font-semibold text-red-600">Please type a message.</p>
+            </div>
+
+            <button id="contactSubmit" type="submit"
+              class="btn-shine mt-2 inline-flex items-center justify-center rounded-2xl bg-brand-500 px-6 py-3 text-base font-semibold text-white shadow-soft hover:bg-brand-600 focus:outline-none focus:ring-4 focus:ring-brand-200">
+              <span id="contactBtnText">Send Message</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ✅ CTA BAND (GUEST ONLY) -->
+  <section id="ctaBand" class="auth-guest bg-brand-700 py-16 sm:py-24">
+    <div class="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
+      <h2 class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl">Ready to Start Your Learning Journey?</h2>
+      <p class="mx-auto mt-4 max-w-2xl text-lg text-white/85">
+        Join thousands of learners mastering purposive communication skills
+      </p>
+
+      <a href="login.html" id="getStartedFreeBtn"
+        class="btn-shine mt-10 inline-flex items-center justify-center rounded-2xl bg-white px-10 py-4 text-base font-semibold text-brand-700 shadow-soft hover:bg-brand-50 focus:outline-none focus:ring-4 focus:ring-white/30">
+        Get Started Free
+      </a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-brand-800 text-white">
+    <div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+      <div class="grid gap-10 md:grid-cols-3 md:items-start">
+        <div>
+          <div class="flex items-center gap-3">
+            <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20">
+              <svg viewBox="0 0 24 24" class="h-6 w-6 text-white" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 7l8-4 8 4v10l-8 4-8-4V7z"></path>
+                <path d="M8 11l2 2 5-5"></path>
+              </svg>
+            </div>
+            <span class="text-lg font-semibold">Purposive Communication</span>
+          </div>
+          <p class="mt-4 max-w-sm text-base leading-relaxed text-white/80">
+            Master the art of effective communication through our comprehensive self-paced learning platform. Build
+            essential skills for academic and professional success.
+          </p>
+        </div>
+
+        <div class="md:justify-self-center">
+          <h3 class="text-lg font-semibold">Quick Links</h3>
+          <ul class="mt-4 space-y-3 text-base text-white/80">
+            <li><a class="hover:text-white" href="#home">Home</a></li>
+            <li><a class="hover:text-white" href="#about">About Us</a></li>
+            <li><a class="hover:text-white" href="#contact">Contact</a></li>
+            <li><a class="hover:text-white" href="lessons.html">Lessons</a></li>
+          </ul>
+        </div>
+
+        <div class="md:justify-self-end">
+          <h3 class="text-lg font-semibold">Connect</h3>
+          <div class="mt-4 flex items-center gap-4">
+            <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer"
+              class="inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/20 hover:bg-white/15"
+              aria-label="Facebook">
+              <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M22 12a10 10 0 10-11.5 9.9v-7H8v-3h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.4H15.5c-1.2 0-1.5.7-1.5 1.5V12H17l-.5 3h-2.5v7A10 10 0 0022 12z" />
+              </svg>
+            </a>
+
+            <a href="https://x.com/" target="_blank" rel="noopener noreferrer"
+              class="inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/20 hover:bg-white/15"
+              aria-label="Twitter (X)">
+              <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M21 7.2c-.7.3-1.5.5-2.3.6.8-.5 1.4-1.2 1.7-2.1-.8.4-1.6.8-2.5.9A3.9 3.9 0 0015.1 5c-2.1 0-3.8 1.7-3.8 3.8 0 .3 0 .6.1.9-3.2-.2-6-1.7-7.9-4.1-.3.6-.5 1.2-.5 1.9 0 1.3.7 2.5 1.7 3.2-.6 0-1.2-.2-1.7-.5v.1c0 1.9 1.4 3.5 3.2 3.8-.3.1-.7.1-1.1.1-.2 0-.5 0-.7-.1.5 1.7 2.1 2.9 3.9 2.9A7.9 7.9 0 013 18.6 11.2 11.2 0 009 20.3c7.3 0 11.3-6.1 11.3-11.3v-.5c.8-.6 1.4-1.2 1.9-2z" />
+              </svg>
+            </a>
+
+            <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer"
+              class="inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/20 hover:bg-white/15"
+              aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M6.9 6.7a2.1 2.1 0 11-4.2 0 2.1 2.1 0 014.2 0zM2.9 21h4V9H2.9v12zM9.4 9h3.8v1.6h.1c.5-.9 1.8-1.9 3.7-1.9 4 0 4.7 2.6 4.7 6V21h-4v-5.4c0-1.3 0-2.9-1.8-2.9s-2.1 1.4-2.1 2.8V21h-4V9z" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-12 border-t border-white/15 pt-6 text-center text-base text-white/75">
+        © <span id="year"></span> Purposive Communication E-Learning Platform. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <!-- LOGIN MODAL -->
+  <div id="loginModal" class="fixed inset-0 z-[60] hidden">
+    <div id="loginBackdrop" class="absolute inset-0 bg-black/35 backdrop-blur-sm"></div>
+
+    <div class="relative mx-auto flex min-h-full max-w-3xl items-center justify-center px-4 py-8">
+      <div class="relative w-full max-w-lg">
+        <button id="closeLoginBtn" type="button"
+          class="absolute -top-3 -right-3 z-10 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white text-slate-700 shadow-soft ring-1 ring-black/10 hover:bg-slate-50"
+          aria-label="Close login">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+
+        <iframe id="loginFrame" src="login.html" title="Login"
+          class="h-[75vh] sm:h-[720px] w-full overflow-hidden rounded-3xl bg-transparent shadow-soft ring-1 ring-black/10"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ SIGN OUT CONFIRM MODAL -->
+  <div id="signOutModal" class="fixed inset-0 z-[70] hidden">
+    <div id="signOutBackdrop" class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+
+    <div class="relative mx-auto flex min-h-full max-w-md items-center justify-center px-4 py-10">
+      <div class="w-full rounded-3xl bg-white shadow-soft ring-1 ring-black/10">
+        <div class="p-5 sm:p-6 text-center">
+          <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 ring-1 ring-black/5">
+            <svg viewBox="0 0 24 24" class="h-6 w-6 text-brand-700" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v5" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 16h.01" />
+            </svg>
+          </div>
+
+          <h3 class="mt-3 text-lg font-extrabold text-slate-900">Are you sure you want to sign out?</h3>
+
+          <div class="mt-5 grid grid-cols-2 gap-3">
+            <button id="signOutNo" type="button"
+              class="w-full rounded-xl bg-slate-100 px-5 py-3 text-base font-semibold text-slate-700 hover:bg-slate-200 ring-1 ring-black/5">
+              No
+            </button>
+
+            <button id="signOutYes" type="button"
+              class="w-full rounded-xl bg-brand-600 px-5 py-3 text-base font-semibold text-white hover:bg-brand-700 ring-1 ring-black/5">
+              Yes
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ✅ Start in "pending" so nothing auth-related flashes
+    document.documentElement.classList.add("pc-auth-pending");
+  </script>
+
+  <!-- ✅ ALL LOGIC (NO localStorage) -->
+  <script type="module">
+    import { auth, db } from "./firebase.js";
+    import { doc, getDoc, getDocFromCache } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+    import {
+      onAuthStateChanged,
+      signOut as firebaseSignOut,
+      signInWithEmailAndPassword,
+      setPersistence,
+      browserSessionPersistence
+    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+
+    // Footer year
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // ✅ Force Firebase auth to NOT use localStorage (session only)
+    try { await setPersistence(auth, browserSessionPersistence); } catch (_) { }
+
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // ✅ Set CSS variable for the fixed header height
+    (function setHeaderHeightVar() {
+      const header = document.querySelector("header");
+      if (!header) return;
+
+      function apply() {
+        document.documentElement.style.setProperty("--header-h", header.offsetHeight + "px");
+      }
+
+      apply();
+      window.addEventListener("resize", apply);
+    })();
+
+    // ✅ Scroll progress + navbar shrink + back-to-top
+    (function scrollUX() {
+      const bar = document.getElementById("scrollBar");
+      const header = document.querySelector("header");
+      const topBtn = document.getElementById("backToTop");
+
+      function onScroll() {
+        const doc = document.documentElement;
+        const max = doc.scrollHeight - doc.clientHeight;
+        const pct = max > 0 ? (doc.scrollTop / max) * 100 : 0;
+
+        if (bar) bar.style.width = pct + "%";
+        if (header) header.classList.toggle("is-scrolled", doc.scrollTop > 10);
+
+        if (topBtn) {
+          const show = pct > 25;
+          topBtn.classList.toggle("hidden", !show);
+          topBtn.classList.toggle("flex", show);
+        }
+
+        // subtle hero parallax
+        if (!reduceMotion) {
+          const p = Math.min(26, doc.scrollTop * 0.06);
+          document.documentElement.style.setProperty("--hero-parallax", `${p}px`);
+        }
+      }
+
+      window.addEventListener("scroll", onScroll, { passive: true });
+      onScroll();
+
+      topBtn?.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
+      });
+    })();
+
+    // Mobile menu toggle
+    const menuBtn = document.getElementById("menuBtn");
+    const mobileMenu = document.getElementById("mobileMenu");
+    menuBtn?.addEventListener("click", () => {
+      const isOpen = !mobileMenu.classList.contains("hidden");
+      mobileMenu.classList.toggle("hidden");
+      menuBtn.setAttribute("aria-expanded", String(!isOpen));
+    });
+
+    // ✅ close mobile menu when resizing to desktop (md+)
+    function closeMobileMenuOnDesktop() {
+      if (!mobileMenu || !menuBtn) return;
+      if (window.matchMedia("(min-width: 768px)").matches) {
+        mobileMenu.classList.add("hidden");
+        menuBtn.setAttribute("aria-expanded", "false");
+      }
+    }
+    window.addEventListener("resize", closeMobileMenuOnDesktop);
+    closeMobileMenuOnDesktop();
+
+    // Smooth scroll for # links
+    document.querySelectorAll('a[href^="#"]').forEach((a) => {
+      a.addEventListener("click", (e) => {
+        const href = a.getAttribute("href");
+        if (!href || href === "#") return;
+
+        const el = document.querySelector(href);
+        if (!el) return;
+
+        e.preventDefault();
+        el.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+
+        if (mobileMenu && !mobileMenu.classList.contains("hidden")) {
+          mobileMenu.classList.add("hidden");
+          menuBtn?.setAttribute("aria-expanded", "false");
+        }
+      });
+    });
+
+    // ✅ Active nav highlight
+    (function setupActiveNav() {
+      const links = Array.from(document.querySelectorAll(".nav-link"));
+      const map = new Map();
+      links.forEach(a => {
+        const href = a.getAttribute("href");
+        if (href && href.startsWith("#")) map.set(href, a);
+      });
+
+      const sections = ["#home", "#about", "#contact"]
+        .map(id => document.querySelector(id))
+        .filter(Boolean);
+
+      if (!sections.length) return;
+
+      const io = new IntersectionObserver((entries) => {
+        const visible = entries
+          .filter(e => e.isIntersecting)
+          .sort((a, b) => (b.intersectionRatio - a.intersectionRatio))[0];
+
+        if (!visible) return;
+
+        const id = "#" + visible.target.id;
+        links.forEach(a => a.classList.remove("is-active"));
+        const active = map.get(id);
+        active?.classList.add("is-active");
+      }, { threshold: [0.25, 0.5, 0.75] });
+
+      sections.forEach(s => io.observe(s));
+    })();
+
+    // ===== Login modal logic =====
+    const loginModal = document.getElementById("loginModal");
+    const loginBackdrop = document.getElementById("loginBackdrop");
+    const openLoginBtn = document.getElementById("openLoginBtn");
+    const openLoginMobile = document.getElementById("openLoginMobile");
+    const closeLoginBtn = document.getElementById("closeLoginBtn");
+    const startLearningBtn = document.getElementById("startLearningBtn");
+    const signUpFreeBtn = document.getElementById("signUpFreeBtn");
+    const getStartedFreeBtn = document.getElementById("getStartedFreeBtn");
+    const loginFrame = document.getElementById("loginFrame");
+
+    // ===== Auth state (Firebase) =====
+    let __currentUser = null;
+    let __profile = null;
+
+    async function loadProfile(uid) {
+      const ref = doc(db, "users", uid);
+
+      // ✅ Try local Firestore cache first
+      try {
+        const cached = await getDocFromCache(ref);
+        if (cached.exists()) return cached.data() || {};
+      } catch (_) { }
+
+      // ✅ Fallback to server
+      try {
+        const snap = await getDoc(ref);
+        return snap.exists() ? (snap.data() || {}) : {};
+      } catch (_) {
+        return {};
+      }
+    }
+
+    function normalizeRole(profile) {
+      return String(profile?.role || "student").toLowerCase().trim();
+    }
+
+    // ✅ ROLE-BASED ROUTING
+    function routeByRole() {
+      if (!__currentUser) return;
+      const role = normalizeRole(__profile);
+
+      if (role === "admin") {
+        if (!location.href.toLowerCase().endsWith("admin-dashboard.html")) {
+          window.location.href = "admin-dashboard.html";
+        }
+        return;
+      }
+
+      if (role === "teacher") {
+        if (!location.href.toLowerCase().endsWith("teacher-dashboard.html")) {
+          window.location.href = "teacher-dashboard.html";
+        }
+        return;
+      }
+    }
+
+    function isLoggedIn() {
+      return !!__currentUser;
+    }
+
+    function openLoginModal(e) {
+      e?.preventDefault?.();
+      if (isLoggedIn()) return;
+
+      if (mobileMenu && !mobileMenu.classList.contains("hidden")) {
+        mobileMenu.classList.add("hidden");
+        menuBtn?.setAttribute("aria-expanded", "false");
+      }
+
+      if (loginFrame) loginFrame.src = "login.html";
+
+      loginModal.classList.remove("hidden");
+      document.body.classList.add("overflow-hidden");
+    }
+
+    function closeLoginModal() {
+      loginModal.classList.add("hidden");
+      document.body.classList.remove("overflow-hidden");
+    }
+
+    openLoginBtn?.addEventListener("click", openLoginModal);
+    openLoginMobile?.addEventListener("click", openLoginModal);
+    startLearningBtn?.addEventListener("click", openLoginModal);
+    signUpFreeBtn?.addEventListener("click", openLoginModal);
+    getStartedFreeBtn?.addEventListener("click", openLoginModal);
+
+    closeLoginBtn?.addEventListener("click", closeLoginModal);
+    loginBackdrop?.addEventListener("click", closeLoginModal);
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !loginModal.classList.contains("hidden")) {
+        closeLoginModal();
+      }
+    });
+
+    // ✅ Parent performs Firebase sign-in (instant UI update)
+    window.addEventListener("message", async (event) => {
+      const d = event?.data;
+      if (!d || d.type !== "pc-auth") return;
+
+      if (d.action === "route") {
+        try { console.log("[PARENT route]", d); } catch (_) {}
+        const role = String(d.role || "").toLowerCase().trim();
+        if (role === "admin") window.location.href = "admin-dashboard.html";
+        if (role === "teacher") window.location.href = "teacher-dashboard.html";
+        return;
+      }
+
+      if (d.action !== "sign-in") return;
+
+      const email = String(d.email || "").trim();
+      const password = String(d.password || "");
+
+      if (!email || !password) {
+        event.source?.postMessage(
+          { type: "pc-auth", status: "error", message: "Please enter your email and password." },
+          "*"
+        );
+        return;
+      }
+
+      try {
+        const cred = await signInWithEmailAndPassword(auth, email, password);
+
+        __currentUser = cred.user;
+        __profile = null;
+
+        applyAuthUI();
+        document.documentElement.classList.remove("pc-auth-pending");
+        document.documentElement.classList.add("pc-auth-ready");
+
+        const p = await loadProfile(cred.user.uid);
+        __profile = p || null;
+        applyAuthUI();
+
+        event.source?.postMessage({ type: "pc-auth", status: "signed-in" }, "*");
+
+        if (loginModal && !loginModal.classList.contains("hidden")) closeLoginModal();
+
+        routeByRole();
+      } catch (err) {
+        const code = err?.code || "";
+        let msg = "Login failed.";
+
+        if (code === "auth/invalid-credential") msg = "Incorrect email or password, or account doesn’t exist in Firebase Authentication.";
+        if (code === "auth/user-disabled") msg = "This account is disabled.";
+        if (code === "auth/invalid-email") msg = "Invalid email address format.";
+        if (code === "auth/too-many-requests") msg = "Too many attempts. Try again later.";
+
+        event.source?.postMessage(
+          { type: "pc-auth", status: "error", message: msg, code },
+          "*"
+        );
+      }
+    });
+
+    const guestEls = Array.from(document.querySelectorAll(".auth-guest"));
+    const userEls = Array.from(document.querySelectorAll(".auth-user"));
+
+    const userMenuBtn2 = document.getElementById("userMenuBtn");
+    const userDropdown2 = document.getElementById("userDropdown");
+    const navCaret = document.getElementById("navCaret");
+
+    const navName = document.getElementById("navName");
+    const navAvatar = document.getElementById("navAvatar");
+
+    const ddName = document.getElementById("ddName");
+    const ddEmail = document.getElementById("ddEmail");
+    const ddId = document.getElementById("ddId");
+    const ddAvatar = document.getElementById("ddAvatar");
+
+    const mNavName = document.getElementById("mNavName");
+    const mNavEmail = document.getElementById("mNavEmail");
+    const mNavAvatar = document.getElementById("mNavAvatar");
+
+    const signOutBtn = document.getElementById("signOutBtn");
+    const mSignOutBtn = document.getElementById("mSignOutBtn");
+
+    function getInitials(nameOrEmail) {
+      const n = (nameOrEmail || "").trim();
+      if (!n) return "U";
+      const parts = n.split(/\s+/).filter(Boolean);
+      if (parts.length >= 2) return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+      return (parts[0][0] || "U").toUpperCase();
+    }
+
+    function setAvatarEl(el, text) {
+      if (!el) return;
+      el.textContent = text || "U";
+    }
+
+    function closeUserDropdown() {
+      if (!userDropdown2 || !userMenuBtn2) return;
+      userDropdown2.classList.add("hidden");
+      userMenuBtn2.setAttribute("aria-expanded", "false");
+      navCaret?.classList.remove("rotate-180");
+    }
+
+    function openUserDropdown() {
+      if (!userDropdown2 || !userMenuBtn2) return;
+      userDropdown2.classList.remove("hidden");
+      userMenuBtn2.setAttribute("aria-expanded", "true");
+      navCaret?.classList.add("rotate-180");
+    }
+
+    function toggleUserDropdown() {
+      if (!userDropdown2) return;
+      const isOpen = !userDropdown2.classList.contains("hidden");
+      if (isOpen) closeUserDropdown();
+      else openUserDropdown();
+    }
+
+    userMenuBtn2?.addEventListener("click", (e) => {
+      e.preventDefault();
+      toggleUserDropdown();
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!userDropdown2 || userDropdown2.classList.contains("hidden")) return;
+      const wrapper = userMenuBtn2?.parentElement;
+      if (wrapper && e.target instanceof Node && !wrapper.contains(e.target)) closeUserDropdown();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeUserDropdown();
+    });
+
+    function applyAuthUI() {
+      const loggedIn = isLoggedIn();
+
+      guestEls.forEach(el => el.classList.toggle("hidden", loggedIn));
+      userEls.forEach(el => el.classList.toggle("hidden", !loggedIn));
+
+      if (!loggedIn) {
+        closeUserDropdown();
+        return;
+      }
+
+      const fullName = (__profile?.fullName || __currentUser?.displayName || "Student").trim() || "Student";
+      const email = (__profile?.email || __currentUser?.email || "").trim();
+      const studentId = (__profile?.studentId || "").trim();
+
+      const avatarText =
+        (__profile?.avatar?.type === "emoji" && __profile?.avatar?.value)
+          ? __profile.avatar.value
+          : getInitials(fullName || email);
+
+      if (navName) navName.textContent = fullName;
+      if (ddName) ddName.textContent = fullName;
+      if (ddEmail) ddEmail.textContent = email;
+      if (ddId) ddId.textContent = studentId ? studentId : "—";
+
+      setAvatarEl(navAvatar, avatarText);
+      setAvatarEl(ddAvatar, avatarText);
+
+      if (mNavName) mNavName.textContent = fullName;
+      if (mNavEmail) mNavEmail.textContent = email;
+      setAvatarEl(mNavAvatar, avatarText);
+    }
+
+    // ===== Sign out confirm modal =====
+    const signOutModal = document.getElementById("signOutModal");
+    const signOutBackdrop = document.getElementById("signOutBackdrop");
+    const signOutYes = document.getElementById("signOutYes");
+    const signOutNo = document.getElementById("signOutNo");
+
+    function openSignOutModal() {
+      closeUserDropdown();
+      signOutModal?.classList.remove("hidden");
+      document.body.classList.add("overflow-hidden");
+    }
+
+    function closeSignOutModal() {
+      signOutModal.classList.add("hidden");
+      document.body.classList.remove("overflow-hidden");
+    }
+
+    signOutNo?.addEventListener("click", closeSignOutModal);
+    signOutBackdrop?.addEventListener("click", closeSignOutModal);
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && signOutModal && !signOutModal.classList.contains("hidden")) {
+        closeSignOutModal();
+      }
+    });
+
+    async function doSignOut() {
+      try { await firebaseSignOut(auth); } catch (_) { }
+      __currentUser = null;
+      __profile = null;
+      closeUserDropdown();
+      applyAuthUI();
+      closeLoginModal();
+      closeSignOutModal();
+    }
+
+    window.__pcSignOut = doSignOut;
+
+    signOutBtn?.addEventListener("click", (e) => { e.preventDefault(); openSignOutModal(); });
+    mSignOutBtn?.addEventListener("click", (e) => { e.preventDefault(); openSignOutModal(); });
+
+    signOutYes?.addEventListener("click", async () => {
+      closeSignOutModal();
+      await doSignOut();
+    });
+
+    // ✅ Firebase auth listener + ROLE ROUTE
+    onAuthStateChanged(auth, (user) => {
+      __currentUser = user || null;
+      __profile = null;
+
+      applyAuthUI();
+
+      document.documentElement.classList.remove("pc-auth-pending");
+      document.documentElement.classList.add("pc-auth-ready");
+
+      if (__currentUser) {
+        loadProfile(__currentUser.uid).then((p) => {
+          __profile = p || null;
+          applyAuthUI();
+          routeByRole();
+        });
+      }
+
+      if (__currentUser && loginModal && !loginModal.classList.contains("hidden")) {
+        closeLoginModal();
+      }
+    });
+
+    // Gate Lessons/Profile when not logged-in
+    document.querySelectorAll('a[href="lessons.html"], a[href="profile.html"]').forEach((a) => {
+      a.addEventListener("click", (e) => {
+        if (!isLoggedIn()) openLoginModal(e);
+      });
+    });
+
+    // ✅ Reveal on scroll (IntersectionObserver) + stagger per SECTION
+    (function setupReveal() {
+      const els = Array.from(document.querySelectorAll("[data-reveal]"));
+      if (!els.length) return;
+
+      if (reduceMotion) {
+        els.forEach(el => el.classList.add("is-visible"));
+        return;
+      }
+
+      const sectionIndex = new Map();
+      els.forEach((el) => {
+        const sec = el.closest("section") || document.body;
+        const idx = sectionIndex.get(sec) || 0;
+        el.style.setProperty("--d", `${idx * 110}ms`);
+        sectionIndex.set(sec, idx + 1);
+      });
+
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.14 });
+
+      els.forEach(el => io.observe(el));
+    })();
+
+    // ✅ Tap ripple (mobile)
+    (function setupTapRipple() {
+      const cards = Array.from(document.querySelectorAll(".pc-card"));
+      if (!cards.length) return;
+
+      cards.forEach(card => {
+        if (!card.querySelector(".tap-ripple")) {
+          const layer = document.createElement("div");
+          layer.className = "tap-ripple";
+          card.appendChild(layer);
+        }
+
+        card.addEventListener("pointerdown", (e) => {
+          if (window.matchMedia("(hover:hover) and (pointer:fine)").matches) return;
+
+          const layer = card.querySelector(".tap-ripple");
+          if (!layer) return;
+
+          const span = document.createElement("span");
+          const rect = card.getBoundingClientRect();
+
+          span.style.left = `${e.clientX - rect.left}px`;
+          span.style.top = `${e.clientY - rect.top}px`;
+          layer.appendChild(span);
+
+          setTimeout(() => span.remove(), 600);
+        });
+      });
+    })();
+
+    // ✅ Contact: auto-expand capped + internal scroll
+    (function autoExpandMessageCapped() {
+      const ta = document.getElementById("cMsg");
+      if (!ta) return;
+
+      const MAX_PX = 220;
+
+      const resize = () => {
+        ta.style.height = "auto";
+        const next = Math.min(ta.scrollHeight, MAX_PX);
+        ta.style.height = next + "px";
+        ta.style.overflowY = (ta.scrollHeight > MAX_PX) ? "auto" : "hidden";
+      };
+
+      ta.addEventListener("input", resize);
+      window.addEventListener("load", resize);
+      resize();
+    })();
+
+    // ✅ Contact: inline success + validation UI + disable button while sending
+    (function contactFormUX() {
+      const form = document.getElementById("contactForm");
+      const toast = document.getElementById("contactToast");
+      const btn = document.getElementById("contactSubmit");
+      const btnText = document.getElementById("contactBtnText");
+
+      const cName = document.getElementById("cName");
+      const cEmail = document.getElementById("cEmail");
+      const cMsg = document.getElementById("cMsg");
+
+      const errName = document.getElementById("errName");
+      const errEmail = document.getElementById("errEmail");
+      const errMsg = document.getElementById("errMsg");
+
+      if (!form || !btn || !btnText || !cName || !cEmail || !cMsg) return;
+
+      function setErr(input, el, show) {
+        if (!el) return;
+        el.classList.toggle("hidden", !show);
+        input.classList.toggle("ring-2", show);
+        input.classList.toggle("ring-red-400", show);
+        input.classList.toggle("border-red-300", show);
+      }
+
+      function clearAll() {
+        setErr(cName, errName, false);
+        setErr(cEmail, errEmail, false);
+        setErr(cMsg, errMsg, false);
+      }
+
+      [cName, cEmail, cMsg].forEach((inp) => {
+        inp.addEventListener("input", () => {
+          toast?.classList.add("hidden");
+          clearAll();
+        });
+      });
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        toast?.classList.add("hidden");
+        clearAll();
+
+        const nameOk = cName.value.trim().length > 1;
+        const emailOk = cEmail.validity.valid && cEmail.value.trim().length > 3;
+        const msgOk = cMsg.value.trim().length > 2;
+
+        setErr(cName, errName, !nameOk);
+        setErr(cEmail, errEmail, !emailOk);
+        setErr(cMsg, errMsg, !msgOk);
+
+        if (!nameOk || !emailOk || !msgOk) return;
+
+        btn.disabled = true;
+        btn.classList.add("opacity-70", "cursor-not-allowed");
+        btnText.textContent = "Sending...";
+
+        await new Promise(r => setTimeout(r, 700));
+
+        btn.disabled = false;
+        btn.classList.remove("opacity-70", "cursor-not-allowed");
+        btnText.textContent = "Send Message";
+
+        form.reset();
+        toast?.classList.remove("hidden");
+
+        if (!reduceMotion) toast?.scrollIntoView({ behavior: "smooth", block: "center" });
+      });
+    })();
+
+    // =========================================
+    // ✅ HERO TOP PHOTO: AUTO SLIDESHOW (2-LAYER CROSSFADE)
+    // =========================================
+    (function setupHeroCarousel() {
+      const wrap = document.getElementById("heroCarousel");
+      const imgA = document.getElementById("heroImgA");
+      const imgB = document.getElementById("heroImgB");
+      const prevBtn = document.getElementById("heroPrev");
+      const nextBtn = document.getElementById("heroNext");
+
+      if (!wrap || !imgA || !imgB || !prevBtn || !nextBtn) return;
+
+      const slides = [
+        {
+          src: "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=1800&q=80",
+          fallback: "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=1400&q=80",
+          alt: "Library learning"
+        },
+        {
+          src: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1800&q=80",
+          fallback: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1400&q=80",
+          alt: "Collaborative learning"
+        },
+        {
+          src: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1800&q=80",
+          fallback: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1400&q=80",
+          alt: "Online study"
+        }
+      ];
+
+      let index = 0;
+      const AUTOPLAY_MS = 5000;
+      let autoplayTimer = null;
+
+      let active = imgA;
+      let idle = imgB;
+
+      function swapActive() {
+        const tmp = active;
+        active = idle;
+        idle = tmp;
+      }
+
+      function setImgSrcSafe(el, s) {
+        el.onerror = () => {
+          if (el.src !== s.fallback) el.src = s.fallback;
+        };
+        el.alt = s.alt || "Hero photo";
+        el.src = s.src;
+      }
+
+      function applySlide(i) {
+        const s = slides[i];
+
+        if (reduceMotion) {
+          setImgSrcSafe(active, s);
+          active.classList.add("is-active");
+          idle.classList.remove("is-active", "is-out");
+          return;
+        }
+
+        setImgSrcSafe(idle, s);
+
+        const pre = new Image();
+        pre.src = s.src;
+
+        pre.onload = () => runFade();
+        pre.onerror = () => runFade();
+
+        function runFade() {
+          active.classList.add("is-out");
+          idle.classList.add("is-active");
+          idle.classList.remove("is-out");
+
+          requestAnimationFrame(() => {
+            active.classList.remove("is-active");
+            active.classList.remove("is-out");
+            swapActive();
+          });
+        }
+      }
+
+      function goTo(i) {
+        index = (i + slides.length) % slides.length;
+        applySlide(index);
+      }
+
+      function next() { goTo(index + 1); }
+      function prev() { goTo(index - 1); }
+
+      prevBtn.addEventListener("click", prev);
+      nextBtn.addEventListener("click", next);
+
+      wrap.tabIndex = 0;
+      wrap.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowLeft") prev();
+        if (e.key === "ArrowRight") next();
+      });
+
+      let startX = 0;
+      let isDown = false;
+
+      wrap.addEventListener("pointerdown", (e) => {
+        isDown = true;
+        startX = e.clientX;
+      });
+
+      wrap.addEventListener("pointerup", (e) => {
+        if (!isDown) return;
+        isDown = false;
+        const dx = e.clientX - startX;
+        if (Math.abs(dx) < 40) return;
+        if (dx < 0) next();
+        else prev();
+      });
+
+      wrap.addEventListener("pointercancel", () => { isDown = false; });
+
+      function startAutoplay() {
+        if (reduceMotion || slides.length <= 1) return;
+        clearInterval(autoplayTimer);
+        autoplayTimer = setInterval(next, AUTOPLAY_MS);
+      }
+
+      setImgSrcSafe(active, slides[index]);
+      active.classList.add("is-active");
+      idle.classList.remove("is-active");
+      setTimeout(startAutoplay, 400);
+    })();
+
+    // =========================================
+    // ✅ HOW IT WORKS: PHOTO CAROUSEL (2-LAYER CROSSFADE)
+    // =========================================
+    (function setupHowItWorksCarousel() {
+      const wrap = document.getElementById("hwCarousel");
+      const imgA = document.getElementById("hwImgA");
+      const imgB = document.getElementById("hwImgB");
+      const prevBtn = document.getElementById("hwPrev");
+      const nextBtn = document.getElementById("hwNext");
+
+      if (!wrap || !imgA || !imgB || !prevBtn || !nextBtn) return;
+
+      const slides = [
+        {
+          src: "./assets/how-it-works.jpg",
+          fallback: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1400&q=80",
+          alt: "Student learning"
+        },
+        {
+          src: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1400&q=80",
+          fallback: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1400&q=80",
+          alt: "Online study session"
+        },
+        {
+          src: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1400&q=80",
+          fallback: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1400&q=80",
+          alt: "Classroom discussion"
+        }
+      ];
+
+      let index = 0;
+      let active = imgA;
+      let idle = imgB;
+
+      function swapActive() {
+        const tmp = active;
+        active = idle;
+        idle = tmp;
+      }
+
+      function setImgSrcSafe(el, s) {
+        el.onerror = () => {
+          if (el.src !== s.fallback) el.src = s.fallback;
+        };
+        el.alt = s.alt || "How it works photo";
+        el.src = s.src;
+      }
+
+      function applySlide(i) {
+        const s = slides[i];
+
+        if (reduceMotion) {
+          setImgSrcSafe(active, s);
+          active.classList.add("is-active");
+          idle.classList.remove("is-active", "is-out");
+          return;
+        }
+
+        setImgSrcSafe(idle, s);
+
+        const pre = new Image();
+        pre.src = s.src;
+
+        pre.onload = () => runFade();
+        pre.onerror = () => runFade();
+
+        function runFade() {
+          active.classList.add("is-out");
+          idle.classList.add("is-active");
+          idle.classList.remove("is-out");
+
+          requestAnimationFrame(() => {
+            active.classList.remove("is-active");
+            active.classList.remove("is-out");
+            swapActive();
+          });
+        }
+      }
+
+      function goTo(i) {
+        index = (i + slides.length) % slides.length;
+        applySlide(index);
+      }
+
+      function next() { goTo(index + 1); }
+      function prev() { goTo(index - 1); }
+
+      prevBtn.addEventListener("click", prev);
+      nextBtn.addEventListener("click", next);
+
+      wrap.tabIndex = 0;
+      wrap.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowLeft") prev();
+        if (e.key === "ArrowRight") next();
+      });
+
+      let startX = 0;
+      let isDown = false;
+
+      wrap.addEventListener("pointerdown", (e) => {
+        isDown = true;
+        startX = e.clientX;
+      });
+
+      wrap.addEventListener("pointerup", (e) => {
+        if (!isDown) return;
+        isDown = false;
+        const dx = e.clientX - startX;
+        if (Math.abs(dx) < 40) return;
+        if (dx < 0) next();
+        else prev();
+      });
+
+      wrap.addEventListener("pointercancel", () => { isDown = false; });
+
+      setImgSrcSafe(active, slides[index]);
+      active.classList.add("is-active");
+      idle.classList.remove("is-active");
+    })();
+  </script>
+
+  <!-- keep your existing app.js include -->
+  <script type="module" src="./app.js"></script>
+
+  <script>
+    // Ensure sign-out uses Firebase
+    window.signOut = () => window.__pcSignOut?.();
+  </script>
+</body>
+
+</html>

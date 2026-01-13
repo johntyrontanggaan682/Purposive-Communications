@@ -1,0 +1,955 @@
+<!-- lessons.html (Main Lessons Page - 4 Lesson Cards, Lock After Lesson 1) -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Purposive Communication | Lessons</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: "#E7F7F5",
+              100: "#CFF0EC",
+              200: "#9FE1D9",
+              300: "#6ED2C6",
+              400: "#3EC3B3",
+              500: "#13A89A",
+              600: "#0F877B",
+              700: "#0B665C",
+              800: "#07453E",
+              900: "#032420",
+            },
+          },
+          boxShadow: {
+            soft: "0 10px 30px rgba(0,0,0,0.10)",
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    .page-bg {
+      background: radial-gradient(1200px 500px at 10% -10%, rgba(19, 168, 154, 0.12), transparent 55%),
+        radial-gradient(900px 450px at 100% 0%, rgba(19, 168, 154, 0.10), transparent 50%),
+        #fff;
+    }
+  </style>
+</head>
+
+<body class="page-bg text-slate-800">
+  <!-- NAVBAR -->
+  <header class="sticky top-0 z-50 bg-white/80 backdrop-blur border-b border-slate-100">
+    <nav class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+      <!-- Brand -->
+      <a href="index.html" class="flex items-center gap-3">
+        <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 ring-1 ring-black/5">
+          <svg viewBox="0 0 24 24" class="h-6 w-6 text-brand-700" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 7l8-4 8 4v10l-8 4-8-4V7z"></path>
+            <path d="M8 11l2 2 5-5"></path>
+          </svg>
+        </div>
+        <span class="text-lg font-semibold tracking-tight text-slate-900">Purposive Communication</span>
+      </a>
+
+      <!-- Desktop Links + Login/User Dropdown -->
+      <div class="hidden items-center gap-8 md:flex">
+        <a href="index.html" class="text-sm font-medium text-slate-700 hover:text-brand-700">Home</a>
+        <a href="lessons.html" class="text-sm font-semibold text-brand-700">Lessons</a>
+
+        <!-- Login (GUEST ONLY) -->
+        <a href="login.html" id="openLoginBtn"
+          class="auth-guest hidden rounded-xl bg-brand-500 px-5 py-2.5 text-sm font-semibold text-white shadow-soft hover:bg-brand-600">
+          Login
+        </a>
+
+        <!-- User dropdown (LOGGED IN ONLY) -->
+        <div class="auth-user hidden relative">
+          <button id="userMenuBtn" type="button"
+            class="inline-flex items-center gap-3 rounded-2xl bg-white px-2 py-1.5 ring-1 ring-black/5 shadow-sm hover:bg-slate-50 hover:shadow-soft transition"
+            aria-haspopup="menu" aria-expanded="false">
+            <div id="navAvatar"
+              class="h-9 w-9 rounded-full bg-slate-100 ring-1 ring-black/5 flex items-center justify-center text-slate-700 font-extrabold">
+              U
+            </div>
+            <span id="navName" class="text-sm font-semibold text-slate-900">Student</span>
+            <svg id="navCaret" class="h-4 w-4 text-slate-500 transition-transform" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6" />
+            </svg>
+          </button>
+
+          <!-- Dropdown panel -->
+          <div id="userDropdown"
+            class="absolute right-[-10px] mt-3 hidden w-[290px] overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/10">
+            <div class="p-3">
+              <div class="rounded-2xl bg-brand-50 p-3 ring-1 ring-brand-100">
+                <div class="flex items-start gap-3">
+                  <div id="ddAvatar"
+                    class="h-11 w-11 rounded-full bg-slate-100 ring-1 ring-black/5 flex items-center justify-center text-slate-700 font-extrabold text-lg">
+                  </div>
+                  <div class="min-w-0">
+                    <p id="ddName" class="truncate text-sm font-extrabold text-slate-900">Student</p>
+                    <p class="text-xs font-semibold text-slate-500">Student</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-3 space-y-2 text-sm">
+                <div class="flex items-center gap-3 rounded-xl bg-white px-3 py-2 ring-1 ring-black/5">
+                  <svg class="h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 4h16v16H4V4z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M22 6l-10 7L2 6" />
+                  </svg>
+                  <span id="ddEmail" class="truncate text-slate-700">email@example.com</span>
+                </div>
+
+                <div class="flex items-center gap-3 rounded-xl bg-white px-3 py-2 ring-1 ring-black/5">
+                  <svg class="h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <rect x="3" y="5" width="18" height="14" rx="2" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M7 15h4" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M7 9h10" />
+                  </svg>
+                  <span class="text-slate-700">ID: <span id="ddId" class="font-semibold text-slate-800">—</span></span>
+                </div>
+              </div>
+
+              <div class="mt-3 grid grid-cols-2 gap-2">
+                <a href="profile.html"
+                  class="inline-flex items-center justify-center rounded-2xl bg-brand-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-900 transition">
+                  View profile
+                </a>
+                <button id="signOutBtn" type="button"
+                  class="inline-flex items-center justify-center rounded-2xl bg-slate-100 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-200 transition">
+                  Sign out
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile -->
+      <button id="menuBtn"
+        class="inline-flex items-center justify-center rounded-xl bg-slate-50 p-2 text-slate-800 ring-1 ring-black/5 hover:bg-slate-100 md:hidden"
+        aria-label="Open menu" aria-expanded="false">
+        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="mx-auto hidden max-w-7xl px-4 pb-4 sm:px-6 lg:px-8 md:hidden">
+      <div class="rounded-2xl bg-white p-4 shadow-soft ring-1 ring-black/5">
+        <div class="flex flex-col gap-2">
+          <a href="index.html"
+            class="rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">Home</a>
+          <a href="lessons.html"
+            class="rounded-xl px-3 py-2 text-sm font-semibold text-brand-700 bg-brand-50">Lessons</a>
+          <a href="profile.html"
+            class="rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">Profile</a>
+
+          <!-- Login (GUEST ONLY) -->
+          <a href="login.html" id="openLoginMobile"
+            class="auth-guest hidden mt-2 rounded-xl bg-brand-500 px-4 py-2.5 text-center text-sm font-semibold text-white hover:bg-brand-600">
+            Login
+          </a>
+
+          <!-- Logged-in block (MOBILE ONLY) -->
+          <div class="auth-user hidden mt-2 rounded-2xl bg-white ring-1 ring-black/5 p-3">
+            <div class="flex items-center gap-3">
+              <div id="mNavAvatar"
+                class="h-10 w-10 rounded-full bg-slate-100 ring-1 ring-black/5 flex items-center justify-center font-extrabold text-slate-700">
+                U
+              </div>
+              <div class="min-w-0">
+                <p id="mNavName" class="truncate text-sm font-extrabold text-slate-900">Student</p>
+                <p id="mNavEmail" class="truncate text-xs font-semibold text-slate-500">email@example.com</p>
+              </div>
+            </div>
+            <div class="mt-3 grid grid-cols-2 gap-2">
+              <a href="profile.html"
+                class="rounded-xl bg-brand-800 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-brand-900">View
+                profile</a>
+              <button id="mSignOutBtn"
+                class="rounded-xl bg-slate-100 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-200">Sign
+                out</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO STRIP ✅ smaller like profile -->
+  <section class="bg-brand-700">
+    <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+      <h1 class="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">All Lessons</h1>
+      <p class="mt-3 max-w-3xl text-base text-white/85">
+        Master purposive communication through comprehensive, self-paced courses
+      </p>
+    </div>
+  </section>
+
+  <!-- LESSON GRID -->
+  <main class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+    <div class="grid gap-10 lg:grid-cols-3">
+      <!-- LESSON 1 (Always unlocked) -->
+      <a href="lesson-1.html"
+        class="group overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-brand-200">
+        <div class="relative">
+          <img class="h-56 w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+            src="./assets/lesson-1.jpg" alt="Introduction to Purposive Communication"
+            onerror="this.src='https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1400&q=80';" />
+          <div
+            class="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-slate-900/20 to-transparent">
+          </div>
+        </div>
+
+        <div class="p-7">
+          <h3 class="text-xl font-extrabold text-slate-900 transition-colors group-hover:text-brand-700">
+            Introduction to Purposive Communication
+          </h3>
+          <p class="mt-3 text-sm leading-relaxed text-slate-600">
+            Understanding the fundamentals of communication and its purpose in various contexts
+          </p>
+
+          <div class="mt-6 rounded-2xl bg-slate-50 p-4 ring-1 ring-black/5">
+            <div class="flex items-center justify-between text-sm">
+              <span class="font-semibold text-slate-700">Progress</span>
+              <span id="p1Text" class="font-bold text-brand-700">0%</span>
+            </div>
+            <div class="mt-3 h-2.5 w-full rounded-full bg-slate-200 overflow-hidden">
+              <div id="p1Bar" class="h-2.5 w-0 rounded-full bg-brand-500 transition-all"></div>
+            </div>
+          </div>
+
+          <div class="mt-5 flex items-center justify-between text-sm text-slate-500">
+            <span class="inline-flex items-center gap-2">
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="9"></circle>
+                <path d="M12 7v5l3 2"></path>
+              </svg>
+              3 Parts
+            </span>
+            <span class="inline-flex items-center gap-2">
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M8 4h10a2 2 0 012 2v14H8a2 2 0 01-2-2V6a2 2 0 012-2z"></path>
+                <path d="M6 6h2"></path>
+              </svg>
+              1 Assessment
+            </span>
+          </div>
+        </div>
+      </a>
+
+      <!-- LESSON 2 -->
+      <div id="lesson2Card" class="relative">
+        <div id="lesson2LockOverlay"
+          class="absolute inset-0 z-20 flex items-center justify-center rounded-3xl bg-white/70 backdrop-blur-sm ring-1 ring-black/5 transition-opacity duration-500 opacity-100">
+          <div class="text-center">
+            <div
+              class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-700 text-white shadow-soft">
+              <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M7 11V8a5 5 0 0110 0v3" />
+                <rect x="5" y="11" width="14" height="10" rx="2" />
+              </svg>
+            </div>
+            <p class="mt-4 text-sm font-semibold text-slate-900">Locked</p>
+            <p id="lesson2LockMsg" class="mt-1 text-xs text-slate-600">Finish Lesson 1 to unlock</p>
+            <button id="lockedToastBtn" type="button"
+              class="mt-4 rounded-xl bg-brand-500 px-4 py-2 text-xs font-semibold text-white hover:bg-brand-600">
+              Why is this locked?
+            </button>
+          </div>
+        </div>
+
+        <div id="lesson2Inner"
+          class="group overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-lg">
+          <div class="relative">
+            <img id="lesson2Img"
+              class="h-56 w-full object-cover transition-[filter,transform] duration-500 group-hover:scale-[1.02]"
+              src="./assets/lesson-2.jpg" alt="Verbal and Non-Verbal Communication"
+              onerror="this.src='https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1400&q=80';" />
+            <div
+              class="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-slate-900/20 to-transparent">
+            </div>
+          </div>
+
+          <div class="p-7">
+            <h3 class="text-xl font-extrabold text-slate-900 transition-colors group-hover:text-brand-700">
+              Verbal and Non-Verbal Communication
+            </h3>
+            <p class="mt-3 text-sm leading-relaxed text-slate-600">
+              Mastering the art of spoken and unspoken messages in effective communication
+            </p>
+
+            <div class="mt-6 rounded-2xl bg-slate-50 p-4 ring-1 ring-black/5">
+              <div class="flex items-center justify-between text-sm">
+                <span class="font-semibold text-slate-700">Progress</span>
+                <span id="p2Text" class="font-bold text-brand-700">0%</span>
+              </div>
+              <div class="mt-3 h-2.5 w-full rounded-full bg-slate-200 overflow-hidden">
+                <div id="p2Bar" class="h-2.5 w-0 rounded-full bg-brand-500 transition-all"></div>
+              </div>
+            </div>
+
+            <div class="mt-5 flex items-center justify-between text-sm text-slate-500">
+              <span class="inline-flex items-center gap-2">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="9"></circle>
+                  <path d="M12 7v5l3 2"></path>
+                </svg>
+                3 Parts
+              </span>
+              <span class="inline-flex items-center gap-2">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M8 4h10a2 2 0 012 2v14H8a2 2 0 01-2-2V6a2 2 0 012-2z"></path>
+                  <path d="M6 6h2"></path>
+                </svg>
+                1 Assessment
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LESSON 3 -->
+      <div id="lesson3Card" class="relative">
+        <div id="lesson3LockOverlay"
+          class="absolute inset-0 z-20 flex items-center justify-center rounded-3xl bg-white/70 backdrop-blur-sm ring-1 ring-black/5 transition-opacity duration-500 opacity-100">
+          <div class="text-center">
+            <div
+              class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-700 text-white shadow-soft">
+              <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M7 11V8a5 5 0 0110 0v3" />
+                <rect x="5" y="11" width="14" height="10" rx="2" />
+              </svg>
+            </div>
+            <p class="mt-4 text-sm font-semibold text-slate-900">Locked</p>
+            <p id="lesson3LockMsg" class="mt-1 text-xs text-slate-600">Finish Lesson 1 to unlock</p>
+          </div>
+        </div>
+
+        <div id="lesson3Inner"
+          class="group overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-lg">
+          <div class="relative">
+            <img id="lesson3Img"
+              class="h-56 w-full object-cover transition-[filter,transform] duration-500 group-hover:scale-[1.02]"
+              src="./assets/lesson-3.jpg" alt="Written Communication Excellence"
+              onerror="this.src='https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=1400&q=80';" />
+            <div
+              class="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-slate-900/20 to-transparent">
+            </div>
+          </div>
+
+          <div class="p-7">
+            <h3 class="text-xl font-extrabold text-slate-900 transition-colors group-hover:text-brand-700">
+              Written Communication Excellence
+            </h3>
+            <p class="mt-3 text-sm leading-relaxed text-slate-600">
+              Developing professional writing skills for academic and business contexts
+            </p>
+
+            <div class="mt-6 rounded-2xl bg-slate-50 p-4 ring-1 ring-black/5">
+              <div class="flex items-center justify-between text-sm">
+                <span class="font-semibold text-slate-700">Progress</span>
+                <span id="p3Text" class="font-bold text-brand-700">0%</span>
+              </div>
+              <div class="mt-3 h-2.5 w-full rounded-full bg-slate-200 overflow-hidden">
+                <div id="p3Bar" class="h-2.5 w-0 rounded-full bg-brand-500 transition-all"></div>
+              </div>
+            </div>
+
+            <div class="mt-5 flex items-center justify-between text-sm text-slate-500">
+              <span class="inline-flex items-center gap-2">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="9"></circle>
+                  <path d="M12 7v5l3 2"></path>
+                </svg>
+                3 Parts
+              </span>
+              <span class="inline-flex items-center gap-2">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M8 4h10a2 2 0 012 2v14H8a2 2 0 01-2-2V6a2 2 0 012-2z"></path>
+                  <path d="M6 6h2"></path>
+                </svg>
+                1 Assessment
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LESSON 4 -->
+      <div id="lesson4Card" class="relative">
+        <div id="lesson4LockOverlay"
+          class="absolute inset-0 z-20 flex items-center justify-center rounded-3xl bg-white/70 backdrop-blur-sm ring-1 ring-black/5 transition-opacity duration-500 opacity-100">
+          <div class="text-center">
+            <div
+              class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-700 text-white shadow-soft">
+              <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M7 11V8a5 5 0 0110 0v3" />
+                <rect x="5" y="11" width="14" height="10" rx="2" />
+              </svg>
+            </div>
+            <p class="mt-4 text-sm font-semibold text-slate-900">Locked</p>
+            <p id="lesson4LockMsg" class="mt-1 text-xs text-slate-600">Finish Lesson 1 to unlock</p>
+          </div>
+        </div>
+
+        <div id="lesson4Inner"
+          class="group overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-lg">
+          <div class="relative">
+            <img id="lesson4Img"
+              class="h-56 w-full object-cover transition-[filter,transform] duration-500 group-hover:scale-[1.02]"
+              src="./assets/lesson-4.jpg" alt="Digital and Academic Communication"
+              onerror="this.src='https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1400&q=80';" />
+            <div
+              class="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-slate-900/20 to-transparent">
+            </div>
+          </div>
+
+          <div class="p-7">
+            <h3 class="text-xl font-extrabold text-slate-900 transition-colors group-hover:text-brand-700">
+              Digital and Academic Communication
+            </h3>
+            <p class="mt-3 text-sm leading-relaxed text-slate-600">
+              Communicating effectively in digital platforms, academic settings, and online collaboration
+            </p>
+
+            <div class="mt-6 rounded-2xl bg-slate-50 p-4 ring-1 ring-black/5">
+              <div class="flex items-center justify-between text-sm">
+                <span class="font-semibold text-slate-700">Progress</span>
+                <span id="p4Text" class="font-bold text-brand-700">0%</span>
+              </div>
+              <div class="mt-3 h-2.5 w-full rounded-full bg-slate-200 overflow-hidden">
+                <div id="p4Bar" class="h-2.5 w-0 rounded-full bg-brand-500 transition-all"></div>
+              </div>
+            </div>
+
+            <div class="mt-5 flex items-center justify-between text-sm text-slate-500">
+              <span class="inline-flex items-center gap-2">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="9"></circle>
+                  <path d="M12 7v5l3 2"></path>
+                </svg>
+                3 Parts
+              </span>
+              <span class="inline-flex items-center gap-2">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M8 4h10a2 2 0 012 2v14H8a2 2 0 01-2-2V6a2 2 0 012-2z"></path>
+                  <path d="M6 6h2"></path>
+                </svg>
+                1 Assessment
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Toast -->
+  <div id="toast" class="fixed bottom-6 left-1/2 z-[60] hidden -translate-x-1/2">
+    <div class="flex items-start gap-3 rounded-2xl bg-slate-900 px-5 py-4 text-white shadow-soft ring-1 ring-white/10">
+      <div class="mt-0.5">
+        <svg class="h-5 w-5 text-brand-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10" />
+          <path d="M12 16v-4" />
+          <path d="M12 8h.01" />
+        </svg>
+      </div>
+      <div class="text-sm">
+        <p class="font-semibold">Locked lesson</p>
+        <p class="mt-0.5 text-white/80">Complete Lesson 1 to unlock the next lessons.</p>
+      </div>
+      <button id="toastClose" class="ml-2 rounded-lg p-1 text-white/70 hover:bg-white/10 hover:text-white"
+        aria-label="Close">
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ✅ SIGN OUT CONFIRM MODAL (same style as index.html) -->
+  <div id="signOutModal" class="fixed inset-0 z-[70] hidden">
+    <div id="signOutBackdrop" class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+
+    <div class="relative mx-auto flex min-h-full max-w-md items-center justify-center px-4 py-10">
+      <div class="w-full rounded-3xl bg-white shadow-soft ring-1 ring-black/10">
+        <div class="p-5 sm:p-6 text-center">
+          <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 ring-1 ring-black/5">
+            <svg viewBox="0 0 24 24" class="h-6 w-6 text-brand-700" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v5" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 16h.01" />
+            </svg>
+          </div>
+
+          <h3 class="mt-3 text-base font-extrabold text-slate-900">Are you sure you want to sign out?</h3>
+
+          <div class="mt-5 grid grid-cols-2 gap-3">
+            <button id="signOutNo" type="button"
+              class="w-full rounded-xl bg-slate-100 px-5 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-200 ring-1 ring-black/5">
+              No
+            </button>
+
+            <button id="signOutYes" type="button"
+              class="w-full rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-700 ring-1 ring-black/5">
+              Yes
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ Firebase logic only (NO localStorage) -->
+  <script type="module">
+    import { auth, db } from "./firebase.js";
+    import {
+      onAuthStateChanged,
+      signOut as firebaseSignOut,
+      setPersistence,
+      browserSessionPersistence
+    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+
+    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+    // ✅ Force Firebase auth to NOT use localStorage (session only)
+    try { await setPersistence(auth, browserSessionPersistence); } catch (_) { }
+
+    // ===== Auth dropdown UI (Firebase) =====
+    const guestEls = Array.from(document.querySelectorAll(".auth-guest"));
+    const userEls = Array.from(document.querySelectorAll(".auth-user"));
+
+    const userMenuBtn = document.getElementById("userMenuBtn");
+    const userDropdown = document.getElementById("userDropdown");
+    const navCaret = document.getElementById("navCaret");
+
+    const navName = document.getElementById("navName");
+    const navAvatar = document.getElementById("navAvatar");
+
+    const ddName = document.getElementById("ddName");
+    const ddEmail = document.getElementById("ddEmail");
+    const ddId = document.getElementById("ddId");
+    const ddAvatar = document.getElementById("ddAvatar");
+
+    const mNavName = document.getElementById("mNavName");
+    const mNavEmail = document.getElementById("mNavEmail");
+    const mNavAvatar = document.getElementById("mNavAvatar");
+
+    const signOutBtn = document.getElementById("signOutBtn");
+    const mSignOutBtn = document.getElementById("mSignOutBtn");
+
+    let __currentUser = null;
+    let __profile = null;
+
+    function isLoggedIn() {
+      return !!__currentUser;
+    }
+
+    function getInitials(nameOrEmail) {
+      const n = (nameOrEmail || "").trim();
+      if (!n) return "U";
+      const parts = n.split(/\s+/).filter(Boolean);
+      if (parts.length >= 2) return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+      return (parts[0][0] || "U").toUpperCase();
+    }
+
+    function getAvatarText(fullName, email) {
+      const emoji = (__profile?.avatar?.type === "emoji") ? (__profile?.avatar?.value || "") : "";
+      if (emoji) return emoji;
+      return getInitials(fullName || email);
+    }
+
+    function setAvatarEl(el, text) {
+      if (!el) return;
+      el.textContent = text || "U";
+    }
+
+    function closeUserDropdown() {
+      if (!userDropdown || !userMenuBtn) return;
+      userDropdown.classList.add("hidden");
+      userMenuBtn.setAttribute("aria-expanded", "false");
+      navCaret?.classList.remove("rotate-180");
+    }
+
+    function openUserDropdown() {
+      if (!userDropdown || !userMenuBtn) return;
+      userDropdown.classList.remove("hidden");
+      userMenuBtn.setAttribute("aria-expanded", "true");
+      navCaret?.classList.add("rotate-180");
+    }
+
+    function toggleUserDropdown() {
+      if (!userDropdown) return;
+      const isOpen = !userDropdown.classList.contains("hidden");
+      if (isOpen) closeUserDropdown();
+      else openUserDropdown();
+    }
+
+    userMenuBtn?.addEventListener("click", (e) => {
+      e.preventDefault();
+      toggleUserDropdown();
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!userDropdown || userDropdown.classList.contains("hidden")) return;
+      const wrapper = userMenuBtn?.parentElement; // .auth-user
+      if (wrapper && e.target instanceof Node && !wrapper.contains(e.target)) closeUserDropdown();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeUserDropdown();
+    });
+
+    async function loadProfile(uid) {
+      try {
+        const snap = await getDoc(doc(db, "users", uid));
+        return snap.exists() ? (snap.data() || {}) : {};
+      } catch (_) {
+        return {};
+      }
+    }
+
+    function applyAuthUI() {
+      const loggedIn = isLoggedIn();
+
+      guestEls.forEach(el => el.classList.toggle("hidden", loggedIn));
+      userEls.forEach(el => el.classList.toggle("hidden", !loggedIn));
+
+      if (!loggedIn) {
+        closeUserDropdown();
+        return;
+      }
+
+      const fullName = (__profile?.fullName || __currentUser?.displayName || "Student").trim() || "Student";
+      const email = (__profile?.email || __currentUser?.email || "").trim();
+      const studentId = (__profile?.studentId || "").trim();
+
+      const avatarText = getAvatarText(fullName, email);
+
+      if (navName) navName.textContent = fullName;
+      if (ddName) ddName.textContent = fullName;
+      if (ddEmail) ddEmail.textContent = email;
+      if (ddId) ddId.textContent = studentId ? studentId : "—";
+
+      setAvatarEl(navAvatar, avatarText);
+      setAvatarEl(ddAvatar, avatarText);
+
+      if (mNavName) mNavName.textContent = fullName;
+      if (mNavEmail) mNavEmail.textContent = email;
+      setAvatarEl(mNavAvatar, avatarText);
+    }
+
+    // ===== Sign out confirm modal (same as index.html) =====
+    const signOutModal = document.getElementById("signOutModal");
+    const signOutBackdrop = document.getElementById("signOutBackdrop");
+    const signOutYes = document.getElementById("signOutYes");
+    const signOutNo = document.getElementById("signOutNo");
+
+    function openSignOutModal() {
+      closeUserDropdown();
+      signOutModal?.classList.remove("hidden");
+      document.body.classList.add("overflow-hidden");
+    }
+
+    function closeSignOutModal() {
+      signOutModal?.classList.add("hidden");
+      document.body.classList.remove("overflow-hidden");
+    }
+
+    signOutNo?.addEventListener("click", closeSignOutModal);
+    signOutBackdrop?.addEventListener("click", closeSignOutModal);
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && signOutModal && !signOutModal.classList.contains("hidden")) {
+        closeSignOutModal();
+      }
+    });
+
+    async function doSignOut() {
+      try { await firebaseSignOut(auth); } catch (_) { }
+      __currentUser = null;
+      __profile = null;
+      closeUserDropdown();
+      applyAuthUI();
+      closeSignOutModal();
+      window.location.href = "index.html";
+    }
+
+    // expose (keeps your existing bottom helper pattern)
+    window.__pcSignOut = doSignOut;
+
+    // ✅ open confirm modal instead of instant signout
+    signOutBtn?.addEventListener("click", (e) => { e.preventDefault(); openSignOutModal(); });
+    mSignOutBtn?.addEventListener("click", (e) => { e.preventDefault(); openSignOutModal(); });
+
+    signOutYes?.addEventListener("click", async () => {
+      closeSignOutModal();
+      await doSignOut();
+    });
+
+    // ===== Lessons progress/locking (Firestore per user; no localStorage) =====
+    const PROGRESS_DOCS = {
+      l1: "lesson1",
+      l2: "lesson2",
+      l3: "lesson3",
+      l4: "lesson4",
+    };
+
+    function clamp(n, min, max) {
+      return Math.max(min, Math.min(max, n));
+    }
+
+    function setProgress(barId, textId, value) {
+      const v = clamp(parseInt(value || "0", 10), 0, 100);
+      const bar = document.getElementById(barId);
+      const txt = document.getElementById(textId);
+      if (bar) bar.style.width = v + "%";
+      if (txt) txt.textContent = v + "%";
+    }
+
+    function showToast() {
+      const toast = document.getElementById("toast");
+      toast.classList.remove("hidden");
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => toast.classList.add("hidden"), 2800);
+    }
+
+    function closeToast() {
+      document.getElementById("toast").classList.add("hidden");
+    }
+
+    document.getElementById("lockedToastBtn")?.addEventListener("click", showToast);
+    document.getElementById("toastClose")?.addEventListener("click", closeToast);
+
+    // Mobile menu
+    const btn = document.getElementById("menuBtn");
+    const menu = document.getElementById("mobileMenu");
+    btn?.addEventListener("click", () => {
+      const isOpen = !menu.classList.contains("hidden");
+      menu.classList.toggle("hidden");
+      btn.setAttribute("aria-expanded", String(!isOpen));
+    });
+
+    function fadeOutOverlay(overlay) {
+      if (!overlay) return;
+      overlay.classList.remove("opacity-100");
+      overlay.classList.add("opacity-0", "pointer-events-none");
+
+      const onEnd = (e) => {
+        if (e.propertyName !== "opacity") return;
+        overlay.classList.add("hidden");
+        overlay.removeEventListener("transitionend", onEnd);
+      };
+      overlay.addEventListener("transitionend", onEnd);
+    }
+
+    function ensureInnerDirect(containerId, innerEl) {
+      const container = document.getElementById(containerId);
+      if (!container || !innerEl) return;
+      const wrapper = container.querySelector("a[data-unlocked='true']");
+      if (wrapper) {
+        wrapper.remove();
+        container.appendChild(innerEl);
+      }
+    }
+
+    function lockCard(containerId, innerEl, imgElId, overlayElId) {
+      const img = document.getElementById(imgElId);
+      const overlay = document.getElementById(overlayElId);
+
+      ensureInnerDirect(containerId, innerEl);
+
+      if (img) img.classList.add("blur-[1px]");
+
+      if (overlay) {
+        overlay.classList.remove("hidden");
+        overlay.classList.remove("opacity-0", "pointer-events-none");
+        overlay.classList.add("opacity-100");
+      }
+    }
+
+    function unlockCard(containerId, innerEl, overlayElId, href) {
+      const container = document.getElementById(containerId);
+      const overlay = document.getElementById(overlayElId);
+
+      fadeOutOverlay(overlay);
+
+      const img = container?.querySelector("img");
+      if (img) img.classList.remove("blur-[1px]");
+
+      if (!container || !innerEl) return;
+
+      const existing = container.querySelector("a[data-unlocked='true']");
+      if (existing) {
+        existing.href = href;
+        return;
+      }
+
+      const link = document.createElement("a");
+      link.href = href;
+      link.setAttribute("data-unlocked", "true");
+      link.className =
+        "group block focus:outline-none focus:ring-4 focus:ring-brand-200 rounded-3xl transition hover:-translate-y-1 hover:shadow-lg";
+
+      link.appendChild(innerEl);
+      container.appendChild(link);
+    }
+
+    async function loadLessonProgress(uid) {
+      const empty = {
+        lesson1: { progress: 0, complete: false },
+        lesson2: { progress: 0, complete: false },
+        lesson3: { progress: 0, complete: false },
+        lesson4: { progress: 0, complete: false },
+      };
+
+      try {
+        const refs = [
+          doc(db, "users", uid, "progress", PROGRESS_DOCS.l1),
+          doc(db, "users", uid, "progress", PROGRESS_DOCS.l2),
+          doc(db, "users", uid, "progress", PROGRESS_DOCS.l3),
+          doc(db, "users", uid, "progress", PROGRESS_DOCS.l4),
+        ];
+
+        const snaps = await Promise.all(refs.map(r => getDoc(r)));
+
+        const keys = ["lesson1", "lesson2", "lesson3", "lesson4"];
+        snaps.forEach((snap, i) => {
+          if (!snap.exists()) return;
+          const d = snap.data() || {};
+          empty[keys[i]] = {
+            progress: typeof d.progress === "number" ? d.progress : parseInt(d.progress || "0", 10) || 0,
+            complete: !!d.complete
+          };
+        });
+
+        return empty;
+      } catch (_) {
+        return empty;
+      }
+    }
+
+    function setLockMessages(state) {
+      const l1 = !!state.lesson1.complete;
+      const l2 = !!state.lesson2.complete;
+      const l3 = !!state.lesson3.complete;
+
+      let nextLocked = null;
+      if (!l1) nextLocked = 2;
+      else if (!l2) nextLocked = 3;
+      else if (!l3) nextLocked = 4;
+      else nextLocked = null;
+
+      const m2 = document.getElementById("lesson2LockMsg");
+      const m3 = document.getElementById("lesson3LockMsg");
+      const m4 = document.getElementById("lesson4LockMsg");
+
+      [m2, m3, m4].forEach(m => m && m.classList.add("hidden"));
+
+      if (nextLocked === 2 && m2) {
+        m2.textContent = "Finish Lesson 1 to unlock";
+        m2.classList.remove("hidden");
+      }
+      if (nextLocked === 3 && m3) {
+        m3.textContent = "Finish Lesson 2 to unlock";
+        m3.classList.remove("hidden");
+      }
+      if (nextLocked === 4 && m4) {
+        m4.textContent = "Finish Lesson 3 to unlock";
+        m4.classList.remove("hidden");
+      }
+    }
+
+    function renderLocking(state) {
+      const l1 = !!state.lesson1.complete;
+      const l2 = !!state.lesson2.complete;
+      const l3 = !!state.lesson3.complete;
+
+      if (l1) unlockCard("lesson2Card", document.getElementById("lesson2Inner"), "lesson2LockOverlay", "lesson-2.html");
+      else lockCard("lesson2Card", document.getElementById("lesson2Inner"), "lesson2Img", "lesson2LockOverlay");
+
+      if (l2) unlockCard("lesson3Card", document.getElementById("lesson3Inner"), "lesson3LockOverlay", "lesson-3.html");
+      else lockCard("lesson3Card", document.getElementById("lesson3Inner"), "lesson3Img", "lesson3LockOverlay");
+
+      if (l3) unlockCard("lesson4Card", document.getElementById("lesson4Inner"), "lesson4LockOverlay", "lesson-4.html");
+      else lockCard("lesson4Card", document.getElementById("lesson4Inner"), "lesson4Img", "lesson4LockOverlay");
+    }
+
+    function renderProgress(state) {
+      setProgress("p1Bar", "p1Text", state.lesson1.progress);
+      setProgress("p2Bar", "p2Text", state.lesson2.progress);
+      setProgress("p3Bar", "p3Text", state.lesson3.progress);
+      setProgress("p4Bar", "p4Text", state.lesson4.progress);
+    }
+
+    function renderGuestDefaults() {
+      setProgress("p1Bar", "p1Text", 0);
+      setProgress("p2Bar", "p2Text", 0);
+      setProgress("p3Bar", "p3Text", 0);
+      setProgress("p4Bar", "p4Text", 0);
+
+      lockCard("lesson2Card", document.getElementById("lesson2Inner"), "lesson2Img", "lesson2LockOverlay");
+      lockCard("lesson3Card", document.getElementById("lesson3Inner"), "lesson3Img", "lesson3LockOverlay");
+      lockCard("lesson4Card", document.getElementById("lesson4Inner"), "lesson4Img", "lesson4LockOverlay");
+
+      const m2 = document.getElementById("lesson2LockMsg");
+      const m3 = document.getElementById("lesson3LockMsg");
+      const m4 = document.getElementById("lesson4LockMsg");
+      if (m2) m2.textContent = "Finish Lesson 1 to unlock";
+      if (m3) m3.textContent = "Finish Lesson 1 to unlock";
+      if (m4) m4.textContent = "Finish Lesson 1 to unlock";
+    }
+
+    // ✅ Firebase auth listener: update dropdown + progress/locking
+    onAuthStateChanged(auth, async (user) => {
+      __currentUser = user || null;
+
+      // ✅ Show correct UI instantly (no waiting for Firestore)
+      __profile = null;
+      applyAuthUI();
+
+      if (!user) {
+        renderGuestDefaults();
+        return;
+      }
+
+      // Load profile + progress after UI is already updated
+      const [profile, state] = await Promise.all([
+        loadProfile(user.uid),
+        loadLessonProgress(user.uid),
+      ]);
+
+      __profile = profile || {};
+      applyAuthUI();
+
+      renderProgress(state);
+      setLockMessages(state);
+      renderLocking(state);
+    });
+  </script>
+
+  <script type="module" src="./app.js"></script>
+  <script>
+    // Ensure sign-out uses Firebase
+    window.signOut = () => window.__pcSignOut?.();
+  </script>   
+</body>
+
+</html>

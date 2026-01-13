@@ -166,7 +166,7 @@
 
         <p id="createAccountText" class="mt-6 text-center text-xs text-slate-500">
           Don't have an account?
-          <a href="register.html" class="font-semibold text-brand-700 hover:text-brand-800">Create an account</a>
+          <a href="register.html" class="font-semibold text-brand-700 hover:text-brand-800">Create an account (Student/Teacher)</a>
         </p>
       </div>
     </section>
@@ -194,11 +194,7 @@
     // Force Firebase auth to NOT use localStorage (session only)
     try { await setPersistence(auth, browserSessionPersistence); } catch (_) {}
 
-    // ✅ ROLE-BASED ACCESS
-    const ADMIN_EMAILS = [
-      "purcom2000@gmail.com"
-    ].map(e => String(e).toLowerCase().trim());
-
+    // ✅ ROLE + APPROVAL (Admin is assigned in Firestore by setting role: "admin")
     async function ensureUserDoc(user) {
       const ref = doc(db, "users", user.uid);
       const email = String(user.email || "").toLowerCase().trim();
@@ -206,32 +202,37 @@
 
       try {
         const snap = await getDoc(ref);
+
         if (snap.exists()) {
           const data = snap.data() || {};
-          const emailIsAdmin = ADMIN_EMAILS.includes(email);
-          const currentRole = String(data.role || "").toLowerCase();
-          const shouldPromote = emailIsAdmin && !["admin", "teacher"].includes(currentRole);
 
-          await setDoc(ref, {
-            email,
-            ...(shouldPromote ? { role: "admin" } : {}),
-            lastLoginAt: now,
-            lastSeenAt: now
-          }, { merge: true });
+          // Only update lightweight session fields; never overwrite role/approval from Firestore
+          const patch = { email, lastLoginAt: now, lastSeenAt: now };
+          await setDoc(ref, patch, { merge: true });
 
-          return { ...data, email, ...(shouldPromote ? { role: "admin" } : {}) };
+          return { ...data, ...patch };
         }
 
-        const role = ADMIN_EMAILS.includes(email) ? "admin" : "student";
+        // If no Firestore doc yet, create a minimal STUDENT profile so routing works
         const fullName = String(user.displayName || "").trim();
-        await setDoc(ref, { fullName, email, role, createdAt: now, lastLoginAt: now, lastSeenAt: now }, { merge: true });
-        return { fullName, email, role };
+        const base = {
+          fullName,
+          email,
+          role: "student",
+          approved: true,
+          approvalStatus: "approved",
+          createdAt: now,
+          lastLoginAt: now,
+          lastSeenAt: now
+        };
+        await setDoc(ref, base, { merge: true });
+        return base;
       } catch (_) {
-        return { role: "student", email };
+        return { role: "student", approved: true, approvalStatus: "approved", email };
       }
     }
 
-    function isInIframe() {
+function isInIframe() {
       try { return window.self !== window.top; } catch { return true; }
     }
 
@@ -356,16 +357,19 @@
     }
 
     // ✅ Tell parent to route once role is confirmed
-    function tellParentToRoute(role) {
+    function tellParentToRoute(payload = {}) {
       try {
+        const role = String(payload.role || "").toLowerCase().trim();
+        const approved = !!payload.approved;
+        const approvalStatus = String(payload.approvalStatus || "").toLowerCase().trim();
         window.parent.postMessage(
-          { type: "pc-auth", action: "route", role: String(role || "").toLowerCase() },
+          { type: "pc-auth", action: "route", role, approved, approvalStatus },
           "*"
         );
       } catch (_) {}
     }
 
-    form?.addEventListener("submit", async (e) => {
+form?.addEventListener("submit", async (e) => {
       e.preventDefault();
       setLoading(true);
 
@@ -382,9 +386,13 @@
           const profile = await ensureUserDoc(u);
 
           // 3) tell parent to redirect based on role
-          const role = String(profile?.role || "student").toLowerCase();
-          tellParentToRoute(role);
-
+          try { console.log("[LOGIN iframe] uid=", u.uid, "role=", profile?.role, "approved=", profile?.approved, "status=", profile?.approvalStatus); } catch (_) {}
+          const role = String(profile?.role || "student").toLowerCase().trim();
+          const approved = role !== "teacher"
+            ? true
+            : !!profile?.approved || String(profile?.approvalStatus || "").toLowerCase() === "approved";
+          const approvalStatus = String(profile?.approvalStatus || (approved ? "approved" : "pending")).toLowerCase();
+          tellParentToRoute({ role, approved, approvalStatus });
           setLoading(false);
           return;
         }
@@ -392,8 +400,17 @@
         // Normal login (not iframe)
         const cred = await signInWithEmailAndPassword(auth, email, pass);
         const profile = await ensureUserDoc(cred.user);
-        const role = String(profile?.role || "student").toLowerCase();
-        window.location.href = (role === "admin" || role === "teacher") ? "admin.html" : "index.html";
+        const role = String(profile?.role || "student").toLowerCase().trim();
+        try { console.log("[LOGIN normal] uid=", cred.user.uid, "role=", profile?.role, "approved=", profile?.approved, "status=", profile?.approvalStatus); } catch (_) {}
+        try { console.log("[LOGIN] uid=", cred.user.uid, "role=", role, "approved=", profile?.approved, "status=", profile?.approvalStatus); } catch (_) {}
+
+        const approved = role !== "teacher"
+          ? true
+          : !!profile?.approved || String(profile?.approvalStatus || "").toLowerCase() === "approved";
+
+        if (role === "admin") window.location.href = "admin-dashboard.html";
+        else if (role === "teacher") window.location.href = "teacher-dashboard.html";
+        else window.location.href = "index.html";
       } catch (err) {
         alert(err?.message || "Login failed.");
         setLoading(false);

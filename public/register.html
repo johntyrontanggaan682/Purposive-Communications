@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Purposive Communication | Create Student Account</title>
+  <title>Purposive Communication | Create Account</title>
 
   <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -77,13 +77,31 @@
           </svg>
         </div>
 
-        <h1 class="mt-5 text-xl font-extrabold tracking-tight text-white">Create Student Account</h1>
+        <h1 class="mt-5 text-xl font-extrabold tracking-tight text-white">Create Account</h1>
         <p class="mt-1 text-xs font-medium text-white/85">Join Purposive Communication E-Learning</p>
       </div>
 
       <!-- Body -->
       <div class="px-7 sm:px-8 pt-7 pb-8 overflow-y-auto">
+        
         <form id="registerForm" class="space-y-4" action="#" method="post">
+          <!-- Account Type -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-700">Account Type</label>
+            <div class="mt-2 flex rounded-xl bg-slate-50 ring-1 ring-black/5 p-1">
+              <button id="typeStudentBtn" type="button" class="flex-1 rounded-lg px-3 py-2 text-sm font-extrabold transition">
+                Student
+              </button>
+              <button id="typeTeacherBtn" type="button" class="flex-1 rounded-lg px-3 py-2 text-sm font-extrabold transition">
+                Teacher
+              </button>
+            </div>
+            <input type="hidden" id="accountType" value="student" />
+            <p class="mt-2 text-[11px] font-semibold text-slate-500">
+              Teacher accounts will be <span class="text-slate-700">pending approval</span> after registration.
+            </p>
+          </div>
+
           <div>
             <label class="block text-xs font-semibold text-slate-700">Full Name</label>
             <div class="mt-2 flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2.5 shadow-sm focus-within:ring-2 focus-within:ring-brand-200">
@@ -96,8 +114,8 @@
             </div>
           </div>
 
-          <div>
-            <!-- ✅ UPDATED: removed "(Optional)" + added required -->
+          <div id="studentIdWrap">
+            <!-- ✅ Student only -->
             <label class="block text-xs font-semibold text-slate-700">Student ID</label>
             <div class="mt-2 flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2.5 shadow-sm focus-within:ring-2 focus-within:ring-brand-200">
               <svg viewBox="0 0 24 24" class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2">
@@ -107,9 +125,9 @@
               <input id="studentId" type="text" name="student_id" placeholder="Enter your student ID"
                 class="w-full bg-transparent text-sm text-slate-800 placeholder:text-slate-400 outline-none" required />
             </div>
-          </div>
 
-          <div>
+          </div>
+<div>
             <label class="block text-xs font-semibold text-slate-700">Email Address</label>
             <div class="mt-2 flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2.5 shadow-sm focus-within:ring-2 focus-within:ring-brand-200">
               <svg viewBox="0 0 24 24" class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2">
@@ -170,7 +188,7 @@
             <p id="pwHint" class="mt-2 hidden text-xs font-semibold text-rose-600">Passwords do not match.</p>
           </div>
 
-          <div>
+          <div id="courseWrap">
             <label class="block text-xs font-semibold text-slate-700">Course/Program</label>
             <div class="mt-2 relative flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2.5 shadow-sm focus-within:ring-2 focus-within:ring-brand-200">
               <svg viewBox="0 0 24 24" class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2">
@@ -200,7 +218,7 @@
             </div>
           </div>
 
-          <div>
+          <div id="yearLevelWrap">
             <label class="block text-xs font-semibold text-slate-700">Year Level</label>
             <div class="mt-2 relative flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2.5 shadow-sm focus-within:ring-2 focus-within:ring-brand-200">
               <svg viewBox="0 0 24 24" class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2">
@@ -226,6 +244,36 @@
             </div>
           </div>
 
+
+          
+<div id="sectionWrap">
+  <label class="block text-xs font-semibold text-slate-700">Section</label>
+  <div class="mt-2 flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2.5 shadow-sm focus-within:ring-2 focus-within:ring-brand-200">
+    <svg viewBox="0 0 24 24" class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h10M4 14h16M4 18h10" />
+    </svg>
+
+    <input id="section" type="text" name="section" placeholder="Enter your section (e.g., A, B, C, 1A)"
+      class="w-full bg-transparent text-sm text-slate-800 placeholder:text-slate-400 outline-none" required />
+  </div>
+</div>
+
+<div id="classCodeWrap">
+            <label class="block text-xs font-semibold text-slate-700">Teacher Code</label>
+            <div class="mt-2 flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2.5 shadow-sm focus-within:ring-2 focus-within:ring-brand-200">
+              <svg viewBox="0 0 24 24" class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5 9 6.343 9 8s1.343 3 3 3z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M7 11v-1a5 5 0 0110 0v1" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M7 11h10v8H7z" />
+              </svg>
+              <input id="classCode" type="text" inputmode="numeric" maxlength="5" placeholder="Enter the 5-digit code from your teacher"
+                class="w-full bg-transparent text-sm text-slate-800 placeholder:text-slate-400 outline-none" required />
+            </div>
+            <p class="mt-2 text-[11px] font-semibold text-slate-500">
+              Ask your teacher for the code for your section.
+            </p>
+          </div>
+
           <button id="createBtn" type="submit"
             class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand-500 px-4 py-3 text-sm font-semibold text-white shadow-soft hover:bg-brand-600 focus:outline-none focus:ring-4 focus:ring-brand-200">
             <span id="createSpinner" class="hidden inline-flex h-4 w-4 items-center justify-center">
@@ -246,6 +294,7 @@
     </section>
   </main>
 
+  
   <script type="module">
     import { auth, db } from "./firebase.js";
     import {
@@ -259,26 +308,94 @@
       doc,
       setDoc,
       getDoc,
-      serverTimestamp
+      serverTimestamp,
+      collection,
+      query,
+      where,
+      getDocs,
+      limit
     } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
-    
-    // ✅ ROLE-BASED ACCESS
-    // Put your teacher/admin email(s) here (lowercase). Example: ["purcom2000@gmail.com"]
-    const ADMIN_EMAILS = [
-      "purcom2000@gmail.com"
-    ].map(e => String(e).toLowerCase().trim());
-// No localStorage: session only
+    // No localStorage: session only
     try { await setPersistence(auth, browserSessionPersistence); } catch (_) {}
 
+    // Scrollbar: show only when scrolling, then hide
+    let __scrollTimer;
+    window.addEventListener("scroll", () => {
+      document.body.classList.add("is-scrolling");
+      clearTimeout(__scrollTimer);
+      __scrollTimer = setTimeout(() => document.body.classList.remove("is-scrolling"), 550);
+    }, { passive: true });
+
+    // ===== Account type toggle =====
+    const typeStudentBtn = document.getElementById("typeStudentBtn");
+    const typeTeacherBtn = document.getElementById("typeTeacherBtn");
+    const accountType = document.getElementById("accountType");
+
+    const studentIdWrap = document.getElementById("studentIdWrap");
+    const courseWrap = document.getElementById("courseWrap");
+    const yearLevelWrap = document.getElementById("yearLevelWrap");
+    const sectionWrap = document.getElementById("sectionWrap");
+    const classCodeWrap = document.getElementById("classCodeWrap");
+    const studentIdEl = document.getElementById("studentId");
+    const courseEl = document.getElementById("course");
+    const yearLevelEl = document.getElementById("yearLevel");
+    const sectionEl = document.getElementById("section");
+    const classCodeEl = document.getElementById("classCode");
+
+    const createBtn = document.getElementById("createBtn");
+    const createText = document.getElementById("createText");
+
+    function setType(t) {
+      const type = (t === "teacher") ? "teacher" : "student";
+      if (accountType) accountType.value = type;
+
+      // button styles
+      const active = "bg-white shadow-sm ring-1 ring-black/5 text-slate-900";
+      const inactive = "text-slate-600 hover:text-slate-900";
+
+      typeStudentBtn?.classList.remove(...active.split(" "), ...inactive.split(" "));
+      typeTeacherBtn?.classList.remove(...active.split(" "), ...inactive.split(" "));
+
+      if (type === "student") {
+        typeStudentBtn?.classList.add(...active.split(" "));
+        typeTeacherBtn?.classList.add(...inactive.split(" "));
+      } else {
+        typeTeacherBtn?.classList.add(...active.split(" "));
+        typeStudentBtn?.classList.add(...inactive.split(" "));
+      }
+
+      // show/hide blocks
+      const isTeacher = type === "teacher";
+
+      studentIdWrap?.classList.toggle("hidden", isTeacher);
+      courseWrap?.classList.toggle("hidden", isTeacher);
+      yearLevelWrap?.classList.toggle("hidden", isTeacher);
+      sectionWrap?.classList.toggle("hidden", isTeacher);
+      classCodeWrap?.classList.toggle("hidden", isTeacher);
+
+      // required toggles
+      if (studentIdEl) studentIdEl.required = !isTeacher;
+      if (courseEl) courseEl.required = !isTeacher;
+      if (yearLevelEl) yearLevelEl.required = !isTeacher;
+      if (sectionEl) sectionEl.required = !isTeacher;
+      if (classCodeEl) classCodeEl.required = !isTeacher;
+
+      // button label
+      if (createText) createText.textContent = isTeacher ? "Create Teacher Account" : "Create Student Account";
+    }
+
+    typeStudentBtn?.addEventListener("click", () => setType("student"));
+    typeTeacherBtn?.addEventListener("click", () => setType("teacher"));
+    setType("student");
+
+    // ===== Password validate + eye toggles (existing) =====
     const pw = document.getElementById("password");
     const cpw = document.getElementById("confirmPassword");
     const hint = document.getElementById("pwHint");
     const form = document.getElementById("registerForm");
 
-    const btn = document.getElementById("createBtn");
     const spinner = document.getElementById("createSpinner");
-    const btnText = document.getElementById("createText");
 
     function validatePasswords() {
       const ok = pw.value === cpw.value || cpw.value.length === 0;
@@ -289,7 +406,6 @@
     cpw.addEventListener("input", validatePasswords);
     pw.addEventListener("input", validatePasswords);
 
-    // Eyes (keep your existing handlers)
     const togglePassword = document.getElementById("togglePassword");
     const passwordEye = document.getElementById("passwordEye");
 
@@ -319,10 +435,39 @@
       if (isHidden) setEyeOff(svgEl);
       else setEyeOn(svgEl);
     }
-    togglePassword.addEventListener("click", () => toggleInputVisibility(pw, togglePassword, passwordEye));
-    toggleConfirmPassword.addEventListener("click", () => toggleInputVisibility(cpw, toggleConfirmPassword, confirmPasswordEye));
+    togglePassword?.addEventListener("click", () => toggleInputVisibility(pw, togglePassword, passwordEye));
+    toggleConfirmPassword?.addEventListener("click", () => toggleInputVisibility(cpw, toggleConfirmPassword, confirmPasswordEye));
 
-    form.addEventListener("submit", async (e) => {
+
+    async function resolveTeacherForCode(course, yearLevel, section, code) {
+  const crs = String(course || "").trim();
+  const yr = String(yearLevel || "").trim();
+  const sec = String(section || "").trim();
+  const c = String(code || "").trim();
+
+  if (!crs) throw new Error("Please select your course/program.");
+  if (!yr) throw new Error("Please select your year level.");
+  if (!sec) throw new Error("Please enter your section.");
+  if (!/^[0-9]{5}$/.test(c)) throw new Error("Teacher code must be 5 digits.");
+
+  const q = query(
+    collection(db, "classCodes"),
+    where("course", "==", crs),
+    where("yearLevel", "==", yr),
+    where("section", "==", sec),
+    where("code", "==", c),
+    where("active", "==", true),
+    limit(1)
+  );
+
+  const snap = await getDocs(q);
+  if (snap.empty) throw new Error("Invalid teacher code for the selected course/year/section.");
+  return snap.docs[0].data() || {};
+}
+
+
+    // ===== Submit =====
+    form?.addEventListener("submit", async (e) => {
       e.preventDefault();
 
       if (!validatePasswords()) {
@@ -330,37 +475,58 @@
         return;
       }
 
-      btn.disabled = true;
-      btn.classList.add("opacity-90");
+      createBtn.disabled = true;
+      createBtn.classList.add("opacity-90");
       spinner.classList.remove("hidden");
-      btnText.textContent = "Creating Account...";
+      createText.textContent = "Creating Account...";
+
+      const type = String(accountType?.value || "student").toLowerCase();
+      const isTeacher = type === "teacher";
 
       const fullName = document.getElementById("fullName").value.trim();
-      const studentId = document.getElementById("studentId").value.trim();
       const email = document.getElementById("email").value.trim();
       const password = pw.value;
-      const course = document.getElementById("course").value;
-      const yearLevel = document.getElementById("yearLevel").value;
+
+      // student-only
+      const studentId = (document.getElementById("studentId")?.value || "").trim();
+      const course = document.getElementById("course")?.value || "";
+      const yearLevel = document.getElementById("yearLevel")?.value || "";
 
       try {
         const cred = await createUserWithEmailAndPassword(auth, email, password);
-
         try { await updateProfile(cred.user, { displayName: fullName }); } catch (_) {}
 
         const ref = doc(db, "users", cred.user.uid);
 
-        
-        const role = ADMIN_EMAILS.includes(String(email||"").toLowerCase().trim()) ? "admin" : "student";
-// ✅ write profile
-        await setDoc(ref, {
-          fullName,
-          studentId: studentId || "",
-          email,
-          course,
-          yearLevel,
-          role,
-          createdAt: serverTimestamp()
-        }, { merge: true });
+        if (isTeacher) {
+          await setDoc(ref, {
+            fullName,
+            email,
+            role: "teacher",
+            approved: false,
+            approvalStatus: "pending",
+            appliedAt: serverTimestamp(),
+            createdAt: serverTimestamp()
+          }, { merge: true });
+        } else {
+          // Validate teacher code -> link student to teacher + section
+          const codeInfo = await resolveTeacherForCode(course, yearLevel, section, classCode);
+          await setDoc(ref, {
+            fullName,
+            studentId: studentId || "",
+            email,
+            course,
+            yearLevel,
+            section: String(section || "").trim(),
+            teacherCode: String(classCode || "").trim(),
+            teacherUid: String(codeInfo.teacherUid || "").trim(),
+            teacherName: String(codeInfo.teacherName || "").trim(),
+            role: "student",
+            approved: true,
+            approvalStatus: "approved",
+            createdAt: serverTimestamp()
+          }, { merge: true });
+        }
 
         // ✅ verify read
         const check = await getDoc(ref);
@@ -368,16 +534,21 @@
           throw new Error("Firestore write failed: users/" + cred.user.uid + " not found after setDoc()");
         }
 
-        const msg = encodeURIComponent("Your account has been created. Please log in.");
+        const msg = encodeURIComponent(
+          isTeacher
+            ? "Teacher account created. Log in — Teacher Dashboard will be locked until an admin approves your account."
+            : "Your student account has been created. Please log in."
+        );
         const eemail = encodeURIComponent(email);
         window.location.href = `login.html?msg=${msg}&email=${eemail}`;
       } catch (err) {
         console.error("REGISTER ERROR:", err);
         alert(err?.message || "Registration failed.");
-        btn.disabled = false;
-        btn.classList.remove("opacity-90");
+      } finally {
+        createBtn.disabled = false;
+        createBtn.classList.remove("opacity-90");
         spinner.classList.add("hidden");
-        btnText.textContent = "Create Account";
+        createText.textContent = isTeacher ? "Create Teacher Account" : "Create Student Account";
       }
     });
   </script>
