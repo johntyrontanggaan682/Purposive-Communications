@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -83,7 +83,7 @@
 
       <!-- Body -->
       <div class="px-7 sm:px-8 pt-7 pb-8 overflow-y-auto">
-        
+
         <form id="registerForm" class="space-y-4" action="#" method="post">
           <!-- Account Type -->
           <div>
@@ -115,7 +115,6 @@
           </div>
 
           <div id="studentIdWrap">
-            <!-- ✅ Student only -->
             <label class="block text-xs font-semibold text-slate-700">Student ID</label>
             <div class="mt-2 flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2.5 shadow-sm focus-within:ring-2 focus-within:ring-brand-200">
               <svg viewBox="0 0 24 24" class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2">
@@ -125,9 +124,9 @@
               <input id="studentId" type="text" name="student_id" placeholder="Enter your student ID"
                 class="w-full bg-transparent text-sm text-slate-800 placeholder:text-slate-400 outline-none" required />
             </div>
-
           </div>
-<div>
+
+          <div>
             <label class="block text-xs font-semibold text-slate-700">Email Address</label>
             <div class="mt-2 flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2.5 shadow-sm focus-within:ring-2 focus-within:ring-brand-200">
               <svg viewBox="0 0 24 24" class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2">
@@ -244,21 +243,19 @@
             </div>
           </div>
 
+          <div id="sectionWrap">
+            <label class="block text-xs font-semibold text-slate-700">Section</label>
+            <div class="mt-2 flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2.5 shadow-sm focus-within:ring-2 focus-within:ring-brand-200">
+              <svg viewBox="0 0 24 24" class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h10M4 14h16M4 18h10" />
+              </svg>
 
-          
-<div id="sectionWrap">
-  <label class="block text-xs font-semibold text-slate-700">Section</label>
-  <div class="mt-2 flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2.5 shadow-sm focus-within:ring-2 focus-within:ring-brand-200">
-    <svg viewBox="0 0 24 24" class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h10M4 14h16M4 18h10" />
-    </svg>
+              <input id="section" type="text" name="section" placeholder="Enter your section (e.g., A, B, C, 1A)"
+                class="w-full bg-transparent text-sm text-slate-800 placeholder:text-slate-400 outline-none" required />
+            </div>
+          </div>
 
-    <input id="section" type="text" name="section" placeholder="Enter your section (e.g., A, B, C, 1A)"
-      class="w-full bg-transparent text-sm text-slate-800 placeholder:text-slate-400 outline-none" required />
-  </div>
-</div>
-
-<div id="classCodeWrap">
+          <div id="classCodeWrap">
             <label class="block text-xs font-semibold text-slate-700">Teacher Code</label>
             <div class="mt-2 flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2.5 shadow-sm focus-within:ring-2 focus-within:ring-brand-200">
               <svg viewBox="0 0 24 24" class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2">
@@ -294,14 +291,14 @@
     </section>
   </main>
 
-  
   <script type="module">
     import { auth, db } from "./firebase.js";
     import {
       createUserWithEmailAndPassword,
       updateProfile,
       setPersistence,
-      browserSessionPersistence
+      browserSessionPersistence,
+      deleteUser
     } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 
     import {
@@ -345,6 +342,7 @@
 
     const createBtn = document.getElementById("createBtn");
     const createText = document.getElementById("createText");
+    const spinner = document.getElementById("createSpinner");
 
     function setType(t) {
       const type = (t === "teacher") ? "teacher" : "student";
@@ -389,13 +387,11 @@
     typeTeacherBtn?.addEventListener("click", () => setType("teacher"));
     setType("student");
 
-    // ===== Password validate + eye toggles (existing) =====
+    // ===== Password validate + eye toggles =====
     const pw = document.getElementById("password");
     const cpw = document.getElementById("confirmPassword");
     const hint = document.getElementById("pwHint");
     const form = document.getElementById("registerForm");
-
-    const spinner = document.getElementById("createSpinner");
 
     function validatePasswords() {
       const ok = pw.value === cpw.value || cpw.value.length === 0;
@@ -438,33 +434,32 @@
     togglePassword?.addEventListener("click", () => toggleInputVisibility(pw, togglePassword, passwordEye));
     toggleConfirmPassword?.addEventListener("click", () => toggleInputVisibility(cpw, toggleConfirmPassword, confirmPasswordEye));
 
-
+    // ✅ Teacher code resolver (needs signed-in user; we will call AFTER auth creation)
     async function resolveTeacherForCode(course, yearLevel, section, code) {
-  const crs = String(course || "").trim();
-  const yr = String(yearLevel || "").trim();
-  const sec = String(section || "").trim();
-  const c = String(code || "").trim();
+      const crs = String(course || "").trim();
+      const yr = String(yearLevel || "").trim();
+      const sec = String(section || "").trim();
+      const c = String(code || "").trim();
 
-  if (!crs) throw new Error("Please select your course/program.");
-  if (!yr) throw new Error("Please select your year level.");
-  if (!sec) throw new Error("Please enter your section.");
-  if (!/^[0-9]{5}$/.test(c)) throw new Error("Teacher code must be 5 digits.");
+      if (!crs) throw new Error("Please select your course/program.");
+      if (!yr) throw new Error("Please select your year level.");
+      if (!sec) throw new Error("Please enter your section.");
+      if (!/^[0-9]{5}$/.test(c)) throw new Error("Teacher code must be 5 digits.");
 
-  const q = query(
-    collection(db, "classCodes"),
-    where("course", "==", crs),
-    where("yearLevel", "==", yr),
-    where("section", "==", sec),
-    where("code", "==", c),
-    where("active", "==", true),
-    limit(1)
-  );
+      const q = query(
+        collection(db, "classCodes"),
+        where("course", "==", crs),
+        where("yearLevel", "==", yr),
+        where("section", "==", sec),
+        where("code", "==", c),
+        where("active", "==", true),
+        limit(1)
+      );
 
-  const snap = await getDocs(q);
-  if (snap.empty) throw new Error("Invalid teacher code for the selected course/year/section.");
-  return snap.docs[0].data() || {};
-}
-
+      const snap = await getDocs(q);
+      if (snap.empty) throw new Error("Invalid teacher code for the selected course/year/section.");
+      return snap.docs[0].data() || {};
+    }
 
     // ===== Submit =====
     form?.addEventListener("submit", async (e) => {
@@ -487,12 +482,15 @@
       const email = document.getElementById("email").value.trim();
       const password = pw.value;
 
-      // student-only
+      // student-only fields
       const studentId = (document.getElementById("studentId")?.value || "").trim();
       const course = document.getElementById("course")?.value || "";
       const yearLevel = document.getElementById("yearLevel")?.value || "";
+      const section = (document.getElementById("section")?.value || "").trim();
+      const classCode = (document.getElementById("classCode")?.value || "").trim();
 
       try {
+        // ✅ IMPORTANT FIX: create auth user FIRST so classCodes read is allowed by your rules
         const cred = await createUserWithEmailAndPassword(auth, email, password);
         try { await updateProfile(cred.user, { displayName: fullName }); } catch (_) {}
 
@@ -508,17 +506,26 @@
             appliedAt: serverTimestamp(),
             createdAt: serverTimestamp()
           }, { merge: true });
+
         } else {
-          // Validate teacher code -> link student to teacher + section
-          const codeInfo = await resolveTeacherForCode(course, yearLevel, section, classCode);
+          // ✅ Validate teacher code AFTER sign-in
+          let codeInfo;
+          try {
+            codeInfo = await resolveTeacherForCode(course, yearLevel, section, classCode);
+          } catch (err) {
+            // ✅ If invalid code, remove the auth user so no orphan account exists
+            try { await deleteUser(cred.user); } catch (_) {}
+            throw err;
+          }
+
           await setDoc(ref, {
             fullName,
             studentId: studentId || "",
             email,
             course,
             yearLevel,
-            section: String(section || "").trim(),
-            teacherCode: String(classCode || "").trim(),
+            section,
+            teacherCode: classCode,
             teacherUid: String(codeInfo.teacherUid || "").trim(),
             teacherName: String(codeInfo.teacherName || "").trim(),
             role: "student",
@@ -528,7 +535,7 @@
           }, { merge: true });
         }
 
-        // ✅ verify read
+        // optional verify read
         const check = await getDoc(ref);
         if (!check.exists()) {
           throw new Error("Firestore write failed: users/" + cred.user.uid + " not found after setDoc()");
@@ -552,6 +559,5 @@
       }
     });
   </script>
-
 </body>
 </html>
