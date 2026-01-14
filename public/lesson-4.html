@@ -729,6 +729,9 @@
           renderSidebar();
           await renderProgress();
           pill(true);
+
+          // ✅ update next button state immediately after submit
+          await renderPart();
         });
       }
 
@@ -738,10 +741,25 @@
         partSubtitle.textContent = p.subtitle;
         partBody.innerHTML = p.html;
 
-        pill(!!__lessonState?.partsDone?.[activePart]);
+        const done = !!__lessonState?.partsDone?.[activePart];
+        pill(done);
 
         prevBtn.disabled = activePart === 0;
-        nextBtn.disabled = activePart === parts.length - 1;
+
+        // ✅ CHANGE: if last part is completed, Next button becomes "Go Home" and goes to index.html
+        const atLast = activePart === parts.length - 1;
+        const lastDone = !!__lessonState?.partsDone?.[parts.length - 1];
+
+        if (atLast && lastDone) {
+          nextBtn.disabled = false;
+          nextBtn.textContent = "Go Home →";
+          nextBtn.dataset.goHome = "1";
+        } else {
+          nextBtn.disabled = atLast;
+          nextBtn.textContent = "Next →";
+          nextBtn.dataset.goHome = "";
+        }
+
         prevBtn.classList.toggle("opacity-50", prevBtn.disabled);
         prevBtn.classList.toggle("cursor-not-allowed", prevBtn.disabled);
         nextBtn.classList.toggle("opacity-50", nextBtn.disabled);
@@ -761,12 +779,28 @@
       }
 
       prevBtn.addEventListener("click", async () => { if (activePart > 0) activePart--; await render(); });
-      nextBtn.addEventListener("click", async () => { if (activePart < parts.length - 1) activePart++; await render(); });
+
+      nextBtn.addEventListener("click", async () => {
+        // ✅ CHANGE: if ready to go home, go to index.html
+        if (nextBtn.dataset.goHome === "1") {
+          window.location.href = "index.html";
+          return;
+        }
+
+        if (activePart < parts.length - 1) activePart++;
+        await render();
+      });
 
       completeBtn.addEventListener("click", async () => {
         if (!__lessonState) return;
         __lessonState.partsDone[activePart] = true;
-        if (__currentUser) await saveLessonState(__currentUser.uid, __lessonState);
+
+        if (__currentUser) {
+          await saveLessonState(__currentUser.uid, __lessonState);
+          const pct = computeProgressPct(__lessonState);
+          await saveLessonProgress(__currentUser.uid, pct);
+        }
+
         await render();
       });
 
@@ -788,9 +822,8 @@
           return;
         }
 
-
-      // Update activity for Admin Dashboard
-      try { await setDoc(doc(db, 'users', __currentUser.uid), { email: __currentUser.email || '', lastSeenAt: Date.now() }, { merge: true }); } catch (_) {}
+        // Update activity for Admin Dashboard
+        try { await setDoc(doc(db, 'users', __currentUser.uid), { email: __currentUser.email || '', lastSeenAt: Date.now() }, { merge: true }); } catch (_) {}
         // ✅ Show logged-in UI instantly (no waiting for Firestore profile)
         __profile = null;
         applyAuthUI();

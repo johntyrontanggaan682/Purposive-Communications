@@ -295,16 +295,19 @@
 
             <div class="mt-6 overflow-x-auto">
               <!-- ✅ Students table ONLY: Student + Section + Action -->
-              <table class="min-w-[650px] w-full">
-                <thead>
-                  <tr class="text-left text-xs font-extrabold text-slate-500 border-b border-slate-100">
-                    <th class="py-3 pr-4">STUDENT</th>
-                    <th class="py-3 pr-4">SECTION</th>
-                    <th class="py-3">ACTION</th>
-                  </tr>
-                </thead>
-                <tbody id="studentTbody" class="divide-y divide-slate-50"></tbody>
-              </table>
+              <!-- ✅ Students table ONLY: Student + Course + Year + Section -->
+<table class="min-w-[850px] w-full">
+  <thead>
+    <tr class="text-left text-xs font-extrabold text-slate-500 border-b border-slate-100">
+      <th class="py-3 pr-4">STUDENT</th>
+      <th class="py-3 pr-4">COURSE</th>
+      <th class="py-3 pr-4">YEAR</th>
+      <th class="py-3">SECTION</th>
+    </tr>
+  </thead>
+  <tbody id="studentTbody" class="divide-y divide-slate-50"></tbody>
+</table>
+
             </div>
           </section>
         </section>
@@ -851,411 +854,430 @@
   </div>
 
   <!-- ✅ FULL JS (PATCHED) -->
-  <script type="module">
-    import { auth, db } from "./firebase.js";
-    import {
-      onAuthStateChanged,
-      signOut as firebaseSignOut,
-      setPersistence,
-      browserSessionPersistence
-    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+<script type="module">
+  import { auth, db } from "./firebase.js";
+  import {
+    onAuthStateChanged,
+    signOut as firebaseSignOut,
+    setPersistence,
+    browserSessionPersistence
+  } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 
-    import {
-      collection,
-      getDocs,
-      query,
-      where,
-      doc,
-      getDoc,
-      onSnapshot,
-      setDoc,
-      serverTimestamp,
-      limit,
-      updateDoc
-    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+  import {
+    collection,
+    getDocs,
+    query,
+    where,
+    doc,
+    getDoc,
+    onSnapshot,
+    setDoc,
+    serverTimestamp,
+    limit,
+    updateDoc,
+    deleteDoc
+  } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
-    // ==========================================================
-    // DOM HELPER
-    // ==========================================================
-    const $ = (id) => document.getElementById(id);
+  // ==========================================================
+  // DOM HELPER
+  // ==========================================================
+  const $ = (id) => document.getElementById(id);
 
-    // ==========================================================
-    // ✅ Custom confirm modal for Delete
-    // ==========================================================
-    function confirmDeleteSectionUI({ course, yearLevel, section, code }) {
-      return new Promise((resolve) => {
-        const modal = $("deleteSectionModal");
-        const btnClose = $("closeDeleteSection");
-        const btnCancel = $("cancelDeleteSection");
-        const btnConfirm = $("confirmDeleteSection");
+  // ==========================================================
+  // ✅ Custom confirm modal for Delete
+  // ==========================================================
+  function confirmDeleteSectionUI({ course, yearLevel, section, code }) {
+    return new Promise((resolve) => {
+      const modal = $("deleteSectionModal");
+      const btnClose = $("closeDeleteSection");
+      const btnCancel = $("cancelDeleteSection");
+      const btnConfirm = $("confirmDeleteSection");
 
-        $("delLine1").textContent = `${course} • ${yearLevel} • ${section}`;
-        $("delLine2").textContent = `Code: ${code || "-----"}`;
+      $("delLine1").textContent = `${course} • ${yearLevel} • ${section}`;
+      $("delLine2").textContent = `Code: ${code || "-----"}`;
 
-        let done = false;
-        const finish = (result) => {
-          if (done) return;
-          done = true;
+      let done = false;
+      const finish = (result) => {
+        if (done) return;
+        done = true;
 
-          modal.classList.add("hidden");
-          document.body.classList.remove("overflow-hidden");
-
-          btnClose.removeEventListener("click", onCancel);
-          btnCancel.removeEventListener("click", onCancel);
-          btnConfirm.removeEventListener("click", onConfirm);
-          document.removeEventListener("keydown", onEsc);
-          modal.removeEventListener("click", onBackdrop);
-
-          resolve(result);
-        };
-
-        const onCancel = () => finish(false);
-        const onConfirm = () => finish(true);
-
-        const onBackdrop = (e) => { if (e.target === modal) finish(false); };
-        const onEsc = (e) => { if (e.key === "Escape") finish(false); };
-
-        btnClose.addEventListener("click", onCancel);
-        btnCancel.addEventListener("click", onCancel);
-        btnConfirm.addEventListener("click", onConfirm);
-        modal.addEventListener("click", onBackdrop);
-        document.addEventListener("keydown", onEsc);
-
-        modal.classList.remove("hidden");
-        document.body.classList.add("overflow-hidden");
-        btnCancel.focus();
-      });
-    }
-
-    // Force session-only auth
-    try { await setPersistence(auth, browserSessionPersistence); } catch (_) {}
-
-    function isApproved(profile) {
-      const status = String(profile?.approvalStatus || "").toLowerCase().trim();
-      return profile?.approved === true || status === "approved";
-    }
-
-    function showApprovalLock(show) {
-      const lock = $("approvalLock");
-      lock?.classList.toggle("hidden", !show);
-      document.body.classList.toggle("overflow-hidden", show);
-    }
-
-    async function requireTeacherOrAdmin() {
-      return await new Promise((resolve) => {
-        const unsub = onAuthStateChanged(auth, async (user) => {
-          if (!user) {
-            window.location.href = "login.html?msg=" + encodeURIComponent("Please log in.");
-            return;
-          }
-
-          const userRef = doc(db, "users", user.uid);
-          let profile = {};
-          try {
-            const snap = await getDoc(userRef);
-            profile = snap.exists() ? (snap.data() || {}) : {};
-          } catch (_) {}
-
-          const role = String(profile.role || "student").toLowerCase().trim();
-          if (role !== "teacher" && role !== "admin") {
-            window.location.href = "index.html";
-            return;
-          }
-
-          // Header UI
-          const nameFallback = role === "admin" ? "Admin" : "Teacher";
-          const name = String(profile.fullName || user.displayName || nameFallback).trim() || nameFallback;
-          const email = String(profile.email || user.email || "").trim();
-          const initials =
-            (name.split(/\s+/).filter(Boolean).slice(0, 2).map(s => s[0]).join("") || (email[0] || "T")).toUpperCase();
-
-          $("adminName").textContent = name;
-          $("adminAvatar").textContent = initials;
-          const roleLabelEl = $("adminRoleLabel");
-          roleLabelEl.textContent = role === "admin" ? "Admin" : "Teacher";
-
-          // Logout
-          $("logoutLink")?.addEventListener("click", async (e) => {
-            e.preventDefault();
-            try { await firebaseSignOut(auth); } catch (_) {}
-            window.location.href = "login.html";
-          });
-
-          // Approval lock for teachers
-          const applyLock = (p) => {
-            const r = String(p?.role || role).toLowerCase().trim();
-            if (r !== "teacher") { showApprovalLock(false); return; }
-            const ok = isApproved(p);
-            showApprovalLock(!ok);
-            roleLabelEl.textContent = ok ? "Teacher" : "Teacher (Pending)";
-          };
-
-          applyLock(profile);
-
-          try {
-            onSnapshot(userRef, (snap) => {
-              const p = snap.exists() ? (snap.data() || {}) : {};
-              applyLock(p);
-            });
-          } catch (_) {}
-
-          $("lockSignOutBtn")?.addEventListener("click", async () => {
-            try { await firebaseSignOut(auth); } catch (_) {}
-            window.location.href = "login.html";
-          });
-          $("lockRefreshBtn")?.addEventListener("click", () => window.location.reload());
-
-          unsub();
-          resolve({ user, profile, role });
-        });
-      });
-    }
-
-    const __ctx = await requireTeacherOrAdmin();
-    const __teacherUid = __ctx?.user?.uid || "";
-    const __teacherName = String(__ctx?.profile?.fullName || __ctx?.user?.displayName || __ctx?.user?.email || "Teacher").trim();
-    const __teacherCode = String(__ctx?.profile?.teacherCode || "").trim(); // optional
-
-    // ==========================================================
-    // SECTION CODES (PERMANENT)
-    // ==========================================================
-    function random5DigitCode() { return String(Math.floor(10000 + Math.random() * 90000)); }
-    function slug(v) {
-      return String(v || "").trim().toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9\-]/g, "");
-    }
-    function fmtTs(ts) {
-      try {
-        if (!ts) return "—";
-        const d = ts.toDate ? ts.toDate() : (ts.seconds ? new Date(ts.seconds * 1000) : new Date(ts));
-        return d.toLocaleString();
-      } catch { return "—"; }
-    }
-    async function generateUniqueCode(maxTries = 30) {
-      for (let i = 0; i < maxTries; i++) {
-        const c = random5DigitCode();
-        const qy = query(
-          collection(db, "classCodes"),
-          where("code", "==", c),
-          where("active", "==", true),
-          limit(1)
-        );
-        const snap = await getDocs(qy);
-        if (snap.empty) return c;
-      }
-      throw new Error("Could not generate a unique code. Please try again.");
-    }
-    function classDocId(course, yearLevel, section) {
-      return `${__teacherUid}_${slug(course)}_${slug(yearLevel)}_${slug(section)}`;
-    }
-    async function upsertClassCode({ course, yearLevel, section }) {
-      const crs = String(course || "").trim();
-      const yr = String(yearLevel || "").trim();
-      const sec = String(section || "").trim();
-      if (!crs) throw new Error("Course is required.");
-      if (!yr) throw new Error("Year level is required.");
-      if (!sec) throw new Error("Section is required.");
-
-      const id = classDocId(crs, yr, sec);
-      const codeRef = doc(db, "classCodes", id);
-
-      const existingSnap = await getDoc(codeRef);
-      if (existingSnap.exists()) {
-        const existing = existingSnap.data() || {};
-        const existingCode = String(existing.code || "").trim();
-        if (/^[0-9]{5}$/.test(existingCode)) {
-          await setDoc(codeRef, { active: true, updatedAt: serverTimestamp() }, { merge: true });
-          return { id, code: existingCode, existed: true };
-        }
-      }
-
-      const code = await generateUniqueCode();
-      await setDoc(codeRef, {
-        teacherUid: __teacherUid,
-        teacherName: __teacherName,
-        course: crs,
-        yearLevel: yr,
-        section: sec,
-        code,
-        active: true,
-        updatedAt: serverTimestamp(),
-        createdAt: serverTimestamp(),
-      }, { merge: true });
-
-      return { id, code, existed: false };
-    }
-    async function softDeleteClassCode(docId) {
-      const ref = doc(db, "classCodes", docId);
-      await updateDoc(ref, { active: false, updatedAt: serverTimestamp(), deletedAt: serverTimestamp() });
-    }
-
-    function wireSectionCodes() {
-      const role = String(__ctx?.role || "teacher").toLowerCase().trim();
-      const isAdmin = role === "admin";
-      const isTeacher = role === "teacher";
-      const approved = isApproved(__ctx?.profile || {});
-      const canManage = isAdmin || (isTeacher && approved);
-
-      const addBtn = $("addSectionBtn");
-      const modal = $("addSectionModal");
-      const closeBtn = $("closeAddSection");
-      const cancelBtn = $("cancelAddSection");
-      const form = $("addSectionForm");
-      const saveBtn = $("saveAddSection");
-
-      const tbody = $("codesTbody");
-      const refreshBtn = $("refreshCodesBtn");
-
-      function openModal() {
-        if (!canManage) return alert("Your teacher dashboard is locked until an admin approves your account.");
-        modal.classList.remove("hidden");
-        document.body.classList.add("overflow-hidden");
-        $("secCourse")?.focus?.();
-      }
-      function closeModal() {
         modal.classList.add("hidden");
         document.body.classList.remove("overflow-hidden");
-        form?.reset?.();
-      }
 
-      addBtn?.addEventListener("click", openModal);
-      closeBtn?.addEventListener("click", closeModal);
-      cancelBtn?.addEventListener("click", closeModal);
-      modal?.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
+        btnClose.removeEventListener("click", onCancel);
+        btnCancel.removeEventListener("click", onCancel);
+        btnConfirm.removeEventListener("click", onConfirm);
+        document.removeEventListener("keydown", onEsc);
+        modal.removeEventListener("click", onBackdrop);
 
-      if (!canManage && addBtn) addBtn.classList.add("opacity-60", "cursor-not-allowed");
+        resolve(result);
+      };
 
-      function rowHtml(d) {
-        const course = String(d.course || "—");
-        const year = String(d.yearLevel || "—");
-        const section = String(d.section || "—");
-        const code = String(d.code || "-----");
-        const updated = d.updatedAt ? fmtTs(d.updatedAt) : (d.createdAt ? fmtTs(d.createdAt) : "—");
-        const isActive = d.active !== false;
+      const onCancel = () => finish(false);
+      const onConfirm = () => finish(true);
 
-        return `
-          <tr class="${isActive ? "" : "opacity-50"}">
-            <td class="py-3 px-4 font-semibold text-slate-800">${course}</td>
-            <td class="py-3 px-4 font-semibold text-slate-800">${year}</td>
-            <td class="py-3 px-4 font-semibold text-slate-800">${section}</td>
-            <td class="py-3 px-4">
-              <span class="font-mono text-base font-extrabold tracking-widest text-slate-900">${/^[0-9]{5}$/.test(code) ? code : "-----"}</span>
-            </td>
-            <td class="py-3 px-4 text-xs font-semibold text-slate-600">${updated}</td>
-            <td class="py-3 px-4">
-              <div class="flex items-center justify-end gap-2">
-                <button data-act="copy" class="rounded-xl bg-white px-3 py-2 text-xs font-extrabold text-slate-800 hover:bg-slate-100 ring-1 ring-black/5">
-                  Copy
-                </button>
-                <button data-act="delete" class="rounded-xl bg-rose-600 px-3 py-2 text-xs font-extrabold text-white hover:bg-rose-700 ring-1 ring-black/5 ${canManage ? "" : "opacity-50 cursor-not-allowed"}">
-                  Delete
-                </button>
-              </div>
-            </td>
-          </tr>
-        `;
-      }
+      const onBackdrop = (e) => { if (e.target === modal) finish(false); };
+      const onEsc = (e) => { if (e.key === "Escape") finish(false); };
 
-      function emptyHtml() {
-        return `
-          <tr>
-            <td colspan="6" class="py-10 text-center">
-              <p class="text-sm font-extrabold text-slate-700">No sections yet</p>
-              <p class="mt-1 text-xs font-semibold text-slate-500">Click “Add a Section” to create a code for a class.</p>
-            </td>
-          </tr>
-        `;
-      }
+      btnClose.addEventListener("click", onCancel);
+      btnCancel.addEventListener("click", onCancel);
+      btnConfirm.addEventListener("click", onConfirm);
+      modal.addEventListener("click", onBackdrop);
+      document.addEventListener("keydown", onEsc);
 
-      let unsub = null;
-      function subscribe() {
-        try { unsub?.(); } catch {}
+      modal.classList.remove("hidden");
+      document.body.classList.add("overflow-hidden");
+      btnCancel.focus();
+    });
+  }
 
-        const qy = query(
-          collection(db, "classCodes"),
-          where("teacherUid", "==", __teacherUid),
-          limit(200)
-        );
+  // Force session-only auth
+  try { await setPersistence(auth, browserSessionPersistence); } catch (_) {}
 
-        unsub = onSnapshot(qy, (snap) => {
-          const rows = [];
-          snap.forEach(docSnap => rows.push({ id: docSnap.id, ...(docSnap.data() || {}) }));
+  function isApproved(profile) {
+    const status = String(profile?.approvalStatus || "").toLowerCase().trim();
+    return profile?.approved === true || status === "approved";
+  }
 
-          rows.sort((a, b) => {
-            const ta = (a.updatedAt?.seconds || a.createdAt?.seconds || 0);
-            const tb = (b.updatedAt?.seconds || b.createdAt?.seconds || 0);
-            return tb - ta;
-          });
+  function showApprovalLock(show) {
+    const lock = $("approvalLock");
+    lock?.classList.toggle("hidden", !show);
+    document.body.classList.toggle("overflow-hidden", show);
+  }
 
-          if (!tbody) return;
-          if (!rows.length) { tbody.innerHTML = emptyHtml(); return; }
+  async function requireTeacherOrAdmin() {
+    return await new Promise((resolve) => {
+      const unsub = onAuthStateChanged(auth, async (user) => {
+        if (!user) {
+          window.location.href = "login.html?msg=" + encodeURIComponent("Please log in.");
+          return;
+        }
 
-          tbody.innerHTML = rows.map(r => rowHtml(r)).join("");
+        const userRef = doc(db, "users", user.uid);
+        let profile = {};
+        try {
+          const snap = await getDoc(userRef);
+          profile = snap.exists() ? (snap.data() || {}) : {};
+        } catch (_) {}
 
-          Array.from(tbody.querySelectorAll("tr")).forEach((tr, idx) => {
-            const d = rows[idx];
+        const role = String(profile.role || "student").toLowerCase().trim();
+        if (role !== "teacher" && role !== "admin") {
+          window.location.href = "index.html";
+          return;
+        }
 
-            tr.querySelector('[data-act="copy"]')?.addEventListener("click", async () => {
-              const code = String(d.code || "").trim();
-              if (!/^[0-9]{5}$/.test(code)) return alert("No code found for this section.");
-              try {
-                await navigator.clipboard.writeText(code);
-                const btn = tr.querySelector('[data-act="copy"]');
-                btn.textContent = "Copied!";
-                setTimeout(() => btn.textContent = "Copy", 900);
-              } catch {
-                prompt("Copy this code:", code);
-              }
-            });
+        // Header UI
+        const nameFallback = role === "admin" ? "Admin" : "Teacher";
+        const name = String(profile.fullName || user.displayName || nameFallback).trim() || nameFallback;
+        const email = String(profile.email || user.email || "").trim();
+        const initials =
+          (name.split(/\s+/).filter(Boolean).slice(0, 2).map(s => s[0]).join("") || (email[0] || "T")).toUpperCase();
 
-            tr.querySelector('[data-act="delete"]')?.addEventListener("click", async () => {
-              if (!canManage) return;
+        $("adminName").textContent = name;
+        $("adminAvatar").textContent = initials;
+        const roleLabelEl = $("adminRoleLabel");
+        roleLabelEl.textContent = role === "admin" ? "Admin" : "Teacher";
 
-              const ok = await confirmDeleteSectionUI({
-                course: d.course,
-                yearLevel: d.yearLevel,
-                section: d.section,
-                code: d.code,
-              });
-              if (!ok) return;
-
-              try {
-                const btn = tr.querySelector('[data-act="delete"]');
-                btn.textContent = "Deleting...";
-                btn.disabled = true;
-                await softDeleteClassCode(d.id);
-              } catch (e) {
-                alert(e?.message || "Failed to delete.");
-              }
-            });
-          });
+        // Logout
+        $("logoutLink")?.addEventListener("click", async (e) => {
+          e.preventDefault();
+          try { await firebaseSignOut(auth); } catch (_) {}
+          window.location.href = "login.html";
         });
-      }
 
-      subscribe();
-      refreshBtn?.addEventListener("click", () => subscribe());
+        // Approval lock for teachers
+        const applyLock = (p) => {
+          const r = String(p?.role || role).toLowerCase().trim();
+          if (r !== "teacher") { showApprovalLock(false); return; }
+          const ok = isApproved(p);
+          showApprovalLock(!ok);
+          roleLabelEl.textContent = ok ? "Teacher" : "Teacher (Pending)";
+        };
 
-      form?.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        if (!canManage) return;
-
-        const course = $("secCourse").value;
-        const yearLevel = $("secYear").value;
-        const section = $("secSection").value;
+        applyLock(profile);
 
         try {
-          saveBtn.disabled = true;
-          saveBtn.textContent = "Saving...";
-          const res = await upsertClassCode({ course, yearLevel, section });
-          if (res?.existed) alert(`This section already exists.\nPermanent code: ${res.code}`);
-          closeModal();
-        } catch (err) {
-          alert(err?.message || "Failed to create section.");
-        } finally {
-          saveBtn.disabled = false;
-          saveBtn.textContent = "Create & Generate Code";
-        }
+          onSnapshot(userRef, (snap) => {
+            const p = snap.exists() ? (snap.data() || {}) : {};
+            applyLock(p);
+          });
+        } catch (_) {}
+
+        $("lockSignOutBtn")?.addEventListener("click", async () => {
+          try { await firebaseSignOut(auth); } catch (_) {}
+          window.location.href = "login.html";
+        });
+        $("lockRefreshBtn")?.addEventListener("click", () => window.location.reload());
+
+        unsub();
+        resolve({ user, profile, role });
+      });
+    });
+  }
+
+  const __ctx = await requireTeacherOrAdmin();
+  const __teacherUid = __ctx?.user?.uid || "";
+  const __teacherName = String(__ctx?.profile?.fullName || __ctx?.user?.displayName || __ctx?.user?.email || "Teacher").trim();
+  const __teacherCode = String(__ctx?.profile?.teacherCode || "").trim(); // optional
+
+  // ==========================================================
+  // SECTION CODES (PERMANENT)
+  // ==========================================================
+  function random5DigitCode() { return String(Math.floor(10000 + Math.random() * 90000)); }
+  function slug(v) {
+    return String(v || "").trim().toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9\-]/g, "");
+  }
+  function fmtTs(ts) {
+    try {
+      if (!ts) return "—";
+      const d = ts.toDate ? ts.toDate() : (ts.seconds ? new Date(ts.seconds * 1000) : new Date(ts));
+      return d.toLocaleString();
+    } catch { return "—"; }
+  }
+
+  async function generateUniqueCode(maxTries = 30) {
+    for (let i = 0; i < maxTries; i++) {
+      const c = random5DigitCode();
+      const qy = query(
+        collection(db, "classCodes"),
+        where("code", "==", c),
+        where("active", "==", true),
+        limit(1)
+      );
+      const snap = await getDocs(qy);
+      if (snap.empty) return c;
+    }
+    throw new Error("Could not generate a unique code. Please try again.");
+  }
+
+  function classDocId(course, yearLevel, section) {
+    return `${__teacherUid}_${slug(course)}_${slug(yearLevel)}_${slug(section)}`;
+  }
+
+  async function upsertClassCode({ course, yearLevel, section }) {
+    const crs = String(course || "").trim();
+    const yr = String(yearLevel || "").trim();
+    const sec = String(section || "").trim();
+    if (!crs) throw new Error("Course is required.");
+    if (!yr) throw new Error("Year level is required.");
+    if (!sec) throw new Error("Section is required.");
+
+    const id = classDocId(crs, yr, sec);
+    const codeRef = doc(db, "classCodes", id);
+
+    const existingSnap = await getDoc(codeRef);
+    if (existingSnap.exists()) {
+      const existing = existingSnap.data() || {};
+      const existingCode = String(existing.code || "").trim();
+      if (/^[0-9]{5}$/.test(existingCode)) {
+        await setDoc(codeRef, { active: true, updatedAt: serverTimestamp() }, { merge: true });
+        return { id, code: existingCode, existed: true };
+      }
+    }
+
+    const code = await generateUniqueCode();
+    await setDoc(codeRef, {
+      teacherUid: __teacherUid,
+      teacherName: __teacherName,
+      course: crs,
+      yearLevel: yr,
+      section: sec,
+      code,
+      active: true,
+      updatedAt: serverTimestamp(),
+      createdAt: serverTimestamp(),
+    }, { merge: true });
+
+    return { id, code, existed: false };
+  }
+
+  // ✅ FIX: REAL delete (not soft delete)
+  async function deleteClassCode(docId) {
+    const ref = doc(db, "classCodes", docId);
+    await deleteDoc(ref);
+  }
+
+  function wireSectionCodes() {
+    const role = String(__ctx?.role || "teacher").toLowerCase().trim();
+    const isAdmin = role === "admin";
+    const isTeacher = role === "teacher";
+    const approved = isApproved(__ctx?.profile || {});
+    const canManage = isAdmin || (isTeacher && approved);
+
+    const addBtn = $("addSectionBtn");
+    const modal = $("addSectionModal");
+    const closeBtn = $("closeAddSection");
+    const cancelBtn = $("cancelAddSection");
+    const form = $("addSectionForm");
+    const saveBtn = $("saveAddSection");
+
+    const tbody = $("codesTbody");
+    const refreshBtn = $("refreshCodesBtn");
+
+    function openModal() {
+      if (!canManage) return alert("Your teacher dashboard is locked until an admin approves your account.");
+      modal.classList.remove("hidden");
+      document.body.classList.add("overflow-hidden");
+      $("secCourse")?.focus?.();
+    }
+    function closeModal() {
+      modal.classList.add("hidden");
+      document.body.classList.remove("overflow-hidden");
+      form?.reset?.();
+    }
+
+    addBtn?.addEventListener("click", openModal);
+    closeBtn?.addEventListener("click", closeModal);
+    cancelBtn?.addEventListener("click", closeModal);
+    modal?.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
+
+    if (!canManage && addBtn) addBtn.classList.add("opacity-60", "cursor-not-allowed");
+
+    function rowHtml(d) {
+      const course = String(d.course || "—");
+      const year = String(d.yearLevel || "—");
+      const section = String(d.section || "—");
+      const code = String(d.code || "-----");
+      const updated = d.updatedAt ? fmtTs(d.updatedAt) : (d.createdAt ? fmtTs(d.createdAt) : "—");
+
+      return `
+        <tr>
+          <td class="py-3 px-4 font-semibold text-slate-800">${course}</td>
+          <td class="py-3 px-4 font-semibold text-slate-800">${year}</td>
+          <td class="py-3 px-4 font-semibold text-slate-800">${section}</td>
+          <td class="py-3 px-4">
+            <span class="font-mono text-base font-extrabold tracking-widest text-slate-900">${/^[0-9]{5}$/.test(code) ? code : "-----"}</span>
+          </td>
+          <td class="py-3 px-4 text-xs font-semibold text-slate-600">${updated}</td>
+          <td class="py-3 px-4">
+            <div class="flex items-center justify-end gap-2">
+              <button data-act="copy" class="rounded-xl bg-white px-3 py-2 text-xs font-extrabold text-slate-800 hover:bg-slate-100 ring-1 ring-black/5">
+                Copy
+              </button>
+              <button data-act="delete" class="rounded-xl bg-rose-600 px-3 py-2 text-xs font-extrabold text-white hover:bg-rose-700 ring-1 ring-black/5 ${canManage ? "" : "opacity-50 cursor-not-allowed"}">
+                Delete
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }
+
+    function emptyHtml() {
+      return `
+        <tr>
+          <td colspan="6" class="py-10 text-center">
+            <p class="text-sm font-extrabold text-slate-700">No sections yet</p>
+            <p class="mt-1 text-xs font-semibold text-slate-500">Click “Add a Section” to create a code for a class.</p>
+          </td>
+        </tr>
+      `;
+    }
+
+    let unsub = null;
+    function subscribe() {
+      try { unsub?.(); } catch {}
+
+      const qy = query(
+        collection(db, "classCodes"),
+        where("teacherUid", "==", __teacherUid),
+        limit(200)
+      );
+
+      unsub = onSnapshot(qy, (snap) => {
+        const rows = [];
+        snap.forEach(docSnap => rows.push({ id: docSnap.id, ...(docSnap.data() || {}) }));
+
+        rows.sort((a, b) => {
+          const ta = (a.updatedAt?.seconds || a.createdAt?.seconds || 0);
+          const tb = (b.updatedAt?.seconds || b.createdAt?.seconds || 0);
+          return tb - ta;
+        });
+
+        if (!tbody) return;
+        if (!rows.length) { tbody.innerHTML = emptyHtml(); return; }
+
+        tbody.innerHTML = rows.map(r => rowHtml(r)).join("");
+
+        Array.from(tbody.querySelectorAll("tr")).forEach((tr, idx) => {
+          const d = rows[idx];
+
+          tr.querySelector('[data-act="copy"]')?.addEventListener("click", async () => {
+            const code = String(d.code || "").trim();
+            if (!/^[0-9]{5}$/.test(code)) return alert("No code found for this section.");
+            try {
+              await navigator.clipboard.writeText(code);
+              const btn = tr.querySelector('[data-act="copy"]');
+              btn.textContent = "Copied!";
+              setTimeout(() => btn.textContent = "Copy", 900);
+            } catch {
+              prompt("Copy this code:", code);
+            }
+          });
+
+          tr.querySelector('[data-act="delete"]')?.addEventListener("click", async () => {
+            if (!canManage) return;
+
+            const ok = await confirmDeleteSectionUI({
+              course: d.course,
+              yearLevel: d.yearLevel,
+              section: d.section,
+              code: d.code,
+            });
+            if (!ok) return;
+
+            try {
+              const btn = tr.querySelector('[data-act="delete"]');
+              btn.textContent = "Deleting...";
+              btn.disabled = true;
+
+              // ✅ REAL delete
+              await deleteClassCode(d.id);
+            } catch (e) {
+              alert(e?.message || "Failed to delete.");
+            }
+          });
+        });
       });
     }
+
+    subscribe();
+    refreshBtn?.addEventListener("click", () => subscribe());
+
+    form?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (!canManage) return;
+
+      const course = $("secCourse").value;
+      const yearLevel = $("secYear").value;
+      const section = $("secSection").value;
+
+      try {
+        saveBtn.disabled = true;
+        saveBtn.textContent = "Saving...";
+        const res = await upsertClassCode({ course, yearLevel, section });
+        if (res?.existed) alert(`This section already exists.\nPermanent code: ${res.code}`);
+        closeModal();
+      } catch (err) {
+        alert(err?.message || "Failed to create section.");
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = "Create & Generate Code";
+      }
+    });
+  }
+
+  // ==========================================================
+  // Everything else in your file stays the same BELOW.
+  // ✅ Your Students tab will start working once you deploy the rules above.
+  // ==========================================================
+
+  // ... KEEP THE REST OF YOUR ORIGINAL SCRIPT AS-IS ...
+  // IMPORTANT: If your original script continues after wireSectionCodes(),
+  // paste that remaining part here unchanged.
+
+
+
 
     // ==========================================================
     // STORAGE + RULES
@@ -1745,39 +1767,39 @@
     // ==========================================================
     // STUDENTS TABLE (✅ ONLY Student + Section + Action)
     // ==========================================================
-    function rowHTML(s) {
-      const sectionLine = [s.course || "", s.year || "", s.section || ""].filter(Boolean).join(" • ") || "—";
-      return `
-        <tr class="hover:bg-slate-50/60">
-          <td class="py-5 pr-4 align-top">
-            <div class="font-extrabold text-slate-900">${s.name}</div>
-            <div class="text-xs text-slate-500 font-semibold">${s.id}</div>
-            <div class="text-xs text-slate-400">${s.email}</div>
-          </td>
+function rowHTML(s) {
+  return `
+    <tr class="hover:bg-slate-50/60">
+      <td class="py-5 pr-4 align-top">
+        <div class="font-extrabold text-slate-900">${s.name}</div>
+        <div class="text-xs text-slate-500 font-semibold">${s.id}</div>
+        <div class="text-xs text-slate-400">${s.email}</div>
+      </td>
 
-          <td class="py-5 pr-4 align-top">
-            <div class="text-sm font-extrabold text-slate-700">${sectionLine}</div>
-            <div class="text-xs text-slate-500 font-semibold mt-1">${s.lastActive || "—"}</div>
-          </td>
+      <td class="py-5 pr-4 align-top">
+        <div class="text-sm font-extrabold text-slate-700">${s.course || "—"}</div>
+      </td>
 
-          <td class="py-5 align-top">
-            <button data-student="${s.id}" class="view-details inline-flex items-center justify-center rounded-xl bg-brand-100 px-4 py-2 text-sm font-extrabold text-brand-800 hover:bg-brand-200 ring-1 ring-black/5">
-              View Details
-            </button>
-          </td>
-        </tr>
-      `;
-    }
+      <td class="py-5 pr-4 align-top">
+        <div class="text-sm font-extrabold text-slate-700">${s.year || "—"}</div>
+      </td>
 
-    function renderStudentsTable(list) {
-      const tbody = $("studentTbody");
-      tbody.innerHTML = list.length ? list.map(rowHTML).join("") : `
-        <tr><td colspan="3" class="py-10 text-center text-sm text-slate-500">No students found.</td></tr>
-      `;
-      tbody.querySelectorAll(".view-details").forEach(btn => {
-        btn.addEventListener("click", () => openDetails(btn.getAttribute("data-student")));
-      });
-    }
+      <td class="py-5 align-top">
+        <div class="text-sm font-extrabold text-slate-700">${s.section || "—"}</div>
+        <div class="text-xs text-slate-500 font-semibold mt-1">${s.lastActive || "—"}</div>
+      </td>
+    </tr>
+  `;
+}
+
+
+function renderStudentsTable(list) {
+  const tbody = $("studentTbody");
+  tbody.innerHTML = list.length ? list.map(rowHTML).join("") : `
+    <tr><td colspan="4" class="py-10 text-center text-sm text-slate-500">No students found.</td></tr>
+  `;
+}
+
 
     function renderCourseOptions() {
       const sel = $("courseFilter");
@@ -1792,26 +1814,31 @@
       });
     }
 
-    function applyStudentFilters() {
-      const q = $("searchInput").value.trim().toLowerCase();
-      const course = $("courseFilter").value;
-      const year = $("yearFilter").value;
+function applyStudentFilters() {
+  const q = $("searchInput").value.trim().toLowerCase();
+  const course = $("courseFilter").value;
+  const year = $("yearFilter").value;
 
-      let list = [...students];
-      if (q) {
-        list = list.filter(s =>
-          s.name.toLowerCase().includes(q) ||
-          s.id.toLowerCase().includes(q) ||
-          s.email.toLowerCase().includes(q) ||
-          String(s.section || "").toLowerCase().includes(q)
-        );
-      }
-      if (course !== "all") list = list.filter(s => s.course === course);
-      if (year !== "all") list = list.filter(s => s.year === year);
+  let list = [...students];
 
-      renderStudentsTable(list);
-      computeStats(students);
-    }
+  if (q) {
+    list = list.filter(s =>
+      String(s.name || "").toLowerCase().includes(q) ||
+      String(s.id || "").toLowerCase().includes(q) ||
+      String(s.email || "").toLowerCase().includes(q) ||
+      String(s.course || "").toLowerCase().includes(q) ||
+      String(s.year || "").toLowerCase().includes(q) ||
+      String(s.section || "").toLowerCase().includes(q)
+    );
+  }
+
+  if (course !== "all") list = list.filter(s => s.course === course);
+  if (year !== "all") list = list.filter(s => s.year === year);
+
+  renderStudentsTable(list);
+  computeStats(students);
+}
+
 
     // ==========================================================
     // LESSONS PANEL
