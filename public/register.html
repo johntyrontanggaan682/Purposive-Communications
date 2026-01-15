@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -245,13 +245,26 @@
 
           <div id="sectionWrap">
             <label class="block text-xs font-semibold text-slate-700">Section</label>
-            <div class="mt-2 flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2.5 shadow-sm focus-within:ring-2 focus-within:ring-brand-200">
+            <div class="mt-2 relative flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2.5 shadow-sm focus-within:ring-2 focus-within:ring-brand-200">
               <svg viewBox="0 0 24 24" class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h10M4 14h16M4 18h10" />
               </svg>
 
-              <input id="section" type="text" name="section" placeholder="Enter your section (e.g., A, B, C, 1A)"
-                class="w-full bg-transparent text-sm text-slate-800 placeholder:text-slate-400 outline-none" required />
+              <select id="section" name="section"
+                class="w-full appearance-none bg-transparent text-sm text-slate-800 outline-none pr-8"
+                required>
+                <option value="" selected disabled>Select your section</option>
+                <option>A</option>
+                <option>B</option>
+                <option>C</option>
+                <option>D</option>
+              </select>
+
+              <svg id="sectionChevron" viewBox="0 0 24 24"
+                class="pointer-events-none absolute right-3 h-4 w-4 text-slate-400 transition-transform duration-200"
+                fill="none" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
             </div>
           </div>
 
