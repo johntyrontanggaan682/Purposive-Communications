@@ -43,6 +43,46 @@
     .nice-scroll::-webkit-scrollbar{ width: 10px; }
     .nice-scroll::-webkit-scrollbar-thumb{ background: rgba(2,8,23,.15); border-radius: 999px; }
     .nice-scroll::-webkit-scrollbar-track{ background: transparent; }
+
+    /* ===== Motion (safe + subtle) ===== */
+    :root{ --ease-out: cubic-bezier(.22,1,.36,1); }
+
+    @media (prefers-reduced-motion: reduce){
+      *, *::before, *::after{ animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+    }
+
+    .panel-anim{ animation: fadeSlideIn .35s var(--ease-out) both; }
+    @keyframes fadeSlideIn{
+      from{ opacity: 0; transform: translateY(8px); }
+      to{ opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes cardPop{
+      from{ opacity:0; transform: translateY(10px) scale(.98); }
+      to{ opacity:1; transform: translateY(0) scale(1); }
+    }
+    .stagger > *{
+      opacity:0;
+      transform: translateY(10px);
+      animation: cardPop .35s var(--ease-out) both;
+    }
+
+    .teacher-selected{
+      background: rgba(19,168,154,0.10) !important;
+      box-shadow: 0 12px 30px rgba(2, 8, 23, 0.08);
+      border-color: rgba(19,168,154,0.35) !important;
+    }
+
+    /* Bottom sheet animation */
+    .sheet-hidden{ opacity:0; pointer-events:none; }
+    .sheet-backdrop{ opacity:0; transition: opacity .25s var(--ease-out); }
+    .sheet-panel{
+      transform: translateY(18px);
+      opacity: 0;
+      transition: transform .35s var(--ease-out), opacity .35s var(--ease-out);
+    }
+    .sheet-open .sheet-backdrop{ opacity:1; }
+    .sheet-open .sheet-panel{ transform: translateY(0); opacity:1; }
   </style>
 </head>
 
@@ -88,14 +128,7 @@
           Teachers
         </button>
 
-        <a href="teacher-dashboard.html" class="mt-2 block w-full text-left flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold hover:bg-slate-50">
-          <span class="h-9 w-9 rounded-xl flex items-center justify-center">
-            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M4 13h7V4H4v9zM13 20h7v-7h-7v7zM13 11h7V4h-7v7zM4 20h7v-5H4v5z" />
-            </svg>
-          </span>
-          Go to Teacher Dashboard
-        </a>
+        <!-- ✅ REMOVED ONLY: Go to Teacher Dashboard -->
       </nav>
 
       <div class="mt-auto px-4 py-5 border-t border-slate-100">
@@ -119,7 +152,7 @@
         <div class="px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between gap-3">
           <div class="flex items-center gap-3 min-w-0">
             <button id="openSidebarBtn"
-              class="lg:hidden inline-flex h-11 w-11 items-center justify-center rounded-xl bg-slate-50 ring-1 ring-black/5 hover:bg-slate-100"
+              class="lg:hidden inline-flex h-11 w-11 items-center justify-center rounded-xl bg-slate-50 ring-1 ring-black/5 hover:bg-slate-100 active:scale-[.98] transition"
               aria-label="Open menu" aria-controls="sidebarOverlay" aria-expanded="false">
               <svg class="h-6 w-6 text-slate-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
@@ -208,7 +241,7 @@
                   </svg>
                 </div>
                 <button id="refreshBtn"
-                  class="inline-flex items-center justify-center rounded-xl bg-slate-100 px-4 py-2.5 text-sm font-extrabold text-slate-800 hover:bg-slate-200">
+                  class="inline-flex items-center justify-center rounded-xl bg-slate-100 px-4 py-2.5 text-sm font-extrabold text-slate-800 hover:bg-slate-200 active:scale-[.98] transition">
                   Refresh
                 </button>
               </div>
@@ -229,7 +262,7 @@
             <div class="flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
               <div>
                 <h2 class="text-xl font-extrabold text-slate-900">Teachers</h2>
-                <p class="mt-1 text-sm text-slate-600">View approved/pending teacher accounts.</p>
+                <p class="mt-1 text-sm text-slate-600">Tap a teacher to view full info.</p>
               </div>
               <div class="relative">
                 <input id="searchTeachers" type="text" placeholder="Search…"
@@ -241,7 +274,39 @@
               </div>
             </div>
 
-            <div id="teachersList" class="mt-6 grid gap-3"></div>
+            <!-- Responsive layout: list + (desktop) detail panel -->
+            <div class="mt-6 grid gap-4 lg:grid-cols-3">
+              <div class="lg:col-span-2">
+                <div id="teachersList" class="grid gap-3"></div>
+              </div>
+
+              <aside class="hidden lg:block lg:col-span-1">
+                <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-5 sticky top-24">
+                  <div class="flex items-center justify-between gap-2">
+                    <p class="text-sm font-extrabold text-slate-900">Teacher Details</p>
+                    <span id="detailPill" class="hidden rounded-full bg-slate-200 px-2 py-0.5 text-[11px] font-extrabold text-slate-700 ring-1 ring-black/5">—</span>
+                  </div>
+
+                  <div id="detailEmpty" class="mt-4 rounded-2xl bg-white ring-1 ring-black/5 p-4">
+                    <p class="text-sm font-extrabold text-slate-900">No teacher selected</p>
+                    <p class="mt-1 text-sm text-slate-600">Click a teacher card to view details here.</p>
+                  </div>
+
+                  <div id="detailBody" class="hidden mt-4 rounded-2xl bg-white ring-1 ring-black/5 p-4">
+                    <p id="detailName" class="text-base font-extrabold text-slate-900">—</p>
+                    <p id="detailEmail" class="mt-1 text-sm text-slate-700 break-all">—</p>
+
+                    <div class="mt-4 grid gap-2 text-sm font-semibold text-slate-700">
+                      <p><span class="text-slate-500">Teacher ID:</span> <span id="detailTeacherId">—</span></p>
+                      <p><span class="text-slate-500">Department:</span> <span id="detailDept">—</span></p>
+                      <p><span class="text-slate-500">Applied:</span> <span id="detailApplied">—</span></p>
+                      <p><span class="text-slate-500">UID:</span> <span id="detailUid" class="break-all">—</span></p>
+                    </div>
+                  </div>
+                </div>
+              </aside>
+            </div>
+
           </div>
         </section>
 
@@ -258,7 +323,7 @@
           <p class="text-base font-extrabold text-slate-900 leading-tight">Admin Dashboard</p>
           <p class="text-xs text-slate-500 font-semibold">Menu</p>
         </div>
-        <button id="closeSidebarBtn" class="h-11 w-11 rounded-xl bg-slate-50 ring-1 ring-black/5 hover:bg-slate-100 inline-flex items-center justify-center" aria-label="Close menu">
+        <button id="closeSidebarBtn" class="h-11 w-11 rounded-xl bg-slate-50 ring-1 ring-black/5 hover:bg-slate-100 inline-flex items-center justify-center active:scale-[.98] transition" aria-label="Close menu">
           <svg class="h-6 w-6 text-slate-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
           </svg>
@@ -272,13 +337,45 @@
         <button type="button" data-tab="teachers" class="m-tab mt-2 w-full text-left rounded-xl px-4 py-3 text-sm font-extrabold hover:bg-slate-50">
           Teachers
         </button>
-        <a href="teacher-dashboard.html" class="mt-2 block w-full text-left rounded-xl px-4 py-3 text-sm font-extrabold hover:bg-slate-50">
-          Go to Teacher Dashboard
-        </a>
+
+        <!-- ✅ REMOVED ONLY: Go to Teacher Dashboard -->
 
         <a href="#" id="mLogoutLink" class="mt-4 block w-full text-left rounded-xl px-4 py-3 text-sm font-extrabold text-rose-600 hover:bg-rose-50">
           Logout
         </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- MOBILE Teacher Detail Bottom Sheet (animated) -->
+  <div id="teacherDetailModal" class="fixed inset-0 z-[9999] sheet-hidden">
+    <div id="teacherDetailBackdrop" class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm sheet-backdrop"></div>
+
+    <div class="absolute inset-x-0 bottom-0 max-h-[85vh] rounded-t-3xl bg-white shadow-soft ring-1 ring-black/10 overflow-hidden sheet-panel">
+      <div class="px-5 py-4 flex items-start justify-between gap-4 border-b border-slate-100">
+        <div class="min-w-0">
+          <p class="text-sm font-extrabold text-slate-900">Teacher Details</p>
+          <p id="mDetailName" class="mt-1 text-base font-extrabold text-slate-900 truncate">—</p>
+          <p id="mDetailEmail" class="mt-1 text-sm font-semibold text-slate-600 break-all">—</p>
+        </div>
+        <button id="closeTeacherModalBtn" class="h-11 w-11 rounded-xl bg-slate-50 ring-1 ring-black/5 hover:bg-slate-100 inline-flex items-center justify-center active:scale-[.98] transition" aria-label="Close details">
+          <svg class="h-6 w-6 text-slate-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="p-5 nice-scroll overflow-auto max-h-[calc(85vh-72px)]">
+        <div class="flex items-center gap-2 flex-wrap">
+          <span id="mDetailPill" class="rounded-full bg-slate-200 px-2 py-0.5 text-[11px] font-extrabold text-slate-700 ring-1 ring-black/5">—</span>
+        </div>
+
+        <div class="mt-4 grid gap-2 text-sm font-semibold text-slate-700">
+          <p><span class="text-slate-500">Teacher ID:</span> <span id="mDetailTeacherId">—</span></p>
+          <p><span class="text-slate-500">Department:</span> <span id="mDetailDept">—</span></p>
+          <p><span class="text-slate-500">Applied:</span> <span id="mDetailApplied">—</span></p>
+          <p><span class="text-slate-500">UID:</span> <span id="mDetailUid" class="break-all">—</span></p>
+        </div>
       </div>
     </div>
   </div>
@@ -319,7 +416,7 @@
           // Header UI
           const name = String(profile.fullName || user.displayName || "Admin").trim() || "Admin";
           const email = String(profile.email || user.email || "").trim();
-          const initials = (name.split(/\\s+/).filter(Boolean).slice(0,2).map(s => s[0]).join("") || (email[0] || "A")).toUpperCase();
+          const initials = (name.split(/\s+/).filter(Boolean).slice(0,2).map(s => s[0]).join("") || (email[0] || "A")).toUpperCase();
           const __n = document.getElementById("adminName"); if (__n) __n.textContent = name;
           const __a = document.getElementById("adminAvatar"); if (__a) __a.textContent = initials;
 
@@ -367,6 +464,13 @@
         b.classList.toggle("bg-brand-50", active);
         b.classList.toggle("text-brand-800", active);
       });
+
+      const activePanel = panels[name];
+      if (activePanel) {
+        activePanel.classList.remove("panel-anim");
+        void activePanel.offsetWidth;
+        activePanel.classList.add("panel-anim");
+      }
     }
 
     document.querySelectorAll(".tab-btn").forEach((b) => b.addEventListener("click", () => setActiveTab(b.getAttribute("data-tab"))));
@@ -411,6 +515,119 @@
       toast.classList.remove("hidden");
       clearTimeout(toastTimer);
       toastTimer = setTimeout(() => toast.classList.add("hidden"), 2500);
+    }
+
+    // =============================
+    // Detail UI (desktop panel + mobile modal)
+    // =============================
+    const detailPill = document.getElementById("detailPill");
+    const detailEmpty = document.getElementById("detailEmpty");
+    const detailBody = document.getElementById("detailBody");
+    const detailName = document.getElementById("detailName");
+    const detailEmail = document.getElementById("detailEmail");
+    const detailTeacherId = document.getElementById("detailTeacherId");
+    const detailDept = document.getElementById("detailDept");
+    const detailApplied = document.getElementById("detailApplied");
+    const detailUid = document.getElementById("detailUid");
+
+    const teacherDetailModal = document.getElementById("teacherDetailModal");
+    const teacherDetailBackdrop = document.getElementById("teacherDetailBackdrop");
+    const closeTeacherModalBtn = document.getElementById("closeTeacherModalBtn");
+
+    const mDetailPill = document.getElementById("mDetailPill");
+    const mDetailName = document.getElementById("mDetailName");
+    const mDetailEmail = document.getElementById("mDetailEmail");
+    const mDetailTeacherId = document.getElementById("mDetailTeacherId");
+    const mDetailDept = document.getElementById("mDetailDept");
+    const mDetailApplied = document.getElementById("mDetailApplied");
+    const mDetailUid = document.getElementById("mDetailUid");
+
+    function openTeacherModal() {
+      if (!teacherDetailModal) return;
+      teacherDetailModal.classList.remove("sheet-hidden");
+      void teacherDetailModal.offsetWidth; // reflow
+      teacherDetailModal.classList.add("sheet-open");
+      document.body.classList.add("overflow-hidden");
+    }
+
+    function closeTeacherModal() {
+      if (!teacherDetailModal) return;
+      teacherDetailModal.classList.remove("sheet-open");
+      setTimeout(() => {
+        teacherDetailModal.classList.add("sheet-hidden");
+        document.body.classList.remove("overflow-hidden");
+      }, 260);
+    }
+
+    closeTeacherModalBtn?.addEventListener("click", closeTeacherModal);
+    teacherDetailBackdrop?.addEventListener("click", closeTeacherModal);
+
+    function setPillText(el, status) {
+      if (!el) return;
+      const s = String(status || "").toLowerCase().trim();
+      el.textContent = s ? s[0].toUpperCase() + s.slice(1) : "—";
+      el.classList.remove("hidden");
+    }
+
+    function setTeacherDetails(t) {
+      if (!t) return;
+
+      const name = String(t.fullName || "Teacher").trim() || "Teacher";
+      const email = String(t.email || "").trim();
+      const dept = String(t.department || "").trim();
+      const tid = String(t.teacherId || "").trim();
+      const status = String(t.approvalStatus || (t.approved ? "approved" : "pending")).toLowerCase().trim();
+      const appliedAt = tsToText(t.appliedAt || t.createdAt);
+      const uid = t.__id || "";
+
+      // Desktop panel
+      if (detailEmpty) detailEmpty.classList.add("hidden");
+      if (detailBody) detailBody.classList.remove("hidden");
+      setPillText(detailPill, status);
+
+      if (detailName) detailName.textContent = name;
+      if (detailEmail) detailEmail.textContent = email || "—";
+      if (detailTeacherId) detailTeacherId.textContent = tid || "—";
+      if (detailDept) detailDept.textContent = dept || "—";
+      if (detailApplied) detailApplied.textContent = appliedAt || "—";
+      if (detailUid) detailUid.textContent = uid || "—";
+
+      // Mobile modal
+      if (mDetailName) mDetailName.textContent = name;
+      if (mDetailEmail) mDetailEmail.textContent = email || "—";
+      if (mDetailTeacherId) mDetailTeacherId.textContent = tid || "—";
+      if (mDetailDept) mDetailDept.textContent = dept || "—";
+      if (mDetailApplied) mDetailApplied.textContent = appliedAt || "—";
+      if (mDetailUid) mDetailUid.textContent = uid || "—";
+
+      if (mDetailPill) {
+        const s = String(status || "").toLowerCase().trim();
+        mDetailPill.textContent = s ? s[0].toUpperCase() + s.slice(1) : "—";
+        mDetailPill.className = "rounded-full px-2 py-0.5 text-[11px] font-extrabold ring-1 ring-black/5";
+        if (s === "approved") mDetailPill.classList.add("bg-emerald-100","text-emerald-800");
+        else if (s === "rejected") mDetailPill.classList.add("bg-rose-100","text-rose-800");
+        else mDetailPill.classList.add("bg-amber-100","text-amber-800");
+      }
+    }
+
+    let selectedTeacherId = null;
+    function markSelectedTeacher(uid) {
+      selectedTeacherId = uid;
+      document.querySelectorAll(".teacher-tap[data-view]").forEach(el => {
+        el.classList.toggle("teacher-selected", el.getAttribute("data-view") === uid);
+      });
+    }
+
+    function openTeacherDetailsById(uid) {
+      const t = allTeachers.find(x => String(x.__id) === String(uid));
+      if (!t) return;
+      markSelectedTeacher(String(uid));
+      setTeacherDetails(t);
+
+      // On small screens, open modal
+      if (window.matchMedia("(max-width: 1023px)").matches) {
+        openTeacherModal();
+      }
     }
 
     // =============================
@@ -462,7 +679,8 @@
             : `<span class="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-extrabold text-amber-800 ring-1 ring-black/5">Pending</span>`;
 
       return `
-        <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-5">
+        <div data-view="${uid}" role="button" tabindex="0"
+             class="teacher-tap rounded-2xl bg-slate-50 ring-1 ring-black/5 p-5 cursor-pointer hover:bg-slate-100 hover:-translate-y-[1px] transition focus:outline-none focus:ring-4 focus:ring-brand-200">
           <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
             <div class="min-w-0">
               <div class="flex items-center gap-2 flex-wrap">
@@ -480,11 +698,11 @@
             ${showActions ? `
               <div class="flex sm:flex-col gap-2 sm:items-end">
                 <button data-approve="${uid}"
-                  class="inline-flex items-center justify-center rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-extrabold text-white shadow-softer hover:bg-emerald-700 focus:outline-none focus:ring-4 focus:ring-emerald-200">
+                  class="inline-flex items-center justify-center rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-extrabold text-white shadow-softer hover:bg-emerald-700 focus:outline-none focus:ring-4 focus:ring-emerald-200 active:scale-[.98] transition">
                   Approve
                 </button>
                 <button data-reject="${uid}"
-                  class="inline-flex items-center justify-center rounded-xl bg-rose-600 px-4 py-2.5 text-sm font-extrabold text-white shadow-softer hover:bg-rose-700 focus:outline-none focus:ring-4 focus:ring-rose-200">
+                  class="inline-flex items-center justify-center rounded-xl bg-rose-600 px-4 py-2.5 text-sm font-extrabold text-white shadow-softer hover:bg-rose-700 focus:outline-none focus:ring-4 focus:ring-rose-200 active:scale-[.98] transition">
                   Reject
                 </button>
               </div>
@@ -504,6 +722,14 @@
     }
 
     let allTeachers = [];
+
+    function applyStagger(container) {
+      if (!container) return;
+      container.classList.add("stagger");
+      Array.from(container.children).forEach((el, i) => {
+        el.style.animationDelay = `${Math.min(i * 40, 280)}ms`;
+      });
+    }
 
     function applyFiltersAndRender() {
       const qPending = norm(searchPending?.value);
@@ -551,7 +777,15 @@
           .join("");
       }
 
+      // Restore selected highlight after re-render
+      if (selectedTeacherId) markSelectedTeacher(selectedTeacherId);
+
       wireActionButtons();
+      wireTeacherTap();
+
+      // Stagger animations
+      applyStagger(pendingList);
+      applyStagger(teachersList);
     }
 
     async function approveTeacher(uid) {
@@ -578,7 +812,8 @@
 
     function wireActionButtons() {
       document.querySelectorAll("[data-approve]").forEach(btn => {
-        btn.addEventListener("click", async () => {
+        btn.addEventListener("click", async (e) => {
+          e.stopPropagation();
           const uid = btn.getAttribute("data-approve");
           if (!uid) return;
           if (!confirm("Approve this teacher account?")) return;
@@ -587,11 +822,32 @@
       });
 
       document.querySelectorAll("[data-reject]").forEach(btn => {
-        btn.addEventListener("click", async () => {
+        btn.addEventListener("click", async (e) => {
+          e.stopPropagation();
           const uid = btn.getAttribute("data-reject");
           if (!uid) return;
           if (!confirm("Reject this teacher account?")) return;
           try { await rejectTeacher(uid); } catch (e) { alert(e?.message || "Reject failed."); }
+        });
+      });
+    }
+
+    function wireTeacherTap() {
+      document.querySelectorAll(".teacher-tap[data-view]").forEach(card => {
+        card.addEventListener("click", (e) => {
+          if (e.target.closest("button")) return;
+          const uid = card.getAttribute("data-view");
+          if (!uid) return;
+          openTeacherDetailsById(uid);
+        });
+
+        card.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            const uid = card.getAttribute("data-view");
+            if (!uid) return;
+            openTeacherDetailsById(uid);
+          }
         });
       });
     }
