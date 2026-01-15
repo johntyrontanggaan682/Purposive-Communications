@@ -41,7 +41,6 @@
         #E7F7F5;
     }
 
-    /* ===== Scrollbar: hidden by default, appears on scroll/hover ===== */
     html, body { height: 100%; }
 
     /* Firefox */
@@ -115,6 +114,22 @@
             </div>
           </div>
 
+          <!-- Teacher Employee ID -->
+          <div id="employeeIdWrap" class="hidden">
+            <label class="block text-xs font-semibold text-slate-700">Employee ID</label>
+            <div class="mt-2 flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2.5 shadow-sm focus-within:ring-2 focus-within:ring-brand-200">
+              <svg viewBox="0 0 24 24" class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="16" rx="2" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M7 8h10M7 12h8M7 16h10" />
+              </svg>
+              <input id="employeeId" type="text" name="employee_id" placeholder="Enter your employee ID"
+                class="w-full bg-transparent text-sm text-slate-800 placeholder:text-slate-400 outline-none" />
+            </div>
+            <p class="mt-2 text-[11px] font-semibold text-slate-500">
+              Required for teacher accounts.
+            </p>
+          </div>
+
           <div id="studentIdWrap">
             <label class="block text-xs font-semibold text-slate-700">Student ID</label>
             <div class="mt-2 flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2.5 shadow-sm focus-within:ring-2 focus-within:ring-brand-200">
@@ -156,12 +171,43 @@
               <button id="togglePassword" type="button"
                 class="inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-500 hover:text-brand-700 hover:bg-brand-50"
                 aria-label="Show password">
-                <svg id="passwordEye" viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
+                <svg id="passwordEye" viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2"></svg>
               </button>
+            </div>
+
+            <!-- Strength meter -->
+            <div class="mt-2">
+              <div class="h-1.5 w-full rounded-full bg-slate-100 overflow-hidden ring-1 ring-black/5">
+                <div id="pwBar" class="h-full w-0 transition-all duration-200"></div>
+              </div>
+              <p class="mt-2 text-[11px] font-semibold text-slate-500">
+                Strength: <span id="pwStrengthLabel" class="text-slate-700">—</span>
+              </p>
+            </div>
+
+            <!-- Requirements -->
+            <div id="pwReqBox" class="mt-2 rounded-xl bg-slate-50 ring-1 ring-black/5 p-3">
+              <p class="text-[11px] font-extrabold text-slate-700">
+                To become <span class="text-emerald-700">Strong</span>, your password must have:
+              </p>
+
+              <ul class="mt-2 space-y-1 text-[11px] font-semibold">
+                <li id="reqLen" class="flex items-center gap-2 text-slate-500">
+                  <span class="inline-block h-2 w-2 rounded-full bg-slate-300"></span> At least 8 characters
+                </li>
+                <li id="reqUpper" class="flex items-center gap-2 text-slate-500">
+                  <span class="inline-block h-2 w-2 rounded-full bg-slate-300"></span> 1 uppercase letter (A–Z)
+                </li>
+                <li id="reqLower" class="flex items-center gap-2 text-slate-500">
+                  <span class="inline-block h-2 w-2 rounded-full bg-slate-300"></span> 1 lowercase letter (a–z)
+                </li>
+                <li id="reqNumber" class="flex items-center gap-2 text-slate-500">
+                  <span class="inline-block h-2 w-2 rounded-full bg-slate-300"></span> 1 number (0–9)
+                </li>
+                <li id="reqSpecial" class="flex items-center gap-2 text-slate-500">
+                  <span class="inline-block h-2 w-2 rounded-full bg-slate-300"></span> 1 special character (!@#$…)
+                </li>
+              </ul>
             </div>
           </div>
 
@@ -181,11 +227,7 @@
               <button id="toggleConfirmPassword" type="button"
                 class="inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-500 hover:text-brand-700 hover:bg-brand-50"
                 aria-label="Show confirm password">
-                <svg id="confirmPasswordEye" viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
+                <svg id="confirmPasswordEye" viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2"></svg>
               </button>
             </div>
             <p id="pwHint" class="mt-2 hidden text-xs font-semibold text-rose-600">Passwords do not match.</p>
@@ -247,12 +289,9 @@
             </div>
           </div>
 
-          <!-- ✅ UPDATED: Section dropdown A/B/C/D -->
           <div id="sectionWrap">
             <label class="block text-xs font-semibold text-slate-700">Section</label>
-
-            <div
-              class="mt-2 relative flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2.5 shadow-sm focus-within:ring-2 focus-within:ring-brand-200">
+            <div class="mt-2 relative flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2.5 shadow-sm focus-within:ring-2 focus-within:ring-brand-200">
               <svg viewBox="0 0 24 24" class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h10M4 14h16M4 18h10" />
               </svg>
@@ -317,7 +356,9 @@
       updateProfile,
       setPersistence,
       browserSessionPersistence,
-      deleteUser
+      deleteUser,
+      sendEmailVerification,
+      signOut
     } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 
     import {
@@ -348,6 +389,9 @@
     const typeTeacherBtn = document.getElementById("typeTeacherBtn");
     const accountType = document.getElementById("accountType");
 
+    const employeeIdWrap = document.getElementById("employeeIdWrap");
+    const employeeIdEl = document.getElementById("employeeId");
+
     const studentIdWrap = document.getElementById("studentIdWrap");
     const courseWrap = document.getElementById("courseWrap");
     const yearLevelWrap = document.getElementById("yearLevelWrap");
@@ -356,7 +400,7 @@
     const studentIdEl = document.getElementById("studentId");
     const courseEl = document.getElementById("course");
     const yearLevelEl = document.getElementById("yearLevel");
-    const sectionEl = document.getElementById("section"); // ✅ now a SELECT
+    const sectionEl = document.getElementById("section");
     const classCodeEl = document.getElementById("classCode");
 
     const createBtn = document.getElementById("createBtn");
@@ -382,8 +426,10 @@
         typeStudentBtn?.classList.add(...inactive.split(" "));
       }
 
-      // show/hide blocks
       const isTeacher = type === "teacher";
+
+      // show/hide blocks
+      employeeIdWrap?.classList.toggle("hidden", !isTeacher);
 
       studentIdWrap?.classList.toggle("hidden", isTeacher);
       courseWrap?.classList.toggle("hidden", isTeacher);
@@ -392,6 +438,8 @@
       classCodeWrap?.classList.toggle("hidden", isTeacher);
 
       // required toggles
+      if (employeeIdEl) employeeIdEl.required = isTeacher;
+
       if (studentIdEl) studentIdEl.required = !isTeacher;
       if (courseEl) courseEl.required = !isTeacher;
       if (yearLevelEl) yearLevelEl.required = !isTeacher;
@@ -406,7 +454,7 @@
     typeTeacherBtn?.addEventListener("click", () => setType("teacher"));
     setType("student");
 
-    // ===== Password validate + eye toggles (✅ fixed icon issue) =====
+    // ===== Password validate + eye toggles =====
     const pw = document.getElementById("password");
     const cpw = document.getElementById("confirmPassword");
     const hint = document.getElementById("pwHint");
@@ -421,9 +469,73 @@
     cpw.addEventListener("input", validatePasswords);
     pw.addEventListener("input", validatePasswords);
 
+    // ===== Password strength =====
+    const pwBar = document.getElementById("pwBar");
+    const pwStrengthLabel = document.getElementById("pwStrengthLabel");
+
+    const reqLen = document.getElementById("reqLen");
+    const reqUpper = document.getElementById("reqUpper");
+    const reqLower = document.getElementById("reqLower");
+    const reqNumber = document.getElementById("reqNumber");
+    const reqSpecial = document.getElementById("reqSpecial");
+
+    function getPasswordStrength(p) {
+      const pass = String(p || "");
+
+      const rules = {
+        length: pass.length >= 8,
+        upper: /[A-Z]/.test(pass),
+        lower: /[a-z]/.test(pass),
+        number: /[0-9]/.test(pass),
+        special: /[^A-Za-z0-9]/.test(pass),
+      };
+
+      const score =
+        (rules.length ? 1 : 0) +
+        (rules.upper ? 1 : 0) +
+        (rules.lower ? 1 : 0) +
+        (rules.number ? 1 : 0) +
+        (rules.special ? 1 : 0);
+
+      if (pass.length === 0) return { label: "—", width: "0%", barClass: "bg-slate-200", rules };
+      if (score <= 2) return { label: "Weak", width: "33%", barClass: "bg-rose-500", rules };
+      if (score <= 4) return { label: "Medium", width: "66%", barClass: "bg-amber-500", rules };
+      return { label: "Strong", width: "100%", barClass: "bg-emerald-500", rules };
+    }
+
+    function markReq(el, ok) {
+      if (!el) return;
+      el.classList.toggle("text-emerald-700", ok);
+      el.classList.toggle("text-slate-500", !ok);
+      const dot = el.querySelector("span");
+      if (dot) {
+        dot.classList.toggle("bg-emerald-500", ok);
+        dot.classList.toggle("bg-slate-300", !ok);
+      }
+    }
+
+    function updateStrengthUI() {
+      const s = getPasswordStrength(pw.value);
+
+      markReq(reqLen, s.rules.length);
+      markReq(reqUpper, s.rules.upper);
+      markReq(reqLower, s.rules.lower);
+      markReq(reqNumber, s.rules.number);
+      markReq(reqSpecial, s.rules.special);
+
+      if (pwStrengthLabel) pwStrengthLabel.textContent = s.label;
+      if (pwBar) {
+        pwBar.style.width = s.width;
+        pwBar.className = `h-full transition-all duration-200 ${s.barClass}`;
+      }
+    }
+
+    pw.addEventListener("input", updateStrengthUI);
+    updateStrengthUI();
+
+    // ===== eye icons =====
     const togglePassword = document.getElementById("togglePassword");
     const passwordEye = document.getElementById("passwordEye");
-
     const toggleConfirmPassword = document.getElementById("toggleConfirmPassword");
     const confirmPasswordEye = document.getElementById("confirmPasswordEye");
 
@@ -433,8 +545,6 @@
       <path stroke-linecap="round" stroke-linejoin="round"
         d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
     `;
-
-    // cleaner eye-off (prevents “double icon” look)
     const EYE_OFF = `
       <path stroke-linecap="round" stroke-linejoin="round" d="M3 3l18 18" />
       <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 10.5a2.5 2.5 0 003 3" />
@@ -448,22 +558,20 @@
       svgEl.replaceChildren();
       svgEl.insertAdjacentHTML("afterbegin", paths);
     }
-
     function toggleInputVisibility(inputEl, btnEl, svgEl) {
-      const willShow = inputEl.type === "password"; // going to text
+      const willShow = inputEl.type === "password";
       inputEl.type = willShow ? "text" : "password";
       btnEl.setAttribute("aria-label", willShow ? "Hide password" : "Show password");
       setSvgPaths(svgEl, willShow ? EYE_OFF : EYE_ON);
     }
 
-    // ensure consistent initial state
     setSvgPaths(passwordEye, EYE_ON);
     setSvgPaths(confirmPasswordEye, EYE_ON);
 
     togglePassword?.addEventListener("click", () => toggleInputVisibility(pw, togglePassword, passwordEye));
     toggleConfirmPassword?.addEventListener("click", () => toggleInputVisibility(cpw, toggleConfirmPassword, confirmPasswordEye));
 
-    // ✅ Teacher code resolver (needs signed-in user; we will call AFTER auth creation)
+    // ✅ Teacher code resolver
     async function resolveTeacherForCode(course, yearLevel, section, code) {
       const crs = String(course || "").trim();
       const yr = String(yearLevel || "").trim();
@@ -499,8 +607,15 @@
         return;
       }
 
+      // Block weak
+      const strength = getPasswordStrength(pw.value);
+      if (strength.label === "Weak") {
+        alert("Password is too weak. Please meet the requirements to become Strong.");
+        return;
+      }
+
       createBtn.disabled = true;
-      typeStudentBtn.disabled = true; // prevent switching while submitting
+      typeStudentBtn.disabled = true;
       typeTeacherBtn.disabled = true;
 
       createBtn.classList.add("opacity-90");
@@ -513,16 +628,19 @@
       const fullName = document.getElementById("fullName").value.trim();
       const email = document.getElementById("email").value.trim().toLowerCase();
       const password = pw.value;
+      const employeeId = (document.getElementById("employeeId")?.value || "").trim();
 
-      // student-only fields
       const studentId = (document.getElementById("studentId")?.value || "").trim();
       const course = document.getElementById("course")?.value || "";
       const yearLevel = document.getElementById("yearLevel")?.value || "";
-      const section = document.getElementById("section")?.value || ""; // ✅ no trim needed for select
+      const section = document.getElementById("section")?.value || "";
       const classCode = (document.getElementById("classCode")?.value || "").trim();
 
       try {
-        // ✅ IMPORTANT: create auth user FIRST so classCodes read is allowed by your rules
+        if (isTeacher && (!employeeId || employeeId.length < 3)) {
+          throw new Error("Employee ID is required for teacher accounts.");
+        }
+
         const cred = await createUserWithEmailAndPassword(auth, email, password);
         try { await updateProfile(cred.user, { displayName: fullName }); } catch (_) {}
 
@@ -531,6 +649,7 @@
         if (isTeacher) {
           await setDoc(ref, {
             fullName,
+            employeeId: employeeId || "",
             email,
             role: "teacher",
             approved: false,
@@ -538,14 +657,11 @@
             appliedAt: serverTimestamp(),
             createdAt: serverTimestamp()
           }, { merge: true });
-
         } else {
-          // ✅ Validate teacher code AFTER sign-in
           let codeInfo;
           try {
             codeInfo = await resolveTeacherForCode(course, yearLevel, section, classCode);
           } catch (err) {
-            // ✅ If invalid code, remove the auth user so no orphan account exists
             try { await deleteUser(cred.user); } catch (_) {}
             throw err;
           }
@@ -567,17 +683,14 @@
           }, { merge: true });
         }
 
-        // optional verify read
         const check = await getDoc(ref);
-        if (!check.exists()) {
-          throw new Error("Firestore write failed: users/" + cred.user.uid + " not found after setDoc()");
-        }
+        if (!check.exists()) throw new Error("Firestore write failed: users/" + cred.user.uid + " not found.");
 
-        const msg = encodeURIComponent(
-          isTeacher
-            ? "Teacher account created. Log in — Teacher Dashboard will be locked until an admin approves your account."
-            : "Your student account has been created. Please log in."
-        );
+        // Email verification
+        try { await sendEmailVerification(cred.user); } catch (e) { console.warn(e); }
+        try { await signOut(auth); } catch (_) {}
+
+        const msg = encodeURIComponent("Account created! Please verify your email (check inbox/spam). You cannot log in until verified.");
         const eemail = encodeURIComponent(email);
         window.location.href = `login.html?msg=${msg}&email=${eemail}`;
       } catch (err) {
