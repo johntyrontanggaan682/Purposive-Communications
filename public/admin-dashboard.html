@@ -44,45 +44,209 @@
     .nice-scroll::-webkit-scrollbar-thumb{ background: rgba(2,8,23,.15); border-radius: 999px; }
     .nice-scroll::-webkit-scrollbar-track{ background: transparent; }
 
-    /* ===== Motion (safe + subtle) ===== */
     :root{ --ease-out: cubic-bezier(.22,1,.36,1); }
 
     @media (prefers-reduced-motion: reduce){
       *, *::before, *::after{ animation: none !important; transition: none !important; scroll-behavior: auto !important; }
     }
 
+    /* ===== Enhanced animated background blobs ===== */
+    body.page-bg{
+      position: relative;
+      overflow-x: hidden;
+    }
+    body.page-bg::before,
+    body.page-bg::after{
+      content:"";
+      position: fixed;
+      inset: -240px;
+      pointer-events: none;
+      z-index: -1;
+      filter: blur(50px);
+      opacity: .45;
+      transform: translate3d(0,0,0);
+    }
+    body.page-bg::before{
+      background:
+        radial-gradient(closest-side at 20% 30%, rgba(19,168,154,.26), transparent 65%),
+        radial-gradient(closest-side at 80% 20%, rgba(59,130,246,.16), transparent 60%),
+        radial-gradient(closest-side at 55% 85%, rgba(16,185,129,.14), transparent 62%);
+      animation: blobDriftA 14s var(--ease-out) infinite alternate;
+    }
+    body.page-bg::after{
+      background:
+        radial-gradient(closest-side at 15% 80%, rgba(244,63,94,.10), transparent 62%),
+        radial-gradient(closest-side at 90% 70%, rgba(19,168,154,.18), transparent 62%),
+        radial-gradient(closest-side at 55% 10%, rgba(14,165,233,.12), transparent 64%);
+      opacity: .35;
+      animation: blobDriftB 18s var(--ease-out) infinite alternate;
+    }
+    @keyframes blobDriftA{
+      0%{ transform: translate(-14px,-10px) scale(1); }
+      50%{ transform: translate(16px, 8px) scale(1.04); }
+      100%{ transform: translate(10px,16px) scale(1.02); }
+    }
+    @keyframes blobDriftB{
+      0%{ transform: translate(12px,14px) scale(1); }
+      50%{ transform: translate(-10px, 4px) scale(1.05); }
+      100%{ transform: translate(-16px,-12px) scale(1.02); }
+    }
+
+    /* Panel entrance */
     .panel-anim{ animation: fadeSlideIn .35s var(--ease-out) both; }
     @keyframes fadeSlideIn{
-      from{ opacity: 0; transform: translateY(8px); }
+      from{ opacity: 0; transform: translateY(10px); }
       to{ opacity: 1; transform: translateY(0); }
     }
 
+    /* Stagger cards */
     @keyframes cardPop{
-      from{ opacity:0; transform: translateY(10px) scale(.98); }
+      from{ opacity:0; transform: translateY(12px) scale(.985); }
       to{ opacity:1; transform: translateY(0) scale(1); }
     }
     .stagger > *{
       opacity:0;
-      transform: translateY(10px);
-      animation: cardPop .35s var(--ease-out) both;
+      transform: translateY(12px);
+      animation: cardPop .40s var(--ease-out) both;
     }
+
+    /* Sidebar entrance */
+    aside{ animation: asideIn .40s var(--ease-out) both; }
+    @keyframes asideIn{
+      from{ opacity: 0; transform: translateX(-10px); }
+      to{ opacity: 1; transform: translateX(0); }
+    }
+
+    /* Tabs micro-interaction */
+    .tab-btn{
+      color: rgb(30 41 59);
+      transition: transform .18s var(--ease-out), background-color .18s var(--ease-out), box-shadow .18s var(--ease-out);
+    }
+    .tab-btn:hover{ background: rgba(2,8,23,0.04); transform: translateY(-1px); }
+    .tab-btn:active{ transform: translateY(0); }
+
+    /* Stat cards: hover + shine */
+    .stat-card{
+      position: relative;
+      overflow: hidden;
+      transition: transform .22s var(--ease-out), box-shadow .22s var(--ease-out);
+    }
+    .stat-card::after{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,.55) 45%, transparent 70%);
+      transform: translateX(-120%);
+      opacity: .0;
+      transition: transform .75s var(--ease-out), opacity .35s var(--ease-out);
+      pointer-events:none;
+    }
+    .stat-card:hover{
+      transform: translateY(-2px);
+      box-shadow: 0 18px 45px rgba(2, 8, 23, 0.12);
+    }
+    .stat-card:hover::after{
+      transform: translateX(120%);
+      opacity: .9;
+    }
+
+    /* Teacher card enhanced interactions */
+    .teacher-tap{
+      position: relative;
+      overflow: hidden;
+      transition: transform .22s var(--ease-out), box-shadow .22s var(--ease-out), background-color .22s var(--ease-out);
+      will-change: transform;
+    }
+    .teacher-tap::after{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background: linear-gradient(120deg, transparent 0%, rgba(19,168,154,.10) 45%, transparent 70%);
+      transform: translateX(-110%);
+      opacity: .0;
+      transition: transform .85s var(--ease-out), opacity .25s var(--ease-out);
+      pointer-events:none;
+    }
+    .teacher-tap:hover{ box-shadow: 0 18px 45px rgba(2, 8, 23, 0.12); }
+    .teacher-tap:hover::after{ transform: translateX(120%); opacity: .95; }
 
     .teacher-selected{
       background: rgba(19,168,154,0.10) !important;
-      box-shadow: 0 12px 30px rgba(2, 8, 23, 0.08);
+      box-shadow: 0 18px 45px rgba(2, 8, 23, 0.12);
       border-color: rgba(19,168,154,0.35) !important;
     }
 
-    /* Bottom sheet animation */
+    /* Toast animation */
+    #toast{ transform-origin: top center; }
+    #toast:not(.hidden){ animation: toastIn .22s var(--ease-out) both; }
+    @keyframes toastIn{
+      from{ opacity: 0; transform: translateY(-8px) scale(.98); }
+      to{ opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Mobile sidebar overlay: animate in WITHOUT JS changes */
+    #sidebarOverlay:not(.hidden) #sidebarBackdrop{ animation: fadeIn .20s var(--ease-out) both; }
+    #sidebarOverlay:not(.hidden) > div:last-child{ animation: slideInLeft .28s var(--ease-out) both; }
+    @keyframes fadeIn{ from{ opacity:0; } to{ opacity:1; } }
+    @keyframes slideInLeft{ from{ opacity:0; transform: translateX(-10px); } to{ opacity:1; transform: translateX(0); } }
+
+    /* Bottom sheet (kept) */
     .sheet-hidden{ opacity:0; pointer-events:none; }
     .sheet-backdrop{ opacity:0; transition: opacity .25s var(--ease-out); }
     .sheet-panel{
-      transform: translateY(18px);
+      transform: translateY(20px);
       opacity: 0;
-      transition: transform .35s var(--ease-out), opacity .35s var(--ease-out);
+      transition: transform .38s var(--ease-out), opacity .38s var(--ease-out);
     }
     .sheet-open .sheet-backdrop{ opacity:1; }
     .sheet-open .sheet-panel{ transform: translateY(0); opacity:1; }
+
+    /* Badge pop when it appears (no JS changes) */
+    @keyframes badgePop{
+      from{ opacity:.4; transform: scale(.86); }
+      to{ opacity:1; transform: scale(1); }
+    }
+    #badgePending:not(.hidden),
+    #mBadgePending:not(.hidden){
+      animation: badgePop .22s var(--ease-out) both;
+    }
+
+    /* Approve/Reject buttons (created by JS) shine on hover (CSS-only) */
+    [data-approve], [data-reject]{
+      position: relative;
+      overflow: hidden;
+      transform: translateZ(0);
+    }
+    [data-approve]::after, [data-reject]::after{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,.35) 45%, transparent 70%);
+      transform: translateX(-120%);
+      transition: transform .75s var(--ease-out);
+      pointer-events:none;
+      opacity:.0;
+    }
+    [data-approve]:hover::after, [data-reject]:hover::after{
+      transform: translateX(120%);
+      opacity:.9;
+    }
+
+    /* ===== Change ONLY the visible label inside teacher cards WITHOUT touching JS =====
+       Teacher cards are rendered by JS template; we swap the label via CSS. */
+    .teacher-tap .mt-3.grid p:first-child > span.text-slate-500{
+      color: transparent;
+      position: relative;
+      display: inline-block;
+    }
+    .teacher-tap .mt-3.grid p:first-child > span.text-slate-500::after{
+      content: "Employee ID:";
+      color: rgb(100 116 139); /* slate-500 */
+      position: absolute;
+      left: 0;
+      top: 0;
+      white-space: nowrap;
+    }
   </style>
 </head>
 
@@ -127,12 +291,10 @@
           </span>
           Teachers
         </button>
-
-        <!-- ✅ REMOVED ONLY: Go to Teacher Dashboard -->
       </nav>
 
       <div class="mt-auto px-4 py-5 border-t border-slate-100">
-        <a href="#" id="logoutLink" class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-rose-600 hover:bg-rose-50">
+        <a href="#" id="logoutLink" class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-rose-600 hover:bg-rose-50 transition">
           <span class="h-9 w-9 rounded-xl bg-rose-50 ring-1 ring-black/5 flex items-center justify-center">
             <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M10 17l5-5-5-5" />
@@ -199,25 +361,25 @@
         <!-- APPROVALS -->
         <section id="panel-approvals" role="tabpanel" aria-label="Teacher approvals">
           <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            <div class="rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-5 relative overflow-hidden">
+            <div class="stat-card rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-5 relative overflow-hidden">
               <span class="absolute inset-y-0 left-0 w-1.5 bg-amber-500"></span>
               <p class="text-sm font-semibold text-slate-500">Pending Teachers</p>
               <p id="statPending" class="mt-2 text-3xl font-extrabold text-slate-900">0</p>
             </div>
 
-            <div class="rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-5 relative overflow-hidden">
+            <div class="stat-card rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-5 relative overflow-hidden">
               <span class="absolute inset-y-0 left-0 w-1.5 bg-emerald-500"></span>
               <p class="text-sm font-semibold text-slate-500">Approved Teachers</p>
               <p id="statApproved" class="mt-2 text-3xl font-extrabold text-slate-900">0</p>
             </div>
 
-            <div class="rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-5 relative overflow-hidden">
+            <div class="stat-card rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-5 relative overflow-hidden">
               <span class="absolute inset-y-0 left-0 w-1.5 bg-sky-500"></span>
               <p class="text-sm font-semibold text-slate-500">Total Teachers</p>
               <p id="statTotalTeachers" class="mt-2 text-3xl font-extrabold text-slate-900">0</p>
             </div>
 
-            <div class="rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-5 relative overflow-hidden">
+            <div class="stat-card rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-5 relative overflow-hidden">
               <span class="absolute inset-y-0 left-0 w-1.5 bg-brand-500"></span>
               <p class="text-sm font-semibold text-slate-500">Last Sync</p>
               <p id="statSync" class="mt-2 text-lg font-extrabold text-slate-900">—</p>
@@ -274,7 +436,6 @@
               </div>
             </div>
 
-            <!-- Responsive layout: list + (desktop) detail panel -->
             <div class="mt-6 grid gap-4 lg:grid-cols-3">
               <div class="lg:col-span-2">
                 <div id="teachersList" class="grid gap-3"></div>
@@ -297,10 +458,10 @@
                     <p id="detailEmail" class="mt-1 text-sm text-slate-700 break-all">—</p>
 
                     <div class="mt-4 grid gap-2 text-sm font-semibold text-slate-700">
-                      <p><span class="text-slate-500">Teacher ID:</span> <span id="detailTeacherId">—</span></p>
+                      <p><span class="text-slate-500">Employee ID:</span> <span id="detailTeacherId">—</span></p>
                       <p><span class="text-slate-500">Department:</span> <span id="detailDept">—</span></p>
                       <p><span class="text-slate-500">Applied:</span> <span id="detailApplied">—</span></p>
-                      <p><span class="text-slate-500">UID:</span> <span id="detailUid" class="break-all">—</span></p>
+                      <!-- ✅ UID REMOVED (UI only) -->
                     </div>
                   </div>
                 </div>
@@ -331,23 +492,21 @@
       </div>
 
       <div class="p-4">
-        <button type="button" data-tab="approvals" class="m-tab w-full text-left rounded-xl px-4 py-3 text-sm font-extrabold hover:bg-slate-50">
+        <button type="button" data-tab="approvals" class="m-tab w-full text-left rounded-xl px-4 py-3 text-sm font-extrabold hover:bg-slate-50 transition">
           Teacher Approvals <span id="mBadgePending" class="ml-2 hidden rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-extrabold text-amber-800 ring-1 ring-black/5">0</span>
         </button>
-        <button type="button" data-tab="teachers" class="m-tab mt-2 w-full text-left rounded-xl px-4 py-3 text-sm font-extrabold hover:bg-slate-50">
+        <button type="button" data-tab="teachers" class="m-tab mt-2 w-full text-left rounded-xl px-4 py-3 text-sm font-extrabold hover:bg-slate-50 transition">
           Teachers
         </button>
 
-        <!-- ✅ REMOVED ONLY: Go to Teacher Dashboard -->
-
-        <a href="#" id="mLogoutLink" class="mt-4 block w-full text-left rounded-xl px-4 py-3 text-sm font-extrabold text-rose-600 hover:bg-rose-50">
+        <a href="#" id="mLogoutLink" class="mt-4 block w-full text-left rounded-xl px-4 py-3 text-sm font-extrabold text-rose-600 hover:bg-rose-50 transition">
           Logout
         </a>
       </div>
     </div>
   </div>
 
-  <!-- MOBILE Teacher Detail Bottom Sheet (animated) -->
+  <!-- MOBILE Teacher Detail Bottom Sheet -->
   <div id="teacherDetailModal" class="fixed inset-0 z-[9999] sheet-hidden">
     <div id="teacherDetailBackdrop" class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm sheet-backdrop"></div>
 
@@ -371,15 +530,16 @@
         </div>
 
         <div class="mt-4 grid gap-2 text-sm font-semibold text-slate-700">
-          <p><span class="text-slate-500">Teacher ID:</span> <span id="mDetailTeacherId">—</span></p>
+          <p><span class="text-slate-500">Employee ID:</span> <span id="mDetailTeacherId">—</span></p>
           <p><span class="text-slate-500">Department:</span> <span id="mDetailDept">—</span></p>
           <p><span class="text-slate-500">Applied:</span> <span id="mDetailApplied">—</span></p>
-          <p><span class="text-slate-500">UID:</span> <span id="mDetailUid" class="break-all">—</span></p>
+          <!-- ✅ UID REMOVED (UI only) -->
         </div>
       </div>
     </div>
   </div>
 
+  <!-- ✅ JS left EXACTLY as you provided (no changes) -->
   <script type="module">
     import { auth, db } from "./firebase.js";
     import { onAuthStateChanged, signOut as firebaseSignOut, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
@@ -651,7 +811,6 @@
 
     function tsToText(ts) {
       if (!ts) return "—";
-      // Firestore Timestamp: { seconds, nanoseconds }
       if (typeof ts === "object" && ts.seconds) {
         const d = new Date(ts.seconds * 1000);
         return d.toLocaleString();
@@ -680,7 +839,7 @@
 
       return `
         <div data-view="${uid}" role="button" tabindex="0"
-             class="teacher-tap rounded-2xl bg-slate-50 ring-1 ring-black/5 p-5 cursor-pointer hover:bg-slate-100 hover:-translate-y-[1px] transition focus:outline-none focus:ring-4 focus:ring-brand-200">
+            class="teacher-tap rounded-2xl bg-slate-50 ring-1 ring-black/5 p-5 cursor-pointer hover:bg-slate-100 hover:-translate-y-[1px] transition focus:outline-none focus:ring-4 focus:ring-brand-200">
           <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
             <div class="min-w-0">
               <div class="flex items-center gap-2 flex-wrap">
@@ -738,13 +897,11 @@
       const pending = allTeachers.filter(t => !t.approved && norm(t.approvalStatus || "pending") !== "approved");
       const approved = allTeachers.filter(t => t.approved || norm(t.approvalStatus) === "approved");
 
-      // Stats
       if (statPending) statPending.textContent = String(pending.length);
       if (statApproved) statApproved.textContent = String(approved.length);
       if (statTotalTeachers) statTotalTeachers.textContent = String(allTeachers.length);
       if (statSync) statSync.textContent = new Date().toLocaleString();
 
-      // Badges
       const badgeText = String(pending.length);
       if (badgePending) {
         badgePending.textContent = badgeText;
@@ -755,7 +912,6 @@
         mBadgePending.classList.toggle("hidden", pending.length === 0);
       }
 
-      // Pending list
       const pendingFiltered = pending.filter(t => {
         const blob = norm(`${t.fullName || ""} ${t.email || ""} ${t.department || ""} ${t.teacherId || ""}`);
         return !qPending || blob.includes(qPending);
@@ -764,7 +920,6 @@
       if (pendingList) pendingList.innerHTML = pendingFiltered.map(t => teacherCard(t, { showActions: true })).join("");
       if (pendingEmpty) pendingEmpty.classList.toggle("hidden", pendingFiltered.length !== 0);
 
-      // Teachers list
       const allFiltered = allTeachers.filter(t => {
         const blob = norm(`${t.fullName || ""} ${t.email || ""} ${t.department || ""} ${t.teacherId || ""} ${t.approvalStatus || ""}`);
         return !qTeachers || blob.includes(qTeachers);
@@ -777,13 +932,11 @@
           .join("");
       }
 
-      // Restore selected highlight after re-render
       if (selectedTeacherId) markSelectedTeacher(selectedTeacherId);
 
       wireActionButtons();
       wireTeacherTap();
 
-      // Stagger animations
       applyStagger(pendingList);
       applyStagger(teachersList);
     }
@@ -856,7 +1009,6 @@
     searchTeachers?.addEventListener("input", applyFiltersAndRender);
     refreshBtn?.addEventListener("click", () => applyFiltersAndRender());
 
-    // Listen to teachers collection
     const teachersQ = query(collection(db, "users"), where("role", "==", "teacher"));
     onSnapshot(teachersQ, (snap) => {
       const rows = [];
