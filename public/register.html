@@ -571,11 +571,15 @@
     togglePassword?.addEventListener("click", () => toggleInputVisibility(pw, togglePassword, passwordEye));
     toggleConfirmPassword?.addEventListener("click", () => toggleInputVisibility(cpw, toggleConfirmPassword, confirmPasswordEye));
 
-    // ✅ Teacher code resolver
+    // ==========================================================
+    // ✅ Teacher code resolver (NO composite index needed)
+    // ==========================================================
+    function norm(v) { return String(v || "").trim().toLowerCase(); }
+
     async function resolveTeacherForCode(course, yearLevel, section, code) {
       const crs = String(course || "").trim();
       const yr = String(yearLevel || "").trim();
-      const sec = String(section || "").trim();
+      const sec = String(section || "").trim().toUpperCase();
       const c = String(code || "").trim();
 
       if (!crs) throw new Error("Please select your course/program.");
@@ -583,19 +587,36 @@
       if (!sec) throw new Error("Please select your section.");
       if (!/^[0-9]{5}$/.test(c)) throw new Error("Teacher code must be 5 digits.");
 
-      const q = query(
+      // Query by code + active only (unique among active codes)
+      const qy = query(
         collection(db, "classCodes"),
-        where("course", "==", crs),
-        where("yearLevel", "==", yr),
-        where("section", "==", sec),
         where("code", "==", c),
         where("active", "==", true),
-        limit(1)
+        limit(5)
       );
 
-      const snap = await getDocs(q);
-      if (snap.empty) throw new Error("Invalid teacher code for the selected course/year/section.");
-      return snap.docs[0].data() || {};
+      const snap = await getDocs(qy);
+      if (snap.empty) throw new Error("Invalid teacher code.");
+
+      // Validate course/year/section match (in JS)
+      let match = null;
+      snap.forEach((d) => {
+        const data = d.data() || {};
+        const ok =
+          norm(data.course) === norm(crs) &&
+          norm(data.yearLevel) === norm(yr) &&
+          norm(data.section) === norm(sec);
+        if (ok && !match) match = { id: d.id, ...data };
+      });
+
+      if (!match) {
+        throw new Error("Invalid teacher code for the selected course/year/section.");
+      }
+
+      const teacherUid = String(match.teacherUid || "").trim();
+      if (!teacherUid) throw new Error("This code is missing teacherUid. Recreate the section code from teacher dashboard.");
+
+      return match; // includes teacherUid, teacherName, course, yearLevel, section, code, id
     }
 
     // ===== Submit =====
@@ -633,15 +654,17 @@
       const studentId = (document.getElementById("studentId")?.value || "").trim();
       const course = document.getElementById("course")?.value || "";
       const yearLevel = document.getElementById("yearLevel")?.value || "";
-      const section = document.getElementById("section")?.value || "";
+      const section = (document.getElementById("section")?.value || "").trim().toUpperCase();
       const classCode = (document.getElementById("classCode")?.value || "").trim();
+
+      let cred = null;
 
       try {
         if (isTeacher && (!employeeId || employeeId.length < 3)) {
           throw new Error("Employee ID is required for teacher accounts.");
         }
 
-        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        cred = await createUserWithEmailAndPassword(auth, email, password);
         try { await updateProfile(cred.user, { displayName: fullName }); } catch (_) {}
 
         const ref = doc(db, "users", cred.user.uid);
@@ -662,25 +685,40 @@
           try {
             codeInfo = await resolveTeacherForCode(course, yearLevel, section, classCode);
           } catch (err) {
+            // Rollback auth user if code invalid
             try { await deleteUser(cred.user); } catch (_) {}
             throw err;
           }
 
-          await setDoc(ref, {
-            fullName,
-            studentId: studentId || "",
-            email,
-            course,
-            yearLevel,
-            section,
-            teacherCode: classCode,
-            teacherUid: String(codeInfo.teacherUid || "").trim(),
-            teacherName: String(codeInfo.teacherName || "").trim(),
-            role: "student",
-            approved: true,
-            approvalStatus: "approved",
-            createdAt: serverTimestamp()
-          }, { merge: true });
+          const teacherUid = String(codeInfo.teacherUid || "").trim();
+          const teacherName = String(codeInfo.teacherName || "").trim();
+          const classCodeDocId = String(codeInfo.id || "").trim();
+
+          try {
+            await setDoc(ref, {
+              fullName,
+              studentId: studentId || "",
+              email,
+              course: String(course || "").trim(),
+              yearLevel: String(yearLevel || "").trim(),
+              section: String(section || "").trim(),
+
+              teacherCode: String(classCode || "").trim(),
+              teacherUid,
+              teacherName,
+              classCodeDocId,
+
+              role: "student",
+              approved: true,
+              approvalStatus: "approved",
+              joinedAt: serverTimestamp(),
+              createdAt: serverTimestamp()
+            }, { merge: true });
+          } catch (err) {
+            // If Firestore write fails, rollback auth user too
+            try { await deleteUser(cred.user); } catch (_) {}
+            throw err;
+          }
         }
 
         const check = await getDoc(ref);

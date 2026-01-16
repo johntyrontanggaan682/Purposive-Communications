@@ -260,7 +260,6 @@
               </button>
             </div>
 
-            <!-- 🔥 Visible error banner if Firestore rules block reads -->
             <div id="studentsErrorBanner" class="mt-5 hidden rounded-2xl bg-rose-50 ring-1 ring-rose-200 p-4">
               <p class="text-sm font-extrabold text-rose-700">Students can’t be loaded (Firestore permissions).</p>
               <p class="mt-1 text-xs font-semibold text-rose-700/90">
@@ -273,7 +272,7 @@
               </p>
             </div>
 
-            <div class="mt-5 grid gap-3 lg:grid-cols-3">
+            <div class="mt-5 grid gap-3 lg:grid-cols-4">
               <div class="relative">
                 <svg viewBox="0 0 24 24" class="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" stroke-width="2">
                   <circle cx="11" cy="11" r="7" />
@@ -291,10 +290,17 @@
                 <option value="all">All Year Levels</option>
                 <option>1st Year</option><option>2nd Year</option><option>3rd Year</option><option>4th Year</option><option>5th Year</option>
               </select>
+
+              <select id="sectionFilter" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:ring-4 focus:ring-brand-200">
+                <option value="all">All Sections</option>
+                <option>A</option>
+                <option>B</option>
+                <option>C</option>
+                <option>D</option>
+              </select>
             </div>
 
             <div class="mt-6 overflow-x-auto">
-              <!-- ✅ Students table ONLY: Student + Course + Year + Section -->
               <table class="min-w-[850px] w-full">
                 <thead>
                   <tr class="text-left text-xs font-extrabold text-slate-500 border-b border-slate-100">
@@ -417,8 +423,6 @@
 
                   <div>
                     <label class="block text-xs font-semibold text-slate-700">Section</label>
-
-                    <!-- ✅ CHANGED: dropdown A-D instead of manual input -->
                     <div class="mt-2 relative flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2.5 shadow-sm focus-within:ring-2 focus-within:ring-brand-200">
                       <select id="secSection"
                         class="w-full appearance-none bg-transparent text-sm text-slate-800 outline-none pr-8"
@@ -460,7 +464,7 @@
               <div class="bg-gradient-to-r from-rose-600 to-rose-500 px-6 py-5 flex items-center justify-between">
                 <div>
                   <p class="text-lg font-extrabold text-white">Delete this section?</p>
-                  <p class="text-xs font-semibold text-white/85 mt-0.5">This will invalidate the code.</p>
+                  <p class="text-xs font-semibold text-white/85 mt-0.5">This will invalidate the code and remove registered students for this section.</p>
                 </div>
                 <button id="closeDeleteSection" class="h-10 w-10 rounded-xl bg-white/15 ring-1 ring-white/15 text-white flex items-center justify-center hover:bg-white/20" aria-label="Close">
                   <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
@@ -885,7 +889,8 @@
     serverTimestamp,
     limit,
     updateDoc,
-    deleteDoc
+    deleteDoc,
+    writeBatch
   } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
   // ==========================================================
@@ -1101,10 +1106,77 @@
     return { id, code, existed: false };
   }
 
-  // ✅ FIX: REAL delete (not soft delete)
+  // ✅ REAL delete (not soft delete)
   async function deleteClassCode(docId) {
     const ref = doc(db, "classCodes", docId);
     await deleteDoc(ref);
+  }
+
+  // ==========================================================
+  // ✅ NEW: Cascade delete registered students for deleted section
+  // ==========================================================
+  function norm(v) { return String(v || "").trim().toLowerCase(); }
+
+  function sameSection(student, course, yearLevel, section) {
+    return (
+      norm(student.course) === norm(course) &&
+      norm(student.year) === norm(yearLevel) &&
+      norm(student.section) === norm(section)
+    );
+  }
+
+  async function deleteRegisteredStudentsForSection({ course, yearLevel, section }) {
+    const crs = String(course || "").trim();
+    const yr = String(yearLevel || "").trim();
+    const sec = String(section || "").trim();
+    if (!crs || !yr || !sec) return { deleted: 0 };
+
+    // Query by teacherUid, filter by course/year/section in JS (no composite index needed)
+    const qy = query(collection(db, "users"), where("teacherUid", "==", __teacherUid));
+    const snap = await getDocs(qy);
+
+    const refs = [];
+    snap.forEach((d) => {
+      const data = d.data() || {};
+      if (String(data.role || "").toLowerCase().trim() !== "student") return;
+
+      const sCourse = String(data.course || "").trim();
+      const sYear = String(data.yearLevel || "").trim();
+      const sSection = String(data.section || data.sectionName || data.sectionLabel || data.classSection || "").trim();
+
+      if (norm(sCourse) === norm(crs) && norm(sYear) === norm(yr) && norm(sSection) === norm(sec)) {
+        refs.push(d.ref);
+      }
+    });
+
+    if (!refs.length) return { deleted: 0 };
+
+    // Batch delete (max 500 per commit)
+    let deleted = 0;
+    for (let i = 0; i < refs.length; i += 450) {
+      const chunk = refs.slice(i, i + 450);
+      const batch = writeBatch(db);
+      chunk.forEach((ref) => batch.delete(ref));
+      await batch.commit();
+      deleted += chunk.length;
+    }
+
+    return { deleted };
+  }
+
+  function removeStudentsFromUI(course, yearLevel, section) {
+    const before = students.length;
+    students = students.filter(s => !sameSection(s, course, yearLevel, section));
+    const removed = before - students.length;
+
+    saveStudents();
+    renderCourseOptions();
+    computeStats(students);
+    renderDashboardRisk();
+    renderLessonStatesPanel();
+    applyStudentFilters();
+
+    return removed;
   }
 
   function wireSectionCodes() {
@@ -1241,10 +1313,22 @@
               btn.textContent = "Deleting...";
               btn.disabled = true;
 
-              // ✅ REAL delete
+              // ✅ 1) delete registered students under this section
+              await deleteRegisteredStudentsForSection({
+                course: d.course,
+                yearLevel: d.yearLevel,
+                section: d.section
+              });
+
+              // ✅ 2) delete the class code doc
               await deleteClassCode(d.id);
+
+              // ✅ 3) remove them from the UI list immediately
+              removeStudentsFromUI(d.course, d.yearLevel, d.section);
+
             } catch (e) {
-              alert(e?.message || "Failed to delete.");
+              console.error(e);
+              alert(e?.message || "Failed to delete. Check Firestore rules.");
             }
           });
         });
@@ -1260,7 +1344,7 @@
 
       const course = $("secCourse").value;
       const yearLevel = $("secYear").value;
-      const section = $("secSection").value; // ✅ now comes from dropdown
+      const section = $("secSection").value;
 
       try {
         saveBtn.disabled = true;
@@ -1276,10 +1360,6 @@
       }
     });
   }
-
-  // ==========================================================
-  // Everything else in your file stays the same BELOW.
-  // ==========================================================
 
   // ==========================================================
   // STORAGE + RULES
@@ -1376,7 +1456,7 @@
   }
 
   // ==========================================================
-  // ✅ Students: avoid subcollection reads on list load (prevents permission error)
+  // ✅ Students: avoid subcollection reads on list load
   // ==========================================================
   let __studentsLoadError = null;
 
@@ -1547,15 +1627,10 @@
       if (isAdmin) {
         docs = await fetchStudentsByQuery(query(collection(db, "users"), where("role", "==", "student")));
       } else {
-        // 1) Primary: teacherUid
         docs = await fetchStudentsByQuery(query(collection(db, "users"), where("teacherUid", "==", __teacherUid)));
-
-        // 2) Fallback: teacherCode
         if ((!docs || !docs.length) && __teacherCode) {
           docs = await fetchStudentsByQuery(query(collection(db, "users"), where("teacherCode", "==", __teacherCode)));
         }
-
-        // 3) Fallback: teacherName (least ideal)
         if ((!docs || !docs.length) && __teacherName) {
           docs = await fetchStudentsByQuery(query(collection(db, "users"), where("teacherName", "==", __teacherName)));
         }
@@ -1587,7 +1662,6 @@
         const daysInactive = lastSeenMs ? Math.floor((Date.now() - lastSeenMs) / (24 * 60 * 60 * 1000)) : 9999;
         const status = daysInactive <= rules.riskInactiveDays ? "Active" : "Inactive";
 
-        // ✅ DO NOT read /progress or /lessons here
         const def = makeDefaultLearning();
 
         const s = {
@@ -1816,6 +1890,7 @@
     const q = $("searchInput").value.trim().toLowerCase();
     const course = $("courseFilter").value;
     const year = $("yearFilter").value;
+    const section = $("sectionFilter")?.value || "all";
 
     let list = [...students];
 
@@ -1832,6 +1907,11 @@
 
     if (course !== "all") list = list.filter(s => s.course === course);
     if (year !== "all") list = list.filter(s => s.year === year);
+
+    if (section !== "all") {
+      const secPick = String(section).trim().toLowerCase();
+      list = list.filter(s => String(s.section || "").trim().toLowerCase() === secPick);
+    }
 
     renderStudentsTable(list);
     computeStats(students);
@@ -1873,7 +1953,7 @@
   }
 
   // ==========================================================
-  // DETAILS MODAL + SUBMISSION MODAL (kept; learning loads lazily)
+  // DETAILS MODAL + SUBMISSION MODAL
   // ==========================================================
   let activeStudent = null;
   let lastFocusEl = null;
@@ -1948,7 +2028,7 @@
     if (!sub) return "—";
     const ln = Number(sub.lesson || 0);
     const kind = (ln === 2 || ln === 3) ? "Quiz" : "Task (File)";
-    const file = sub.fileName ? ` — ${sub.fileName}` : "";
+    const file = sub?.fileName ? ` — ${sub.fileName}` : "";
     return `L${ln} ${kind}${file}`;
   }
   function bestQuizLine(student) {
@@ -1995,6 +2075,8 @@
     $("dName").textContent = s.name;
     $("dId").textContent = s.id;
     $("dEmail").textContent = s.email;
+
+    men's = ""; // no-op
 
     $("dCourse").textContent = s.course;
     $("dYear").textContent = s.year;
@@ -2430,7 +2512,7 @@ If this is a quiz-only lesson, show the quiz answers and score here.`;
   // ==========================================================
   // INIT
   // ==========================================================
-  ["searchInput","courseFilter","yearFilter"].forEach(id => {
+  ["searchInput","courseFilter","yearFilter","sectionFilter"].forEach(id => {
     $(id)?.addEventListener("input", applyStudentFilters);
     $(id)?.addEventListener("change", applyStudentFilters);
   });
