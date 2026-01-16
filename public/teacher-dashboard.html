@@ -1387,6 +1387,9 @@
 
               await deleteClassCode(d.id);
 
+              // ✅ Refresh local student list so the Students tab updates immediately
+              await reloadStudentsUI();
+
               if (affected > 0) {
                 console.log("Students unassigned + locked:", affected);
               }
@@ -1717,21 +1720,33 @@
         const uid = d.id;
 
         if (String(data.role || "").toLowerCase().trim() !== "student") return null;
-
         const email = String(data.email || "").toLowerCase().trim();
         const name = String(data.fullName || data.displayName || "Student").trim() || "Student";
-        const course = data.course || "—";
-        const year = data.yearLevel || "—";
-        const id = String(data.studentId || `STU-${uid.slice(0, 6).toUpperCase()}`);
 
-        const section =
-          String(
-            data.section ||
-            data.sectionName ||
-            data.sectionLabel ||
-            data.classSection ||
-            "—"
-          ).trim() || "—";
+        // Raw fields (empty if missing) so we can hide unassigned/locked students visually
+        const courseRaw = String(data.course || "").trim();
+        const yearRaw = String(data.yearLevel || "").trim();
+        const sectionRaw = String(
+          data.section ||
+          data.sectionName ||
+          data.sectionLabel ||
+          data.classSection ||
+          ""
+        ).trim();
+
+        const course = courseRaw || "—";
+        const year = yearRaw || "—";
+        const id = String(data.studentId || `STU-${uid.slice(0, 6).toUpperCase()}`);
+        const section = sectionRaw || "—";
+
+        const locked = !!data.locked;
+        const classCodeDocId = String(data.classCodeDocId || "").trim();
+
+        // ✅ VISUAL REMOVAL:
+        // Hide students that were unassigned/locked after a section was deleted.
+        // (They keep their account, but won't appear in Student Monitoring.)
+        const isAssigned = !!classCodeDocId || (!!courseRaw && !!yearRaw && !!sectionRaw);
+        if (locked || !isAssigned) return null;
 
         const lastSeenMs = tsToMs(data.lastSeenAt) || tsToMs(data.lastLoginAt) || 0;
         const lastActive = relTimeFromTs(lastSeenMs);
@@ -1783,8 +1798,20 @@
       student.__learningDenied = isPermissionError(e) || true;
     }
   }
-
   let students = [];
+
+  async function reloadStudentsUI() {
+    students = await loadStudents();
+    saveStudents();
+    renderCourseOptions();
+
+    // refresh visible panels
+    applyStudentFilters();
+    computeStats(students);
+    renderDashboardRisk();
+    renderLessonStatesPanel();
+  }
+
 
   function saveStudents() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(students));
