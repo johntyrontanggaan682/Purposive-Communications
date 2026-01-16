@@ -4,47 +4,203 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Account Locked | Purposive Communication</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
-    tailwind.config = { theme: { extend: { colors: { brand: { 50:'#E7F7F5', 100:'#CFF0EC', 200:'#9FE1D9', 300:'#6ED2C6', 400:'#3EC3B3', 500:'#13A89A', 600:'#0F877B', 700:'#0B665C', 800:'#07453E', 900:'#032420' } } } } };
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ["Inter", "ui-sans-serif", "system-ui", "Segoe UI", "Roboto", "Helvetica", "Arial", "Noto Sans"],
+          },
+          colors: {
+            brand: {
+              50: "#E7F7F5",
+              100: "#CFF0EC",
+              200: "#9FE1D9",
+              300: "#6ED2C6",
+              400: "#3EC3B3",
+              500: "#13A89A",
+              600: "#0F877B",
+              700: "#0B665C",
+              800: "#07453E",
+              900: "#032420",
+            },
+          },
+          boxShadow: {
+            soft: "0 18px 45px rgba(2, 8, 23, 0.12)",
+            softer: "0 12px 30px rgba(2, 8, 23, 0.10)",
+          },
+        },
+      },
+    };
   </script>
+
+  <style>
+    :root{ --ease-out: cubic-bezier(.22,1,.36,1); }
+
+    /* ✅ EXACT SAME BG as login.html */
+    .page-bg{
+      background:
+        radial-gradient(1200px 500px at 10% -10%, rgba(19,168,154,0.16), transparent 55%),
+        radial-gradient(900px 450px at 100% 0%, rgba(19,168,154,0.12), transparent 50%),
+        #E7F7F5;
+    }
+
+    html, body{ height:100%; }
+
+    body.page-bg{
+      position: relative;
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent; /* ✅ removes the “white thing” on tap */
+    }
+
+    /* ✅ Extra soft highlights (appealing) */
+    body.page-bg::before,
+    body.page-bg::after{
+      content:"";
+      position: fixed;
+      inset: -260px;
+      pointer-events: none;
+      z-index: -1;
+      filter: blur(60px);
+      opacity: .40;
+      transform: translate3d(0,0,0);
+    }
+    body.page-bg::before{
+      background:
+        radial-gradient(closest-side at 18% 35%, rgba(19,168,154,.26), transparent 65%),
+        radial-gradient(closest-side at 82% 22%, rgba(59,130,246,.14), transparent 62%),
+        radial-gradient(closest-side at 55% 88%, rgba(16,185,129,.12), transparent 62%);
+      animation: blobA 14s var(--ease-out) infinite alternate;
+    }
+    body.page-bg::after{
+      background:
+        radial-gradient(closest-side at 12% 80%, rgba(244,63,94,.10), transparent 62%),
+        radial-gradient(closest-side at 92% 70%, rgba(19,168,154,.18), transparent 62%),
+        radial-gradient(closest-side at 56% 12%, rgba(14,165,233,.10), transparent 64%);
+      opacity: .30;
+      animation: blobB 18s var(--ease-out) infinite alternate;
+    }
+    @keyframes blobA{
+      0%{ transform: translate(-14px,-10px) scale(1); }
+      50%{ transform: translate(16px, 8px) scale(1.04); }
+      100%{ transform: translate(10px,16px) scale(1.02); }
+    }
+    @keyframes blobB{
+      0%{ transform: translate(12px,14px) scale(1); }
+      50%{ transform: translate(-10px, 4px) scale(1.05); }
+      100%{ transform: translate(-16px,-12px) scale(1.02); }
+    }
+
+    /* ✅ Entrance */
+    .panel-anim{ animation: fadeSlideIn .35s var(--ease-out) both; }
+    @keyframes fadeSlideIn{
+      from{ opacity:0; transform: translateY(10px); }
+      to{ opacity:1; transform: translateY(0); }
+    }
+
+    /* ✅ Button shine */
+    .btn-shine{ position: relative; overflow: hidden; transform: translateZ(0); }
+    .btn-shine::after{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background: linear-gradient(110deg, transparent 20%, rgba(255,255,255,0.55) 50%, transparent 80%);
+      transform: translateX(-120%);
+      opacity: 0;
+      pointer-events:none;
+    }
+    @media (hover:hover) and (pointer:fine){
+      .btn-shine:hover::after{ animation: shimmer 900ms ease; }
+    }
+    @keyframes shimmer{
+      0%{ transform: translateX(-120%); opacity: 0; }
+      30%{ opacity: .35; }
+      100%{ transform: translateX(120%); opacity: 0; }
+    }
+
+    /* ✅ Keep focus pretty (no ugly white outline) */
+    a:focus, button:focus{ outline:none; }
+
+    @media (prefers-reduced-motion: reduce){
+      *, *::before, *::after{ animation: none !important; transition: none !important; }
+    }
+  </style>
 </head>
-<body class="min-h-screen bg-brand-50 text-slate-800">
-  <main class="min-h-screen flex items-center justify-center p-4">
-    <div class="w-full max-w-lg rounded-3xl bg-white shadow-xl ring-1 ring-black/5 p-7">
-      <div class="flex items-start gap-4">
-        <div class="h-12 w-12 rounded-2xl bg-rose-50 ring-1 ring-black/5 flex items-center justify-center shrink-0">
-          <svg viewBox="0 0 24 24" class="h-6 w-6 text-rose-700" fill="none" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4" />
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 17h.01" />
-            <path stroke-linecap="round" stroke-linejoin="round" d="M10.29 3.86l-7.5 13A2 2 0 004.5 20h15a2 2 0 001.71-3.14l-7.5-13a2 2 0 00-3.42 0z" />
-          </svg>
+
+<body class="page-bg font-sans text-slate-800">
+  <main class="min-h-screen flex items-center justify-center p-4 sm:p-6">
+    <div class="w-full max-w-lg panel-anim">
+      <!-- ✅ Decorative “glow frame” -->
+      <div class="relative rounded-[2.25rem] p-[1px] bg-gradient-to-br from-brand-300/60 via-white/40 to-rose-200/50 shadow-soft">
+        <div class="relative overflow-hidden rounded-[2.2rem] bg-white/85 backdrop-blur ring-1 ring-black/10">
+          <!-- Top accent bar -->
+          <div class="relative px-7 sm:px-8 pt-7 pb-6 bg-gradient-to-r from-brand-600 to-brand-500">
+            <div class="absolute -right-16 -top-16 h-56 w-56 rounded-full bg-white/10 blur-2xl"></div>
+            <div class="absolute -left-16 -bottom-16 h-56 w-56 rounded-full bg-white/10 blur-2xl"></div>
+
+            <div class="flex items-start gap-4">
+              <div class="h-12 w-12 rounded-2xl bg-white/95 ring-1 ring-black/5 flex items-center justify-center shrink-0">
+                <svg viewBox="0 0 24 24" class="h-6 w-6 text-rose-700" fill="none" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 17h.01" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M10.29 3.86l-7.5 13A2 2 0 004.5 20h15a2 2 0 001.71-3.14l-7.5-13a2 2 0 00-3.42 0z" />
+                </svg>
+              </div>
+
+              <div class="min-w-0">
+                <div class="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-[11px] font-extrabold text-white ring-1 ring-white/20">
+                  <span class="inline-block h-2 w-2 rounded-full bg-rose-200"></span>
+                  Account status
+                </div>
+
+                <h1 class="mt-3 text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+                  Your account is locked
+                </h1>
+                <p class="mt-1 text-sm text-white/85">
+                  You can’t access lessons or profile features right now. Please contact your teacher or admin.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Body -->
+          <div class="px-7 sm:px-8 py-7">
+            <div class="rounded-2xl bg-slate-50/80 ring-1 ring-black/5 p-4">
+              <p class="text-xs font-extrabold text-slate-500 uppercase tracking-wide">Reason</p>
+              <p id="reason" class="mt-1 text-sm font-semibold text-slate-800">Loading…</p>
+            </div>
+
+            <div class="mt-7 grid gap-3 sm:grid-cols-2">
+              <a href="index.html"
+                class="btn-shine inline-flex items-center justify-center rounded-2xl bg-slate-100 px-4 py-3 text-sm font-extrabold text-slate-800
+                       hover:bg-slate-200 active:scale-[.99] transition ring-1 ring-black/5
+                       focus-visible:ring-4 focus-visible:ring-brand-200">
+                Back to Home
+              </a>
+
+              <button id="signOutBtn"
+                class="btn-shine inline-flex items-center justify-center rounded-2xl bg-rose-600 px-4 py-3 text-sm font-extrabold text-white
+                       hover:bg-rose-700 active:scale-[.99] transition shadow-softer ring-1 ring-black/5
+                       focus-visible:ring-4 focus-visible:ring-rose-200">
+                Sign out
+              </button>
+            </div>
+
+            <div class="mt-6 rounded-2xl bg-brand-50 ring-1 ring-black/5 p-4">
+              <p class="text-xs font-extrabold text-brand-900 uppercase tracking-wide">Tip</p>
+              <p class="mt-1 text-sm font-semibold text-slate-700 leading-relaxed">
+                If your section was deleted, your teacher will provide a new class code. You may need to re-register or be re-assigned.
+              </p>
+            </div>
+          </div>
         </div>
-        <div class="min-w-0">
-          <h1 class="text-2xl font-extrabold text-slate-900">Your account is locked</h1>
-          <p class="mt-1 text-sm text-slate-600">
-            You currently can’t access lessons or profile features. Please contact your teacher or admin.
-          </p>
-        </div>
       </div>
-
-      <div class="mt-5 rounded-2xl bg-slate-50 ring-1 ring-black/5 p-4">
-        <p class="text-xs font-extrabold text-slate-500 uppercase">Reason</p>
-        <p id="reason" class="mt-1 text-sm font-semibold text-slate-800">Loading…</p>
-      </div>
-
-      <div class="mt-6 flex flex-col sm:flex-row gap-3">
-        <a href="index.html" class="inline-flex items-center justify-center rounded-xl bg-slate-100 px-4 py-2.5 text-sm font-extrabold text-slate-800 hover:bg-slate-200">
-          Back to Home
-        </a>
-        <button id="signOutBtn" class="inline-flex items-center justify-center rounded-xl bg-rose-600 px-4 py-2.5 text-sm font-extrabold text-white hover:bg-rose-700 shadow">
-          Sign out
-        </button>
-      </div>
-
-      <p class="mt-5 text-xs text-slate-500">
-        If your section was deleted, your teacher will provide a new class code. You may need to re-register or be re-assigned.
-      </p>
     </div>
   </main>
 
@@ -72,7 +228,7 @@
         const p = snap.exists() ? (snap.data() || {}) : {};
         const r = String(p.lockedReason || "Locked by your teacher/admin.").trim();
         reasonEl.textContent = r || "Locked by your teacher/admin.";
-      } catch (e) {
+      } catch (_) {
         reasonEl.textContent = "Locked by your teacher/admin.";
       }
     });
