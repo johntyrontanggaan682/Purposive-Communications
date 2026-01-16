@@ -427,14 +427,29 @@
         if (e.key === "Escape") closeUserDropdown();
       });
 
-      async function loadProfile(uid) {
-        try {
-          const snap = await getDoc(doc(db, "users", uid));
-          return snap.exists() ? (snap.data() || {}) : {};
-        } catch (_) {
-          return {};
+    function maybeRedirectLocked(p) {
+      const role = String(p?.role || "student").toLowerCase().trim();
+      if (role === "student" && p?.locked === true) {
+        const here = String(window.location.href || "").toLowerCase();
+        if (!here.endsWith("locked.html")) {
+          window.location.href = "locked.html";
+          return true;
         }
       }
+      return false;
+    }
+
+    async function loadProfile(uid) {
+      try {
+        const snap = await getDoc(doc(db, "users", uid));
+        const p = snap.exists() ? (snap.data() || {}) : {};
+        maybeRedirectLocked(p);
+        return p;
+      } catch (_) {
+        return {};
+      }
+    }
+
 
       function applyAuthUI() {
         const loggedIn = isLoggedIn();

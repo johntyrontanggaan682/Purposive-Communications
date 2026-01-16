@@ -872,14 +872,13 @@
 
   <!-- ✅ FULL JS (PATCHED) -->
 <script type="module">
-  import { auth, db } from "./firebase.js";
+  import { app, auth, db } from "./firebase.js";
   import {
     onAuthStateChanged,
     signOut as firebaseSignOut,
     setPersistence,
     browserSessionPersistence
   } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-
   import {
     collection,
     getDocs,
@@ -1156,59 +1155,89 @@
     return Array.from(byId.values());
   }
 
-  async function unassignStudentsForDeletedSection({ course, yearLevel, section }) {
-    const crs = norm(course);
-    const yr = norm(yearLevel);
-    const sec = norm(section);
+  async function unassignStudentsForDeletedSection({ classCodeDocId, course, yearLevel, section }) {
+    // NO Cloud Functions: teacher does this client-side.
+    // Strategy:
+    // 1) Try to target students by classCodeDocId (most accurate)
+    // 2) Fallback to matching course/year/section under this teacher
 
-    const docs = await getTeacherStudentDocs();
+    const lockPatch = {
+      locked: true,
+      lockedReason: "section_deleted",
+      lockedAt: serverTimestamp(),
 
-    const targets = [];
-    docs.forEach((snap) => {
-      const data = snap.data() || {};
-      const role = String(data.role || "").toLowerCase().trim();
-      if (role !== "student") return;
+      // Unassign them from that section
+      classCodeDocId: "",
+      teacherCode: "",
+      course: "",
+      yearLevel: "",
+      section: "",
 
-      const c = norm(data.course || "");
-      const y = norm(data.yearLevel || "");
-      const s = norm(
-        data.section ||
-        data.sectionName ||
-        data.sectionLabel ||
-        data.classSection ||
-        ""
-      );
+      unassignedReason: "section_deleted",
+      unassignedAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    };
 
-      if (c === crs && y === yr && s === sec) {
-        targets.push(snap.ref);
+    let refs = [];
+
+    // 1) Accurate path: query by classCodeDocId (single-field equality query; no composite index needed)
+    if (classCodeDocId) {
+      try {
+        const qy = query(
+          collection(db, "users"),
+          where("classCodeDocId", "==", String(classCodeDocId)),
+          limit(1000)
+        );
+        const snap = await getDocs(qy);
+        snap.forEach((d) => {
+          const data = d.data() || {};
+          if (String(data.role || "").toLowerCase().trim() !== "student") return;
+          // extra safety: only lock students that belong to THIS teacher
+          if (String(data.teacherUid || "") !== String(__teacherUid || "")) return;
+          refs.push(d.ref);
+        });
+      } catch (e) {
+        console.warn("classCodeDocId query failed; will fallback.", e?.message || e);
       }
-    });
+    }
 
-    if (!targets.length) return 0;
+    // 2) Fallback: match course/year/section under this teacher
+    if (!refs.length) {
+      const crs = norm(course);
+      const yr = norm(yearLevel);
+      const sec = norm(section);
 
-    // Firestore batch limit is 500 writes; keep safe at 450
-    const groups = chunkArray(targets, 450);
+      const docs = await getTeacherStudentDocs();
+      docs.forEach((snap) => {
+        const data = snap.data() || {};
+        if (String(data.role || "").toLowerCase().trim() !== "student") return;
+
+        const c = norm(data.course || "");
+        const y = norm(data.yearLevel || "");
+        const s = norm(
+          data.section ||
+          data.sectionName ||
+          data.sectionLabel ||
+          data.classSection ||
+          ""
+        );
+
+        if (c === crs && y === yr && s === sec && String(data.teacherUid || "") === String(__teacherUid || "")) {
+          refs.push(snap.ref);
+        }
+      });
+    }
+
+    if (!refs.length) return 0;
+
+    const groups = chunkArray(refs, 450);
     for (const group of groups) {
       const batch = writeBatch(db);
-      group.forEach((ref) => {
-        batch.update(ref, {
-          // remove from monitoring
-          teacherUid: "",
-          teacherCode: "",
-          teacherName: "",
-          course: "",
-          yearLevel: "",
-          section: "",
-          // optional audit
-          unassignedReason: "section_deleted",
-          unassignedAt: serverTimestamp(),
-          updatedAt: serverTimestamp(),
-        });
-      });
+      group.forEach((ref) => batch.update(ref, lockPatch));
       await batch.commit();
     }
 
-    return targets.length;
+    return refs.length;
   }
 
   function wireSectionCodes() {
@@ -1346,41 +1375,22 @@
               btn.textContent = "Deleting...";
               btn.disabled = true;
 
-              // ✅ NEW: unassign students from this deleted section (removes them from Student Monitoring)
-              const removedCount = await unassignStudentsForDeletedSection({
+              // ✅ Soft delete (NO Cloud Functions):
+              // 1) Unassign + lock students under this section
+              // 2) Delete the section code doc
+              const affected = await unassignStudentsForDeletedSection({
+                classCodeDocId: d.id,
                 course: d.course,
                 yearLevel: d.yearLevel,
                 section: d.section,
               });
 
-              // ✅ REAL delete the class code doc
               await deleteClassCode(d.id);
 
-              // ✅ Also remove from local in-memory list (instant UI)
-              // Students store year as `year` in this UI, classCodes uses `yearLevel`
-              const crs = norm(d.course);
-              const yr = norm(d.yearLevel);
-              const sec = norm(d.section);
-
-              const before = students.length;
-              students = students.filter(s =>
-                !(norm(s.course) === crs && norm(s.year) === yr && norm(s.section) === sec)
-              );
-
-              if (students.length !== before) {
-                saveStudents();
-                renderCourseOptions();
-                applyStudentFilters();
-                computeStats(students);
-                renderDashboardRisk();
-                renderLessonStatesPanel();
+              if (affected > 0) {
+                console.log("Students unassigned + locked:", affected);
               }
 
-              if (removedCount > 0) {
-                // optional small feedback
-                // alert(`${removedCount} student(s) were removed from this section.`);
-                console.log("Students unassigned:", removedCount);
-              }
 
             } catch (e) {
               alert(e?.message || "Failed to delete.");

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Account Locked | Purposive Communication</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: { brand: { 50:'#E7F7F5', 100:'#CFF0EC', 200:'#9FE1D9', 300:'#6ED2C6', 400:'#3EC3B3', 500:'#13A89A', 600:'#0F877B', 700:'#0B665C', 800:'#07453E', 900:'#032420' } } } } };
+  </script>
+</head>
+<body class="min-h-screen bg-brand-50 text-slate-800">
+  <main class="min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-lg rounded-3xl bg-white shadow-xl ring-1 ring-black/5 p-7">
+      <div class="flex items-start gap-4">
+        <div class="h-12 w-12 rounded-2xl bg-rose-50 ring-1 ring-black/5 flex items-center justify-center shrink-0">
+          <svg viewBox="0 0 24 24" class="h-6 w-6 text-rose-700" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 17h.01" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.29 3.86l-7.5 13A2 2 0 004.5 20h15a2 2 0 001.71-3.14l-7.5-13a2 2 0 00-3.42 0z" />
+          </svg>
+        </div>
+        <div class="min-w-0">
+          <h1 class="text-2xl font-extrabold text-slate-900">Your account is locked</h1>
+          <p class="mt-1 text-sm text-slate-600">
+            You currently can’t access lessons or profile features. Please contact your teacher or admin.
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-5 rounded-2xl bg-slate-50 ring-1 ring-black/5 p-4">
+        <p class="text-xs font-extrabold text-slate-500 uppercase">Reason</p>
+        <p id="reason" class="mt-1 text-sm font-semibold text-slate-800">Loading…</p>
+      </div>
+
+      <div class="mt-6 flex flex-col sm:flex-row gap-3">
+        <a href="index.html" class="inline-flex items-center justify-center rounded-xl bg-slate-100 px-4 py-2.5 text-sm font-extrabold text-slate-800 hover:bg-slate-200">
+          Back to Home
+        </a>
+        <button id="signOutBtn" class="inline-flex items-center justify-center rounded-xl bg-rose-600 px-4 py-2.5 text-sm font-extrabold text-white hover:bg-rose-700 shadow">
+          Sign out
+        </button>
+      </div>
+
+      <p class="mt-5 text-xs text-slate-500">
+        If your section was deleted, your teacher will provide a new class code. You may need to re-register or be re-assigned.
+      </p>
+    </div>
+  </main>
+
+  <script type="module">
+    import { auth, db } from "./firebase.js";
+    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+    const reasonEl = document.getElementById("reason");
+    const signOutBtn = document.getElementById("signOutBtn");
+
+    signOutBtn?.addEventListener("click", async () => {
+      try { await signOut(auth); } catch (_) {}
+      window.location.href = "index.html?msg=" + encodeURIComponent("Signed out.");
+    });
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "index.html?msg=" + encodeURIComponent("Please log in.");
+        return;
+      }
+
+      try {
+        const snap = await getDoc(doc(db, "users", user.uid));
+        const p = snap.exists() ? (snap.data() || {}) : {};
+        const r = String(p.lockedReason || "Locked by your teacher/admin.").trim();
+        reasonEl.textContent = r || "Locked by your teacher/admin.";
+      } catch (e) {
+        reasonEl.textContent = "Locked by your teacher/admin.";
+      }
+    });
+  </script>
+</body>
+</html>
