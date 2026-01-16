@@ -539,7 +539,7 @@
     </div>
   </div>
 
-  <!-- ✅ JS left EXACTLY as you provided (no changes) -->
+  <!-- ✅ JS (ONLY change: logout redirects to index.html) -->
   <script type="module">
     import { auth, db } from "./firebase.js";
     import { onAuthStateChanged, signOut as firebaseSignOut, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
@@ -584,7 +584,7 @@
           const doLogout = async (e) => {
             e?.preventDefault?.();
             try { await firebaseSignOut(auth); } catch (_) {}
-            window.location.href = "login.html";
+            window.location.href = "index.html";
           };
           document.getElementById("logoutLink")?.addEventListener("click", doLogout);
           document.getElementById("mLogoutLink")?.addEventListener("click", doLogout);
