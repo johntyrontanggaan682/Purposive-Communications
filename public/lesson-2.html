@@ -45,6 +45,8 @@
       .scale-in { animation: scaleIn .18s ease-out; }
       @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
       @keyframes scaleIn { from { transform: translateY(8px) scale(.98); } to { transform: translateY(0) scale(1); } }
+
+      .qblock { white-space: pre-wrap; }
     </style>
   </head>
 
@@ -230,7 +232,9 @@
             <h1 class="mt-1 text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
               Local and Global Communication in Multicultural Settings
             </h1>
-            <p class="mt-3 max-w-3xl text-white/85">Part 1 (Lesson/Module) • Part 2 (Assessment — Multiple Choice)</p>
+            <p class="mt-3 max-w-3xl text-white/85">
+              Part 1 (Lesson/Module) • Part 2 (Assessment — MCQ) • Part 3 (Assessment) • Part 4 (Assessment) • Part 5 (Task Submission)
+            </p>
           </div>
 
           <div class="w-full md:w-[340px]">
@@ -242,7 +246,7 @@
               <div class="mt-3 h-2.5 w-full rounded-full bg-white/20">
                 <div id="progressBar" class="h-2.5 w-0 rounded-full bg-white transition-all"></div>
               </div>
-              <p class="mt-2 text-xs text-white/70">MCQ requires passing score to complete.</p>
+              <p class="mt-2 text-xs text-white/70">Assessments require passing score to complete.</p>
             </div>
           </div>
         </div>
@@ -288,7 +292,8 @@
             </div>
           </div>
 
-          <p class="mt-4 text-xs text-slate-500">Passing score for the assessment is <strong>70%</strong> to mark it complete.</p>
+          <p class="mt-4 text-xs text-slate-500">Passing score for each assessment is <strong>70%</strong> to mark it complete.</p>
+          <p class="mt-1 text-xs text-slate-500">Note: Task submissions are stored in Firestore as a filename only (no upload storage yet).</p>
         </section>
       </div>
     </main>
@@ -463,7 +468,7 @@
         setAvatarEl(mNavAvatar, avatarText);
       }
 
-      // ===== Sign out confirm (WHAT TO CHANGE/UPDATE) =====
+      // ===== Sign out confirm =====
       const signOutModal = document.getElementById("signOutModal");
       const signOutBackdrop = document.getElementById("signOutBackdrop");
       const signOutYes = document.getElementById("signOutYes");
@@ -497,7 +502,6 @@
 
       window.__pcSignOut = doSignOut;
 
-      // ✅ update: open modal instead of direct sign out
       signOutBtn?.addEventListener("click", (e) => { e.preventDefault(); openSignOutModal(); });
       mSignOutBtn?.addEventListener("click", (e) => { e.preventDefault(); openSignOutModal(); });
 
@@ -506,11 +510,12 @@
         await doSignOut();
       });
 
-      // ===== your existing Lesson 2 script (Firebase version, same UI behavior) =====
+      // ===== Lesson 2 script =====
       const LESSON_NO = 2;
       const PASSING = 70;
 
-      const quiz = [
+      // Part 2 (MCQ)
+      const mcqQuiz = [
         { q: "Which style is highly assertive but less expressive?", options: ["Spirited", "Direct", "Considerate", "Systematic"], answer: 1 },
         { q: "A team leader motivating workers before a deadline shows which style?", options: ["Spirited", "Systematic", "Direct", "Considerate"], answer: 0 },
         { q: "A technician carefully documenting safety checks is using which style?", options: ["Considerate", "Systematic", "Spirited", "Direct"], answer: 1 },
@@ -521,6 +526,129 @@
         { q: "Speaking with an instructor asking advice is which register?", options: ["Consultative", "Casual", "Formal", "Intimate"], answer: 0 },
         { q: "Avoid forming expectations based only on your own culture is part of improving…", options: ["Stereotyping", "Intercultural communication", "Jargon use", "Noise filtering"], answer: 1 },
         { q: "Removing personal biases and stereotypes helps improve…", options: ["Misunderstanding", "Intercultural communication", "Frozen register", "Pidgin"], answer: 1 },
+      ];
+
+      // Part 3 (Task 2)
+      const styleAssessment = [
+        {
+          qHtml: `Item 1 (Direct Style)\n👷 Supervisor: “Please tighten the bolts on the machine before we start.”\n👨‍🎓 Student: “…”`,
+          options: [
+            'A. “Why should I do that? It looks fine.”',
+            'B. “Okay, I’ll tighten them now to make sure it’s safe.”',
+            'C. Starts talking about last night’s basketball game.',
+            'D. “I’ll do it later when I feel like it.”'
+          ],
+          answer: 1
+        },
+        {
+          qHtml: `Item 2 (Spirited Style)\n👩 Team Leader: “We need ideas for improving customer service in our automotive shop.”\n👨‍🎓 Student: “…”`,
+          options: [
+            'A. “Let’s brainstorm! I think offering free car check-ups will excite customers.”',
+            'B. “I don’t care, just do whatever.”',
+            'C. Tells a long unrelated story about a family trip.',
+            'D. “I’ll wait for others to decide.”'
+          ],
+          answer: 0
+        },
+        {
+          qHtml: `Item 3 (Systematic Style)\n👨‍🏭 Technician: “Can you record the voltage readings for this circuit?”\n👨‍🎓 Student: “…”`,
+          options: [
+            'A. “Sure, I’ll carefully note each reading in the logbook.”',
+            'B. “I’ll just guess the numbers.”',
+            'C. “I don’t think it’s important.”',
+            'D. Starts joking with classmates instead of working.'
+          ],
+          answer: 0
+        },
+        {
+          qHtml: `Item 4 (Considerate Style)\n👩 Colleague: “I’m worried about the safety of this wiring setup.”\n👨‍🎓 Student: “…”`,
+          options: [
+            'A. “Don’t worry, your concern is valid. Let’s ask the supervisor for guidance.”',
+            'B. “That’s nonsense, stop worrying.”',
+            'C. “I’ll ignore it, it’s not my problem.”',
+            'D. “Let’s just keep quiet about it.”'
+          ],
+          answer: 0
+        },
+        {
+          qHtml: `Item 5 (Direct Style)\n👨‍🏭 Instructor: “Explain why you requested extra time for your project.”\n👨‍🎓 Student: “…”`,
+          options: [
+            'A. “Because I want to relax first.”',
+            'B. “I need more time to test the machine thoroughly for safety.”',
+            'C. “I don’t have a reason.”',
+            'D. Talks about unrelated personal issues.'
+          ],
+          answer: 1
+        },
+        {
+          qHtml: `Item 6 (Spirited Style)\n👩 Manager: “We’re running out of time in this meeting.”\n👨‍🎓 Student: “…”`,
+          options: [
+            'A. “Okay, I’ll keep my comments short and stick to the main point.”',
+            'B. Starts telling another personal story.',
+            'C. “I’ll keep talking even if time is up.”',
+            'D. “I don’t care about the time.”'
+          ],
+          answer: 0
+        },
+        {
+          qHtml: `Item 7 (Systematic Style)\n👨‍🏭 Supervisor: “Brainstorming feels like a waste of time.”\n👨‍🎓 Student: “…”`,
+          options: [
+            'A. “Actually, brainstorming can help us find creative solutions. Let’s give it a try.”',
+            'B. “Yes, let’s skip it.”',
+            'C. “I don’t want to participate.”',
+            'D. Changes the topic to something irrelevant.'
+          ],
+          answer: 0
+        },
+        {
+          qHtml: `Item 8 (Considerate Style)\n👩 Peer: “Can you explain this process to me?”\n👨‍🎓 Student: “…”`,
+          options: [
+            'A. “Sure, let me ask a few questions first so I can explain clearly.”',
+            'B. “Figure it out yourself.”',
+            'C. “I don’t care if you understand.”',
+            'D. Ignores the request.'
+          ],
+          answer: 0
+        },
+        {
+          qHtml: `Item 9 (Direct Style)\n👨‍🏭 Instructor: “Give instructions to your team for the automotive repair task.”\n👨‍🎓 Student: “…”`,
+          options: [
+            'A. “Team, replace the brake pads first, then check the fluid levels.”',
+            'B. “Do whatever you want.”',
+            'C. Starts talking about a movie instead.',
+            'D. “I’ll just wait for someone else to lead.”'
+          ],
+          answer: 0
+        },
+        {
+          qHtml: `Item 10 (Spirited Style)\n👩 Colleague: “I feel like my ideas aren’t being heard.”\n👨‍🎓 Student: “…”`,
+          options: [
+            'A. “I’m sorry, please share your ideas—I’ll listen carefully.”',
+            'B. “Your ideas don’t matter.”',
+            'C. “I’ll keep talking about mine only.”',
+            'D. Changes the topic to something personal.'
+          ],
+          answer: 0
+        }
+      ];
+
+      // Part 4 (Task 3)
+      const registerAssessment = [
+        { qHtml: `1. Email Excerpt\n"Dear Supplier, Kindly send us the updated quotation for the automotive spare parts by Monday. Thank you."`, options: ["A. Casual","B. Formal","C. Consultative","D. Frozen"], answer: 1 },
+        { qHtml: `2. Chat Message\n"Bro, can you help me fix the welding machine later? I’ll treat you to snacks after."`, options: ["A. Casual","B. Formal","C. Intimate","D. Consultative"], answer: 0 },
+        { qHtml: `3. Private Conversation\n"Good luck on your demo tomorrow. I know you’ll do great—I’m proud of you."`, options: ["A. Intimate","B. Casual","C. Formal","D. Frozen"], answer: 0 },
+        { qHtml: `4. Excerpt from Safety Manual\n"All personnel must wear protective equipment at all times inside the laboratory, without exception."`, options: ["A. Frozen","B. Formal","C. Consultative","D. Casual"], answer: 0 },
+        { qHtml: `5. Dialogue with Instructor\n👩 Instructor: “What’s your plan for troubleshooting this circuit?”\n👨 Student: “Ma’am, I’ll check the voltage first, then test the connections. Do you think that’s correct?”`, options: ["A. Consultative","B. Casual","C. Formal","D. Intimate"], answer: 0 },
+        { qHtml: `6. Business Letter\n"To Whom It May Concern: This letter serves as confirmation of your internship placement in the Mechanical Technology Department."`, options: ["A. Formal","B. Casual","C. Frozen","D. Consultative"], answer: 0 },
+        { qHtml: `7. Group Chat\n"Guys, let’s meet at the workshop at 8 AM tomorrow. Don’t be late, okay?"`, options: ["A. Casual","B. Formal","C. Consultative","D. Frozen"], answer: 0 },
+        { qHtml: `8. Romantic Note\n"I kept the circuit diagram you drew for me—it reminds me of how much you support me."`, options: ["A. Intimate","B. Casual","C. Formal","D. Frozen"], answer: 0 },
+        { qHtml: `9. Excerpt from Constitution\n"The State shall protect and promote the right of all citizens to quality education at all levels."`, options: ["A. Frozen","B. Formal","C. Consultative","D. Casual"], answer: 0 },
+        { qHtml: `10. Conversation with Doctor\n👨 Student: “Doc, I’ve been feeling dizzy after long hours in the automotive shop.”\n👩 Doctor: “That may be due to fumes. I recommend wearing a mask and taking breaks.”`, options: ["A. Consultative","B. Formal","C. Casual","D. Intimate"], answer: 0 },
+        { qHtml: `11. Internship Report\n"This report summarizes the maintenance procedures performed on the lathe machine during the second quarter."`, options: ["A. Formal","B. Casual","C. Frozen","D. Intimate"], answer: 0 },
+        { qHtml: `12. Friendly Text\n"Hey, can you lend me your soldering iron? I’ll return it tomorrow."`, options: ["A. Casual","B. Formal","C. Consultative","D. Frozen"], answer: 0 },
+        { qHtml: `13. Wedding Message\n"I’m so happy you’re here to celebrate with me—it means a lot."`, options: ["A. Intimate","B. Casual","C. Formal","D. Frozen"], answer: 0 },
+        { qHtml: `14. Laboratory Safety Code\n"No student shall operate equipment without prior clearance from the laboratory supervisor."`, options: ["A. Frozen","B. Formal","C. Consultative","D. Casual"], answer: 0 },
+        { qHtml: `15. Career Guidance Session\n👩 Counselor: “What specialization are you considering in electronics technology?”\n👨 Student: “I’m leaning toward robotics. Do you think that’s a good fit for me?”`, options: ["A. Consultative","B. Casual","C. Formal","D. Intimate"], answer: 0 },
       ];
 
       const parts = [
@@ -567,8 +695,75 @@
           title: "Part 2 — Assessment (Multiple Choice)",
           subtitle: "Answer the questions. Passing score: 70%.",
           type: "quiz",
-          html: "",
+          quizTitle: "Assessment",
+          quizSubtitle: "Select the best answer for each item, then submit.",
+          data: mcqQuiz
         },
+        {
+          title: "Part 3 — Assessment (Communication Styles)",
+          subtitle: "Task 2: Choose the best response showing the correct communication style. Passing score: 70%.",
+          type: "quiz",
+          quizTitle: "Task 2",
+          quizSubtitle: "Look at the conversations and choose the best response from the options.",
+          data: styleAssessment
+        },
+        {
+          title: "Part 4 — Assessment (Language Registers)",
+          subtitle: "Task 3: Choose the correct language register. Passing score: 70%.",
+          type: "quiz",
+          quizTitle: "Task 3",
+          quizSubtitle: "Read each sample message and choose the correct language register.",
+          data: registerAssessment
+        },
+        {
+          title: "Part 5 — Assessment (Task Submission — Upload Video)",
+          subtitle: "Task 4: Upload your 3–5 minute video output for the multicultural scenario.",
+          type: "upload",
+          html: `
+            <div class="rounded-2xl bg-slate-50 p-5 ring-1 ring-black/5">
+              <h3 class="text-lg font-extrabold text-slate-900">Task 4 — Video Task Submission</h3>
+              <p class="mt-2 text-sm text-slate-600">
+                Create a short video (3–5 minutes) showing how you would communicate in this multicultural scenario.
+              </p>
+
+              <div class="mt-4 space-y-3 text-sm text-slate-700">
+                <div class="rounded-xl bg-white p-4 ring-1 ring-black/5">
+                  <p class="font-semibold">In your video, demonstrate:</p>
+                  <ul class="mt-2 list-disc pl-5">
+                    <li>Respect for each person’s cultural preferences.</li>
+                    <li>Flexibility in adjusting your communication style.</li>
+                    <li>Cultural sensitivity by avoiding stereotypes and showing professionalism.</li>
+                  </ul>
+                </div>
+
+                <div class="rounded-xl bg-white p-4 ring-1 ring-black/5">
+                  <p class="font-semibold">Scenario:</p>
+                  <p class="mt-2">
+                    You are part of a multicultural team in a technical workplace. A Filipino technician, a Japanese manager,
+                    and an American engineer are working together to troubleshoot an electrical system in an automotive plant.
+                    Each person has a different communication style:
+                  </p>
+                  <ul class="mt-2 list-disc pl-5">
+                    <li>The Japanese manager values punctuality and polite, respectful language.</li>
+                    <li>The American engineer prefers casual, open brainstorming and first-name basis.</li>
+                    <li>The Filipino technician is used to beginning with small talk before tasks.</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="mt-5">
+                <label class="block text-sm font-semibold text-slate-800">Upload your video file</label>
+                <input id="fileInput" type="file"
+                  class="mt-2 block w-full text-sm file:mr-4 file:rounded-xl file:border-0 file:bg-brand-600 file:px-4 file:py-2 file:text-white file:font-semibold hover:file:bg-brand-700" />
+                <button id="submitFileBtn"
+                  class="mt-3 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800">
+                  Submit Video
+                </button>
+                <p id="fileStatus" class="mt-2 text-xs text-slate-600"></p>
+              </div>
+            </div>
+          `
+        }
       ];
 
       // Elements
@@ -606,7 +801,28 @@
       }
 
       function defaultLessonState() {
-        return { partsDone: parts.map(() => false), quizAnswers: {} };
+        return { partsDone: parts.map(() => false), quizAnswers: {}, task4VideoFile: "" };
+      }
+
+      function normalizeQuizAnswers(raw) {
+        const out = {};
+        if (!raw || typeof raw !== "object") return out;
+
+        const vals = Object.values(raw);
+        const isNested = vals.some(v => v && typeof v === "object" && !Array.isArray(v));
+        if (isNested) {
+          for (const [k, v] of Object.entries(raw)) {
+            if (!v || typeof v !== "object") continue;
+            out[String(k)] = {};
+            for (const [qi, ans] of Object.entries(v)) out[String(k)][String(qi)] = parseInt(ans, 10);
+          }
+          return out;
+        }
+
+        // backward-compat: old flat answers belong to Part 2 (index 1)
+        out["1"] = {};
+        for (const [qi, ans] of Object.entries(raw)) out["1"][String(qi)] = parseInt(ans, 10);
+        return out;
       }
 
       async function loadLessonState(uid) {
@@ -618,11 +834,8 @@
           const arr = Array.isArray(d.partsDone) ? d.partsDone : [];
           const partsDone = parts.map((_, i) => !!arr[i]);
 
-          const qa = (d.quizAnswers && typeof d.quizAnswers === "object") ? d.quizAnswers : {};
-          const quizAnswers = {};
-          Object.keys(qa).forEach(k => { quizAnswers[k] = parseInt(qa[k], 10); });
-
-          return { partsDone, quizAnswers };
+          const qa = normalizeQuizAnswers(d.quizAnswers);
+          return { partsDone, quizAnswers: qa, task4VideoFile: (d.task4VideoFile || "") };
         } catch (_) {
           return defaultLessonState();
         }
@@ -633,6 +846,7 @@
           await setDoc(lessonDocRef(uid), {
             partsDone: state.partsDone,
             quizAnswers: state.quizAnswers || {},
+            task4VideoFile: state.task4VideoFile || "",
             updatedAt: Date.now()
           }, { merge: true });
         } catch (_) {}
@@ -687,8 +901,10 @@
         });
       }
 
-      function renderQuiz() {
-        const saved = (__lessonState && __lessonState.quizAnswers) ? __lessonState.quizAnswers : {};
+      function renderQuizForPart(partIdx, quizData, heading, subheading) {
+        const key = String(partIdx);
+        const quizAnswers = (__lessonState && __lessonState.quizAnswers) ? __lessonState.quizAnswers : {};
+        const saved = (quizAnswers[key] && typeof quizAnswers[key] === "object") ? quizAnswers[key] : {};
 
         const wrap = document.createElement("div");
         wrap.className = "space-y-5";
@@ -696,18 +912,18 @@
         const info = document.createElement("div");
         info.className = "rounded-2xl bg-slate-50 p-5 ring-1 ring-black/5";
         info.innerHTML = `
-          <h3 class="text-lg font-extrabold text-slate-900">Assessment</h3>
-          <p class="mt-1 text-sm text-slate-600">Select the best answer for each item, then submit.</p>
+          <h3 class="text-lg font-extrabold text-slate-900">${heading || "Assessment"}</h3>
+          <p class="mt-1 text-sm text-slate-600">${subheading || "Select the best answer for each item, then submit."}</p>
         `;
         wrap.appendChild(info);
 
-        quiz.forEach((item, i) => {
+        quizData.forEach((item, i) => {
           const card = document.createElement("div");
           card.className = "rounded-2xl bg-white p-5 ring-1 ring-black/5";
 
-          const q = document.createElement("p");
-          q.className = "font-semibold text-slate-900";
-          q.textContent = `${i + 1}. ${item.q}`;
+          const q = document.createElement("div");
+          q.className = "font-semibold text-slate-900 qblock";
+          q.textContent = item.qHtml ? item.qHtml : `${i + 1}. ${item.q}`;
           card.appendChild(q);
 
           const opts = document.createElement("div");
@@ -717,7 +933,7 @@
             const row = document.createElement("label");
             row.className = "flex items-center gap-3 rounded-xl bg-slate-50 px-4 py-3 hover:bg-slate-100 cursor-pointer";
             row.innerHTML = `
-              <input type="radio" name="q${i}" value="${idx}" class="h-4 w-4 accent-brand-600" />
+              <input type="radio" name="p${partIdx}q${i}" value="${idx}" class="h-4 w-4 accent-brand-600" />
               <span class="text-sm text-slate-800">${opt}</span>
             `;
             opts.appendChild(row);
@@ -726,7 +942,8 @@
 
             row.querySelector("input").addEventListener("change", async (e) => {
               saved[i] = parseInt(e.target.value, 10);
-              __lessonState.quizAnswers = saved;
+              quizAnswers[key] = saved;
+              __lessonState.quizAnswers = quizAnswers;
               if (__currentUser) await saveLessonState(__currentUser.uid, __lessonState);
             });
           });
@@ -738,36 +955,33 @@
         const actions = document.createElement("div");
         actions.className = "flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between";
         actions.innerHTML = `
-          <button id="submitQuizBtn" class="rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800">
+          <button id="submitQuizBtn_${partIdx}" class="rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800">
             Submit Answers
           </button>
-          <p id="quizResult" class="text-sm font-semibold text-slate-700"></p>
+          <p id="quizResult_${partIdx}" class="text-sm font-semibold text-slate-700"></p>
         `;
         wrap.appendChild(actions);
 
         setTimeout(() => {
-          document.getElementById("submitQuizBtn").addEventListener("click", async () => {
+          document.getElementById(`submitQuizBtn_${partIdx}`).addEventListener("click", async () => {
             let correct = 0;
-            quiz.forEach((item, i) => { if (saved[i] === item.answer) correct++; });
-            const score = Math.round((correct / quiz.length) * 100);
-            const result = document.getElementById("quizResult");
+            quizData.forEach((it, qi) => { if (saved[qi] === it.answer) correct++; });
+            const score = Math.round((correct / quizData.length) * 100);
+            const result = document.getElementById(`quizResult_${partIdx}`);
 
             if (score >= PASSING) {
               result.innerHTML = `Score: ${score}% — Passed <span class="material-symbols-rounded align-middle text-emerald-600 text-[18px] leading-none ml-1">check_circle</span> <span class="text-brand-800">(Part Completed)</span>`;
               result.className = "text-sm font-extrabold text-brand-800";
 
-              __lessonState.partsDone[1] = true;
+              __lessonState.partsDone[partIdx] = true;
               if (__currentUser) await saveLessonState(__currentUser.uid, __lessonState);
 
-              // ✅ also write progress doc so Lesson is marked complete in /progress
               const pct = computeProgressPct(__lessonState);
               if (__currentUser) await saveLessonProgress(__currentUser.uid, pct);
 
               renderSidebar();
               await renderProgress();
               pill(true);
-
-              // ✅ update next button to "Next Lesson" when last part is completed
               renderPart();
             } else {
               result.textContent = `Score: ${score}% — Not passed (needs ${PASSING}%)`;
@@ -779,15 +993,60 @@
         return wrap;
       }
 
+      function wireUploadPart() {
+        const submitFileBtn = document.getElementById("submitFileBtn");
+        const fileInput = document.getElementById("fileInput");
+        const fileStatus = document.getElementById("fileStatus");
+
+        const savedName = __lessonState?.task4VideoFile || "";
+        if (savedName && fileStatus) {
+          fileStatus.textContent = `Last submitted: ${savedName}`;
+          fileStatus.className = "mt-2 text-xs text-slate-600";
+        }
+
+        submitFileBtn?.addEventListener("click", async () => {
+          if (!fileInput?.files?.length) {
+            if (fileStatus) {
+              fileStatus.textContent = "Please choose a file first.";
+              fileStatus.className = "mt-2 text-xs text-red-600";
+            }
+            return;
+          }
+
+          const name = fileInput.files[0].name;
+
+          __lessonState.task4VideoFile = name;
+          __lessonState.partsDone[activePart] = true;
+
+          if (fileStatus) {
+            fileStatus.textContent = `Submitted: ${name}`;
+            fileStatus.className = "mt-2 text-xs text-brand-800";
+          }
+
+          if (__currentUser) {
+            await saveLessonState(__currentUser.uid, __lessonState);
+            const pct = computeProgressPct(__lessonState);
+            await saveLessonProgress(__currentUser.uid, pct);
+          }
+
+          await render();
+        });
+      }
+
       function renderPart() {
         const p = parts[activePart];
         partTitle.textContent = p.title;
         partSubtitle.textContent = p.subtitle;
 
         partBody.innerHTML = "";
+
         if (p.type === "quiz") {
           completeBtn.classList.add("hidden");
-          partBody.appendChild(renderQuiz());
+          partBody.appendChild(renderQuizForPart(activePart, p.data, p.quizTitle, p.quizSubtitle));
+        } else if (p.type === "upload") {
+          completeBtn.classList.add("hidden");
+          partBody.innerHTML = p.html;
+          wireUploadPart();
         } else {
           completeBtn.classList.remove("hidden");
           partBody.innerHTML = p.html;
@@ -798,7 +1057,7 @@
 
         prevBtn.disabled = activePart === 0;
 
-        // ✅ CHANGE: if last part is completed, Next button becomes "Next Lesson" and goes to Lesson 3
+        // ✅ if last part is completed, Next button becomes "Next Lesson" and goes to Lesson 3
         const atLast = activePart === parts.length - 1;
         const lastDone = !!__lessonState?.partsDone?.[parts.length - 1];
 
@@ -830,15 +1089,16 @@
         await renderProgress();
       }
 
-      prevBtn.addEventListener("click", async () => { if (activePart > 0) activePart--; await render(); });
+      prevBtn.addEventListener("click", async () => {
+        if (activePart > 0) activePart--;
+        await render();
+      });
 
       nextBtn.addEventListener("click", async () => {
-        // ✅ CHANGE: if ready for next lesson, go to Lesson 3
         if (nextBtn.dataset.nextLesson === "1") {
           window.location.href = "lesson-3.html";
           return;
         }
-
         if (activePart < parts.length - 1) activePart++;
         await render();
       });
@@ -869,26 +1129,22 @@
       onAuthStateChanged(auth, async (user) => {
         __currentUser = user || null;
 
-        // ✅ CHANGED: remove alert popup
         if (!__currentUser) {
           window.location.href = "login.html";
           return;
         }
 
-        // Update activity for Admin Dashboard
         try { await setDoc(doc(db, 'users', __currentUser.uid), { email: __currentUser.email || '', lastSeenAt: Date.now() }, { merge: true }); } catch (_) {}
-        // ✅ Show logged-in UI instantly (no waiting for Firestore)
+
         __profile = null;
         applyAuthUI();
 
-        // sequential guard (lesson 1 complete) - keep behavior, but no alert
         const ok = await mustHaveLesson1Complete(__currentUser.uid);
         if (!ok) {
           window.location.href = "lessons.html";
           return;
         }
 
-        // Load profile + lesson state after UI is already correct
         const [profile, lessonState] = await Promise.all([
           loadProfile(__currentUser.uid),
           loadLessonState(__currentUser.uid),
@@ -899,7 +1155,6 @@
 
         __lessonState = lessonState;
 
-        // ✅ ensure /progress reflects current state on load (optional safe sync)
         if (__currentUser) {
           const pct = computeProgressPct(__lessonState);
           await saveLessonProgress(__currentUser.uid, pct);
