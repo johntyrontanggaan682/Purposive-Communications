@@ -835,6 +835,47 @@
         lesson4: { progress: 0, complete: false },
       };
 
+      const keys = ["lesson1", "lesson2", "lesson3", "lesson4"];
+
+      const clampPct = (v) => {
+        const n = parseInt(v ?? "0", 10);
+        if (!Number.isFinite(n)) return 0;
+        return Math.max(0, Math.min(100, n));
+      };
+
+      // 1) Primary source: users/{uid} doc (works even if subcollections are blocked by rules)
+      try {
+        const userSnap = await getDoc(doc(db, "users", uid));
+        if (userSnap.exists()) {
+          const ud = userSnap.data() || {};
+          const userProg = (ud.progress && typeof ud.progress === "object") ? ud.progress : {};
+          const userLessonState = (ud.lessonState && typeof ud.lessonState === "object") ? ud.lessonState : {};
+
+          keys.forEach((k) => {
+            const p = userProg?.[k];
+            let progress = clampPct(p?.progress ?? 0);
+            let complete = !!p?.complete;
+
+            const ls = userLessonState?.[k];
+            if (ls && Array.isArray(ls.partsDone)) {
+              const partsDone = ls.partsDone;
+              const total = partsDone.length;
+              const doneCount = partsDone.reduce((a, b) => a + (b ? 1 : 0), 0);
+              const pct = total ? Math.round((doneCount / total) * 100) : 0;
+              const computedComplete = total > 0 && doneCount === total;
+
+              if (!p) progress = clampPct(pct);
+              complete = complete || computedComplete;
+            }
+
+            state[k] = { progress, complete };
+          });
+        }
+      } catch (err) {
+        console.warn("Could not read users/{uid} doc for progress", err);
+      }
+
+      // 2) Try subcollections (if allowed) and merge/override
       try {
         const progressRefs = [
           doc(db, "users", uid, "progress", PROGRESS_DOCS.l1),
@@ -850,24 +891,19 @@
           doc(db, "users", uid, "lessons", "lesson4"),
         ];
 
-        const [progSnaps, lessonSnaps] = await Promise.all([
-          Promise.all(progressRefs.map(r => getDoc(r))),
-          Promise.all(lessonRefs.map(r => getDoc(r))),
+        const [progResults, lessonResults] = await Promise.all([
+          Promise.allSettled(progressRefs.map(r => getDoc(r))),
+          Promise.allSettled(lessonRefs.map(r => getDoc(r))),
         ]);
 
-        const keys = ["lesson1", "lesson2", "lesson3", "lesson4"];
-
-        const clampPct = (v) => {
-          const n = parseInt(v ?? "0", 10);
-          if (!Number.isFinite(n)) return 0;
-          return Math.max(0, Math.min(100, n));
-        };
-
         keys.forEach((k, i) => {
-          const ps = progSnaps[i];
-          const ls = lessonSnaps[i];
+          const psr = progResults[i];
+          const lsr = lessonResults[i];
 
-          // Fallback: compute from saved lesson state (partsDone)
+          const ps = (psr && psr.status === "fulfilled") ? psr.value : null;
+          const ls = (lsr && lsr.status === "fulfilled") ? lsr.value : null;
+
+          // Compute from saved lesson state (partsDone) if available
           let computed = null;
           if (ls && ls.exists()) {
             const d = ls.data() || {};
@@ -881,21 +917,28 @@
             };
           }
 
+          // Prefer explicit progress doc if available
           if (ps && ps.exists()) {
             const d = ps.data() || {};
-            const progress = clampPct(d.progress ?? computed?.progress ?? 0);
-            const complete = !!d.complete || !!computed?.complete;
+            const progress = clampPct(d.progress ?? computed?.progress ?? state[k].progress ?? 0);
+            const complete = !!d.complete || !!computed?.complete || !!state[k].complete;
             state[k] = { progress, complete };
             return;
           }
 
-          if (computed) state[k] = computed;
+          // Else fall back to computed (lessons subcollection)
+          if (computed) {
+            state[k] = {
+              progress: computed.progress,
+              complete: computed.complete || !!state[k].complete,
+            };
+          }
         });
-
-        return state;
-      } catch (_) {
-        return state;
+      } catch (err) {
+        console.warn("Could not read progress/lessons subcollections", err);
       }
+
+      return state;
     }
 
 function setLockMessages(state) {

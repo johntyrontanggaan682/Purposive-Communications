@@ -336,7 +336,8 @@
       import {
         doc,
         getDoc,
-        setDoc
+        setDoc,
+      updateDoc
       } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
       // ✅ Force Firebase auth to NOT use localStorage (session only)
@@ -614,6 +615,25 @@
         return doc(db, "users", uid, "progress", `lesson${LESSON_NO}`);
       }
 
+
+    function userDocRef(uid) {
+      return doc(db, "users", uid);
+    }
+
+    async function upsertUserDocFields(uid, data) {
+      const ref = userDocRef(uid);
+      try {
+        await updateDoc(ref, data);
+      } catch (err) {
+        try {
+          await setDoc(ref, data, { merge: true });
+        } catch (err2) {
+          console.warn("Firestore write failed (user doc fallback)", err2);
+        }
+      }
+    }
+
+
       async function mustHaveLesson3Complete(uid) {
         try {
           const snap = await getDoc(doc(db, "users", uid, "progress", "lesson3"));
@@ -633,9 +653,29 @@
 
       async function loadLessonState(uid) {
         try {
-          const snap = await getDoc(lessonDocRef(uid));
-          if (!snap.exists()) return defaultLessonState();
-          const d = snap.data() || {};
+          let d = null;
+          try {
+            const snap = await getDoc(lessonDocRef(uid));
+            if (snap.exists()) d = snap.data() || {};
+          } catch (err) {
+            console.warn("Could not read lessons subcollection (will fallback)", err);
+          }
+
+          if (!d) {
+            try {
+              const us = await getDoc(userDocRef(uid));
+              if (us.exists()) {
+                const ud = us.data() || {};
+                const key = `lesson${LESSON_NO}`;
+                const nested = (ud.lessonState && typeof ud.lessonState === "object") ? ud.lessonState[key] : null;
+                if (nested && typeof nested === "object") d = nested;
+              }
+            } catch (err) {
+              console.warn("Could not read user doc fallback for lessonState", err);
+            }
+          }
+
+          if (!d) return defaultLessonState();
 
           const arr = Array.isArray(d.partsDone) ? d.partsDone : [];
           const partsDone = parts.map((_, i) => !!arr[i]);
@@ -649,13 +689,28 @@
       }
 
       async function saveLessonState(uid, state) {
+        const payload = {
+          partsDone: state.partsDone,
+          updatedAt: Date.now()
+        };
+
+        // Keep any lesson-specific fields
+        if (state.quizAnswers !== undefined) payload.quizAnswers = state.quizAnswers || {};
+        if (state.task4VideoFile !== undefined) payload.task4VideoFile = state.task4VideoFile || "";
+
+        // Try subcollection first
         try {
-          await setDoc(lessonDocRef(uid), {
-            partsDone: state.partsDone,
-            assessmentFile: state.assessmentFile || "",
-            updatedAt: Date.now()
-          }, { merge: true });
-        } catch (_) {}
+          await setDoc(lessonDocRef(uid), payload, { merge: true });
+        } catch (err) {
+          console.warn("Firestore write failed (lessons subcollection)", err);
+        }
+
+        // Fallback: also store inside users/{uid}
+        try {
+          await upsertUserDocFields(uid, { [`lessonState.lesson${LESSON_NO}`]: payload });
+        } catch (err) {
+          console.warn("Firestore write failed (user doc lessonState)", err);
+        }
       }
 
       function computeProgressPct(state) {
@@ -674,8 +729,25 @@
         if (Number.isFinite(doneCount)) payload.doneCount = doneCount;
 
         try {
+
           await setDoc(progressDocRef(uid), payload, { merge: true });
-        } catch (_) {}
+
+        } catch (err) {
+
+          console.warn("Firestore write failed (progress subcollection)", err);
+
+        }
+
+
+        try {
+
+          await upsertUserDocFields(uid, { [`progress.lesson${LESSON_NO}`]: payload });
+
+        } catch (err) {
+
+          console.warn("Firestore write failed (user doc progress)", err);
+
+        }
       }
 
       function pill(done) {
