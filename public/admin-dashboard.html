@@ -50,7 +50,6 @@
       *, *::before, *::after{ animation: none !important; transition: none !important; scroll-behavior: auto !important; }
     }
 
-    /* ===== Enhanced animated background blobs ===== */
     body.page-bg{
       position: relative;
       overflow-x: hidden;
@@ -92,14 +91,12 @@
       100%{ transform: translate(-16px,-12px) scale(1.02); }
     }
 
-    /* Panel entrance */
     .panel-anim{ animation: fadeSlideIn .35s var(--ease-out) both; }
     @keyframes fadeSlideIn{
       from{ opacity: 0; transform: translateY(10px); }
       to{ opacity: 1; transform: translateY(0); }
     }
 
-    /* Stagger cards */
     @keyframes cardPop{
       from{ opacity:0; transform: translateY(12px) scale(.985); }
       to{ opacity:1; transform: translateY(0) scale(1); }
@@ -110,14 +107,12 @@
       animation: cardPop .40s var(--ease-out) both;
     }
 
-    /* Sidebar entrance */
     aside{ animation: asideIn .40s var(--ease-out) both; }
     @keyframes asideIn{
       from{ opacity: 0; transform: translateX(-10px); }
       to{ opacity: 1; transform: translateX(0); }
     }
 
-    /* Tabs micro-interaction */
     .tab-btn{
       color: rgb(30 41 59);
       transition: transform .18s var(--ease-out), background-color .18s var(--ease-out), box-shadow .18s var(--ease-out);
@@ -125,7 +120,6 @@
     .tab-btn:hover{ background: rgba(2,8,23,0.04); transform: translateY(-1px); }
     .tab-btn:active{ transform: translateY(0); }
 
-    /* Stat cards: hover + shine */
     .stat-card{
       position: relative;
       overflow: hidden;
@@ -150,7 +144,6 @@
       opacity: .9;
     }
 
-    /* Teacher card enhanced interactions */
     .teacher-tap{
       position: relative;
       overflow: hidden;
@@ -176,7 +169,6 @@
       border-color: rgba(19,168,154,0.35) !important;
     }
 
-    /* Toast animation */
     #toast{ transform-origin: top center; }
     #toast:not(.hidden){ animation: toastIn .22s var(--ease-out) both; }
     @keyframes toastIn{
@@ -184,13 +176,11 @@
       to{ opacity: 1; transform: translateY(0) scale(1); }
     }
 
-    /* Mobile sidebar overlay: animate in WITHOUT JS changes */
     #sidebarOverlay:not(.hidden) #sidebarBackdrop{ animation: fadeIn .20s var(--ease-out) both; }
     #sidebarOverlay:not(.hidden) > div:last-child{ animation: slideInLeft .28s var(--ease-out) both; }
     @keyframes fadeIn{ from{ opacity:0; } to{ opacity:1; } }
     @keyframes slideInLeft{ from{ opacity:0; transform: translateX(-10px); } to{ opacity:1; transform: translateX(0); } }
 
-    /* Bottom sheet (kept) */
     .sheet-hidden{ opacity:0; pointer-events:none; }
     .sheet-backdrop{ opacity:0; transition: opacity .25s var(--ease-out); }
     .sheet-panel{
@@ -201,7 +191,6 @@
     .sheet-open .sheet-backdrop{ opacity:1; }
     .sheet-open .sheet-panel{ transform: translateY(0); opacity:1; }
 
-    /* Badge pop when it appears (no JS changes) */
     @keyframes badgePop{
       from{ opacity:.4; transform: scale(.86); }
       to{ opacity:1; transform: scale(1); }
@@ -211,7 +200,6 @@
       animation: badgePop .22s var(--ease-out) both;
     }
 
-    /* Approve/Reject buttons (created by JS) shine on hover (CSS-only) */
     [data-approve], [data-reject]{
       position: relative;
       overflow: hidden;
@@ -232,7 +220,7 @@
       opacity:.9;
     }
 
-    /* ===== Change ONLY the visible label inside teacher cards WITHOUT touching JS ===== */
+    /* Change visible label inside teacher cards */
     .teacher-tap .mt-3.grid p:first-child > span.text-slate-500{
       color: transparent;
       position: relative;
@@ -462,11 +450,18 @@
                       <p><span class="text-slate-500">Employee ID:</span> <span id="detailTeacherId">—</span></p>
                       <p><span class="text-slate-500">Department:</span> <span id="detailDept">—</span></p>
                       <p><span class="text-slate-500">Applied:</span> <span id="detailApplied">—</span></p>
-                      <!-- UID removed in UI (kept in JS hidden) -->
                     </div>
+
+                    <!-- ✅ ADMIN DELETE (always allowed for teachers) -->
+                    <button id="deleteTeacherBtn"
+                      class="hidden mt-4 w-full inline-flex items-center justify-center rounded-xl bg-rose-600 px-4 py-2.5 text-sm font-extrabold text-white shadow-softer hover:bg-rose-700 focus:outline-none focus:ring-4 focus:ring-rose-200 active:scale-[.98] transition">
+                      Delete Teacher
+                    </button>
+                    <p id="deleteHint" class="hidden mt-2 text-xs font-semibold text-slate-500">
+                      This deletes the teacher document from Firestore.
+                    </p>
                   </div>
 
-                  <!-- keep hidden uid target so JS does not break -->
                   <span id="detailUid" class="hidden"></span>
                 </div>
               </aside>
@@ -537,20 +532,26 @@
           <p><span class="text-slate-500">Employee ID:</span> <span id="mDetailTeacherId">—</span></p>
           <p><span class="text-slate-500">Department:</span> <span id="mDetailDept">—</span></p>
           <p><span class="text-slate-500">Applied:</span> <span id="mDetailApplied">—</span></p>
-          <!-- UID removed in UI (kept in JS hidden) -->
         </div>
 
-        <!-- keep hidden uid target so JS does not break -->
+        <!-- ✅ ADMIN DELETE (always allowed for teachers) -->
+        <button id="mDeleteTeacherBtn"
+          class="hidden mt-5 w-full inline-flex items-center justify-center rounded-xl bg-rose-600 px-4 py-2.5 text-sm font-extrabold text-white shadow-softer hover:bg-rose-700 focus:outline-none focus:ring-4 focus:ring-rose-200 active:scale-[.98] transition">
+          Delete Teacher
+        </button>
+        <p id="mDeleteHint" class="hidden mt-2 text-xs font-semibold text-slate-500">
+          This deletes the teacher document from Firestore.
+        </p>
+
         <span id="mDetailUid" class="hidden"></span>
       </div>
     </div>
   </div>
 
-  <!-- ✅ JS left EXACTLY as you provided (no changes) -->
   <script type="module">
     import { auth, db } from "./firebase.js";
     import { onAuthStateChanged, signOut as firebaseSignOut, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-    import { collection, query, where, doc, getDoc, onSnapshot, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+    import { collection, query, where, doc, getDoc, onSnapshot, updateDoc, serverTimestamp, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
     // Session-only persistence
     try { await setPersistence(auth, browserSessionPersistence); } catch (_) {}
@@ -574,7 +575,6 @@
 
           const role = String(profile.role || "student").toLowerCase().trim();
           if (role !== "admin") {
-            // Route non-admins away
             if (role === "teacher") window.location.href = "teacher-dashboard.html";
             else window.location.href = "index.html";
             return;
@@ -697,6 +697,9 @@
     const detailApplied = document.getElementById("detailApplied");
     const detailUid = document.getElementById("detailUid");
 
+    const deleteTeacherBtn = document.getElementById("deleteTeacherBtn");
+    const deleteHint = document.getElementById("deleteHint");
+
     const teacherDetailModal = document.getElementById("teacherDetailModal");
     const teacherDetailBackdrop = document.getElementById("teacherDetailBackdrop");
     const closeTeacherModalBtn = document.getElementById("closeTeacherModalBtn");
@@ -708,6 +711,9 @@
     const mDetailDept = document.getElementById("mDetailDept");
     const mDetailApplied = document.getElementById("mDetailApplied");
     const mDetailUid = document.getElementById("mDetailUid");
+
+    const mDeleteTeacherBtn = document.getElementById("mDeleteTeacherBtn");
+    const mDeleteHint = document.getElementById("mDeleteHint");
 
     function openTeacherModal() {
       if (!teacherDetailModal) return;
@@ -736,6 +742,72 @@
       el.classList.remove("hidden");
     }
 
+    // ✅ Always show delete buttons when a teacher is selected
+    function setDeleteVisibility(show) {
+      deleteTeacherBtn?.classList.toggle("hidden", !show);
+      deleteHint?.classList.toggle("hidden", !show);
+      mDeleteTeacherBtn?.classList.toggle("hidden", !show);
+      mDeleteHint?.classList.toggle("hidden", !show);
+    }
+
+    async function deleteTeacher(uid) {
+      const t = allTeachers.find(x => String(x.__id) === String(uid));
+      if (!t) return;
+
+      // Extra safety: only delete teacher docs
+      if (String(t.role || "").toLowerCase().trim() !== "teacher") {
+        alert("This record is not a teacher.");
+        return;
+      }
+
+      const name = String(t.fullName || "Teacher").trim() || "Teacher";
+      const ok = confirm(
+        `Delete ${name}?\n\nThis will DELETE the teacher document from Firestore.\nThis action cannot be undone.`
+      );
+      if (!ok) return;
+
+      try {
+        await deleteDoc(doc(db, "users", uid));
+        showToast("Deleted", "Teacher has been deleted.");
+
+        // Clear UI
+        selectedTeacherId = null;
+        detailBody?.classList.add("hidden");
+        detailEmpty?.classList.remove("hidden");
+        detailPill?.classList.add("hidden");
+        setDeleteVisibility(false);
+
+        closeTeacherModal();
+      } catch (e) {
+        console.error(e);
+        alert(e?.message || "Delete failed. Check Firestore rules.");
+      }
+    }
+
+    deleteTeacherBtn?.addEventListener("click", () => {
+      const uid = detailUid?.textContent?.trim();
+      if (!uid || uid === "—") return;
+      deleteTeacher(uid);
+    });
+
+    mDeleteTeacherBtn?.addEventListener("click", () => {
+      const uid = mDetailUid?.textContent?.trim();
+      if (!uid || uid === "—") return;
+      deleteTeacher(uid);
+    });
+
+    function tsToText(ts) {
+      if (!ts) return "—";
+      if (typeof ts === "object" && ts.seconds) {
+        const d = new Date(ts.seconds * 1000);
+        return d.toLocaleString();
+      }
+      if (typeof ts === "number") return new Date(ts).toLocaleString();
+      return String(ts);
+    }
+
+    function norm(s) { return String(s || "").toLowerCase().trim(); }
+
     function setTeacherDetails(t) {
       if (!t) return;
 
@@ -748,8 +820,8 @@
       const uid = t.__id || "";
 
       // Desktop panel
-      if (detailEmpty) detailEmpty.classList.add("hidden");
-      if (detailBody) detailBody.classList.remove("hidden");
+      detailEmpty?.classList.add("hidden");
+      detailBody?.classList.remove("hidden");
       setPillText(detailPill, status);
 
       if (detailName) detailName.textContent = name;
@@ -775,6 +847,9 @@
         else if (s === "rejected") mDetailPill.classList.add("bg-rose-100","text-rose-800");
         else mDetailPill.classList.add("bg-amber-100","text-amber-800");
       }
+
+      // ✅ show delete buttons
+      setDeleteVisibility(true);
     }
 
     let selectedTeacherId = null;
@@ -791,7 +866,6 @@
       markSelectedTeacher(String(uid));
       setTeacherDetails(t);
 
-      // On small screens, open modal
       if (window.matchMedia("(max-width: 1023px)").matches) {
         openTeacherModal();
       }
@@ -815,19 +889,6 @@
     const searchPending = document.getElementById("searchPending");
     const searchTeachers = document.getElementById("searchTeachers");
     const refreshBtn = document.getElementById("refreshBtn");
-
-    function tsToText(ts) {
-      if (!ts) return "—";
-      // Firestore Timestamp: { seconds, nanoseconds }
-      if (typeof ts === "object" && ts.seconds) {
-        const d = new Date(ts.seconds * 1000);
-        return d.toLocaleString();
-      }
-      if (typeof ts === "number") return new Date(ts).toLocaleString();
-      return String(ts);
-    }
-
-    function norm(s) { return String(s || "").toLowerCase().trim(); }
 
     function teacherCard(t, { showActions }) {
       const name = String(t.fullName || "Teacher").trim() || "Teacher";
@@ -905,13 +966,11 @@
       const pending = allTeachers.filter(t => !t.approved && norm(t.approvalStatus || "pending") !== "approved");
       const approved = allTeachers.filter(t => t.approved || norm(t.approvalStatus) === "approved");
 
-      // Stats
       if (statPending) statPending.textContent = String(pending.length);
       if (statApproved) statApproved.textContent = String(approved.length);
       if (statTotalTeachers) statTotalTeachers.textContent = String(allTeachers.length);
       if (statSync) statSync.textContent = new Date().toLocaleString();
 
-      // Badges
       const badgeText = String(pending.length);
       if (badgePending) {
         badgePending.textContent = badgeText;
@@ -922,7 +981,6 @@
         mBadgePending.classList.toggle("hidden", pending.length === 0);
       }
 
-      // Pending list
       const pendingFiltered = pending.filter(t => {
         const blob = norm(`${t.fullName || ""} ${t.email || ""} ${t.department || ""} ${t.teacherId || ""}`);
         return !qPending || blob.includes(qPending);
@@ -931,7 +989,6 @@
       if (pendingList) pendingList.innerHTML = pendingFiltered.map(t => teacherCard(t, { showActions: true })).join("");
       if (pendingEmpty) pendingEmpty.classList.toggle("hidden", pendingFiltered.length !== 0);
 
-      // Teachers list
       const allFiltered = allTeachers.filter(t => {
         const blob = norm(`${t.fullName || ""} ${t.email || ""} ${t.department || ""} ${t.teacherId || ""} ${t.approvalStatus || ""}`);
         return !qTeachers || blob.includes(qTeachers);
@@ -944,13 +1001,11 @@
           .join("");
       }
 
-      // Restore selected highlight after re-render
       if (selectedTeacherId) markSelectedTeacher(selectedTeacherId);
 
       wireActionButtons();
       wireTeacherTap();
 
-      // Stagger animations
       applyStagger(pendingList);
       applyStagger(teachersList);
     }
@@ -1037,6 +1092,7 @@
       console.error(err);
       alert(err?.message || "Failed to load teachers. Check Firestore rules / indexes.");
     });
+
   </script>
 </body>
 </html>

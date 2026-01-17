@@ -43,7 +43,6 @@
   <style>
     :root{ --ease-out: cubic-bezier(.22,1,.36,1); }
 
-    /* ✅ EXACT SAME BG as login.html */
     .page-bg{
       background:
         radial-gradient(1200px 500px at 10% -10%, rgba(19,168,154,0.16), transparent 55%),
@@ -56,10 +55,9 @@
     body.page-bg{
       position: relative;
       overflow-x: hidden;
-      -webkit-tap-highlight-color: transparent; /* ✅ removes the “white thing” on tap */
+      -webkit-tap-highlight-color: transparent;
     }
 
-    /* ✅ Extra soft highlights (appealing) */
     body.page-bg::before,
     body.page-bg::after{
       content:"";
@@ -97,14 +95,12 @@
       100%{ transform: translate(-16px,-12px) scale(1.02); }
     }
 
-    /* ✅ Entrance */
     .panel-anim{ animation: fadeSlideIn .35s var(--ease-out) both; }
     @keyframes fadeSlideIn{
       from{ opacity:0; transform: translateY(10px); }
       to{ opacity:1; transform: translateY(0); }
     }
 
-    /* ✅ Button shine */
     .btn-shine{ position: relative; overflow: hidden; transform: translateZ(0); }
     .btn-shine::after{
       content:"";
@@ -124,7 +120,6 @@
       100%{ transform: translateX(120%); opacity: 0; }
     }
 
-    /* ✅ Keep focus pretty (no ugly white outline) */
     a:focus, button:focus{ outline:none; }
 
     @media (prefers-reduced-motion: reduce){
@@ -136,10 +131,8 @@
 <body class="page-bg font-sans text-slate-800">
   <main class="min-h-screen flex items-center justify-center p-4 sm:p-6">
     <div class="w-full max-w-lg panel-anim">
-      <!-- ✅ Decorative “glow frame” -->
       <div class="relative rounded-[2.25rem] p-[1px] bg-gradient-to-br from-brand-300/60 via-white/40 to-rose-200/50 shadow-soft">
         <div class="relative overflow-hidden rounded-[2.2rem] bg-white/85 backdrop-blur ring-1 ring-black/10">
-          <!-- Top accent bar -->
           <div class="relative px-7 sm:px-8 pt-7 pb-6 bg-gradient-to-r from-brand-600 to-brand-500">
             <div class="absolute -right-16 -top-16 h-56 w-56 rounded-full bg-white/10 blur-2xl"></div>
             <div class="absolute -left-16 -bottom-16 h-56 w-56 rounded-full bg-white/10 blur-2xl"></div>
@@ -169,7 +162,6 @@
             </div>
           </div>
 
-          <!-- Body -->
           <div class="px-7 sm:px-8 py-7">
             <div class="rounded-2xl bg-slate-50/80 ring-1 ring-black/5 p-4">
               <p class="text-xs font-extrabold text-slate-500 uppercase tracking-wide">Reason</p>
@@ -212,6 +204,11 @@
     const reasonEl = document.getElementById("reason");
     const signOutBtn = document.getElementById("signOutBtn");
 
+    function setReason(text) {
+      const r = String(text || "Locked by your teacher/admin.").trim();
+      reasonEl.textContent = r || "Locked by your teacher/admin.";
+    }
+
     signOutBtn?.addEventListener("click", async () => {
       try { await signOut(auth); } catch (_) {}
       window.location.href = "index.html?msg=" + encodeURIComponent("Signed out.");
@@ -223,14 +220,28 @@
         return;
       }
 
+      // 1) Try /users/{uid}
       try {
-        const snap = await getDoc(doc(db, "users", user.uid));
-        const p = snap.exists() ? (snap.data() || {}) : {};
-        const r = String(p.lockedReason || "Locked by your teacher/admin.").trim();
-        reasonEl.textContent = r || "Locked by your teacher/admin.";
-      } catch (_) {
-        reasonEl.textContent = "Locked by your teacher/admin.";
-      }
+        const userSnap = await getDoc(doc(db, "users", user.uid));
+        if (userSnap.exists()) {
+          const p = userSnap.data() || {};
+          setReason(p.lockedReason || "Locked by your teacher/admin.");
+          return;
+        }
+      } catch (_) {}
+
+      // 2) If deleted, try /lockedAccounts/{uid}
+      try {
+        const lockSnap = await getDoc(doc(db, "lockedAccounts", user.uid));
+        if (lockSnap.exists()) {
+          const l = lockSnap.data() || {};
+          setReason(l.reason || "Your account was removed by the admin.");
+          return;
+        }
+      } catch (_) {}
+
+      // 3) Fallback
+      setReason("Your account is locked or was removed.");
     });
   </script>
 </body>
