@@ -828,7 +828,7 @@
     }
 
     async function loadLessonProgress(uid) {
-      const empty = {
+      const state = {
         lesson1: { progress: 0, complete: false },
         lesson2: { progress: 0, complete: false },
         lesson3: { progress: 0, complete: false },
@@ -836,32 +836,69 @@
       };
 
       try {
-        const refs = [
+        const progressRefs = [
           doc(db, "users", uid, "progress", PROGRESS_DOCS.l1),
           doc(db, "users", uid, "progress", PROGRESS_DOCS.l2),
           doc(db, "users", uid, "progress", PROGRESS_DOCS.l3),
           doc(db, "users", uid, "progress", PROGRESS_DOCS.l4),
         ];
 
-        const snaps = await Promise.all(refs.map(r => getDoc(r)));
+        const lessonRefs = [
+          doc(db, "users", uid, "lessons", "lesson1"),
+          doc(db, "users", uid, "lessons", "lesson2"),
+          doc(db, "users", uid, "lessons", "lesson3"),
+          doc(db, "users", uid, "lessons", "lesson4"),
+        ];
+
+        const [progSnaps, lessonSnaps] = await Promise.all([
+          Promise.all(progressRefs.map(r => getDoc(r))),
+          Promise.all(lessonRefs.map(r => getDoc(r))),
+        ]);
 
         const keys = ["lesson1", "lesson2", "lesson3", "lesson4"];
-        snaps.forEach((snap, i) => {
-          if (!snap.exists()) return;
-          const d = snap.data() || {};
-          empty[keys[i]] = {
-            progress: typeof d.progress === "number" ? d.progress : parseInt(d.progress || "0", 10) || 0,
-            complete: !!d.complete
-          };
+
+        const clampPct = (v) => {
+          const n = parseInt(v ?? "0", 10);
+          if (!Number.isFinite(n)) return 0;
+          return Math.max(0, Math.min(100, n));
+        };
+
+        keys.forEach((k, i) => {
+          const ps = progSnaps[i];
+          const ls = lessonSnaps[i];
+
+          // Fallback: compute from saved lesson state (partsDone)
+          let computed = null;
+          if (ls && ls.exists()) {
+            const d = ls.data() || {};
+            const partsDone = Array.isArray(d.partsDone) ? d.partsDone : [];
+            const total = partsDone.length;
+            const doneCount = partsDone.reduce((a, b) => a + (b ? 1 : 0), 0);
+            const pct = total ? Math.round((doneCount / total) * 100) : 0;
+            computed = {
+              progress: clampPct(pct),
+              complete: total > 0 && doneCount === total,
+            };
+          }
+
+          if (ps && ps.exists()) {
+            const d = ps.data() || {};
+            const progress = clampPct(d.progress ?? computed?.progress ?? 0);
+            const complete = !!d.complete || !!computed?.complete;
+            state[k] = { progress, complete };
+            return;
+          }
+
+          if (computed) state[k] = computed;
         });
 
-        return empty;
+        return state;
       } catch (_) {
-        return empty;
+        return state;
       }
     }
 
-    function setLockMessages(state) {
+function setLockMessages(state) {
       const l1 = !!state.lesson1.complete;
       const l2 = !!state.lesson2.complete;
       const l3 = !!state.lesson3.complete;

@@ -867,16 +867,18 @@
         } catch (_) {}
       }
 
-      async function saveLessonProgress(uid, pct) {
+      async function saveLessonProgress(uid, pct, meta = {}) {
         const progress = clamp(parseInt(pct || "0", 10) || 0, 0, 100);
         const complete = progress === 100;
 
+        const partsTotal = Number(meta?.partsTotal ?? parts.length) || parts.length;
+        const doneCount = (meta?.doneCount != null) ? Number(meta.doneCount) : undefined;
+
+        const payload = { progress, complete, partsTotal, updatedAt: Date.now() };
+        if (Number.isFinite(doneCount)) payload.doneCount = doneCount;
+
         try {
-          await setDoc(progressDocRef(uid), {
-            progress,
-            complete,
-            updatedAt: Date.now()
-          }, { merge: true });
+          await setDoc(progressDocRef(uid), payload, { merge: true });
         } catch (_) {}
       }
 
@@ -992,7 +994,7 @@
               if (__currentUser) await saveLessonState(__currentUser.uid, __lessonState);
 
               const pct = computeProgressPct(__lessonState);
-              if (__currentUser) await saveLessonProgress(__currentUser.uid, pct);
+              if (__currentUser) await saveLessonProgress(__currentUser.uid, pct, { doneCount: __lessonState.partsDone.reduce((a,b)=>a+(b?1:0),0), partsTotal: parts.length });
 
               renderSidebar();
               await renderProgress();
@@ -1041,7 +1043,7 @@
           if (__currentUser) {
             await saveLessonState(__currentUser.uid, __lessonState);
             const pct = computeProgressPct(__lessonState);
-            await saveLessonProgress(__currentUser.uid, pct);
+            await saveLessonProgress(__currentUser.uid, pct, { doneCount: __lessonState.partsDone.reduce((a,b)=>a+(b?1:0),0), partsTotal: parts.length });
           }
 
           await render();
@@ -1125,7 +1127,7 @@
         if (__currentUser) {
           await saveLessonState(__currentUser.uid, __lessonState);
           const pct = computeProgressPct(__lessonState);
-          await saveLessonProgress(__currentUser.uid, pct);
+          await saveLessonProgress(__currentUser.uid, pct, { doneCount: __lessonState.partsDone.reduce((a,b)=>a+(b?1:0),0), partsTotal: parts.length });
         }
 
         await render();
@@ -1172,7 +1174,7 @@
 
         if (__currentUser) {
           const pct = computeProgressPct(__lessonState);
-          await saveLessonProgress(__currentUser.uid, pct);
+          await saveLessonProgress(__currentUser.uid, pct, { doneCount: __lessonState.partsDone.reduce((a,b)=>a+(b?1:0),0), partsTotal: parts.length });
         }
 
         await render();
