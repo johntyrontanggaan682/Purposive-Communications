@@ -1518,7 +1518,7 @@
   const rules = { riskInactiveDays: 7, riskProgressThreshold: 40, riskQuizFails: 3 };
 
   const LESSON_META = {
-    1: { title: "Lesson 1: Communication Principles and Ethics", parts: 4 },
+    1: { title: "Lesson 1: Communication Principles and Ethics", parts: 7 },
     2: { title: "Lesson 2: Local and Global Communication in Multicultural Settings", parts: 2 },
     3: { title: "Lesson 3: Evaluating Messages and Images of Different Text Types", parts: 2 },
     4: { title: "Lesson 4: The Rise of New Media and Technology Aids in Communication", parts: 2 },
@@ -1706,10 +1706,27 @@
     [1, 4].forEach((n) => {
       const lKey = `lesson${n}`;
       const st = lessonById[lKey] || {};
-      const fileName = String(st.assessmentFile || "").trim();
-      if (!fileName) return;
       const submittedAt = msToISO(tsToMs(st.updatedAt) || Date.now());
-      submissions.push({ lesson: n, fileName, submittedAt, size: 0 });
+
+      const beforeCount = submissions.length;
+
+      // Lesson 1 can have per-task submissions (taskFiles) instead of a single assessmentFile
+      if (n === 1 && st.taskFiles && typeof st.taskFiles === "object") {
+        const tf = st.taskFiles || {};
+        const map = { task1: "Task 1", task2: "Task 2", task3: "Task 3", task4: "Task 4" };
+        Object.entries(map).forEach(([k, label]) => {
+          const fn = String(tf[k] || "").trim();
+          if (!fn) return;
+          submissions.push({ lesson: n, fileName: `${label}: ${fn}`, submittedAt, size: 0 });
+        });
+      }
+
+      // Fallback: old single-file submission
+      if (submissions.length === beforeCount) {
+        const fileName = String(st.assessmentFile || "").trim();
+        if (!fileName) return;
+        submissions.push({ lesson: n, fileName, submittedAt, size: 0 });
+      }
     });
     submissions.sort((a, b) => String(b.submittedAt || "").localeCompare(String(a.submittedAt || "")));
 
