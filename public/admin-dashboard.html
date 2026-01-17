@@ -452,13 +452,13 @@
                       <p><span class="text-slate-500">Applied:</span> <span id="detailApplied">—</span></p>
                     </div>
 
-                    <!-- ✅ Delete teacher (creates lockedAccounts tombstone then deletes users doc) -->
+                    <!-- ✅ Delete teacher = Unassign + Lock (sets lockedAccounts tombstone + locks users doc) -->
                     <button id="deleteTeacherBtn"
                       class="hidden mt-4 w-full inline-flex items-center justify-center rounded-xl bg-rose-600 px-4 py-2.5 text-sm font-extrabold text-white shadow-softer hover:bg-rose-700 focus:outline-none focus:ring-4 focus:ring-rose-200 active:scale-[.98] transition">
                       Delete Teacher
                     </button>
                     <p id="deleteHint" class="hidden mt-2 text-xs font-semibold text-slate-500">
-                      This deletes the teacher document and sends them to locked.html on next login.
+                      This unassigns & locks the teacher account and sends them to locked.html on next login.
                     </p>
                   </div>
 
@@ -538,7 +538,7 @@
           Delete Teacher
         </button>
         <p id="mDeleteHint" class="hidden mt-2 text-xs font-semibold text-slate-500">
-          This deletes the teacher document and sends them to locked.html on next login.
+          This unassigns & locks the teacher account and sends them to locked.html on next login.
         </p>
 
         <span id="mDetailUid" class="hidden"></span>
@@ -549,7 +549,7 @@
   <script type="module">
     import { auth, db } from "./firebase.js";
     import { onAuthStateChanged, signOut as firebaseSignOut, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-    import { collection, query, where, doc, getDoc, onSnapshot, updateDoc, serverTimestamp, deleteDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+    import { collection, query, where, doc, getDoc, onSnapshot, updateDoc, serverTimestamp, deleteDoc, setDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
     // Session-only persistence
     try { await setPersistence(auth, browserSessionPersistence); } catch (_) {}
@@ -759,63 +759,106 @@
 
     function norm(s) { return String(s || "").toLowerCase().trim(); }
 
-    // ✅ Delete: create tombstone in lockedAccounts then delete users doc
-    
+    // ✅ Delete/Unassign: lock teacher account + move to locked.html with reason
+    // - Creates/updates /lockedAccounts/{uid} (tombstone)
+    // - Updates /users/{uid} to: role:"student", locked:true, lockedReason:"..." (so existing lock redirects work)
+    async function deleteTeacher(uid) {
+      const t = allTeachers.find(x => String(x.__id) === String(uid));
+      if (!t) return;
 
-    // ✅ Delete: create tombstone in lockedAccounts then delete users doc
-async function deleteTeacher(uid) {
-  const t = allTeachers.find(x => String(x.__id) === String(uid));
-  if (!t) return;
+      if (String(t.role || "").toLowerCase().trim() !== "teacher") {
+        alert("This record is not a teacher.");
+        return;
+      }
 
-  if (String(t.role || "").toLowerCase().trim() !== "teacher") {
-    alert("This record is not a teacher.");
-    return;
-  }
+      const name = String(t.fullName || "Teacher").trim() || "Teacher";
 
-  const name = String(t.fullName || "Teacher").trim() || "Teacher";
-  const ok = confirm(
-    `Delete ${name}?\n\nThis will DELETE the teacher document from Firestore.\nThey will be redirected to locked.html on next login.\n\nThis action cannot be undone.`
-  );
-  if (!ok) return;
+      // Choose mode (suspension vs deleted)
+      const modeRaw = prompt('Type "suspension" or "deleted"', 'deleted');
+      const mode = String(modeRaw || 'deleted').toLowerCase().trim().startsWith('s') ? 'suspension' : 'deleted';
 
-  try {
-    await setDoc(doc(db, "lockedAccounts", uid), {
-      locked: true,
-      role: "teacher",
-      reason: "Your teacher account was removed by the admin.",
-      lockedAt: serverTimestamp(),
-      lockedBy: auth.currentUser?.uid || null
-    }, { merge: true });
+      const defaultReason = mode === 'suspension'
+        ? 'Your teacher account was suspended by the admin.'
+        : 'Your teacher account was deleted by the admin.';
 
-    await deleteDoc(doc(db, "users", uid));
+      const reasonRaw = prompt('Reason shown on locked page:', defaultReason);
+      const reason = String(reasonRaw || defaultReason).trim() || defaultReason;
 
-    showToast("Deleted", "Teacher removed. They will see locked page on next login.");
+      const ok = confirm(
+        `Unassign ${name}?
 
-    selectedTeacherId = null;
-    detailBody?.classList.add("hidden");
-    detailEmpty?.classList.remove("hidden");
-    detailPill?.classList.add("hidden");
-    setDeleteVisibility(false);
+Mode: ${mode.toUpperCase()}
 
-    closeTeacherModal();
-  } catch (e) {
-    console.error(e);
-    alert(e?.message || "Delete failed. Check Firestore rules.");
-  }
-}
+They will be sent to locked.html on next login with the reason you entered.
 
-deleteTeacherBtn?.addEventListener("click", () => {
-  const uid = detailUid?.textContent?.trim();
-  if (!uid || uid === "—") return;
-  deleteTeacher(uid);
-});
+This removes teacher access and hides them from the Teachers list.`
+      );
+      if (!ok) return;
 
-mDeleteTeacherBtn?.addEventListener("click", () => {
-  const uid = mDetailUid?.textContent?.trim();
-  if (!uid || uid === "—") return;
-  deleteTeacher(uid);
-});
+      try {
+        // Tombstone prevents recreating users doc after removal
+        await setDoc(doc(db, "lockedAccounts", uid), {
+          locked: true,
+          role: "teacher",
+          action: mode,
+          reason,
+          lockedAt: serverTimestamp(),
+          lockedBy: auth.currentUser?.uid || null
+        }, { merge: true });
 
+        // Soft-delete / unassign teacher: keep doc but remove teacher role and lock
+        await updateDoc(doc(db, "users", uid), {
+          role: "student",
+          approved: false,
+          approvalStatus: mode,
+          locked: true,
+          lockedReason: reason,
+          lockedAt: serverTimestamp(),
+          unassignedReason: mode,
+          unassignedAt: serverTimestamp(),
+          updatedAt: serverTimestamp()
+        });
+
+
+        // Optional: deactivate any class codes owned by this teacher (prevents new joins)
+        try {
+          const codesSnap = await getDocs(query(collection(db, "classCodes"), where("teacherUid", "==", uid)));
+          const tasks = codesSnap.docs.map(s => updateDoc(s.ref, {
+            active: false,
+            revoked: true,
+            revokedReason: mode,
+            revokedAt: serverTimestamp(),
+            updatedAt: serverTimestamp()
+          }));
+          await Promise.all(tasks);
+        } catch (_) {}
+
+        showToast(mode === 'suspension' ? 'Suspended' : 'Removed', 'They will see locked page on next login.');
+
+        selectedTeacherId = null;
+        detailBody?.classList.add("hidden");
+        detailEmpty?.classList.remove("hidden");
+        detailPill?.classList.add("hidden");
+        setDeleteVisibility(false);
+
+        closeTeacherModal();
+      } catch (e) {
+        console.error(e);
+        alert(e?.message || "Action failed. Check Firestore rules.");
+      }
+    }
+
+    deleteTeacherBtn?.addEventListener("click", () => {
+      const uid = detailUid?.textContent?.trim();
+      if (!uid || uid === "—") return;
+      deleteTeacher(uid);
+    });
+
+    mDeleteTeacherBtn?.addEventListener("click", () => {
+      const uid = mDetailUid?.textContent?.trim();
+      if (!uid || uid === "—") return;
+      deleteTeacher(uid);
+    });
 
     function setTeacherDetails(t) {
       if (!t) return;
