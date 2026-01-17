@@ -452,13 +452,13 @@
                       <p><span class="text-slate-500">Applied:</span> <span id="detailApplied">—</span></p>
                     </div>
 
-                    <!-- ✅ ADMIN DELETE (always allowed for teachers) -->
+                    <!-- ✅ Delete teacher (creates lockedAccounts tombstone then deletes users doc) -->
                     <button id="deleteTeacherBtn"
                       class="hidden mt-4 w-full inline-flex items-center justify-center rounded-xl bg-rose-600 px-4 py-2.5 text-sm font-extrabold text-white shadow-softer hover:bg-rose-700 focus:outline-none focus:ring-4 focus:ring-rose-200 active:scale-[.98] transition">
                       Delete Teacher
                     </button>
                     <p id="deleteHint" class="hidden mt-2 text-xs font-semibold text-slate-500">
-                      This deletes the teacher document from Firestore.
+                      This deletes the teacher document and sends them to locked.html on next login.
                     </p>
                   </div>
 
@@ -466,7 +466,6 @@
                 </div>
               </aside>
             </div>
-
           </div>
         </section>
 
@@ -534,13 +533,12 @@
           <p><span class="text-slate-500">Applied:</span> <span id="mDetailApplied">—</span></p>
         </div>
 
-        <!-- ✅ ADMIN DELETE (always allowed for teachers) -->
         <button id="mDeleteTeacherBtn"
           class="hidden mt-5 w-full inline-flex items-center justify-center rounded-xl bg-rose-600 px-4 py-2.5 text-sm font-extrabold text-white shadow-softer hover:bg-rose-700 focus:outline-none focus:ring-4 focus:ring-rose-200 active:scale-[.98] transition">
           Delete Teacher
         </button>
         <p id="mDeleteHint" class="hidden mt-2 text-xs font-semibold text-slate-500">
-          This deletes the teacher document from Firestore.
+          This deletes the teacher document and sends them to locked.html on next login.
         </p>
 
         <span id="mDetailUid" class="hidden"></span>
@@ -551,7 +549,7 @@
   <script type="module">
     import { auth, db } from "./firebase.js";
     import { onAuthStateChanged, signOut as firebaseSignOut, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-    import { collection, query, where, doc, getDoc, onSnapshot, updateDoc, serverTimestamp, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+    import { collection, query, where, doc, getDoc, onSnapshot, updateDoc, serverTimestamp, deleteDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
     // Session-only persistence
     try { await setPersistence(auth, browserSessionPersistence); } catch (_) {}
@@ -718,7 +716,7 @@
     function openTeacherModal() {
       if (!teacherDetailModal) return;
       teacherDetailModal.classList.remove("sheet-hidden");
-      void teacherDetailModal.offsetWidth; // reflow
+      void teacherDetailModal.offsetWidth;
       teacherDetailModal.classList.add("sheet-open");
       document.body.classList.add("overflow-hidden");
     }
@@ -742,7 +740,6 @@
       el.classList.remove("hidden");
     }
 
-    // ✅ Always show delete buttons when a teacher is selected
     function setDeleteVisibility(show) {
       deleteTeacherBtn?.classList.toggle("hidden", !show);
       deleteHint?.classList.toggle("hidden", !show);
@@ -750,11 +747,23 @@
       mDeleteHint?.classList.toggle("hidden", !show);
     }
 
+    function tsToText(ts) {
+      if (!ts) return "—";
+      if (typeof ts === "object" && ts.seconds) {
+        const d = new Date(ts.seconds * 1000);
+        return d.toLocaleString();
+      }
+      if (typeof ts === "number") return new Date(ts).toLocaleString();
+      return String(ts);
+    }
+
+    function norm(s) { return String(s || "").toLowerCase().trim(); }
+
+    // ✅ Delete: create tombstone in lockedAccounts then delete users doc
     async function deleteTeacher(uid) {
       const t = allTeachers.find(x => String(x.__id) === String(uid));
       if (!t) return;
 
-      // Extra safety: only delete teacher docs
       if (String(t.role || "").toLowerCase().trim() !== "teacher") {
         alert("This record is not a teacher.");
         return;
@@ -762,15 +771,23 @@
 
       const name = String(t.fullName || "Teacher").trim() || "Teacher";
       const ok = confirm(
-        `Delete ${name}?\n\nThis will DELETE the teacher document from Firestore.\nThis action cannot be undone.`
+        `Delete ${name}?\n\nThis will DELETE the teacher document from Firestore.\nThey will be redirected to locked.html on next login.\n\nThis action cannot be undone.`
       );
       if (!ok) return;
 
       try {
-        await deleteDoc(doc(db, "users", uid));
-        showToast("Deleted", "Teacher has been deleted.");
+        await setDoc(doc(db, "lockedAccounts", uid), {
+          locked: true,
+          role: "teacher",
+          reason: "Your teacher account was removed by the admin.",
+          lockedAt: serverTimestamp(),
+          lockedBy: auth.currentUser?.uid || null
+        }, { merge: true });
 
-        // Clear UI
+        await deleteDoc(doc(db, "users", uid));
+
+        showToast("Deleted", "Teacher removed. They will see locked page on next login.");
+
         selectedTeacherId = null;
         detailBody?.classList.add("hidden");
         detailEmpty?.classList.remove("hidden");
@@ -796,18 +813,6 @@
       deleteTeacher(uid);
     });
 
-    function tsToText(ts) {
-      if (!ts) return "—";
-      if (typeof ts === "object" && ts.seconds) {
-        const d = new Date(ts.seconds * 1000);
-        return d.toLocaleString();
-      }
-      if (typeof ts === "number") return new Date(ts).toLocaleString();
-      return String(ts);
-    }
-
-    function norm(s) { return String(s || "").toLowerCase().trim(); }
-
     function setTeacherDetails(t) {
       if (!t) return;
 
@@ -819,7 +824,6 @@
       const appliedAt = tsToText(t.appliedAt || t.createdAt);
       const uid = t.__id || "";
 
-      // Desktop panel
       detailEmpty?.classList.add("hidden");
       detailBody?.classList.remove("hidden");
       setPillText(detailPill, status);
@@ -831,7 +835,6 @@
       if (detailApplied) detailApplied.textContent = appliedAt || "—";
       if (detailUid) detailUid.textContent = uid || "—";
 
-      // Mobile modal
       if (mDetailName) mDetailName.textContent = name;
       if (mDetailEmail) mDetailEmail.textContent = email || "—";
       if (mDetailTeacherId) mDetailTeacherId.textContent = tid || "—";
@@ -848,7 +851,6 @@
         else mDetailPill.classList.add("bg-amber-100","text-amber-800");
       }
 
-      // ✅ show delete buttons
       setDeleteVisibility(true);
     }
 
@@ -1092,7 +1094,6 @@
       console.error(err);
       alert(err?.message || "Failed to load teachers. Check Firestore rules / indexes.");
     });
-
   </script>
 </body>
 </html>
