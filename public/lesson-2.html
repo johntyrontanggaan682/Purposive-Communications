@@ -233,7 +233,7 @@
               Local and Global Communication in Multicultural Settings
             </h1>
             <p class="mt-3 max-w-3xl text-white/85">
-              Part 1 (Lesson/Module) • Part 2 (Assessment — MCQ) • Part 3 (Assessment) • Part 4 (Assessment) • Part 5 (Task Submission)
+              Part 1 (Lesson/Module) • Task 1 (MCQ) • Task 2 (MCQ) • Task 3 (MCQ) • Task 4 (File Submission)
             </p>
           </div>
 
@@ -533,15 +533,15 @@
       // Part 2 (MCQ)
       const mcqQuiz = [
         { q: "Which style is highly assertive but less expressive?", options: ["Spirited", "Direct", "Considerate", "Systematic"], answer: 1 },
-        { q: "A team leader motivating workers before a deadline shows which style?", options: ["Spirited", "Systematic", "Direct", "Considerate"], answer: 0 },
+        { q: "A team leader motivating workers before a big project deadline shows which style?", options: ["Spirited", "Systematic", "Direct", "Considerate"], answer: 0 },
         { q: "A technician carefully documenting safety checks is using which style?", options: ["Considerate", "Systematic", "Spirited", "Direct"], answer: 1 },
-        { q: "A junior intern politely suggesting improvements shows which style?", options: ["Spirited", "Considerate", "Direct", "Systematic"], answer: 1 },
+        { q: "A junior intern politely suggesting improvements to a supervisor shows which style?", options: ["Spirited", "Considerate", "Direct", "Systematic"], answer: 1 },
         { q: "Which style combines high expressiveness and high assertiveness?", options: ["Spirited", "Direct", "Considerate", "Systematic"], answer: 0 },
-        { q: "Which register is used in professional/academic/business writing?", options: ["Casual", "Formal", "Intimate", "Frozen"], answer: 1 },
-        { q: "An excerpt from a safety manual that does not change over time is which register?", options: ["Frozen", "Casual", "Intimate", "Consultative"], answer: 0 },
-        { q: "Speaking with an instructor asking advice is which register?", options: ["Consultative", "Casual", "Formal", "Intimate"], answer: 0 },
-        { q: "Avoid forming expectations based only on your own culture is part of improving…", options: ["Stereotyping", "Intercultural communication", "Jargon use", "Noise filtering"], answer: 1 },
-        { q: "Removing personal biases and stereotypes helps improve…", options: ["Misunderstanding", "Intercultural communication", "Frozen register", "Pidgin"], answer: 1 },
+        { q: "Which style combines low expressiveness and high assertiveness?", options: ["Spirited", "Direct", "Considerate", "Systematic"], answer: 1 },
+        { q: "Which style combines high expressiveness and low assertiveness?", options: ["Spirited", "Direct", "Considerate", "Systematic"], answer: 2 },
+        { q: "Which style combines low expressiveness and low assertiveness?", options: ["Spirited", "Direct", "Considerate", "Systematic"], answer: 3 },
+        { q: "In automotive service, a mechanic giving step-by-step repair instructions is showing which style?", options: ["Spirited", "Direct", "Considerate", "Systematic"], answer: 1 },
+        { q: "In electronics, a student enthusiastically sharing ideas but sometimes going off-topic is showing which style?", options: ["Spirited", "Direct", "Considerate", "Systematic"], answer: 0 },
       ];
 
       // Part 3 (Task 2)
@@ -650,21 +650,39 @@
 
       // Part 4 (Task 3)
       const registerAssessment = [
-        { qHtml: `1. Email Excerpt\n"Dear Supplier, Kindly send us the updated quotation for the automotive spare parts by Monday. Thank you."`, options: ["A. Casual","B. Formal","C. Consultative","D. Frozen"], answer: 1 },
-        { qHtml: `2. Chat Message\n"Bro, can you help me fix the welding machine later? I’ll treat you to snacks after."`, options: ["A. Casual","B. Formal","C. Intimate","D. Consultative"], answer: 0 },
-        { qHtml: `3. Private Conversation\n"Good luck on your demo tomorrow. I know you’ll do great—I’m proud of you."`, options: ["A. Intimate","B. Casual","C. Formal","D. Frozen"], answer: 0 },
-        { qHtml: `4. Excerpt from Safety Manual\n"All personnel must wear protective equipment at all times inside the laboratory, without exception."`, options: ["A. Frozen","B. Formal","C. Consultative","D. Casual"], answer: 0 },
-        { qHtml: `5. Dialogue with Instructor\n👩 Instructor: “What’s your plan for troubleshooting this circuit?”\n👨 Student: “Ma’am, I’ll check the voltage first, then test the connections. Do you think that’s correct?”`, options: ["A. Consultative","B. Casual","C. Formal","D. Intimate"], answer: 0 },
-        { qHtml: `6. Business Letter\n"To Whom It May Concern: This letter serves as confirmation of your internship placement in the Mechanical Technology Department."`, options: ["A. Formal","B. Casual","C. Frozen","D. Consultative"], answer: 0 },
-        { qHtml: `7. Group Chat\n"Guys, let’s meet at the workshop at 8 AM tomorrow. Don’t be late, okay?"`, options: ["A. Casual","B. Formal","C. Consultative","D. Frozen"], answer: 0 },
-        { qHtml: `8. Romantic Note\n"I kept the circuit diagram you drew for me—it reminds me of how much you support me."`, options: ["A. Intimate","B. Casual","C. Formal","D. Frozen"], answer: 0 },
-        { qHtml: `9. Excerpt from Constitution\n"The State shall protect and promote the right of all citizens to quality education at all levels."`, options: ["A. Frozen","B. Formal","C. Consultative","D. Casual"], answer: 0 },
-        { qHtml: `10. Conversation with Doctor\n👨 Student: “Doc, I’ve been feeling dizzy after long hours in the automotive shop.”\n👩 Doctor: “That may be due to fumes. I recommend wearing a mask and taking breaks.”`, options: ["A. Consultative","B. Formal","C. Casual","D. Intimate"], answer: 0 },
-        { qHtml: `11. Internship Report\n"This report summarizes the maintenance procedures performed on the lathe machine during the second quarter."`, options: ["A. Formal","B. Casual","C. Frozen","D. Intimate"], answer: 0 },
-        { qHtml: `12. Friendly Text\n"Hey, can you lend me your soldering iron? I’ll return it tomorrow."`, options: ["A. Casual","B. Formal","C. Consultative","D. Frozen"], answer: 0 },
-        { qHtml: `13. Wedding Message\n"I’m so happy you’re here to celebrate with me—it means a lot."`, options: ["A. Intimate","B. Casual","C. Formal","D. Frozen"], answer: 0 },
-        { qHtml: `14. Laboratory Safety Code\n"No student shall operate equipment without prior clearance from the laboratory supervisor."`, options: ["A. Frozen","B. Formal","C. Consultative","D. Casual"], answer: 0 },
-        { qHtml: `15. Career Guidance Session\n👩 Counselor: “What specialization are you considering in electronics technology?”\n👨 Student: “I’m leaning toward robotics. Do you think that’s a good fit for me?”`, options: ["A. Consultative","B. Casual","C. Formal","D. Intimate"], answer: 0 },
+        { qHtml: `1. Email Excerpt
+"Dear Supplier, Kindly send us the updated quotation for the automotive spare parts by Monday. Thank you."`, options: ["A. Casual","B. Formal","C. Consultative","D. Frozen"], answer: 1 },
+        { qHtml: `2. Chat Message
+"Bro, can you help me fix the welding machine later? I’ll treat you to snacks after."`, options: ["A. Casual","B. Formal","C. Intimate","D. Consultative"], answer: 0 },
+        { qHtml: `3. Private Conversation
+"Good luck on your demo tomorrow. I know you’ll do great—I’m proud of you."`, options: ["A. Intimate","B. Casual","C. Formal","D. Frozen"], answer: 0 },
+        { qHtml: `4. Excerpt from Safety Manual
+"All personnel must wear protective equipment at all times inside the laboratory, without exception."`, options: ["A. Frozen","B. Formal","C. Consultative","D. Casual"], answer: 0 },
+        { qHtml: `5. Dialogue with Instructor
+👩 Instructor: “What’s your plan for troubleshooting this circuit?”
+👨 Student: “Ma’am, I’ll check the voltage first, then test the connections. Do you think that’s correct?”`, options: ["A. Consultative","B. Casual","C. Formal","D. Intimate"], answer: 0 },
+        { qHtml: `6. Business Letter
+"To Whom It May Concern: This letter serves as confirmation of your internship placement in the Mechanical Technology Department."`, options: ["A. Formal","B. Casual","C. Frozen","D. Consultative"], answer: 0 },
+        { qHtml: `7. Group Chat
+"Guys, let’s meet at the workshop at 8 AM tomorrow. Don’t be late, okay?"`, options: ["A. Casual","B. Formal","C. Consultative","D. Frozen"], answer: 0 },
+        { qHtml: `8. Romantic Note
+"I kept the circuit diagram you drew for me—it reminds me of how much you support me."`, options: ["A. Intimate","B. Casual","C. Formal","D. Frozen"], answer: 0 },
+        { qHtml: `9. Excerpt from Constitution
+"The State shall protect and promote the right of all citizens to quality education at all levels."`, options: ["A. Frozen","B. Formal","C. Consultative","D. Casual"], answer: 0 },
+        { qHtml: `10. Conversation with Doctor
+👨 Student: “Doc, I’ve been feeling dizzy after long hours in the automotive shop.”
+👩 Doctor: “That may be due to fumes. I recommend wearing a mask and taking breaks.”`, options: ["A. Consultative","B. Formal","C. Casual","D. Intimate"], answer: 0 },
+        { qHtml: `11. Internship Report
+"This report summarizes the maintenance procedures performed on the lathe machine during the second quarter."`, options: ["A. Formal","B. Casual","C. Frozen","D. Intimate"], answer: 0 },
+        { qHtml: `12. Friendly Text
+"Hey, can you lend me your soldering iron? I’ll return it tomorrow."`, options: ["A. Casual","B. Formal","C. Consultative","D. Frozen"], answer: 0 },
+        { qHtml: `13. Wedding Message
+"I’m so happy you’re here to celebrate with me—it means a lot."`, options: ["A. Intimate","B. Casual","C. Formal","D. Frozen"], answer: 0 },
+        { qHtml: `14. Laboratory Safety Code
+"No student shall operate equipment without prior clearance from the laboratory supervisor."`, options: ["A. Frozen","B. Formal","C. Consultative","D. Casual"], answer: 0 },
+        { qHtml: `15. Career Guidance Session
+👩 Counselor: “What specialization are you considering in electronics technology?”
+👨 Student: “I’m leaning toward robotics. Do you think that’s a good fit for me?”`, options: ["A. Consultative","B. Casual","C. Formal","D. Intimate"], answer: 0 },
       ];
 
       const parts = [
@@ -708,31 +726,31 @@
           `,
         },
         {
-          title: "Part 2 — Assessment (Multiple Choice)",
-          subtitle: "Answer the questions. Passing score: 70%.",
+          title: "Task 1 — Assessment (MCQ: Communication Styles)",
+          subtitle: "Answer the questions. Submit anytime — your score will be saved.",
           type: "quiz",
           quizTitle: "Assessment",
           quizSubtitle: "Select the best answer for each item, then submit.",
           data: mcqQuiz
         },
         {
-          title: "Part 3 — Assessment (Communication Styles)",
-          subtitle: "Task 2: Choose the best response showing the correct communication style. Passing score: 70%.",
+          title: "Task 2 — Assessment (MCQ: Style Responses)",
+          subtitle: "Task 2: Choose the best response showing the correct communication style. Submit anytime — your score will be saved.",
           type: "quiz",
           quizTitle: "Task 2",
           quizSubtitle: "Look at the conversations and choose the best response from the options.",
           data: styleAssessment
         },
         {
-          title: "Part 4 — Assessment (Language Registers)",
-          subtitle: "Task 3: Choose the correct language register. Passing score: 70%.",
+          title: "Task 3 — Assessment (MCQ: Language Registers)",
+          subtitle: "Task 3: Choose the correct language register. Submit anytime — your score will be saved.",
           type: "quiz",
           quizTitle: "Task 3",
           quizSubtitle: "Read each sample message and choose the correct language register.",
           data: registerAssessment
         },
         {
-          title: "Part 5 — Assessment (Task Submission — Upload Video)",
+          title: "Task 4 — Video Submission (Upload File)",
           subtitle: "Task 4: Upload your 3–5 minute video output for the multicultural scenario.",
           type: "upload",
           html: `
@@ -836,7 +854,7 @@
       }
 
       function defaultLessonState() {
-        return { partsDone: parts.map(() => false), quizAnswers: {}, task4VideoFile: "" };
+        return { partsDone: parts.map(() => false), quizAnswers: {}, quizScores: {}, task4VideoFile: "" };
       }
 
       function normalizeQuizAnswers(raw) {
@@ -890,7 +908,8 @@
           const partsDone = parts.map((_, i) => !!arr[i]);
 
           const qa = normalizeQuizAnswers(d.quizAnswers);
-          return { partsDone, quizAnswers: qa, task4VideoFile: (d.task4VideoFile || "") };
+          const qs = (d.quizScores && typeof d.quizScores === 'object') ? d.quizScores : {};
+          return { partsDone, quizAnswers: qa, quizScores: qs, task4VideoFile: (d.task4VideoFile || "") };
         } catch (_) {
           return defaultLessonState();
         }
@@ -904,6 +923,7 @@
 
         // Keep any lesson-specific fields
         if (state.quizAnswers !== undefined) payload.quizAnswers = state.quizAnswers || {};
+        if (state.quizScores !== undefined) payload.quizScores = state.quizScores || {};
         if (state.task4VideoFile !== undefined) payload.task4VideoFile = state.task4VideoFile || "";
 
         // Try subcollection first
@@ -1057,24 +1077,24 @@
             const score = Math.round((correct / quizData.length) * 100);
             const result = document.getElementById(`quizResult_${partIdx}`);
 
-            if (score >= PASSING) {
-              result.innerHTML = `Score: ${score}% — Passed <span class="material-symbols-rounded align-middle text-emerald-600 text-[18px] leading-none ml-1">check_circle</span> <span class="text-brand-800">(Part Completed)</span>`;
-              result.className = "text-sm font-extrabold text-brand-800";
+            // ✅ no passing required — always save score and mark completed
+            result.innerHTML = `Score: ${score}% <span class="text-slate-500">(saved)</span>`;
+            result.className = "text-sm font-extrabold text-brand-800";
 
-              __lessonState.partsDone[partIdx] = true;
-              if (__currentUser) await saveLessonState(__currentUser.uid, __lessonState);
+            // store score per part
+            __lessonState.quizScores = (__lessonState.quizScores && typeof __lessonState.quizScores === "object") ? __lessonState.quizScores : {};
+            __lessonState.quizScores[key] = { score, correct, total: quizData.length, updatedAt: Date.now() };
 
-              const pct = computeProgressPct(__lessonState);
-              if (__currentUser) await saveLessonProgress(__currentUser.uid, pct, { doneCount: __lessonState.partsDone.reduce((a,b)=>a+(b?1:0),0), partsTotal: parts.length });
+            __lessonState.partsDone[partIdx] = true;
+            if (__currentUser) await saveLessonState(__currentUser.uid, __lessonState);
 
-              renderSidebar();
-              await renderProgress();
-              pill(true);
-              renderPart();
-            } else {
-              result.textContent = `Score: ${score}% — Not passed (needs ${PASSING}%)`;
-              result.className = "text-sm font-extrabold text-red-600";
-            }
+            const pct = computeProgressPct(__lessonState);
+            if (__currentUser) await saveLessonProgress(__currentUser.uid, pct, { doneCount: __lessonState.partsDone.reduce((a,b)=>a+(b?1:0),0), partsTotal: parts.length });
+
+            renderSidebar();
+            await renderProgress();
+            pill(true);
+            renderPart();
           });
         }, 0);
 
