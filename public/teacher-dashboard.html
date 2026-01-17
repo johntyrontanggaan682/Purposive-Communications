@@ -707,6 +707,7 @@
           modal.classList.add("hidden");
           document.body.classList.remove("overflow-hidden");
 
+<<<<<<< HEAD
           btnClose.removeEventListener("click", onCancel);
           btnCancel.removeEventListener("click", onCancel);
           btnConfirm.removeEventListener("click", onConfirm);
@@ -714,6 +715,349 @@
           modal.removeEventListener("click", onBackdrop);
 
           resolve(result);
+=======
+  const LESSON_META = {
+    1: { title: "Lesson 1: Communication Principles and Ethics", parts: 7 },
+    2: { title: "Lesson 2: Local and Global Communication in Multicultural Settings", parts: 2 },
+    3: { title: "Lesson 3: Evaluating Messages and Images of Different Text Types", parts: 2 },
+    4: { title: "Lesson 4: The Rise of New Media and Technology Aids in Communication", parts: 2 },
+  };
+
+  const QUIZ_ANSWER_KEYS = {
+    2: [1,0,1,1,0,1,0,0,1,1],
+    3: [1,2,1,0,2,1,1,1,1,2],
+  };
+
+  const GRADING_SCHEME = { rubricWeight: 0.7, quizWeight: 0.3 };
+
+  function safeJSON(v, fallback) { try { return JSON.parse(v); } catch { return fallback; } }
+  function relTimeFromTs(ts) {
+    const n = Number(ts || 0);
+    if (!n) return "—";
+    const diffMs = Date.now() - n;
+    const diffMin = Math.max(0, Math.floor(diffMs / 60000));
+    if (diffMin < 60) return `${diffMin || 1} minutes ago`;
+    const diffHr = Math.floor(diffMin / 60);
+    if (diffHr < 24) return `${diffHr} hours ago`;
+    const diffDay = Math.floor(diffHr / 24);
+    return `${diffDay} days ago`;
+  }
+  function initials(name) {
+    return String(name || "").split(/\s+/).slice(0,2).map(x => x[0]).join("").toUpperCase() || "—";
+  }
+  function clamp(n, a, b){ return Math.min(Math.max(n, a), b); }
+  function fmtDateTime(iso) {
+    if (!iso) return "—";
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return "—";
+    return d.toLocaleString(undefined, { year:"numeric", month:"short", day:"2-digit", hour:"2-digit", minute:"2-digit" });
+  }
+  function parseRelativeToDays(rel) {
+    const s = String(rel || "").toLowerCase().trim();
+    const m = s.match(/(\d+)\s*(minute|minutes|hour|hours|day|days)/);
+    if (!m) return 0;
+    const n = Number(m[1]);
+    const unit = m[2];
+    if (unit.startsWith("day")) return n;
+    return 0;
+  }
+
+  function statusPill(status) { return status === "Active" ? "bg-emerald-100 text-emerald-800" : "bg-slate-100 text-slate-700"; }
+  function statePill(state) {
+    switch (state) {
+      case "Completed": return "bg-emerald-100 text-emerald-800";
+      case "In progress": return "bg-orange-100 text-orange-800";
+      case "Needs revision": return "bg-rose-100 text-rose-800";
+      default: return "bg-slate-100 text-slate-700";
+    }
+  }
+  function assessPill(status) {
+    if (status === "Submitted" || status === "Resubmitted") return "bg-emerald-100 text-emerald-800";
+    if (status === "Under review") return "bg-sky-100 text-sky-800";
+    if (status === "Needs revision") return "bg-orange-100 text-orange-800";
+    if (status === "Graded") return "bg-slate-900 text-white";
+    return "bg-slate-100 text-slate-700";
+  }
+  function rubricTotals(rubric) {
+    const vals = ["clarity","audience","tone","organization","grammar","purpose"].map(k => Number(rubric?.[k] || 0));
+    const raw = vals.reduce((a,b)=>a+b,0);
+    const max = 60;
+    const pct = Math.round((raw / max) * 100);
+    return { raw, max, pct };
+  }
+  function letterFromGrade(g) {
+    const n = clamp(Math.round(Number(g) || 0), 0, 100);
+    if (n >= 90) return "A";
+    if (n >= 80) return "B";
+    if (n >= 70) return "C";
+    if (n >= 60) return "D";
+    return "F";
+  }
+  function computeAutoFinalGrade(student, rubricPct) {
+    const quizAvg = Number(student?.quiz?.avgScore || 0);
+    const rw = Number(GRADING_SCHEME.rubricWeight || 0.7);
+    const qw = Number(GRADING_SCHEME.quizWeight || 0.3);
+    const hasQuiz = quizAvg > 0;
+    const grade = hasQuiz
+      ? Math.round((Number(rubricPct || 0) * rw) + (quizAvg * qw))
+      : Math.round(Number(rubricPct || 0));
+    return clamp(grade, 0, 100);
+  }
+
+  // ==========================================================
+  // ✅ Students: avoid subcollection reads on list load (prevents permission error)
+  // ==========================================================
+  let __studentsLoadError = null;
+
+  function isPermissionError(e) {
+    const msg = String(e?.message || "").toLowerCase();
+    return msg.includes("missing or insufficient permissions") || msg.includes("permission-denied");
+  }
+
+  const tsToMs = (v) => {
+    if (!v) return 0;
+    if (typeof v === "number") return v;
+    if (v instanceof Date) return v.getTime();
+    if (typeof v === "object" && typeof v.toMillis === "function") return v.toMillis();
+    if (typeof v === "object" && typeof v.seconds === "number") return v.seconds * 1000;
+    return 0;
+  };
+  const msToISO = (ms) => (ms ? new Date(ms).toISOString() : "");
+
+  function makeDefaultLearning() {
+    const lessons = [1,2,3,4].map((n) => {
+      const meta = LESSON_META[n];
+      return {
+        key: `l${n}`,
+        title: meta?.title || `Lesson ${n}`,
+        pct: 0,
+        partsDone: 0,
+        partsTotal: meta?.parts || 0,
+        state: "Not started",
+        startedAt: "",
+        completedAt: "",
+        timeSpentMin: 0,
+      };
+    });
+
+    return {
+      lessons,
+      overallProgress: 0,
+      quiz: { avgScore: 0, attempts: 0, failedAttempts: 0, lastAttemptAt: "", byLesson: {} },
+      assessment: {
+        status: "Not started",
+        submittedAt: "",
+        reviewedAt: "",
+        gradedAt: "",
+        reviewer: "",
+        feedback: "",
+        submissions: [],
+        rubric: { clarity: 0, audience: 0, tone: 0, organization: 0, grammar: 0, purpose: 0 },
+      }
+    };
+  }
+
+  async function fetchStudentLearning(uid) {
+    const [progSnap, lessonSnap] = await Promise.all([
+      getDocs(collection(db, "users", uid, "progress")),
+      getDocs(collection(db, "users", uid, "lessons"))
+    ]);
+
+    const progressById = {};
+    progSnap.forEach(d => { progressById[d.id] = d.data() || {}; });
+
+    const lessonById = {};
+    lessonSnap.forEach(d => { lessonById[d.id] = d.data() || {}; });
+
+    const lessons = [1, 2, 3, 4].map((n) => {
+      const meta = LESSON_META[n];
+      const partsTotal = meta?.parts || 0;
+      const lKey = `lesson${n}`;
+      const lessonState = lessonById[lKey] || {};
+      const partsDoneArr = Array.isArray(lessonState.partsDone) ? lessonState.partsDone : [];
+      const partsDone = partsDoneArr.filter(Boolean).length;
+
+      const prog = progressById[lKey] || {};
+      const pctRaw = (prog.progress != null) ? prog.progress : (partsTotal ? Math.round((partsDone / partsTotal) * 100) : 0);
+      const pct = clamp(parseInt(pctRaw || 0, 10) || 0, 0, 100);
+
+      let state = "Not started";
+      if (pct === 100) state = "Completed";
+      else if (pct > 0) state = "In progress";
+
+      return {
+        key: `l${n}`,
+        title: meta?.title || `Lesson ${n}`,
+        pct,
+        partsDone,
+        partsTotal,
+        state,
+        startedAt: "",
+        completedAt: "",
+        timeSpentMin: 0,
+      };
+    });
+
+    const pctList = lessons.map(l => Number(l.pct || 0));
+    const overallProgress = pctList.length ? Math.round(pctList.reduce((a, b) => a + b, 0) / pctList.length) : 0;
+
+    const submissions = [];
+    [1, 4].forEach((n) => {
+      const lKey = `lesson${n}`;
+      const st = lessonById[lKey] || {};
+      const submittedAt = msToISO(tsToMs(st.updatedAt) || Date.now());
+
+      const beforeCount = submissions.length;
+
+      // Lesson 1 can have per-task submissions (taskFiles) instead of a single assessmentFile
+      if (n === 1 && st.taskFiles && typeof st.taskFiles === "object") {
+        const tf = st.taskFiles || {};
+        const map = { task1: "Task 1", task2: "Task 2", task3: "Task 3", task4: "Task 4" };
+        Object.entries(map).forEach(([k, label]) => {
+          const fn = String(tf[k] || "").trim();
+          if (!fn) return;
+          submissions.push({ lesson: n, fileName: `${label}: ${fn}`, submittedAt, size: 0 });
+        });
+      }
+
+      // Fallback: old single-file submission
+      if (submissions.length === beforeCount) {
+        const fileName = String(st.assessmentFile || "").trim();
+        if (!fileName) return;
+        submissions.push({ lesson: n, fileName, submittedAt, size: 0 });
+      }
+    });
+    submissions.sort((a, b) => String(b.submittedAt || "").localeCompare(String(a.submittedAt || "")));
+
+    const assessment = {
+      status: submissions.length ? "Submitted" : "Not started",
+      submittedAt: submissions[0]?.submittedAt || "",
+      reviewedAt: "",
+      gradedAt: "",
+      reviewer: "",
+      feedback: "",
+      submissions,
+      rubric: { clarity: 0, audience: 0, tone: 0, organization: 0, grammar: 0, purpose: 0 },
+    };
+
+    function scoreQuiz(lessonNumber) {
+      const key = `lesson${lessonNumber}`;
+      const st = lessonById[key] || {};
+      const ans = (st.quizAnswers && typeof st.quizAnswers === "object") ? st.quizAnswers : null;
+      const answerKey = QUIZ_ANSWER_KEYS[lessonNumber] || [];
+      const updatedAt = tsToMs(st.updatedAt) || 0;
+
+      if (!ans || !answerKey.length) {
+        return { submitted: false, score: 0, lastAttemptAt: updatedAt ? msToISO(updatedAt) : "" };
+      }
+
+      let correct = 0;
+      for (let i = 0; i < answerKey.length; i++) {
+        const v = (ans[i] != null) ? parseInt(ans[i], 10) : NaN;
+        if (v === answerKey[i]) correct++;
+      }
+      const score = Math.round((correct / answerKey.length) * 100);
+      const submitted = Object.keys(ans).length > 0;
+
+      return { submitted, score, lastAttemptAt: updatedAt ? msToISO(updatedAt) : "" };
+    }
+
+    const q2 = scoreQuiz(2);
+    const q3 = scoreQuiz(3);
+    const scoreVals = [q2, q3].filter(x => x.submitted).map(x => x.score);
+    const avgScore = scoreVals.length ? Math.round(scoreVals.reduce((a,b)=>a+b,0) / scoreVals.length) : 0;
+    const lastAttemptAt = [q2.lastAttemptAt, q3.lastAttemptAt].filter(Boolean).sort().slice(-1)[0] || "";
+
+    const quiz = { avgScore, attempts: scoreVals.length, failedAttempts: 0, lastAttemptAt, byLesson: { 2: q2, 3: q3 } };
+    return { lessons, overallProgress, assessment, quiz };
+  }
+
+  async function loadStudents() {
+    __studentsLoadError = null;
+
+    const saved = safeJSON(localStorage.getItem(STORAGE_KEY), []);
+    const savedList = Array.isArray(saved) ? saved : [];
+    const savedByEmail = new Map(savedList.map(s => [String(s?.email || "").toLowerCase(), s]));
+
+    async function fetchStudentsByQuery(qy) {
+      const snap = await getDocs(qy);
+      return snap.docs;
+    }
+
+    try {
+      const role = String(__ctx?.role || "teacher").toLowerCase().trim();
+      const isAdmin = role === "admin";
+
+      let docs = [];
+
+      if (isAdmin) {
+        docs = await fetchStudentsByQuery(query(collection(db, "users"), where("role", "==", "student")));
+      } else {
+        // 1) Primary: teacherUid
+        docs = await fetchStudentsByQuery(query(collection(db, "users"), where("teacherUid", "==", __teacherUid)));
+
+        // 2) Fallback: teacherCode
+        if ((!docs || !docs.length) && __teacherCode) {
+          docs = await fetchStudentsByQuery(query(collection(db, "users"), where("teacherCode", "==", __teacherCode)));
+        }
+
+        // 3) Fallback: teacherName (least ideal)
+        if ((!docs || !docs.length) && __teacherName) {
+          docs = await fetchStudentsByQuery(query(collection(db, "users"), where("teacherName", "==", __teacherName)));
+        }
+      }
+
+      const list = docs.map((d) => {
+        const data = d.data() || {};
+        const uid = d.id;
+
+        if (String(data.role || "").toLowerCase().trim() !== "student") return null;
+        const email = String(data.email || "").toLowerCase().trim();
+        const name = String(data.fullName || data.displayName || "Student").trim() || "Student";
+
+        // Raw fields (empty if missing) so we can hide unassigned/locked students visually
+        const courseRaw = String(data.course || "").trim();
+        const yearRaw = String(data.yearLevel || "").trim();
+        const sectionRaw = String(
+          data.section ||
+          data.sectionName ||
+          data.sectionLabel ||
+          data.classSection ||
+          ""
+        ).trim();
+
+        const course = courseRaw || "—";
+        const year = yearRaw || "—";
+        const id = String(data.studentId || `STU-${uid.slice(0, 6).toUpperCase()}`);
+        const section = sectionRaw || "—";
+
+        const locked = !!data.locked;
+        const classCodeDocId = String(data.classCodeDocId || "").trim();
+
+        // ✅ VISUAL REMOVAL:
+        // Hide students that were unassigned/locked after a section was deleted.
+        // (They keep their account, but won't appear in Student Monitoring.)
+        const isAssigned = !!classCodeDocId || (!!courseRaw && !!yearRaw && !!sectionRaw);
+        if (locked || !isAssigned) return null;
+
+        const lastSeenMs = tsToMs(data.lastSeenAt) || tsToMs(data.lastLoginAt) || 0;
+        const lastActive = relTimeFromTs(lastSeenMs);
+        const daysInactive = lastSeenMs ? Math.floor((Date.now() - lastSeenMs) / (24 * 60 * 60 * 1000)) : 9999;
+        const status = daysInactive <= rules.riskInactiveDays ? "Active" : "Inactive";
+
+        const def = makeDefaultLearning();
+
+        const s = {
+          uid, id, name, email, course, year, section,
+          lastActive, status,
+          progress: def.overallProgress,
+          lessons: def.lessons,
+          quiz: def.quiz,
+          assessment: def.assessment,
+
+          __learningLoaded: false,
+          __learningDenied: false,
+>>>>>>> a915c31bdaf8c60b52dac6432ef5dc765a6eb3c6
         };
 
         const onCancel = () => finish(false);

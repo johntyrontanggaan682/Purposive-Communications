@@ -206,8 +206,7 @@
             Communication Principles and Ethics
           </h1>
           <p class="mt-3 max-w-3xl text-white/85">
-            Parts: Principles of Effective Communication • Communication and Globalization • Ethics in Communication •
-            Assessment (File Submission)
+            Parts: Principles of Effective Communication • Communication and Globalization • Ethics in Communication • Tasks 1–4 (File Submission)
           </p>
         </div>
 
@@ -284,7 +283,7 @@
         </div>
 
         <p class="mt-4 text-xs text-slate-500">
-          Note: File submissions are stored in Firestore as a filename only (no upload storage yet).
+          Note: Each task submission is stored in Firestore as a filename only (no upload storage yet).
         </p>
       </section>
     </div>
@@ -528,9 +527,29 @@
     });
 
     // =====================
-    // Lesson 1: 4 Parts (Firestore per user)
+    // Lesson 1: Parts + Tasks (Firestore per user)
     // =====================
     const LESSON_NO = 1;
+
+    function uploadPartHtml(taskKey, taskTitle, taskBodyHtml) {
+      return `
+        <div class="rounded-2xl bg-slate-50 p-5 ring-1 ring-black/5">
+          <h3 class="text-lg font-extrabold text-slate-900">${taskTitle}</h3>
+          <div class="mt-3 space-y-3 text-sm text-slate-700">
+            ${taskBodyHtml}
+          </div>
+
+          <div class="mt-5">
+            <label class="block text-sm font-semibold text-slate-800">Upload your file</label>
+            <input id="fileInput-${taskKey}" type="file" class="mt-2 block w-full text-sm file:mr-4 file:rounded-xl file:border-0 file:bg-brand-600 file:px-4 file:py-2 file:text-white file:font-semibold hover:file:bg-brand-700" />
+            <button id="submitFileBtn-${taskKey}" class="mt-3 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800">
+              Submit File
+            </button>
+            <p id="fileStatus-${taskKey}" class="mt-2 text-xs text-slate-600"></p>
+          </div>
+        </div>
+      `;
+    }
 
     const parts = [
       {
@@ -623,57 +642,87 @@
             </div>
           `,
       },
+
+      // ✅ Tasks (each task has its own upload + saved filename)
       {
-        title: "Assessment — Task Submission (Upload File)",
-        subtitle: "Submit your output file for the assessment tasks provided in Lesson 1.",
+        title: "Task 1 — Forms of Communication (Upload File)",
+        subtitle: "Upload your output for Task 1.",
         type: "upload",
+        taskKey: "task1",
         showVideo: false,
-        html: `
-            <div class="rounded-2xl bg-slate-50 p-5 ring-1 ring-black/5">
-              <h3 class="text-lg font-extrabold text-slate-900">Assessment Tasks (Lesson 1)</h3>
-              <p class="mt-2 text-sm text-slate-600">
-                Prepare your output based on the tasks (Task 1–Task 4). Upload your file here (document/video link file, etc.).
-                This page stores the filename only.
+        html: uploadPartHtml(
+          "task1",
+          "Task 1 — Forms of Communication",
+          `
+            <div class="rounded-xl bg-white p-4 ring-1 ring-black/5">
+              <p class="font-semibold">Instructions</p>
+              <p class="mt-1">
+                Choose one technical topic and explain how you would use the four forms of communication; write a short message for a specific
+                audience; identify a barrier and how to overcome it.
               </p>
-
-              <div class="mt-4 space-y-3 text-sm text-slate-700">
-                <div class="rounded-xl bg-white p-4 ring-1 ring-black/5">
-                  <p class="font-semibold">Task 1</p>
-                  <p class="mt-1">
-                    Choose one technical topic and explain how you would use the four forms of communication; write a short message for a specific
-                    audience; identify a barrier and how to overcome it.
-                  </p>
-                </div>
-                <div class="rounded-xl bg-white p-4 ring-1 ring-black/5">
-                  <p class="font-semibold">Task 2</p>
-                  <p class="mt-1">
-                    Write a 5–7 sentence incident report demonstrating clarity, conciseness, completeness, organization, empathy, and flexibility.
-                  </p>
-                </div>
-                <div class="rounded-xl bg-white p-4 ring-1 ring-black/5">
-                  <p class="font-semibold">Task 3</p>
-                  <p class="mt-1">
-                    Create a 2–3 minute video presentation for an international audience; show adaptation for two audiences; include reflection.
-                  </p>
-                </div>
-                <div class="rounded-xl bg-white p-4 ring-1 ring-black/5">
-                  <p class="font-semibold">Task 4</p>
-                  <p class="mt-1">
-                    Write a formal workplace email (8–10 sentences) to a client about a project delay with honesty, transparency, respect, and confidentiality.
-                  </p>
-                </div>
-              </div>
-
-              <div class="mt-5">
-                <label class="block text-sm font-semibold text-slate-800">Upload your file</label>
-                <input id="fileInput" type="file" class="mt-2 block w-full text-sm file:mr-4 file:rounded-xl file:border-0 file:bg-brand-600 file:px-4 file:py-2 file:text-white file:font-semibold hover:file:bg-brand-700" />
-                <button id="submitFileBtn" class="mt-3 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800">
-                  Submit File
-                </button>
-                <p id="fileStatus" class="mt-2 text-xs text-slate-600"></p>
-              </div>
             </div>
-          `,
+          `
+        ),
+      },
+      {
+        title: "Task 2 — Incident Report (Upload File)",
+        subtitle: "Upload your output for Task 2.",
+        type: "upload",
+        taskKey: "task2",
+        showVideo: false,
+        html: uploadPartHtml(
+          "task2",
+          "Task 2 — Incident Report",
+          `
+            <div class="rounded-xl bg-white p-4 ring-1 ring-black/5">
+              <p class="font-semibold">Instructions</p>
+              <p class="mt-1">
+                Write a 5–7 sentence incident report demonstrating clarity, conciseness, completeness, organization, empathy, and flexibility.
+              </p>
+            </div>
+          `
+        ),
+      },
+      {
+        title: "Task 3 — Video Presentation (Upload File)",
+        subtitle: "Upload your output for Task 3.",
+        type: "upload",
+        taskKey: "task3",
+        showVideo: false,
+        html: uploadPartHtml(
+          "task3",
+          "Task 3 — Video Presentation",
+          `
+            <div class="rounded-xl bg-white p-4 ring-1 ring-black/5">
+              <p class="font-semibold">Instructions</p>
+              <p class="mt-1">
+                Create a 2–3 minute video presentation for an international audience; show adaptation for two audiences; include reflection.
+              </p>
+              <p class="mt-2 text-xs text-slate-500">
+                Tip: If your output is a video link, you can upload a small text file containing the link.
+              </p>
+            </div>
+          `
+        ),
+      },
+      {
+        title: "Task 4 — Formal Email (Upload File)",
+        subtitle: "Upload your output for Task 4.",
+        type: "upload",
+        taskKey: "task4",
+        showVideo: false,
+        html: uploadPartHtml(
+          "task4",
+          "Task 4 — Formal Workplace Email",
+          `
+            <div class="rounded-xl bg-white p-4 ring-1 ring-black/5">
+              <p class="font-semibold">Instructions</p>
+              <p class="mt-1">
+                Write a formal workplace email (8–10 sentences) to a client about a project delay with honesty, transparency, respect, and confidentiality.
+              </p>
+            </div>
+          `
+        ),
       },
     ];
 
@@ -703,9 +752,17 @@
       return doc(db, "users", uid, "progress", `lesson${LESSON_NO}`);
     }
 
+    const TASK_KEYS = ["task1", "task2", "task3", "task4"];
+
+    function emptyTaskFiles() {
+      return TASK_KEYS.reduce((acc, k) => { acc[k] = ""; return acc; }, {});
+    }
+
     function defaultLessonState() {
+      // Keep assessmentFile for backwards compatibility with older dashboards
       return {
         partsDone: parts.map(() => false),
+        taskFiles: emptyTaskFiles(),
         assessmentFile: "",
       };
     }
@@ -715,12 +772,27 @@
         const snap = await getDoc(lessonDocRef(uid));
         if (!snap.exists()) return defaultLessonState();
         const d = snap.data() || {};
+
         const arr = Array.isArray(d.partsDone) ? d.partsDone : [];
-        const partsDone = parts.map((_, i) => !!arr[i]);
-        return {
-          partsDone,
-          assessmentFile: (d.assessmentFile || ""),
-        };
+        // Map stored partsDone onto the current parts list length
+        const partsDone = parts.map((_, i) => {
+          if (i < arr.length) return !!arr[i];
+          // Migration: older Lesson 1 had 4 parts; the old Assessment was index 3
+          if (arr.length === 4 && i == 3) return !!arr[3];
+          return false;
+        });
+
+        const taskFiles = emptyTaskFiles();
+        if (d.taskFiles && typeof d.taskFiles === "object") {
+          for (const k of TASK_KEYS) taskFiles[k] = String(d.taskFiles?.[k] || "");
+        } else if (d.assessmentFile) {
+          // Legacy single submission becomes Task 1
+          taskFiles.task1 = String(d.assessmentFile || "");
+        }
+
+        const assessmentFile = String(d.assessmentFile || taskFiles.task1 || "");
+
+        return { partsDone, taskFiles, assessmentFile };
       } catch (_) {
         return defaultLessonState();
       }
@@ -728,9 +800,16 @@
 
     async function saveLessonState(uid, state) {
       try {
+        const taskFiles = (state.taskFiles && typeof state.taskFiles === "object") ? state.taskFiles : emptyTaskFiles();
+        // Legacy field used by teacher dashboard; keep a best-effort value
+        const legacyAssessment = String(
+          taskFiles.task4 || taskFiles.task3 || taskFiles.task2 || taskFiles.task1 || state.assessmentFile || ""
+        );
+
         await setDoc(lessonDocRef(uid), {
           partsDone: state.partsDone,
-          assessmentFile: state.assessmentFile || "",
+          taskFiles,
+          assessmentFile: legacyAssessment,
           updatedAt: Date.now()
         }, { merge: true });
       } catch (_) { }
@@ -804,6 +883,11 @@
       const done = !!state.partsDone[activePart];
       pill(done);
 
+      // Hide manual completion for upload tasks (completion happens on submit)
+      const isUpload = p.type === "upload";
+      completeBtn.classList.toggle("hidden", isUpload);
+      completeBtn.disabled = isUpload;
+
       prevBtn.disabled = activePart === 0;
 
       // ✅ CHANGE: if last part is completed, Next button becomes "Next Lesson" and goes to Lesson 2
@@ -826,11 +910,12 @@
       nextBtn.classList.toggle("cursor-not-allowed", nextBtn.disabled);
 
       if (p.type === "upload") {
-        const submitFileBtn = document.getElementById("submitFileBtn");
-        const fileInput = document.getElementById("fileInput");
-        const fileStatus = document.getElementById("fileStatus");
+        const key = String(p.taskKey || "").trim();
+        const submitFileBtn = document.getElementById(`submitFileBtn-${key}`);
+        const fileInput = document.getElementById(`fileInput-${key}`);
+        const fileStatus = document.getElementById(`fileStatus-${key}`);
 
-        const savedName = state.assessmentFile;
+        const savedName = (state.taskFiles && typeof state.taskFiles === "object") ? String(state.taskFiles[key] || "") : "";
         if (savedName) fileStatus.textContent = `Last submitted: ${savedName}`;
 
         submitFileBtn?.addEventListener("click", async () => {
@@ -841,7 +926,9 @@
           }
           const name = fileInput.files[0].name;
 
-          state.assessmentFile = name;
+          if (!state.taskFiles || typeof state.taskFiles !== "object") state.taskFiles = emptyTaskFiles();
+          state.taskFiles[key] = name;
+          state.assessmentFile = name; // legacy
           state.partsDone[activePart] = true;
 
           fileStatus.textContent = `Submitted: ${name}`;
