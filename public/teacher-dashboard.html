@@ -501,18 +501,82 @@
         <!-- LESSONS PROGRESS -->
         <section id="panel-lessons" role="tabpanel" aria-label="Lessons Progress" hidden>
           <section class="rounded-2xl bg-white shadow-softer ring-1 ring-black/5 p-6">
-            <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-              <div>
-                <h2 class="text-xl font-extrabold text-slate-900">Lessons Progress (States)</h2>
-                <p class="mt-1 text-sm text-slate-600">Counts by state per lesson (Not started / In progress / Completed / Needs revision).</p>
+
+            <!-- SECTIONS GRID VIEW -->
+            <div id="sectionsView">
+              <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <h2 class="text-xl font-extrabold text-slate-900">Sections Progress</h2>
+                  <p class="mt-1 text-sm text-slate-600">Click a section to view the students in that section and their lesson progress.</p>
+                </div>
+                <button id="lessonsExportBtn"
+                  class="inline-flex items-center justify-center rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-extrabold text-white shadow-softer hover:bg-brand-700">
+                  Export All (CSV)
+                </button>
               </div>
-              <button id="lessonsExportBtn"
-                class="inline-flex items-center justify-center rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-extrabold text-white shadow-softer hover:bg-brand-700">
-                Export Lesson Summary
-              </button>
+
+              <div id="sectionsEmpty" class="hidden mt-6 rounded-2xl bg-slate-50 ring-1 ring-black/5 p-5 text-sm text-slate-600">
+                No sections yet. Create a section code first in <span class="font-extrabold">Section Codes</span>.
+              </div>
+
+              <div class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3" id="sectionCardsGrid"></div>
             </div>
 
-            <div class="mt-6 grid gap-5 lg:grid-cols-2" id="lessonStateGrid"></div>
+            <!-- SECTION DETAIL VIEW -->
+            <div id="sectionDetailView" class="hidden">
+              <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                <div class="flex items-start gap-3">
+                  <button id="backToSectionsBtn" type="button"
+                    class="mt-1 inline-flex items-center justify-center rounded-xl bg-slate-100 px-4 py-2.5 text-sm font-extrabold text-slate-800 hover:bg-slate-200">
+                    Back
+                  </button>
+                  <div>
+                    <h2 id="sectionDetailTitle" class="text-xl font-extrabold text-slate-900">—</h2>
+                    <p id="sectionDetailSub" class="mt-1 text-sm text-slate-600">—</p>
+                  </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+                  <div class="relative">
+                    <input id="sectionStudentSearch" type="text" placeholder="Search students..."
+                      class="w-full sm:w-72 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold outline-none focus:ring-4 focus:ring-brand-200" />
+                  </div>
+                  <button id="sectionExportBtn"
+                    class="inline-flex items-center justify-center rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-extrabold text-white shadow-softer hover:bg-brand-700">
+                    Export Section (CSV)
+                  </button>
+                </div>
+              </div>
+
+              <div id="sectionDenied" class="hidden mt-6 rounded-2xl bg-rose-50 ring-1 ring-rose-200 p-5 text-sm text-rose-700">
+                Lesson progress can’t be loaded due to Firestore permissions. (Teachers usually need to be approved to read student progress.)
+              </div>
+
+              <div id="sectionLoading" class="hidden mt-6 rounded-2xl bg-slate-50 ring-1 ring-black/5 p-5 text-sm text-slate-600">
+                Loading student progress…
+              </div>
+
+              <div class="mt-6 overflow-hidden rounded-2xl ring-1 ring-black/5">
+                <div class="nice-scroll overflow-x-auto">
+                  <table class="min-w-full text-left text-sm">
+                    <thead class="bg-white sticky top-0 z-10">
+                      <tr class="text-[11px] font-extrabold uppercase tracking-wide text-slate-500 border-b border-slate-100">
+                        <th class="py-3 px-4">Student</th>
+                        <th class="py-3 px-4">L1</th>
+                        <th class="py-3 px-4">L2</th>
+                        <th class="py-3 px-4">L3</th>
+                        <th class="py-3 px-4">L4</th>
+                        <th class="py-3 px-4">Overall</th>
+                      </tr>
+                    </thead>
+                    <tbody id="sectionStudentsTbody" class="divide-y divide-slate-100 bg-white"></tbody>
+                  </table>
+                </div>
+              </div>
+
+              <p class="mt-4 text-xs text-slate-500 font-semibold">Tip: Click a student row to open full details.</p>
+            </div>
+
           </section>
         </section>
 
@@ -1038,6 +1102,14 @@
   const __teacherCode = String(__ctx?.profile?.teacherCode || "").trim(); // optional
 
   // ==========================================================
+  // SHARED CACHES
+  // ==========================================================
+  let __classCodesCache = [];
+  let __lessonsSelectedSectionId = null;
+  let __sectionStudentsAll = [];
+
+
+  // ==========================================================
   // SECTION CODES (PERMANENT)
   // ==========================================================
   function random5DigitCode() { return String(Math.floor(10000 + Math.random() * 90000)); }
@@ -1336,6 +1408,10 @@
           const tb = (b.updatedAt?.seconds || b.createdAt?.seconds || 0);
           return tb - ta;
         });
+
+        // Keep a shared cache for the Lessons Progress panel
+        __classCodesCache = rows;
+        try { renderSectionsProgressPanel(); } catch (_) {}
 
         if (!tbody) return;
         if (!rows.length) { tbody.innerHTML = emptyHtml(); return; }
@@ -1809,7 +1885,7 @@
     applyStudentFilters();
     computeStats(students);
     renderDashboardRisk();
-    renderLessonStatesPanel();
+    renderSectionsProgressPanel();
   }
 
 
@@ -2025,37 +2101,219 @@
   // ==========================================================
   // LESSONS PANEL
   // ==========================================================
-  function renderLessonStatesPanel() {
-    const grid = $("lessonStateGrid");
-    if (!grid) return;
+  function sectionKey(course, yearLevel, section) {
+    return `${String(course||"").trim().toLowerCase()}|${String(yearLevel||"").trim().toLowerCase()}|${String(section||"").trim().toLowerCase()}`;
+  }
 
-    const lessonKeys = ["l1","l2","l3","l4"];
-    const keyToTitle = (k) => ({ l1:"Lesson 1", l2:"Lesson 2", l3:"Lesson 3", l4:"Lesson 4" }[k] || k);
+  function getTeacherSectionsForLessons() {
+    const rows = Array.isArray(__classCodesCache) ? __classCodesCache : [];
+    const onlyMine = rows.filter(r => String(r.teacherUid||"") === String(__teacherUid||""));
+    // Prefer active sections; if active missing, keep it
+    const filtered = onlyMine.filter(r => r.active !== false);
+    // Sort newest first
+    filtered.sort((a, b) => {
+      const ta = (a.updatedAt?.seconds || a.createdAt?.seconds || 0);
+      const tb = (b.updatedAt?.seconds || b.createdAt?.seconds || 0);
+      return tb - ta;
+    });
+    return filtered;
+  }
 
-    grid.innerHTML = lessonKeys.map(k => {
-      const states = { "Not started":0, "In progress":0, "Completed":0, "Needs revision":0 };
-      students.forEach(s => {
-        const l = (s.lessons || []).find(x => x.key === k);
-        const st = l?.state || "Not started";
-        if (states[st] === undefined) states[st] = 0;
-        states[st] += 1;
-      });
+  function studentsForSection(sec) {
+    const c = String(sec?.course || "").trim().toLowerCase();
+    const y = String(sec?.yearLevel || "").trim().toLowerCase();
+    const s = String(sec?.section || "").trim().toLowerCase();
+    return students.filter(st =>
+      String(st.course||"").trim().toLowerCase() === c &&
+      String(st.year||"").trim().toLowerCase() === y &&
+      String(st.section||"").trim().toLowerCase() === s
+    );
+  }
 
-      return `
-        <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-6">
-          <h3 class="text-lg font-extrabold text-slate-900">${keyToTitle(k)}</h3>
-          <div class="mt-4 grid gap-3 sm:grid-cols-2">
-            ${Object.entries(states).map(([st,count]) => `
-              <div class="rounded-2xl bg-white ring-1 ring-black/5 p-4 flex items-center justify-between">
-                <span class="inline-flex items-center rounded-full px-3 py-1 text-xs font-extrabold ring-1 ring-black/5 ${statePill(st)}">${st}</span>
-                <span class="text-2xl font-extrabold text-slate-900">${count}</span>
-              </div>
-            `).join("")}
+  function sectionCardHTML(sec) {
+    const list = studentsForSection(sec);
+    const count = list.length;
+    const avg = count ? Math.round(list.reduce((a, x) => a + Number(x.progress || 0), 0) / count) : 0;
+    const code = String(sec.code || "").trim();
+
+    return `
+      <button type="button" data-section-id="${sec.id}" class="text-left rounded-2xl bg-slate-50 ring-1 ring-black/5 p-6 hover:bg-slate-50/70">
+        <div class="flex items-start justify-between gap-3">
+          <div class="min-w-0">
+            <p class="text-lg font-extrabold text-slate-900 truncate">${sec.course || "—"} • ${sec.yearLevel || "—"} • ${sec.section || "—"}</p>
+            <p class="mt-1 text-xs font-semibold text-slate-500">${code && /^[0-9]{5}$/.test(code) ? `Code: ${code}` : "Code: —"}</p>
+          </div>
+          <span class="inline-flex items-center rounded-full bg-white px-3 py-1 text-xs font-extrabold text-slate-700 ring-1 ring-black/5">${count} student${count===1?"":"s"}</span>
+        </div>
+
+        <div class="mt-4">
+          <p class="text-xs font-extrabold text-slate-400 uppercase">Avg progress</p>
+          <div class="mt-2 flex items-center gap-3">
+            <div class="h-2.5 w-full rounded-full bg-slate-200 overflow-hidden">
+              <div class="h-2.5 bg-brand-600" style="width:${clamp(avg,0,100)}%"></div>
+            </div>
+            <span class="text-sm font-extrabold text-brand-700">${avg}%</span>
           </div>
         </div>
+      </button>
+    `;
+  }
+
+  function showLessonsSectionsView() {
+    $("sectionsView")?.classList.remove("hidden");
+    $("sectionDetailView")?.classList.add("hidden");
+  }
+
+  function showLessonsSectionDetailView() {
+    $("sectionsView")?.classList.add("hidden");
+    $("sectionDetailView")?.classList.remove("hidden");
+  }
+
+  function renderSectionsProgressPanel() {
+    const grid = $("sectionCardsGrid");
+    if (!grid) return;
+
+    const sections = getTeacherSectionsForLessons();
+    const empty = $("sectionsEmpty");
+
+    if (!sections.length) {
+      grid.innerHTML = "";
+      empty?.classList.remove("hidden");
+      __lessonsSelectedSectionId = null;
+      showLessonsSectionsView();
+      return;
+    }
+    empty?.classList.add("hidden");
+
+    // If a section is selected but no longer exists, go back.
+    if (__lessonsSelectedSectionId && !sections.some(s => s.id === __lessonsSelectedSectionId)) {
+      __lessonsSelectedSectionId = null;
+    }
+
+    if (!__lessonsSelectedSectionId) {
+      showLessonsSectionsView();
+      grid.innerHTML = sections.map(sectionCardHTML).join("");
+      grid.querySelectorAll("[data-section-id]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          __lessonsSelectedSectionId = btn.getAttribute("data-section-id");
+          renderSectionsProgressPanel();
+        });
+      });
+      return;
+    }
+
+    // DETAIL VIEW
+    const sec = sections.find(s => s.id === __lessonsSelectedSectionId);
+    if (!sec) {
+      __lessonsSelectedSectionId = null;
+      renderSectionsProgressPanel();
+      return;
+    }
+
+    showLessonsSectionDetailView();
+
+    $("sectionDetailTitle").textContent = `${sec.course || "—"} • ${sec.yearLevel || "—"} • ${sec.section || "—"}`;
+    $("sectionDetailSub").textContent = `Code: ${/^[0-9]{5}$/.test(String(sec.code||"")) ? sec.code : "—"} • ${studentsForSection(sec).length} student(s)`;
+
+    __sectionStudentsAll = studentsForSection(sec);
+    renderSectionStudentsTable();
+
+    // Load learning lazily for this section (to show real progress values)
+    primeLearningForSection(__sectionStudentsAll);
+  }
+
+  function lessonCellHTML(l) {
+    if (!l) return `<span class="text-xs font-semibold text-slate-400">—</span>`;
+    return `
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center rounded-full px-3 py-1 text-[11px] font-extrabold ring-1 ring-black/5 ${statePill(l.state)}">${l.state}</span>
+        <span class="text-xs font-extrabold text-brand-700">${Number(l.pct ?? 0)}%</span>
+      </div>
+    `;
+  }
+
+  function renderSectionStudentsTable() {
+    const tbody = $("sectionStudentsTbody");
+    if (!tbody) return;
+
+    const q = String($("sectionStudentSearch")?.value || "").trim().toLowerCase();
+    let list = Array.isArray(__sectionStudentsAll) ? [...__sectionStudentsAll] : [];
+
+    if (q) {
+      list = list.filter(s =>
+        String(s.name||"").toLowerCase().includes(q) ||
+        String(s.id||"").toLowerCase().includes(q) ||
+        String(s.email||"").toLowerCase().includes(q)
+      );
+    }
+
+    if (!list.length) {
+      tbody.innerHTML = `<tr><td colspan="6" class="py-10 text-center text-sm text-slate-500">No students found.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = list.map(s => {
+      const by = Object.fromEntries((s.lessons||[]).map(l => [l.key, l]));
+      return `
+        <tr class="hover:bg-slate-50/60 cursor-pointer" data-student="${s.id}">
+          <td class="py-5 px-4 align-top">
+            <div class="font-extrabold text-slate-900">${s.name}</div>
+            <div class="text-xs text-slate-500 font-semibold">${s.id}</div>
+            <div class="text-xs text-slate-400">${s.email}</div>
+          </td>
+          <td class="py-5 px-4 align-top">${lessonCellHTML(by.l1)}</td>
+          <td class="py-5 px-4 align-top">${lessonCellHTML(by.l2)}</td>
+          <td class="py-5 px-4 align-top">${lessonCellHTML(by.l3)}</td>
+          <td class="py-5 px-4 align-top">${lessonCellHTML(by.l4)}</td>
+          <td class="py-5 px-4 align-top">
+            <div class="flex items-center gap-3">
+              <div class="h-2.5 w-32 rounded-full bg-slate-200 overflow-hidden">
+                <div class="h-2.5 bg-brand-600" style="width:${clamp(Number(s.progress||0),0,100)}%"></div>
+              </div>
+              <span class="text-sm font-extrabold text-brand-700">${Number(s.progress||0)}%</span>
+            </div>
+          </td>
+        </tr>
       `;
     }).join("");
   }
+
+  async function primeLearningForSection(list) {
+    const deniedEl = $("sectionDenied");
+    const loadingEl = $("sectionLoading");
+
+    deniedEl?.classList.add("hidden");
+
+    if (!Array.isArray(list) || !list.length) return;
+
+    // If everything is already loaded (or denied), just show the denied note if needed.
+    const needs = list.filter(s => !s.__learningLoaded && !s.__learningDenied);
+    if (!needs.length) {
+      if (list.some(s => s.__learningDenied)) deniedEl?.classList.remove("hidden");
+      return;
+    }
+
+    loadingEl?.classList.remove("hidden");
+
+    // Load in small batches for responsiveness
+    const groups = chunkArray(list, 6);
+    let sawDenied = false;
+
+    for (const g of groups) {
+      await Promise.all(g.map(async (s) => {
+        await ensureLearningLoaded(s);
+        if (s.__learningDenied) sawDenied = true
+      }));
+      renderSectionStudentsTable();
+    }
+
+    // If any denied, show note
+    sawDenied = list.some(s => s.__learningDenied);
+    if (sawDenied) deniedEl?.classList.remove("hidden");
+
+    loadingEl?.classList.add("hidden");
+  }
+
 
   // ==========================================================
   // DETAILS MODAL + SUBMISSION MODAL (kept; learning loads lazily)
@@ -2212,7 +2470,7 @@
 
     computeStats(students);
     renderDashboardRisk();
-    renderLessonStatesPanel();
+    renderSectionsProgressPanel();
   }
 
   function closeDetails() {
@@ -2242,7 +2500,7 @@
     setAssessmentStatus(activeStudent, e.target.value);
     computeStats(students);
     renderDashboardRisk();
-    renderLessonStatesPanel();
+    renderSectionsProgressPanel();
     applyStudentFilters();
   });
 
@@ -2492,18 +2750,63 @@ If this is a quiz-only lesson, show the quiz answers and score here.`;
   });
 
   $("lessonsExportBtn")?.addEventListener("click", () => {
-    const headers = ["Student ID","Name","L1 State","L1 %","L2 State","L2 %","L3 State","L3 %","L4 State","L4 %"];
+    // Export ALL students currently visible to the teacher (grouped by section columns)
+    const headers = ["Course","Year","Section","Student ID","Name","L1 State","L1 %","L2 State","L2 %","L3 State","L3 %","L4 State","L4 %","Overall %"];
     const rows = students.map(s => {
       const by = Object.fromEntries((s.lessons||[]).map(l => [l.key, l]));
       return [
+        s.course, s.year, s.section,
         s.id, s.name,
         by.l1?.state || "—", by.l1?.pct ?? 0,
         by.l2?.state || "—", by.l2?.pct ?? 0,
         by.l3?.state || "—", by.l3?.pct ?? 0,
         by.l4?.state || "—", by.l4?.pct ?? 0,
+        s.progress ?? 0,
       ];
     });
-    downloadCSV("purposive_lessons_states.csv", headers, rows);
+    downloadCSV("purposive_sections_progress_all.csv", headers, rows);
+  });
+
+  // Section detail interactions
+  $("backToSectionsBtn")?.addEventListener("click", () => {
+    __lessonsSelectedSectionId = null;
+    renderSectionsProgressPanel();
+  });
+
+  $("sectionStudentSearch")?.addEventListener("input", () => {
+    renderSectionStudentsTable();
+  });
+
+  $("sectionExportBtn")?.addEventListener("click", () => {
+    const sections = getTeacherSectionsForLessons();
+    const sec = sections.find(s => s.id === __lessonsSelectedSectionId);
+    if (!sec) return;
+
+    const list = Array.isArray(__sectionStudentsAll) ? __sectionStudentsAll : [];
+    const headers = ["Student ID","Name","Email","Course","Year","Section","L1 State","L1 %","L2 State","L2 %","L3 State","L3 %","L4 State","L4 %","Overall %"];
+    const rows = list.map(s => {
+      const by = Object.fromEntries((s.lessons||[]).map(l => [l.key, l]));
+      return [
+        s.id, s.name, s.email,
+        s.course, s.year, s.section,
+        by.l1?.state || "—", by.l1?.pct ?? 0,
+        by.l2?.state || "—", by.l2?.pct ?? 0,
+        by.l3?.state || "—", by.l3?.pct ?? 0,
+        by.l4?.state || "—", by.l4?.pct ?? 0,
+        s.progress ?? 0,
+      ];
+    });
+
+    const safe = (v) => String(v||"").replaceAll(" ", "-").replaceAll("/", "-");
+    const fn = `section_${safe(sec.course)}_${safe(sec.yearLevel)}_${safe(sec.section)}_progress.csv`;
+    downloadCSV(fn.toLowerCase(), headers, rows);
+  });
+
+  // Open student details when clicking a row in section table
+  $("sectionStudentsTbody")?.addEventListener("click", (e) => {
+    const tr = e.target.closest("tr[data-student]");
+    if (!tr) return;
+    openDetails(tr.getAttribute("data-student"));
   });
 
   // ==========================================================
@@ -2548,7 +2851,7 @@ If this is a quiz-only lesson, show the quiz answers and score here.`;
       computeStats(students);
       renderDashboardRisk();
     }
-    if (tabKey === "lessons") renderLessonStatesPanel();
+    if (tabKey === "lessons") renderSectionsProgressPanel();
 
     if (tabKey === "students") {
       const banner = $("studentsErrorBanner");
@@ -2627,7 +2930,7 @@ If this is a quiz-only lesson, show the quiz answers and score here.`;
 
     computeStats(students);
     renderDashboardRisk();
-    renderLessonStatesPanel();
+    renderSectionsProgressPanel();
     applyStudentFilters();
 
     wireTabs();
