@@ -1026,75 +1026,128 @@
     document.body.classList.toggle("overflow-hidden", show);
   }
 
-  async function requireTeacherOrAdmin() {
-    return await new Promise((resolve) => {
-      const unsub = onAuthStateChanged(auth, async (user) => {
-        if (!user) {
-          window.location.href = "login.html?msg=" + encodeURIComponent("Please log in.");
-          return;
-        }
+ async function requireTeacherOrAdmin() {
+  return await new Promise((resolve) => {
+    const unsub = onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "login.html?msg=" + encodeURIComponent("Please log in.");
+        return;
+      }
 
-        const userRef = doc(db, "users", user.uid);
-        let profile = {};
+      const userRef = doc(db, "users", user.uid);
+      const lockRef = doc(db, "lockedAccounts", user.uid);
+
+      // ✅ If the account was tombstoned (admin deleted teacher), force locked.html
+      async function redirectIfLockedTombstone() {
         try {
-          const snap = await getDoc(userRef);
-          profile = snap.exists() ? (snap.data() || {}) : {};
+          const lockSnap = await getDoc(lockRef);
+          if (lockSnap.exists()) {
+            const lock = lockSnap.data() || {};
+            if (lock.locked === true) {
+              window.location.href = "locked.html";
+              return true;
+            }
+          }
         } catch (_) {}
+        return false;
+      }
 
-        const role = String(profile.role || "student").toLowerCase().trim();
-        if (role !== "teacher" && role !== "admin") {
-          window.location.href = "index.html";
-          return;
-        }
+      // 1) Read user profile
+      let profile = {};
+      let userExists = false;
 
-        // Header UI
-        const nameFallback = role === "admin" ? "Admin" : "Teacher";
-        const name = String(profile.fullName || user.displayName || nameFallback).trim() || nameFallback;
-        const email = String(profile.email || user.email || "").trim();
-        const initials =
-          (name.split(/\s+/).filter(Boolean).slice(0, 2).map(s => s[0]).join("") || (email[0] || "T")).toUpperCase();
+      try {
+        const snap = await getDoc(userRef);
+        userExists = snap.exists();
+        profile = userExists ? (snap.data() || {}) : {};
+      } catch (_) {
+        // ignore
+      }
 
-        $("adminName").textContent = name;
-        $("adminAvatar").textContent = initials;
-        const roleLabelEl = $("adminRoleLabel");
-        roleLabelEl.textContent = role === "admin" ? "Admin" : "Teacher";
+      // ✅ If /users/{uid} is missing, check tombstone then route
+      if (!userExists) {
+        const wasLocked = await redirectIfLockedTombstone();
+        if (wasLocked) return;
+        // No profile + no tombstone → treat as unknown / not allowed
+        window.location.href = "index.html";
+        return;
+      }
 
-        // Logout
-        $("logoutLink")?.addEventListener("click", async (e) => {
-          e.preventDefault();
-          try { await firebaseSignOut(auth); } catch (_) {}
-          window.location.href = "login.html";
-        });
+      // ✅ If profile says locked, go locked.html
+      if (profile.locked === true) {
+        window.location.href = "locked.html";
+        return;
+      }
 
-        // Approval lock for teachers
-        const applyLock = (p) => {
-          const r = String(p?.role || role).toLowerCase().trim();
-          if (r !== "teacher") { showApprovalLock(false); return; }
-          const ok = isApproved(p);
-          showApprovalLock(!ok);
-          roleLabelEl.textContent = ok ? "Teacher" : "Teacher (Pending)";
-        };
+      const role = String(profile.role || "student").toLowerCase().trim();
+      if (role !== "teacher" && role !== "admin") {
+        window.location.href = "index.html";
+        return;
+      }
 
-        applyLock(profile);
+      // Header UI
+      const nameFallback = role === "admin" ? "Admin" : "Teacher";
+      const name = String(profile.fullName || user.displayName || nameFallback).trim() || nameFallback;
+      const email = String(profile.email || user.email || "").trim();
+      const initials =
+        (name.split(/\s+/).filter(Boolean).slice(0, 2).map(s => s[0]).join("") || (email[0] || "T")).toUpperCase();
 
-        try {
-          onSnapshot(userRef, (snap) => {
-            const p = snap.exists() ? (snap.data() || {}) : {};
-            applyLock(p);
-          });
-        } catch (_) {}
+      $("adminName").textContent = name;
+      $("adminAvatar").textContent = initials;
+      const roleLabelEl = $("adminRoleLabel");
+      roleLabelEl.textContent = role === "admin" ? "Admin" : "Teacher";
 
-        $("lockSignOutBtn")?.addEventListener("click", async () => {
-          try { await firebaseSignOut(auth); } catch (_) {}
-          window.location.href = "login.html";
-        });
-        $("lockRefreshBtn")?.addEventListener("click", () => window.location.reload());
-
-        unsub();
-        resolve({ user, profile, role });
+      // Logout
+      $("logoutLink")?.addEventListener("click", async (e) => {
+        e.preventDefault();
+        try { await firebaseSignOut(auth); } catch (_) {}
+        window.location.href = "login.html";
       });
+
+      // Approval lock for teachers
+      const applyLock = (p) => {
+        const r = String(p?.role || role).toLowerCase().trim();
+        if (r !== "teacher") { showApprovalLock(false); return; }
+        const ok = isApproved(p);
+        showApprovalLock(!ok);
+        roleLabelEl.textContent = ok ? "Teacher" : "Teacher (Pending)";
+      };
+
+      applyLock(profile);
+
+      // ✅ Live updates:
+      // - If user doc gets deleted later, redirect to locked.html if tombstone exists.
+      try {
+        onSnapshot(userRef, async (snap) => {
+          if (!snap.exists()) {
+            // If admin deleted them while logged in
+            const wasLocked = await redirectIfLockedTombstone();
+            if (wasLocked) return;
+            window.location.href = "index.html";
+            return;
+          }
+
+          const p = snap.data() || {};
+          if (p.locked === true) {
+            window.location.href = "locked.html";
+            return;
+          }
+          applyLock(p);
+        });
+      } catch (_) {}
+
+      $("lockSignOutBtn")?.addEventListener("click", async () => {
+        try { await firebaseSignOut(auth); } catch (_) {}
+        window.location.href = "login.html";
+      });
+      $("lockRefreshBtn")?.addEventListener("click", () => window.location.reload());
+
+      unsub();
+      resolve({ user, profile, role });
     });
-  }
+  });
+}
+
 
   const __ctx = await requireTeacherOrAdmin();
   const __teacherUid = __ctx?.user?.uid || "";

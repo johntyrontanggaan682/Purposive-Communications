@@ -40,16 +40,72 @@
         radial-gradient(900px 450px at 100% 0%, rgba(19,168,154,0.12), transparent 50%),
         #E7F7F5;
     }
-    /* Simple modal animation */
+
+    /* Simple modal animation (upgraded) */
     .fade-in { animation: fadeIn .18s ease-out; }
-    .scale-in { animation: scaleIn .18s ease-out; }
+    .scale-in { animation: scaleIn .22s cubic-bezier(.2,.9,.2,1); }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    @keyframes scaleIn { from { transform: translateY(8px) scale(.98); } to { transform: translateY(0) scale(1); } }
+    @keyframes scaleIn {
+      0%   { transform: translateY(10px) scale(.96); opacity: .9; }
+      70%  { transform: translateY(-2px) scale(1.01); opacity: 1; }
+      100% { transform: translateY(0) scale(1); }
+    }
+
+    /* ===== Motion helpers ===== */
+    @media (prefers-reduced-motion: reduce) {
+      .reveal, .reveal-scale, .floaty, .btn-pop { transition: none !important; animation: none !important; transform: none !important; opacity: 1 !important; }
+      .bar-anim { transition: none !important; }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity .55s ease, transform .55s ease;
+    }
+    .reveal.show { opacity: 1; transform: translateY(0); }
+
+    .reveal-scale {
+      opacity: 0;
+      transform: scale(.985);
+      transition: opacity .55s ease, transform .55s ease;
+    }
+    .reveal-scale.show { opacity: 1; transform: scale(1); }
+
+    .floaty { transition: transform .25s ease, box-shadow .25s ease, filter .25s ease; }
+    .floaty:hover { transform: translateY(-2px); filter: brightness(1.02); }
+
+    .btn-pop { transition: transform .12s ease, filter .12s ease; }
+    .btn-pop:active { transform: scale(.98); }
+
+    .bar-anim { transition: width .7s cubic-bezier(.2,.9,.2,1); }
+
+    /* ===== Skeleton shimmer (loading state) ===== */
+    .is-loading [data-skel="hide"] { opacity: 0 !important; }
+    .is-loading [data-skel="show"] { opacity: 1 !important; }
+    [data-skel="show"] { opacity: 0; }
+
+    .skel {
+      position: relative;
+      overflow: hidden;
+      background: rgba(148,163,184,0.25);
+      border-radius: 999px;
+    }
+    .skel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      transform: translateX(-100%);
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+      animation: shimmer 1.2s infinite;
+    }
+    @keyframes shimmer {
+      100% { transform: translateX(100%); }
+    }
   </style>
 </head>
 
 <body class="page-bg text-slate-800">
-  <!-- NAVBAR ✅ includes same login/user dropdown like index.html + lessons.html -->
+  <!-- NAVBAR -->
   <header class="sticky top-0 z-50 bg-white/80 backdrop-blur border-b border-slate-100">
     <nav class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
       <!-- Brand -->
@@ -108,8 +164,7 @@
 
               <div class="mt-3 space-y-2 text-sm">
                 <div class="flex items-center gap-3 rounded-xl bg-white px-3 py-2 ring-1 ring-black/5">
-                  <svg class="h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    stroke-width="2">
+                  <svg class="h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4 4h16v16H4V4z" />
                     <path stroke-linecap="round" stroke-linejoin="round" d="M22 6l-10 7L2 6" />
                   </svg>
@@ -117,8 +172,7 @@
                 </div>
 
                 <div class="flex items-center gap-3 rounded-xl bg-white px-3 py-2 ring-1 ring-black/5">
-                  <svg class="h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    stroke-width="2">
+                  <svg class="h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <rect x="3" y="5" width="18" height="14" rx="2" />
                     <path stroke-linecap="round" stroke-linejoin="round" d="M7 15h4" />
                     <path stroke-linecap="round" stroke-linejoin="round" d="M7 9h10" />
@@ -129,11 +183,11 @@
 
               <div class="mt-3 grid grid-cols-2 gap-2">
                 <a href="profile.html"
-                  class="inline-flex items-center justify-center rounded-2xl bg-brand-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-900 transition">
+                  class="inline-flex items-center justify-center rounded-2xl bg-brand-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-900 transition btn-pop">
                   View profile
                 </a>
                 <button id="signOutBtn" type="button"
-                  class="inline-flex items-center justify-center rounded-2xl bg-slate-100 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-200 transition">
+                  class="inline-flex items-center justify-center rounded-2xl bg-slate-100 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-200 transition btn-pop">
                   Sign out
                 </button>
               </div>
@@ -156,18 +210,14 @@
     <div id="mobileMenu" class="mx-auto hidden max-w-7xl px-4 pb-4 sm:px-6 lg:px-8 md:hidden">
       <div class="rounded-2xl bg-white p-4 shadow-soft ring-1 ring-black/5">
         <div class="flex flex-col gap-2">
-          <a href="index.html"
-            class="rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">Home</a>
-          <a href="lessons.html"
-            class="rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">Lessons</a>
-          <a href="profile.html"
-            class="rounded-xl px-3 py-2 text-sm font-semibold text-brand-700 bg-brand-50">Profile</a>
-          <a href="settings.html"
-            class="rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">Settings</a>
+          <a href="index.html" class="rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">Home</a>
+          <a href="lessons.html" class="rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">Lessons</a>
+          <a href="profile.html" class="rounded-xl px-3 py-2 text-sm font-semibold text-brand-700 bg-brand-50">Profile</a>
+          <a href="settings.html" class="rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">Settings</a>
 
           <!-- Login (GUEST ONLY) -->
           <a href="login.html" id="openLoginMobile"
-            class="auth-guest hidden mt-2 rounded-xl bg-brand-500 px-4 py-2.5 text-center text-sm font-semibold text-white hover:bg-brand-600">
+            class="auth-guest hidden mt-2 rounded-xl bg-brand-500 px-4 py-2.5 text-center text-sm font-semibold text-white hover:bg-brand-600 btn-pop">
             Login
           </a>
 
@@ -184,10 +234,8 @@
               </div>
             </div>
             <div class="mt-3 grid grid-cols-2 gap-2">
-              <a href="profile.html"
-                class="rounded-xl bg-brand-800 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-brand-900">View profile</a>
-              <button id="mSignOutBtn"
-                class="rounded-xl bg-slate-100 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-200">Sign out</button>
+              <a href="profile.html" class="rounded-xl bg-brand-800 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-brand-900 btn-pop">View profile</a>
+              <button id="mSignOutBtn" class="rounded-xl bg-slate-100 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-200 btn-pop">Sign out</button>
             </div>
           </div>
         </div>
@@ -196,7 +244,7 @@
   </header>
 
   <!-- HERO STRIP (Profile) -->
-  <section class="bg-brand-700">
+  <section class="bg-brand-700 reveal">
     <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       <h1 class="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">My Profile</h1>
       <p class="mt-3 max-w-3xl text-base text-white/85">
@@ -207,18 +255,21 @@
 
   <main class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
     <!-- PROFILE CARD -->
-    <section class="overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/5">
+    <section class="overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/5 reveal-scale">
       <div class="h-20 bg-gradient-to-r from-brand-600 to-brand-500"></div>
 
       <div class="relative px-5 pb-6 pt-0 sm:px-7">
         <div class="-mt-12">
           <!-- Clickable Avatar -->
           <button id="avatarBtn" type="button"
-            class="group relative h-24 w-24 rounded-3xl bg-white shadow-soft ring-1 ring-black/5 flex items-center justify-center focus:outline-none focus:ring-4 focus:ring-brand-200"
+            class="floaty group relative h-24 w-24 rounded-3xl bg-white shadow-soft ring-1 ring-black/5 flex items-center justify-center focus:outline-none focus:ring-4 focus:ring-brand-200"
             aria-haspopup="dialog" aria-expanded="false">
-            <div id="avatarView" class="flex items-center justify-center">
+            <div id="avatarView" class="flex items-center justify-center" data-skel="hide">
               <span class="text-3xl font-extrabold text-brand-700">MS</span>
             </div>
+
+            <!-- skeleton for avatar -->
+            <div data-skel="show" class="absolute inset-3 skel rounded-2xl"></div>
 
             <div class="pointer-events-none absolute inset-0 rounded-3xl bg-slate-900/0 group-hover:bg-slate-900/10 transition"></div>
             <div class="pointer-events-none absolute -bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-white px-3 py-1 text-[11px] font-extrabold text-slate-700 shadow-soft ring-1 ring-black/5 opacity-0 group-hover:opacity-100 transition">
@@ -228,16 +279,21 @@
         </div>
 
         <div class="mt-4 flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <h2 id="profileName" class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">Maria Santos</h2>
+          <div class="min-w-0">
+            <h2 id="profileName" class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl" data-skel="hide">Maria Santos</h2>
+
+            <!-- name skeleton -->
+            <div data-skel="show" class="mt-2 h-8 w-64 max-w-full skel"></div>
+
             <p class="mt-1 text-sm font-semibold text-slate-500">
-              <span id="profileStudentId">STU-2024-001</span>
+              <span id="profileStudentId" data-skel="hide">STU-2024-001</span>
+              <span data-skel="show" class="inline-block align-middle h-4 w-28 skel"></span>
             </p>
           </div>
 
           <!-- Sign out button -->
           <button id="profileSignOutBtn" type="button"
-            class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-slate-100 px-4 py-2.5 text-sm font-extrabold text-slate-700 ring-1 ring-black/5 hover:bg-slate-200 focus:outline-none focus:ring-4 focus:ring-brand-200 sm:w-auto">
+            class="btn-pop inline-flex w-full items-center justify-center gap-2 rounded-xl bg-slate-100 px-4 py-2.5 text-sm font-extrabold text-slate-700 ring-1 ring-black/5 hover:bg-slate-200 focus:outline-none focus:ring-4 focus:ring-brand-200 sm:w-auto">
             <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M10 17l5-5-5-5" />
               <path stroke-linecap="round" stroke-linejoin="round" d="M15 12H3" />
@@ -257,9 +313,10 @@
                   <path stroke-linecap="round" stroke-linejoin="round" d="M22 6l-10 7L2 6" />
                 </svg>
               </div>
-              <div>
+              <div class="min-w-0">
                 <p class="text-[11px] font-extrabold text-slate-400 uppercase">Email</p>
-                <p id="profileEmail" class="mt-1 text-sm font-extrabold text-slate-900">maria.santos@student.edu</p>
+                <p id="profileEmail" class="mt-1 text-sm font-extrabold text-slate-900 truncate" data-skel="hide">maria.santos@student.edu</p>
+                <div data-skel="show" class="mt-2 h-4 w-48 max-w-full skel"></div>
               </div>
             </div>
           </div>
@@ -272,9 +329,10 @@
                   <path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6M9 11h6M9 15h6" />
                 </svg>
               </div>
-              <div>
+              <div class="min-w-0">
                 <p class="text-[11px] font-extrabold text-slate-400 uppercase">Course</p>
-                <p id="profileCourse" class="mt-1 text-sm font-extrabold text-slate-900">BS Computer Science</p>
+                <p id="profileCourse" class="mt-1 text-sm font-extrabold text-slate-900 truncate" data-skel="hide">BS Computer Science</p>
+                <div data-skel="show" class="mt-2 h-4 w-40 max-w-full skel"></div>
               </div>
             </div>
           </div>
@@ -287,9 +345,10 @@
                   <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l6.16-3.422A12.083 12.083 0 0112 21.5c-2.305 0-4.454-.651-6.16-1.922L12 14z" />
                 </svg>
               </div>
-              <div>
+              <div class="min-w-0">
                 <p class="text-[11px] font-extrabold text-slate-400 uppercase">Year Level</p>
-                <p id="profileYearLevel" class="mt-1 text-sm font-extrabold text-slate-900">2nd Year</p>
+                <p id="profileYearLevel" class="mt-1 text-sm font-extrabold text-slate-900 truncate" data-skel="hide">2nd Year</p>
+                <div data-skel="show" class="mt-2 h-4 w-28 max-w-full skel"></div>
               </div>
             </div>
           </div>
@@ -297,115 +356,168 @@
       </div>
     </section>
 
-    <!-- OVERALL COMPLETION -->
-    <section class="mt-6 rounded-3xl bg-white shadow-soft ring-1 ring-black/5 p-6 sm:p-7">
-      <div class="flex items-center justify-between">
-        <p class="text-sm font-extrabold text-slate-700">Overall Completion</p>
-        <p id="overallPct" class="text-2xl font-extrabold text-brand-700">0%</p>
-      </div>
+    <!-- CONTINUE WHERE YOU LEFT OFF (NEW) -->
+    <section class="mt-6 rounded-3xl bg-white shadow-soft ring-1 ring-black/5 p-6 sm:p-7 reveal">
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div class="min-w-0">
+          <p class="text-sm font-extrabold text-slate-700">Continue where you left off</p>
+          <h3 id="continueTitle" class="mt-2 text-2xl font-extrabold text-slate-900" data-skel="hide">Lesson —</h3>
+          <p id="continueSub" class="mt-1 text-sm font-semibold text-slate-500" data-skel="hide">Loading your progress…</p>
 
-      <div class="mt-3 h-3.5 w-full rounded-full bg-slate-200 overflow-hidden">
-        <div id="overallBar" class="h-3.5 w-0 rounded-full bg-brand-600"></div>
-      </div>
-    </section>
-
-    <!-- MY LESSONS PROGRESS -->
-    <section class="mt-6 rounded-3xl bg-white shadow-soft ring-1 ring-black/5 p-6 sm:p-7">
-      <h2 class="text-3xl font-extrabold text-slate-900 sm:text-4xl">My Lessons Progress</h2>
-
-      <div class="mt-6 grid gap-5 lg:grid-cols-2">
-        <!-- LESSON 1 -->
-        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm min-h-[170px] flex flex-col">
-          <div class="flex items-start justify-between gap-4">
-            <div>
-              <p class="text-sm font-extrabold text-slate-900">Lesson 1: Introduction to Communication</p>
-              <span id="l1Badge" class="mt-3 inline-flex items-center rounded-full bg-emerald-100 px-4 py-1.5 text-sm font-extrabold text-emerald-800">
-                Completed
-              </span>
-            </div>
-            <button id="l1Btn" class="rounded-2xl bg-emerald-100 px-8 py-2.5 text-sm font-extrabold text-emerald-800 hover:bg-emerald-200">
-              Review
-            </button>
-          </div>
-
-          <div class="mt-auto pt-5 flex items-center gap-5">
-            <div class="h-2.5 w-full rounded-full bg-slate-200 overflow-hidden">
-              <div id="l1Bar" class="h-2.5 w-full bg-brand-700"></div>
-            </div>
-            <p id="l1Pct" class="text-sm font-extrabold text-slate-900">100%</p>
+          <!-- skeleton -->
+          <div data-skel="show" class="mt-3 space-y-2">
+            <div class="h-6 w-64 max-w-full skel"></div>
+            <div class="h-4 w-72 max-w-full skel"></div>
           </div>
         </div>
 
-        <!-- LESSON 3 -->
-        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm min-h-[170px] flex flex-col">
+        <div class="flex flex-col gap-2 sm:items-end">
+          <a id="continueBtn" href="lessons.html"
+             class="btn-pop inline-flex items-center justify-center gap-2 rounded-2xl bg-brand-600 px-5 py-3 text-sm font-extrabold text-white hover:bg-brand-700 ring-1 ring-black/5">
+            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8 5v14l11-7L8 5z" />
+            </svg>
+            Continue
+          </a>
+          <p id="continueMeta" class="text-xs font-semibold text-slate-400" data-skel="hide">—</p>
+          <div data-skel="show" class="h-3 w-24 skel"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- OVERALL COMPLETION (UPGRADED) -->
+    <section class="mt-6 rounded-3xl bg-white shadow-soft ring-1 ring-black/5 p-6 sm:p-7 reveal">
+      <div class="flex items-center justify-between">
+        <div class="min-w-0">
+          <p class="text-sm font-extrabold text-slate-700">Overall Completion</p>
+          <p id="overallMeta" class="mt-1 text-xs font-semibold text-slate-500" data-skel="hide">—</p>
+          <div data-skel="show" class="mt-2 h-3 w-40 skel"></div>
+        </div>
+
+        <div class="text-right">
+          <p id="overallPct" class="text-2xl font-extrabold text-brand-700" data-skel="hide">0%</p>
+          <div data-skel="show" class="ml-auto h-7 w-14 skel"></div>
+        </div>
+      </div>
+
+      <div class="mt-3 h-3.5 w-full rounded-full bg-slate-200 overflow-hidden">
+        <div id="overallBar" class="bar-anim h-3.5 w-0 rounded-full bg-brand-600"></div>
+      </div>
+    </section>
+
+    <!-- MY LESSONS PROGRESS (REORDERED 1-2-3-4) -->
+    <section class="mt-6 rounded-3xl bg-white shadow-soft ring-1 ring-black/5 p-6 sm:p-7 reveal">
+      <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <h2 class="text-3xl font-extrabold text-slate-900 sm:text-4xl">My Lessons Progress</h2>
+        <p id="lessonsMeta" class="text-sm font-semibold text-slate-500" data-skel="hide">—</p>
+        <div data-skel="show" class="h-4 w-40 skel"></div>
+      </div>
+
+      <div class="mt-6 grid gap-5 lg:grid-cols-2">
+        <!-- LESSON 1 -->
+        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm min-h-[170px] flex flex-col floaty">
           <div class="flex items-start justify-between gap-4">
-            <div>
-              <p class="text-sm font-extrabold text-slate-900">Lesson 3: Written Communication Skills</p>
-              <span id="l3Badge" class="mt-3 inline-flex items-center rounded-full bg-sky-100 px-4 py-1.5 text-sm font-extrabold text-sky-800">
-                In Progress
+            <div class="min-w-0">
+              <p class="text-sm font-extrabold text-slate-900">Lesson 1: Introduction to Communication</p>
+              <span id="l1Badge" class="mt-3 inline-flex items-center gap-2 rounded-full bg-slate-100 px-4 py-1.5 text-sm font-extrabold text-slate-800" data-skel="hide">
+                ⏳ Loading
               </span>
+              <span data-skel="show" class="mt-3 inline-block h-8 w-28 skel"></span>
             </div>
-            <button id="l3Btn" class="rounded-2xl bg-brand-500 px-8 py-2.5 text-sm font-extrabold text-white hover:bg-brand-600">
-              Continue
+            <button id="l1Btn" class="btn-pop rounded-2xl bg-slate-100 px-8 py-2.5 text-sm font-extrabold text-slate-800 hover:bg-slate-200" data-skel="hide">
+              Loading
             </button>
+            <div data-skel="show" class="h-10 w-28 skel rounded-2xl"></div>
           </div>
 
           <div class="mt-auto pt-5 flex items-center gap-5">
             <div class="h-2.5 w-full rounded-full bg-slate-200 overflow-hidden">
-              <div id="l3Bar" class="h-2.5 w-[45%] bg-brand-700"></div>
+              <div id="l1Bar" class="bar-anim h-2.5 w-0 bg-brand-700"></div>
             </div>
-            <p id="l3Pct" class="text-sm font-extrabold text-slate-900">45%</p>
+            <p id="l1Pct" class="text-sm font-extrabold text-slate-900" data-skel="hide">0%</p>
+            <div data-skel="show" class="h-4 w-10 skel"></div>
           </div>
         </div>
 
         <!-- LESSON 2 -->
-        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm min-h-[170px] flex flex-col">
+        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm min-h-[170px] flex flex-col floaty">
           <div class="flex items-start justify-between gap-4">
-            <div>
+            <div class="min-w-0">
               <p class="text-sm font-extrabold text-slate-900">Lesson 2: Verbal and Non-Verbal Communication</p>
-              <span id="l2Badge" class="mt-3 inline-flex items-center rounded-full bg-emerald-100 px-4 py-1.5 text-sm font-extrabold text-emerald-800">
-                Completed
+              <span id="l2Badge" class="mt-3 inline-flex items-center gap-2 rounded-full bg-slate-100 px-4 py-1.5 text-sm font-extrabold text-slate-800" data-skel="hide">
+                ⏳ Loading
               </span>
+              <span data-skel="show" class="mt-3 inline-block h-8 w-28 skel"></span>
             </div>
-            <button id="l2Btn" class="rounded-2xl bg-emerald-100 px-8 py-2.5 text-sm font-extrabold text-emerald-800 hover:bg-emerald-200">
-              Review
+            <button id="l2Btn" class="btn-pop rounded-2xl bg-slate-100 px-8 py-2.5 text-sm font-extrabold text-slate-800 hover:bg-slate-200" data-skel="hide">
+              Loading
             </button>
+            <div data-skel="show" class="h-10 w-28 skel rounded-2xl"></div>
           </div>
 
           <div class="mt-auto pt-5 flex items-center gap-5">
             <div class="h-2.5 w-full rounded-full bg-slate-200 overflow-hidden">
-              <div id="l2Bar" class="h-2.5 w-full bg-brand-700"></div>
+              <div id="l2Bar" class="bar-anim h-2.5 w-0 bg-brand-700"></div>
             </div>
-            <p id="l2Pct" class="text-sm font-extrabold text-slate-900">100%</p>
+            <p id="l2Pct" class="text-sm font-extrabold text-slate-900" data-skel="hide">0%</p>
+            <div data-skel="show" class="h-4 w-10 skel"></div>
+          </div>
+        </div>
+
+        <!-- LESSON 3 -->
+        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm min-h-[170px] flex flex-col floaty">
+          <div class="flex items-start justify-between gap-4">
+            <div class="min-w-0">
+              <p class="text-sm font-extrabold text-slate-900">Lesson 3: Written Communication Skills</p>
+              <span id="l3Badge" class="mt-3 inline-flex items-center gap-2 rounded-full bg-slate-100 px-4 py-1.5 text-sm font-extrabold text-slate-800" data-skel="hide">
+                ⏳ Loading
+              </span>
+              <span data-skel="show" class="mt-3 inline-block h-8 w-28 skel"></span>
+            </div>
+            <button id="l3Btn" class="btn-pop rounded-2xl bg-slate-100 px-8 py-2.5 text-sm font-extrabold text-slate-800 hover:bg-slate-200" data-skel="hide">
+              Loading
+            </button>
+            <div data-skel="show" class="h-10 w-28 skel rounded-2xl"></div>
+          </div>
+
+          <div class="mt-auto pt-5 flex items-center gap-5">
+            <div class="h-2.5 w-full rounded-full bg-slate-200 overflow-hidden">
+              <div id="l3Bar" class="bar-anim h-2.5 w-0 bg-brand-700"></div>
+            </div>
+            <p id="l3Pct" class="text-sm font-extrabold text-slate-900" data-skel="hide">0%</p>
+            <div data-skel="show" class="h-4 w-10 skel"></div>
           </div>
         </div>
 
         <!-- LESSON 4 -->
-        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm min-h-[170px] flex flex-col">
+        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm min-h-[170px] flex flex-col floaty">
           <div class="flex items-start justify-between gap-4">
-            <div>
+            <div class="min-w-0">
               <p class="text-sm font-extrabold text-slate-900">Lesson 4: Presentation and Public Speaking</p>
-              <span id="l4Badge" class="mt-3 inline-flex items-center rounded-full bg-slate-100 px-4 py-1.5 text-sm font-extrabold text-slate-800">
-                Not Started
+              <span id="l4Badge" class="mt-3 inline-flex items-center gap-2 rounded-full bg-slate-100 px-4 py-1.5 text-sm font-extrabold text-slate-800" data-skel="hide">
+                ⏳ Loading
               </span>
+              <span data-skel="show" class="mt-3 inline-block h-8 w-28 skel"></span>
             </div>
-            <button id="l4Btn" class="rounded-2xl bg-slate-100 px-8 py-2.5 text-sm font-extrabold text-slate-800 hover:bg-slate-200">
-              Start
+            <button id="l4Btn" class="btn-pop rounded-2xl bg-slate-100 px-8 py-2.5 text-sm font-extrabold text-slate-800 hover:bg-slate-200" data-skel="hide">
+              Loading
             </button>
+            <div data-skel="show" class="h-10 w-28 skel rounded-2xl"></div>
           </div>
 
           <div class="mt-auto pt-5 flex items-center gap-5">
             <div class="h-2.5 w-full rounded-full bg-slate-200 overflow-hidden">
-              <div id="l4Bar" class="h-2.5 w-[0%] bg-brand-700"></div>
+              <div id="l4Bar" class="bar-anim h-2.5 w-0 bg-brand-700"></div>
             </div>
-            <p id="l4Pct" class="text-sm font-extrabold text-slate-900">0%</p>
+            <p id="l4Pct" class="text-sm font-extrabold text-slate-900" data-skel="hide">0%</p>
+            <div data-skel="show" class="h-4 w-10 skel"></div>
           </div>
         </div>
       </div>
     </section>
   </main>
 
-  <!-- ✅ Bottom popup toast (locked message) -->
+  <!-- Bottom popup toast (locked message) -->
   <div id="lockToast" class="fixed bottom-6 left-1/2 z-[90] hidden -translate-x-1/2">
     <div class="flex items-start gap-3 rounded-2xl bg-slate-900 px-5 py-4 text-white shadow-soft ring-1 ring-white/10">
       <div class="mt-0.5">
@@ -420,7 +532,7 @@
         <p id="lockToastMsg" class="mt-0.5 text-white/80">Finish the required lesson to unlock.</p>
       </div>
       <button id="lockToastClose"
-        class="ml-2 rounded-lg p-1 text-white/70 hover:bg-white/10 hover:text-white" aria-label="Close">
+        class="ml-2 rounded-lg p-1 text-white/70 hover:bg-white/10 hover:text-white btn-pop" aria-label="Close">
         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
         </svg>
@@ -428,14 +540,13 @@
     </div>
   </div>
 
-  <!-- ✅ SIGN OUT CONFIRM MODAL (same as index.html) -->
-  <div id="signOutModal" class="fixed inset-0 z-[95] hidden">
+  <!-- SIGN OUT CONFIRM MODAL -->
+  <div id="signOutModal" class="fixed inset-0 z-[95] hidden" aria-hidden="true" role="dialog" aria-modal="true">
     <div id="signOutBackdrop" class="absolute inset-0 bg-black/40 backdrop-blur-sm fade-in"></div>
 
     <div class="relative mx-auto flex min-h-full max-w-md items-center justify-center px-4 py-10">
       <div class="w-full rounded-3xl bg-white shadow-soft ring-1 ring-black/10 scale-in">
         <div class="p-5 sm:p-6 text-center">
-          <!-- icon on top center -->
           <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 ring-1 ring-black/5">
             <svg viewBox="0 0 24 24" class="h-6 w-6 text-brand-700" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="12" cy="12" r="10" />
@@ -444,18 +555,16 @@
             </svg>
           </div>
 
-          <!-- ✅ removed extra text "You will be logged out..." -->
           <h3 class="mt-3 text-base font-extrabold text-slate-900">Are you sure you want to sign out?</h3>
 
-          <!-- ✅ same size buttons beside -->
           <div class="mt-5 grid grid-cols-2 gap-3">
             <button id="signOutNo" type="button"
-              class="w-full rounded-xl bg-slate-100 px-5 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-200 ring-1 ring-black/5">
+              class="btn-pop w-full rounded-xl bg-slate-100 px-5 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-200 ring-1 ring-black/5">
               No
             </button>
 
             <button id="signOutYes" type="button"
-              class="w-full rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-700 ring-1 ring-black/5">
+              class="btn-pop w-full rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-700 ring-1 ring-black/5">
               Yes
             </button>
           </div>
@@ -465,7 +574,7 @@
   </div>
 
   <!-- AVATAR PICKER MODAL -->
-  <div id="avatarModal" class="fixed inset-0 z-[80] hidden">
+  <div id="avatarModal" class="fixed inset-0 z-[80] hidden" aria-hidden="true" role="dialog" aria-modal="true">
     <div id="avatarBackdrop" class="absolute inset-0 bg-slate-900/45 backdrop-blur-sm fade-in"></div>
 
     <div class="relative mx-auto flex min-h-full max-w-3xl items-center justify-center px-4 py-10">
@@ -475,7 +584,7 @@
             <p class="text-lg font-extrabold text-slate-900">Choose your profile icon</p>
             <p class="mt-1 text-sm font-semibold text-slate-500">Pick one to personalize your account.</p>
           </div>
-          <button id="avatarClose" class="rounded-xl p-2 text-slate-600 hover:bg-slate-100" aria-label="Close">
+          <button id="avatarClose" class="btn-pop rounded-xl p-2 text-slate-600 hover:bg-slate-100" aria-label="Close">
             <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
             </svg>
@@ -485,11 +594,11 @@
         <div class="px-6 pt-5">
           <div class="flex flex-wrap gap-2">
             <button data-tab="characters"
-              class="avatar-tab rounded-full bg-brand-50 px-4 py-2 text-sm font-extrabold text-brand-800 ring-1 ring-black/5">
+              class="avatar-tab btn-pop rounded-full bg-brand-50 px-4 py-2 text-sm font-extrabold text-brand-800 ring-1 ring-black/5">
               Characters
             </button>
             <button data-tab="animals"
-              class="avatar-tab rounded-full bg-white px-4 py-2 text-sm font-extrabold text-slate-700 ring-1 ring-black/5 hover:bg-slate-50">
+              class="avatar-tab btn-pop rounded-full bg-white px-4 py-2 text-sm font-extrabold text-slate-700 ring-1 ring-black/5 hover:bg-slate-50">
               Animals
             </button>
           </div>
@@ -500,7 +609,7 @@
 
           <div class="mt-6 flex items-center justify-end gap-3">
             <button id="avatarCancel"
-              class="rounded-xl bg-slate-100 px-5 py-3 text-sm font-extrabold text-slate-800 hover:bg-slate-200">
+              class="btn-pop rounded-xl bg-slate-100 px-5 py-3 text-sm font-extrabold text-slate-800 hover:bg-slate-200">
               Cancel
             </button>
           </div>
@@ -509,7 +618,7 @@
     </div>
   </div>
 
-  <!-- ✅ Firebase only (NO localStorage) -->
+  <!-- Firebase only (NO localStorage) -->
   <script type="module">
     import { auth, db } from "./firebase.js";
     import {
@@ -519,14 +628,17 @@
       browserSessionPersistence
     } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 
-    import {
-      doc,
-      getDoc,
-      setDoc
-    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+    import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
-    // ✅ session only
+    // session only
     try { await setPersistence(auth, browserSessionPersistence); } catch (_) {}
+
+    // ===== Loading skeleton toggle =====
+    function setLoading(on) {
+      document.documentElement.classList.toggle("is-loading", !!on);
+    }
+    // Start in loading state (until Firestore loads)
+    setLoading(true);
 
     // ===== Mobile menu =====
     const menuBtn = document.getElementById("menuBtn");
@@ -608,8 +720,6 @@
     });
     document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeUserDropdown(); });
 
-    // ✅ IMPORTANT: do not hide errors anymore
-
     function maybeRedirectLocked(p) {
       const role = String(p?.role || "student").toLowerCase().trim();
       if (role === "student" && p?.locked === true) {
@@ -631,7 +741,6 @@
       } catch (e) {
         const msg = String(e?.message || "");
         if (msg.toLowerCase().includes("missing or insufficient permissions") || msg.toLowerCase().includes("permission-denied")) {
-          // If rules blocked access, bounce to locked page as a safe default.
           window.location.href = "locked.html";
         }
         return {};
@@ -704,7 +813,7 @@
       if (elYear) elYear.textContent = yearLevel;
     }
 
-    // ===== Lesson progress (unchanged logic, Firestore) =====
+    // ===== Lesson progress (Firestore) =====
     const PROGRESS_DOCS = { 1: "lesson1", 2: "lesson2", 3: "lesson3", 4: "lesson4" };
     function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
 
@@ -740,43 +849,106 @@
       return !!s.complete || (s.progress >= 100);
     }
 
+    function badgeContent(type) {
+      // returns { text, icon } using emoji for quick scan
+      if (type === "locked") return { icon: "🔒", text: "Locked" };
+      if (type === "done") return { icon: "✅", text: "Completed" };
+      if (type === "progress") return { icon: "⏳", text: "In Progress" };
+      return { icon: "▶", text: "Not Started" };
+    }
+
     function setBadgeAndBtn(lessonNo, badgeEl, btnEl, pct, isComplete, isLocked) {
       if (!badgeEl || !btnEl) return;
 
       if (isLocked) {
-        badgeEl.textContent = "Locked";
-        badgeEl.className = "mt-3 inline-flex items-center rounded-full bg-slate-100 px-4 py-1.5 text-sm font-extrabold text-slate-800";
+        const b = badgeContent("locked");
+        badgeEl.textContent = `${b.icon} ${b.text}`;
+        badgeEl.className = "mt-3 inline-flex items-center gap-2 rounded-full bg-slate-100 px-4 py-1.5 text-sm font-extrabold text-slate-800";
       } else if (isComplete) {
-        badgeEl.textContent = "Completed";
-        badgeEl.className = "mt-3 inline-flex items-center rounded-full bg-emerald-100 px-4 py-1.5 text-sm font-extrabold text-emerald-800";
+        const b = badgeContent("done");
+        badgeEl.textContent = `${b.icon} ${b.text}`;
+        badgeEl.className = "mt-3 inline-flex items-center gap-2 rounded-full bg-emerald-100 px-4 py-1.5 text-sm font-extrabold text-emerald-800";
       } else if (pct > 0) {
-        badgeEl.textContent = "In Progress";
-        badgeEl.className = "mt-3 inline-flex items-center rounded-full bg-sky-100 px-4 py-1.5 text-sm font-extrabold text-sky-800";
+        const b = badgeContent("progress");
+        badgeEl.textContent = `${b.icon} ${b.text}`;
+        badgeEl.className = "mt-3 inline-flex items-center gap-2 rounded-full bg-sky-100 px-4 py-1.5 text-sm font-extrabold text-sky-800";
       } else {
-        badgeEl.textContent = "Not Started";
-        badgeEl.className = "mt-3 inline-flex items-center rounded-full bg-slate-100 px-4 py-1.5 text-sm font-extrabold text-slate-800";
+        const b = badgeContent("start");
+        badgeEl.textContent = `${b.icon} ${b.text}`;
+        badgeEl.className = "mt-3 inline-flex items-center gap-2 rounded-full bg-slate-100 px-4 py-1.5 text-sm font-extrabold text-slate-800";
       }
 
       if (isLocked) {
         btnEl.textContent = "Locked";
         btnEl.disabled = false;
-        btnEl.className = "rounded-2xl bg-slate-100 px-8 py-2.5 text-sm font-extrabold text-slate-800 hover:bg-slate-200";
+        btnEl.className = "btn-pop rounded-2xl bg-slate-100 px-8 py-2.5 text-sm font-extrabold text-slate-800 hover:bg-slate-200";
         btnEl.onclick = () => showLockToast(`Finish Lesson ${lessonNo - 1} first to unlock Lesson ${lessonNo}.`);
         return;
       }
 
       if (isComplete) {
         btnEl.textContent = "Review";
-        btnEl.className = "rounded-2xl bg-emerald-100 px-8 py-2.5 text-sm font-extrabold text-emerald-800 hover:bg-emerald-200";
+        btnEl.className = "btn-pop rounded-2xl bg-emerald-100 px-8 py-2.5 text-sm font-extrabold text-emerald-800 hover:bg-emerald-200";
       } else if (pct > 0) {
         btnEl.textContent = "Continue";
-        btnEl.className = "rounded-2xl bg-brand-500 px-8 py-2.5 text-sm font-extrabold text-white hover:bg-brand-600";
+        btnEl.className = "btn-pop rounded-2xl bg-brand-500 px-8 py-2.5 text-sm font-extrabold text-white hover:bg-brand-600";
       } else {
         btnEl.textContent = "Start";
-        btnEl.className = "rounded-2xl bg-slate-100 px-8 py-2.5 text-sm font-extrabold text-slate-800 hover:bg-slate-200";
+        btnEl.className = "btn-pop rounded-2xl bg-slate-100 px-8 py-2.5 text-sm font-extrabold text-slate-800 hover:bg-slate-200";
       }
 
       btnEl.onclick = () => { window.location.href = `lesson-${lessonNo}.html`; };
+    }
+
+    function applyContinueCard(state) {
+      const title = document.getElementById("continueTitle");
+      const sub = document.getElementById("continueSub");
+      const btn = document.getElementById("continueBtn");
+      const meta = document.getElementById("continueMeta");
+
+      // sequential lock rule: next is first lesson not complete
+      let next = 1;
+      for (let i = 1; i <= 4; i++) {
+        if (!getIsComplete(state, i)) { next = i; break; }
+        if (i === 4) next = 4; // all complete -> keep 4
+      }
+
+      const p = clamp(state?.[next]?.progress || 0, 0, 100);
+      const done = getIsComplete(state, next);
+
+      const lessonTitle = [
+        "",
+        "Lesson 1: Introduction to Communication",
+        "Lesson 2: Verbal and Non-Verbal Communication",
+        "Lesson 3: Written Communication Skills",
+        "Lesson 4: Presentation and Public Speaking",
+      ][next] || `Lesson ${next}`;
+
+      if (title) title.textContent = lessonTitle;
+      if (sub) {
+        if (done && next === 4 && getIsComplete(state, 1) && getIsComplete(state, 2) && getIsComplete(state, 3) && getIsComplete(state, 4)) {
+          sub.textContent = "🎉 You completed all lessons. Review anytime!";
+        } else if (done) {
+          sub.textContent = "Completed — you can review to strengthen your skills.";
+        } else if (p > 0) {
+          sub.textContent = `You’re ${p}% done — keep going!`;
+        } else {
+          sub.textContent = "Start now and unlock the next lesson.";
+        }
+      }
+
+      if (btn) {
+        btn.href = `lesson-${next}.html`;
+        btn.innerHTML = `
+          <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 5v14l11-7L8 5z" />
+          </svg>
+          ${done ? "Review" : (p > 0 ? "Continue" : "Start")}
+        `;
+      }
+
+      const completedCount = [1,2,3,4].filter(i => getIsComplete(state, i)).length;
+      if (meta) meta.textContent = `${completedCount}/4 completed`;
     }
 
     function applyProgressUI(state) {
@@ -791,6 +963,25 @@
       const overallBar = document.getElementById("overallBar");
       if (overallPct) overallPct.textContent = `${overall}%`;
       if (overallBar) overallBar.style.width = `${overall}%`;
+
+      const completedCount = [1,2,3,4].filter(i => getIsComplete(state, i)).length;
+
+      // Determine next lesson (sequential)
+      let next = 1;
+      for (let i = 1; i <= 4; i++) {
+        if (!getIsComplete(state, i)) { next = i; break; }
+        if (i === 4) next = 4;
+      }
+
+      const overallMeta = document.getElementById("overallMeta");
+      const lessonsMeta = document.getElementById("lessonsMeta");
+      if (overallMeta) {
+        if (completedCount === 4) overallMeta.textContent = "4/4 completed • Great job!";
+        else overallMeta.textContent = `${completedCount}/4 completed • Next: Lesson ${next}`;
+      }
+      if (lessonsMeta) {
+        lessonsMeta.textContent = completedCount === 4 ? "All lessons completed 🎉" : `${completedCount} completed • Keep going`;
+      }
 
       const rows = [
         { n: 1, pct: p1, bar: "l1Bar", pctEl: "l1Pct", badge: "l1Badge", btn: "l1Btn" },
@@ -810,9 +1001,11 @@
 
         setBadgeAndBtn(r.n, document.getElementById(r.badge), document.getElementById(r.btn), r.pct, isComplete, isLocked);
       });
+
+      applyContinueCard(state);
     }
 
-    // ===== Avatar picker (same UI, Firestore save) =====
+    // ===== Avatar picker (Firestore save) =====
     const avatarBtn = document.getElementById("avatarBtn");
     const avatarModal = document.getElementById("avatarModal");
     const avatarBackdrop = document.getElementById("avatarBackdrop");
@@ -853,25 +1046,51 @@
       ],
     };
 
+    // ===== Accessible focus trap (for modals) =====
+    function trapFocus(modalEl) {
+      if (!modalEl) return () => {};
+      const selector = 'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])';
+      const getFocusable = () => Array.from(modalEl.querySelectorAll(selector)).filter(el => el.offsetParent !== null);
+      function onKeyDown(e) {
+        if (e.key !== "Tab") return;
+        const focusables = getFocusable();
+        if (!focusables.length) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+      modalEl.addEventListener("keydown", onKeyDown);
+      return () => modalEl.removeEventListener("keydown", onKeyDown);
+    }
+    let __releaseFocus = null;
+
     function openAvatarModal() {
       avatarModal.classList.remove("hidden");
+      avatarModal.setAttribute("aria-hidden", "false");
       avatarBtn.setAttribute("aria-expanded", "true");
       setActiveTab("characters");
+      document.body.classList.add("overflow-hidden");
+      __releaseFocus?.();
+      __releaseFocus = trapFocus(avatarModal);
       setTimeout(() => avatarClose.focus(), 0);
-      document.addEventListener("keydown", onEsc);
+      document.addEventListener("keydown", onEscAvatar);
     }
     function closeAvatarModal() {
       avatarModal.classList.add("hidden");
+      avatarModal.setAttribute("aria-hidden", "true");
       avatarBtn.setAttribute("aria-expanded", "false");
+      document.body.classList.remove("overflow-hidden");
+      __releaseFocus?.(); __releaseFocus = null;
       avatarBtn.focus();
-      document.removeEventListener("keydown", onEsc);
+      document.removeEventListener("keydown", onEscAvatar);
     }
-    function onEsc(e) { if (e.key === "Escape") closeAvatarModal(); }
+    function onEscAvatar(e) { if (e.key === "Escape") closeAvatarModal(); }
 
     function setActiveTab(tabKey) {
       tabs.forEach(btn => {
         const isActive = btn.getAttribute("data-tab") === tabKey;
-        btn.className = "avatar-tab rounded-full px-4 py-2 text-sm font-extrabold ring-1 ring-black/5 " +
+        btn.className = "avatar-tab btn-pop rounded-full px-4 py-2 text-sm font-extrabold ring-1 ring-black/5 " +
           (isActive ? "bg-brand-50 text-brand-800" : "bg-white text-slate-700 hover:bg-slate-50");
       });
       renderGrid(tabKey);
@@ -885,7 +1104,7 @@
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className =
-          "group flex flex-col items-center justify-center rounded-2xl bg-slate-50 p-3 ring-1 ring-black/5 hover:bg-white hover:shadow-soft focus:outline-none focus:ring-4 focus:ring-brand-200 transition";
+          "btn-pop group flex flex-col items-center justify-center rounded-2xl bg-slate-50 p-3 ring-1 ring-black/5 hover:bg-white hover:shadow-soft focus:outline-none focus:ring-4 focus:ring-brand-200 transition";
 
         const tile = document.createElement("div");
         tile.className = "flex h-14 w-14 items-center justify-center rounded-2xl bg-white ring-1 ring-black/5";
@@ -973,20 +1192,28 @@
       clearTimeout(__lockToastTimer);
     });
 
-    // ===== Sign-out modal wiring (WHAT TO CHANGE/UPDATE) =====
+    // ===== Sign-out modal wiring =====
     const signOutModal = document.getElementById("signOutModal");
     const signOutBackdrop = document.getElementById("signOutBackdrop");
     const signOutYes = document.getElementById("signOutYes");
     const signOutNo = document.getElementById("signOutNo");
 
+    let __releaseSignOutFocus = null;
+
     function openSignOutModal() {
       closeUserDropdown();
       signOutModal?.classList.remove("hidden");
+      signOutModal?.setAttribute("aria-hidden", "false");
       document.body.classList.add("overflow-hidden");
+      __releaseSignOutFocus?.();
+      __releaseSignOutFocus = trapFocus(signOutModal);
+      setTimeout(() => signOutNo?.focus(), 0);
     }
     function closeSignOutModal() {
       signOutModal?.classList.add("hidden");
+      signOutModal?.setAttribute("aria-hidden", "true");
       document.body.classList.remove("overflow-hidden");
+      __releaseSignOutFocus?.(); __releaseSignOutFocus = null;
     }
 
     signOutNo?.addEventListener("click", closeSignOutModal);
@@ -1008,18 +1235,18 @@
     // expose for other pages
     window.__pcSignOut = doSignOut;
 
-    // ✅ update: open modal instead of direct sign out (dropdown + profile button)
+    // open modal instead of direct sign out
     signOutBtn?.addEventListener("click", (e) => { e.preventDefault(); openSignOutModal(); });
     mSignOutBtn?.addEventListener("click", (e) => { e.preventDefault(); openSignOutModal(); });
     profileSignOutBtn?.addEventListener("click", (e) => { e.preventDefault(); openSignOutModal(); });
 
-    // ✅ Yes button confirms sign out
+    // Yes button confirms sign out
     signOutYes?.addEventListener("click", async () => {
       closeSignOutModal();
       await doSignOut();
     });
 
-    // ✅ Auth listener
+    // Auth listener
     onAuthStateChanged(auth, async (user) => {
       __currentUser = user || null;
 
@@ -1046,14 +1273,36 @@
       applyAuthUI();
       applyProfileData();
       applyAvatar();
-      applyProgressUI(progressState);
+
+      // apply progress (this triggers bar animations)
+      // slight delay so initial widths are at 0, then animate to target
+      requestAnimationFrame(() => {
+        applyProgressUI(progressState);
+      });
+
+      // stop skeleton loading
+      setLoading(false);
     });
   </script>
 
+  <!-- Your existing app.js -->
   <script type="module" src="./app.js"></script>
+
   <script>
     // Ensure sign-out uses Firebase
     window.signOut = () => window.__pcSignOut?.();
+
+    // Reveal on scroll (animations)
+    const revealEls = document.querySelectorAll(".reveal, .reveal-scale");
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          e.target.classList.add("show");
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    revealEls.forEach(el => io.observe(el));
   </script>
 </body>
 </html>
