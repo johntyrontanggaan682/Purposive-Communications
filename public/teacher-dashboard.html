@@ -561,12 +561,30 @@
                   <table class="min-w-full text-left text-sm">
                     <thead class="bg-white sticky top-0 z-10">
                       <tr class="text-[11px] font-extrabold uppercase tracking-wide text-slate-500 border-b border-slate-100">
-                        <th class="py-3 px-4">Student</th>
-                        <th class="py-3 px-4">L1</th>
-                        <th class="py-3 px-4">L2</th>
-                        <th class="py-3 px-4">L3</th>
-                        <th class="py-3 px-4">L4</th>
-                        <th class="py-3 px-4">Overall</th>
+                        <th class="py-3 px-4" rowspan="2">Student</th>
+                        <th class="py-3 px-4 text-center" colspan="4">Lesson 1</th>
+                        <th class="py-3 px-4 text-center" colspan="4">Lesson 2</th>
+                        <th class="py-3 px-4 text-center" colspan="4">Lesson 3</th>
+                        <th class="py-3 px-4 text-center" colspan="1">Lesson 4</th>
+                        <th class="py-3 px-4" rowspan="2">Overall</th>
+                      </tr>
+                      <tr class="text-[10px] font-extrabold uppercase tracking-wide text-slate-500 border-b border-slate-100">
+                        <th class="py-2 px-4 text-center">T1</th>
+                        <th class="py-2 px-4 text-center">T2</th>
+                        <th class="py-2 px-4 text-center">T3</th>
+                        <th class="py-2 px-4 text-center">T4</th>
+
+                        <th class="py-2 px-4 text-center">T1</th>
+                        <th class="py-2 px-4 text-center">T2</th>
+                        <th class="py-2 px-4 text-center">T3</th>
+                        <th class="py-2 px-4 text-center">T4</th>
+
+                        <th class="py-2 px-4 text-center">T1</th>
+                        <th class="py-2 px-4 text-center">T2</th>
+                        <th class="py-2 px-4 text-center">T3</th>
+                        <th class="py-2 px-4 text-center">T4</th>
+
+                        <th class="py-2 px-4 text-center">T1</th>
                       </tr>
                     </thead>
                     <tbody id="sectionStudentsTbody" class="divide-y divide-slate-100 bg-white"></tbody>
@@ -758,7 +776,7 @@
       <div class="w-full max-w-6xl h-full rounded-3xl bg-white shadow-soft ring-1 ring-black/10 overflow-hidden flex flex-col">
         <div class="bg-gradient-to-r from-brand-600 to-brand-500 px-7 py-5 flex items-start justify-between gap-4">
           <div>
-            <p class="text-xl font-extrabold text-white">Assessment Submission & Rubric</p>
+            <p class="text-xl font-extrabold text-white">Submission Grading</p>
             <p id="sStudentLine" class="text-sm font-semibold text-white/85 mt-0.5">—</p>
           </div>
 
@@ -788,18 +806,22 @@
                   <p class="text-xs font-extrabold text-slate-400 uppercase">Submitted Item</p>
                   <select id="sSubmissionSelect"
                     class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-semibold outline-none focus:ring-4 focus:ring-brand-200"></select>
+
+                  <div class="mt-3 flex items-center gap-2">
+                    <button id="sViewFileBtn" type="button"
+                      class="inline-flex items-center justify-center rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-extrabold text-white shadow-softer hover:bg-brand-700">
+                      View / Download
+                    </button>
+                  </div>
+
                   <p id="sSubmissionInfo" class="mt-2 text-xs text-slate-600 font-semibold">—</p>
                 </div>
 
                 <div>
-                  <p class="text-xs font-extrabold text-slate-400 uppercase">Final Grade</p>
-                  <div class="mt-2 flex items-center gap-2">
+                  <p class="text-xs font-extrabold text-slate-400 uppercase">Grade</p>
+                  <div class="mt-2">
                     <input id="sFinalGrade" type="number" min="0" max="100" step="1" placeholder="0–100"
-                      class="w-28 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-extrabold outline-none focus:ring-4 focus:ring-brand-200" />
-                    <button id="autoGradeBtn" type="button"
-                      class="inline-flex items-center justify-center rounded-xl bg-slate-900 px-3.5 py-2.5 text-xs font-extrabold text-white hover:bg-slate-800 ring-1 ring-black/5">
-                      Auto
-                    </button>
+                      class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-extrabold outline-none focus:ring-4 focus:ring-brand-200" />
                   </div>
                   <p class="mt-2 text-xs text-slate-500 font-semibold">Letter: <span id="sLetterGrade" class="font-extrabold">—</span></p>
                 </div>
@@ -808,11 +830,6 @@
                   <p class="text-xs font-extrabold text-slate-400 uppercase">Reviewer</p>
                   <input id="sReviewer" type="text" placeholder="Teacher name"
                     class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:ring-4 focus:ring-brand-200" />
-                </div>
-                <div>
-                  <p class="text-xs font-extrabold text-slate-400 uppercase">Rubric Total</p>
-                  <p class="mt-2 text-4xl font-extrabold text-brand-700"><span id="sRubricPct">0</span>%</p>
-                  <p class="mt-1 text-xs text-slate-500 font-semibold"><span id="sRubricRaw">0</span>/<span id="sRubricMax">60</span></p>
                 </div>
               </div>
             </div>
@@ -825,54 +842,10 @@
               </div>
 
               <div class="rounded-2xl bg-white ring-1 ring-black/5 p-6">
-                <h3 class="text-lg font-extrabold text-slate-900">Rubric Scoring</h3>
-                <p class="mt-1 text-sm text-slate-600">Score each criterion (0–10). Total is calculated automatically.</p>
+                <h3 class="text-lg font-extrabold text-slate-900">Grading Notes</h3>
+                <p class="mt-1 text-sm text-slate-600">Optional feedback to the student (no rubric required).</p>
 
-                <div class="mt-5 grid gap-4 sm:grid-cols-2">
-                  <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-4">
-                    <p class="text-sm font-extrabold text-slate-900">Clarity & Coherence</p>
-                    <p class="text-xs text-slate-500 font-semibold mt-1">Clear message, logical flow, easy to follow.</p>
-                    <input id="rClarity" type="range" min="0" max="10" value="0" class="mt-3 w-full" />
-                    <p class="mt-2 text-sm font-extrabold text-slate-900"><span id="rClarityVal">0</span>/10</p>
-                  </div>
-
-                  <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-4">
-                    <p class="text-sm font-extrabold text-slate-900">Audience Awareness</p>
-                    <p class="text-xs text-slate-500 font-semibold mt-1">Appropriate for target reader/listener.</p>
-                    <input id="rAudience" type="range" min="0" max="10" value="0" class="mt-3 w-full" />
-                    <p class="mt-2 text-sm font-extrabold text-slate-900"><span id="rAudienceVal">0</span>/10</p>
-                  </div>
-
-                  <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-4">
-                    <p class="text-sm font-extrabold text-slate-900">Tone & Professionalism</p>
-                    <p class="text-xs text-slate-500 font-semibold mt-1">Tone matches purpose; polite and professional.</p>
-                    <input id="rTone" type="range" min="0" max="10" value="0" class="mt-3 w-full" />
-                    <p class="mt-2 text-sm font-extrabold text-slate-900"><span id="rToneVal">0</span>/10</p>
-                  </div>
-
-                  <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-4">
-                    <p class="text-sm font-extrabold text-slate-900">Organization & Structure</p>
-                    <p class="text-xs text-slate-500 font-semibold mt-1">Strong opening, body, closing; coherent sections.</p>
-                    <input id="rOrg" type="range" min="0" max="10" value="0" class="mt-3 w-full" />
-                    <p class="mt-2 text-sm font-extrabold text-slate-900"><span id="rOrgVal">0</span>/10</p>
-                  </div>
-
-                  <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-4">
-                    <p class="text-sm font-extrabold text-slate-900">Grammar & Mechanics</p>
-                    <p class="text-xs text-slate-500 font-semibold mt-1">Grammar, punctuation, spelling accuracy.</p>
-                    <input id="rGrammar" type="range" min="0" max="10" value="0" class="mt-3 w-full" />
-                    <p class="mt-2 text-sm font-extrabold text-slate-900"><span id="rGrammarVal">0</span>/10</p>
-                  </div>
-
-                  <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-4">
-                    <p class="text-sm font-extrabold text-slate-900">Persuasiveness / Purpose Match</p>
-                    <p class="text-xs text-slate-500 font-semibold mt-1">Meets communicative purpose (inform/persuade/request).</p>
-                    <input id="rPurpose" type="range" min="0" max="10" value="0" class="mt-3 w-full" />
-                    <p class="mt-2 text-sm font-extrabold text-slate-900"><span id="rPurposeVal">0</span>/10</p>
-                  </div>
-                </div>
-
-                <h4 class="mt-6 text-sm font-extrabold text-slate-900">Feedback</h4>
+                <h4 class="mt-5 text-sm font-extrabold text-slate-900">Feedback</h4>
                 <textarea id="sFeedback" rows="4" placeholder="Write feedback / required revisions…"
                   class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:ring-4 focus:ring-brand-200"></textarea>
 
@@ -887,10 +860,6 @@
                     <button id="markGradedBtn"
                       class="inline-flex items-center justify-center rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-extrabold text-white hover:bg-emerald-700 ring-1 ring-black/5">
                       Save & Mark Graded
-                    </button>
-                    <button id="saveRubricBtn"
-                      class="inline-flex items-center justify-center rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-extrabold text-white shadow-softer hover:bg-brand-700 focus:outline-none focus:ring-4 focus:ring-brand-200">
-                      Save Rubric
                     </button>
                   </div>
                 </div>
@@ -1694,10 +1663,22 @@
       };
     });
 
+    const taskProgress = {
+      // Lesson 1: 4 upload tasks
+      "1": { 1: { type: "upload", fileName: "" }, 2: { type: "upload", fileName: "" }, 3: { type: "upload", fileName: "" }, 4: { type: "upload", fileName: "" } },
+      // Lesson 2: 3 MCQ tasks + 1 upload task
+      "2": { 1: { type: "mcq", correct: 0, total: 0, pct: 0, submitted: false }, 2: { type: "mcq", correct: 0, total: 0, pct: 0, submitted: false }, 3: { type: "mcq", correct: 0, total: 0, pct: 0, submitted: false }, 4: { type: "upload", fileName: "" } },
+      // Lesson 3: 2 MCQ tasks + 1 upload + 1 MCQ+justification
+      "3": { 1: { type: "mcq", correct: 0, total: 0, pct: 0, submitted: false }, 2: { type: "mcq", correct: 0, total: 0, pct: 0, submitted: false }, 3: { type: "upload", fileName: "" }, 4: { type: "mcq", correct: 0, total: 0, pct: 0, submitted: false } },
+      // Lesson 4: 1 upload task
+      "4": { 1: { type: "upload", fileName: "" } },
+    };
+
     return {
       lessons,
       overallProgress: 0,
       quiz: { avgScore: 0, attempts: 0, failedAttempts: 0, lastAttemptAt: "", byLesson: {} },
+      taskProgress,
       assessment: {
         status: "Not started",
         submittedAt: "",
@@ -1755,6 +1736,84 @@
     const pctList = lessons.map(l => Number(l.pct || 0));
     const overallProgress = pctList.length ? Math.round(pctList.reduce((a, b) => a + b, 0) / pctList.length) : 0;
 
+    // ----------------------------------------------------------
+    // Task progress (per lesson)
+    // - Upload tasks: fileName
+    // - MCQ tasks: correct/total + pct (for tooltips + optional analytics)
+    // ----------------------------------------------------------
+    const taskProgress = makeDefaultLearning().taskProgress;
+
+    // Lesson 1: taskFiles.task1..task4 (fallback: assessmentFile)
+    {
+      const st = lessonById.lesson1 || {};
+      const tf = (st.taskFiles && typeof st.taskFiles === "object") ? st.taskFiles : {};
+      for (let t = 1; t <= 4; t++) {
+        const k = `task${t}`;
+        const fileName = String(tf?.[k] || "").trim() || (t === 1 ? String(st.assessmentFile || "").trim() : "");
+        taskProgress["1"][t] = { type: "upload", fileName };
+      }
+    }
+
+    // Lesson 2: quizScores keyed by part/task index "1","2","3" + upload task4VideoFile
+    function readMcqScore(st, scoreKey) {
+      const qs = (st?.quizScores && typeof st.quizScores === "object") ? st.quizScores : {};
+      const sc = qs?.[String(scoreKey)] || null;
+      const correct = Number(sc?.correct || 0);
+      const total = Number(sc?.total || 0);
+      const submitted = !!(total && (sc?.updatedAt || Object.keys(sc||{}).length));
+      const pct = total ? Math.round((correct / total) * 100) : 0;
+      const updatedAt = tsToMs(sc?.updatedAt) || tsToMs(st?.updatedAt) || 0;
+      return { type: "mcq", correct, total, pct, submitted, updatedAt };
+    }
+
+    {
+      const st = lessonById.lesson2 || {};
+      taskProgress["2"][1] = readMcqScore(st, 1);
+      taskProgress["2"][2] = readMcqScore(st, 2);
+      taskProgress["2"][3] = readMcqScore(st, 3);
+      taskProgress["2"][4] = { type: "upload", fileName: String(st.task4VideoFile || st.assessmentFile || "").trim() };
+    }
+
+    // Lesson 3: supports both NEW (quizScores per task) and OLD (flat quizAnswers + answer key)
+    {
+      const st = lessonById.lesson3 || {};
+
+      // New format (preferred): quizScores key "1" (Task1), "2" (Task2), "4" (Task4)
+      const t1 = readMcqScore(st, 1);
+      const t2 = readMcqScore(st, 2);
+      const t4 = readMcqScore(st, 4);
+
+      // Old format fallback: one quizAnswers object
+      const ans = (st.quizAnswers && typeof st.quizAnswers === "object") ? st.quizAnswers : null;
+      const key = QUIZ_ANSWER_KEYS[3] || [];
+      const oldSubmitted = ans && Object.keys(ans).length > 0 && key.length > 0;
+      if (oldSubmitted && !t1.submitted) {
+        let correct = 0;
+        for (let i = 0; i < key.length; i++) {
+          const v = (ans[i] != null) ? parseInt(ans[i], 10) : NaN;
+          if (v === key[i]) correct++;
+        }
+        taskProgress["3"][1] = { type: "mcq", correct, total: key.length, pct: Math.round((correct / key.length) * 100), submitted: true, updatedAt: tsToMs(st.updatedAt) || 0 };
+      } else {
+        taskProgress["3"][1] = t1;
+      }
+
+      taskProgress["3"][2] = t2;
+      // Upload task3 (name may vary depending on implementation)
+      const task3File = String(st.task3File || st.task3OutputFile || st.task3UploadFile || st.task4VideoFile || "").trim();
+      taskProgress["3"][3] = { type: "upload", fileName: task3File };
+      taskProgress["3"][4] = t4;
+    }
+
+    // Lesson 4: assessmentFile (infographic)
+    {
+      const st = lessonById.lesson4 || {};
+      taskProgress["4"][1] = { type: "upload", fileName: String(st.assessmentFile || "").trim() };
+    }
+
+    // ----------------------------------------------------------
+    // Assessment workflow (prototype): surface latest file from Lesson 1 + Lesson 4
+    // ----------------------------------------------------------
     const submissions = [];
     [1, 4].forEach((n) => {
       const lKey = `lesson${n}`;
@@ -1777,36 +1836,30 @@
       rubric: { clarity: 0, audience: 0, tone: 0, organization: 0, grammar: 0, purpose: 0 },
     };
 
-    function scoreQuiz(lessonNumber) {
-      const key = `lesson${lessonNumber}`;
-      const st = lessonById[key] || {};
-      const ans = (st.quizAnswers && typeof st.quizAnswers === "object") ? st.quizAnswers : null;
-      const answerKey = QUIZ_ANSWER_KEYS[lessonNumber] || [];
-      const updatedAt = tsToMs(st.updatedAt) || 0;
-
-      if (!ans || !answerKey.length) {
-        return { submitted: false, score: 0, lastAttemptAt: updatedAt ? msToISO(updatedAt) : "" };
-      }
-
-      let correct = 0;
-      for (let i = 0; i < answerKey.length; i++) {
-        const v = (ans[i] != null) ? parseInt(ans[i], 10) : NaN;
-        if (v === answerKey[i]) correct++;
-      }
-      const score = Math.round((correct / answerKey.length) * 100);
-      const submitted = Object.keys(ans).length > 0;
-
-      return { submitted, score, lastAttemptAt: updatedAt ? msToISO(updatedAt) : "" };
+    // ----------------------------------------------------------
+    // Quiz summary (used by dashboard analytics)
+    // - Lesson 2 score: average of Task 1-3 MCQ
+    // - Lesson 3 score: average of Task 1,2,4 MCQ (when available)
+    // ----------------------------------------------------------
+    function summarizeLessonMcq(lessonNo, taskNos) {
+      const l = taskProgress[String(lessonNo)] || {};
+      const vals = taskNos
+        .map(t => l[t])
+        .filter(x => x && x.type === "mcq" && x.total);
+      const submitted = vals.some(x => !!x.submitted);
+      const score = vals.length ? Math.round(vals.reduce((a,b)=>a+Number(b.pct||0),0) / vals.length) : 0;
+      const lastAtMs = vals.map(v => Number(v.updatedAt || 0)).sort((a,b)=>b-a)[0] || tsToMs((lessonById[`lesson${lessonNo}`]||{}).updatedAt) || 0;
+      return { submitted, score, lastAttemptAt: lastAtMs ? msToISO(lastAtMs) : "" };
     }
 
-    const q2 = scoreQuiz(2);
-    const q3 = scoreQuiz(3);
+    const q2 = summarizeLessonMcq(2, [1,2,3]);
+    const q3 = summarizeLessonMcq(3, [1,2,4]);
     const scoreVals = [q2, q3].filter(x => x.submitted).map(x => x.score);
     const avgScore = scoreVals.length ? Math.round(scoreVals.reduce((a,b)=>a+b,0) / scoreVals.length) : 0;
     const lastAttemptAt = [q2.lastAttemptAt, q3.lastAttemptAt].filter(Boolean).sort().slice(-1)[0] || "";
 
     const quiz = { avgScore, attempts: scoreVals.length, failedAttempts: 0, lastAttemptAt, byLesson: { 2: q2, 3: q3 } };
-    return { lessons, overallProgress, assessment, quiz };
+    return { lessons, overallProgress, taskProgress, assessment, quiz };
   }
 
   async function loadStudents() {
@@ -1890,6 +1943,7 @@
           progress: def.overallProgress,
           lessons: def.lessons,
           quiz: def.quiz,
+          taskProgress: def.taskProgress,
           assessment: def.assessment,
 
           __learningLoaded: false,
@@ -1920,6 +1974,7 @@
       student.progress = learning.overallProgress;
       student.lessons = learning.lessons;
       student.quiz = learning.quiz;
+      student.taskProgress = learning.taskProgress;
       student.assessment = learning.assessment;
       student.__learningLoaded = true;
     } catch (e) {
@@ -2285,6 +2340,58 @@
     `;
   }
 
+  // ==========================================================
+  // ✅ Lesson task cells (per-task progress + MCQ raw scores)
+  // ==========================================================
+  function fmtScoreRaw(t) {
+    if (!t || t.type !== "mcq") return "—";
+    const total = Number(t.total || 0);
+    const correct = Number(t.correct || 0);
+    if (!total) return "—";
+    return `${correct}/${total}`;
+  }
+
+  function taskCellHTML(task) {
+    if (!task) return `<span class="text-xs font-semibold text-slate-400">—</span>`;
+
+    if (task.type === "mcq") {
+      const raw = fmtScoreRaw(task);
+      const title = (task.submitted && task.total) ? `Score: ${raw} (${task.pct ?? 0}%)` : "Not attempted";
+      return `
+        <span title="${title}" class="inline-flex items-center justify-center rounded-xl bg-slate-50 px-3 py-1.5 text-xs font-extrabold text-slate-800 ring-1 ring-black/5">
+          ${raw}
+        </span>
+      `;
+    }
+
+    // upload / file submission
+    const file = String(task.fileName || "").trim();
+    const submitted = !!file;
+    return `
+      <span title="${submitted ? file : "No submission"}" class="inline-flex items-center justify-center rounded-xl px-3 py-1.5 text-xs font-extrabold ring-1 ring-black/5 ${submitted ? "bg-emerald-50 text-emerald-800" : "bg-slate-50 text-slate-500"}">
+        ${submitted ? "Submitted" : "—"}
+      </span>
+    `;
+  }
+
+  function getTask(student, lessonNo, taskNo) {
+    const tp = student?.taskProgress;
+    if (!tp || typeof tp !== "object") return null;
+    const l = tp[String(lessonNo)] || tp[lessonNo];
+    if (!l || typeof l !== "object") return null;
+    return l[String(taskNo)] || l[taskNo] || null;
+  }
+
+  function taskCSVValue(task) {
+    if (!task) return "";
+    if (task.type === "mcq") {
+      const total = Number(task.total || 0);
+      if (!total) return "";
+      return `${Number(task.correct || 0)}/${total}`;
+    }
+    return String(task.fileName || "").trim();
+  }
+
   function renderSectionStudentsTable() {
     const tbody = $("sectionStudentsTbody");
     if (!tbody) return;
@@ -2301,12 +2408,11 @@
     }
 
     if (!list.length) {
-      tbody.innerHTML = `<tr><td colspan="6" class="py-10 text-center text-sm text-slate-500">No students found.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="15" class="py-10 text-center text-sm text-slate-500">No students found.</td></tr>`;
       return;
     }
 
     tbody.innerHTML = list.map(s => {
-      const by = Object.fromEntries((s.lessons||[]).map(l => [l.key, l]));
       return `
         <tr class="hover:bg-slate-50/60 cursor-pointer" data-student="${s.id}">
           <td class="py-5 px-4 align-top">
@@ -2314,10 +2420,22 @@
             <div class="text-xs text-slate-500 font-semibold">${s.id}</div>
             <div class="text-xs text-slate-400">${s.email}</div>
           </td>
-          <td class="py-5 px-4 align-top">${lessonCellHTML(by.l1)}</td>
-          <td class="py-5 px-4 align-top">${lessonCellHTML(by.l2)}</td>
-          <td class="py-5 px-4 align-top">${lessonCellHTML(by.l3)}</td>
-          <td class="py-5 px-4 align-top">${lessonCellHTML(by.l4)}</td>
+          <td class="py-5 px-4 align-top text-center">${taskCellHTML(getTask(s, 1, 1))}</td>
+          <td class="py-5 px-4 align-top text-center">${taskCellHTML(getTask(s, 1, 2))}</td>
+          <td class="py-5 px-4 align-top text-center">${taskCellHTML(getTask(s, 1, 3))}</td>
+          <td class="py-5 px-4 align-top text-center">${taskCellHTML(getTask(s, 1, 4))}</td>
+
+          <td class="py-5 px-4 align-top text-center">${taskCellHTML(getTask(s, 2, 1))}</td>
+          <td class="py-5 px-4 align-top text-center">${taskCellHTML(getTask(s, 2, 2))}</td>
+          <td class="py-5 px-4 align-top text-center">${taskCellHTML(getTask(s, 2, 3))}</td>
+          <td class="py-5 px-4 align-top text-center">${taskCellHTML(getTask(s, 2, 4))}</td>
+
+          <td class="py-5 px-4 align-top text-center">${taskCellHTML(getTask(s, 3, 1))}</td>
+          <td class="py-5 px-4 align-top text-center">${taskCellHTML(getTask(s, 3, 2))}</td>
+          <td class="py-5 px-4 align-top text-center">${taskCellHTML(getTask(s, 3, 3))}</td>
+          <td class="py-5 px-4 align-top text-center">${taskCellHTML(getTask(s, 3, 4))}</td>
+
+          <td class="py-5 px-4 align-top text-center">${taskCellHTML(getTask(s, 4, 1))}</td>
           <td class="py-5 px-4 align-top">
             <div class="flex items-center gap-3">
               <div class="h-2.5 w-32 rounded-full bg-slate-200 overflow-hidden">
@@ -2374,7 +2492,6 @@
   let activeStudent = null;
   let lastFocusEl = null;
   let activeSubmission = null;
-  let __gradeManual = false;
 
   function renderTimeline(student) {
     const items = buildTimeline(student);
@@ -2465,7 +2582,6 @@
 
   function setAssessmentMeta(student) {
     const a = student.assessment || {};
-    const { pct } = rubricTotals(a.rubric || {});
     const lines = [];
     const task = assessmentTaskLine(student);
     if (task !== "—") lines.push(`Task: ${task}`);
@@ -2476,7 +2592,6 @@
     if (a.gradedAt) lines.push(`Graded: ${fmtDateTime(a.gradedAt)}`);
     const gLine = assessmentGradeLine(student);
     if (gLine) lines.push(gLine);
-    if (pct > 0) lines.push(`Rubric: ${pct}%`);
     $("dAssessMeta").textContent = lines.length ? lines.join(" • ") : "—";
   }
 
@@ -2557,66 +2672,28 @@
     applyStudentFilters();
   });
 
-  function setRubricUIFromStudent(student) {
-    const r = student.assessment?.rubric || {};
-    const map = [
-      ["rClarity","rClarityVal","clarity"],
-      ["rAudience","rAudienceVal","audience"],
-      ["rTone","rToneVal","tone"],
-      ["rOrg","rOrgVal","organization"],
-      ["rGrammar","rGrammarVal","grammar"],
-      ["rPurpose","rPurposeVal","purpose"],
-    ];
+  function setGradeUIFromStudent(student) {
+    const a = student.assessment || (student.assessment = {});
+    const reviewerEl = $("sReviewer");
+    const feedbackEl = $("sFeedback");
+    const gradeEl = $("sFinalGrade");
+    const letterEl = $("sLetterGrade");
 
-    map.forEach(([slider, label, key]) => {
-      $(slider).value = String(Number(r[key] || 0));
-      $(label).textContent = String(Number(r[key] || 0));
-    });
+    if (reviewerEl) reviewerEl.value = a.reviewer || "";
+    if (feedbackEl) feedbackEl.value = a.feedback || "";
 
-    $("sReviewer").value = student.assessment?.reviewer || "";
-    $("sFeedback").value = student.assessment?.feedback || "";
+    const g = (a.finalGrade != null && String(a.finalGrade) !== "")
+      ? clamp(Math.round(Number(a.finalGrade) || 0), 0, 100)
+      : 0;
+    if (gradeEl) gradeEl.value = String(g);
+    if (letterEl) letterEl.textContent = letterFromGrade(g);
 
-    const { pct } = rubricTotals(r);
-    const autoG = computeAutoFinalGrade(student, pct);
-    const savedG = student.assessment?.finalGrade;
-    __gradeManual = (savedG != null && String(savedG) !== "");
-    const g = (savedG != null && String(savedG) !== "") ? clamp(Math.round(Number(savedG) || 0), 0, 100) : autoG;
-
-    $("sFinalGrade").value = String(g);
-    $("sLetterGrade").textContent = letterFromGrade(g);
-
-    updateRubricTotals(student);
-  }
-
-  function getRubricFromUI() {
-    return {
-      clarity: Number($("rClarity").value || 0),
-      audience: Number($("rAudience").value || 0),
-      tone: Number($("rTone").value || 0),
-      organization: Number($("rOrg").value || 0),
-      grammar: Number($("rGrammar").value || 0),
-      purpose: Number($("rPurpose").value || 0),
-    };
-  }
-
-  function updateRubricTotals(student) {
-    const r = getRubricFromUI();
-    const { raw, max, pct } = rubricTotals(r);
-    $("sRubricRaw").textContent = String(raw);
-    $("sRubricMax").textContent = String(max);
-    $("sRubricPct").textContent = String(pct);
-
-    if (!__gradeManual) {
-      const g = computeAutoFinalGrade(student, pct);
-      $("sFinalGrade").value = String(g);
+    const st = a.status || "Not started";
+    const pill = $("sStatusPill");
+    if (pill) {
+      pill.textContent = st;
+      pill.className = `inline-flex items-center rounded-full px-4 py-1.5 text-xs font-extrabold ring-1 ring-black/5 ${assessPill(st)}`;
     }
-
-    const curG = clamp(Math.round(Number($("sFinalGrade").value || 0)), 0, 100);
-    $("sLetterGrade").textContent = letterFromGrade(curG);
-
-    const st = student.assessment?.status || "Not started";
-    $("sStatusPill").textContent = st;
-    $("sStatusPill").className = `inline-flex items-center rounded-full px-4 py-1.5 text-xs font-extrabold ring-1 ring-black/5 ${assessPill(st)}`;
   }
 
   function submissionLabel(sub) {
@@ -2676,7 +2753,7 @@ If this is a quiz-only lesson, show the quiz answers and score here.`;
 
     sel.value = "0";
     renderSubmissionUI(student, options[0]);
-    setRubricUIFromStudent(student);
+    setGradeUIFromStudent(student);
 
     $("submissionModal").classList.remove("hidden");
     document.body.classList.add("overflow-hidden");
@@ -2701,40 +2778,28 @@ If this is a quiz-only lesson, show the quiz answers and score here.`;
     renderSubmissionUI(activeStudent, pick);
   });
 
-  const rubricControls = [
-    ["rClarity","rClarityVal"],
-    ["rAudience","rAudienceVal"],
-    ["rTone","rToneVal"],
-    ["rOrg","rOrgVal"],
-    ["rGrammar","rGrammarVal"],
-    ["rPurpose","rPurposeVal"],
-  ];
-  rubricControls.forEach(([slider, label]) => {
-    $(slider)?.addEventListener("input", () => {
-      $(label).textContent = $(slider).value;
-      if (activeStudent) updateRubricTotals(activeStudent);
-    });
-  });
-
   $("sFinalGrade")?.addEventListener("input", () => {
-    __gradeManual = true;
-    const g = clamp(Math.round(Number($("sFinalGrade").value || 0)), 0, 100);
-    $("sFinalGrade").value = String(g);
-    $("sLetterGrade").textContent = letterFromGrade(g);
+    const gradeEl = $("sFinalGrade");
+    const letterEl = $("sLetterGrade");
+    if (!gradeEl || !letterEl) return;
+    const g = clamp(Math.round(Number(gradeEl.value || 0)), 0, 100);
+    gradeEl.value = String(g);
+    letterEl.textContent = letterFromGrade(g);
   });
 
-  $("autoGradeBtn")?.addEventListener("click", () => {
-    if (!activeStudent) return;
-    __gradeManual = false;
-    updateRubricTotals(activeStudent);
+  $("sViewFileBtn")?.addEventListener("click", () => {
+    const fileName = activeSubmission?.fileName;
+    if (!fileName) {
+      alert("No submitted file selected.");
+      return;
+    }
+    alert(`File storage is not connected yet.\n\nSubmitted file: ${fileName}`);
   });
 
-  function persistRubricToStudent(student) {
+  function persistGradeToStudent(student) {
     const a = student.assessment || (student.assessment = {});
     a.reviewer = $("sReviewer").value || "";
     a.feedback = $("sFeedback").value || "";
-    a.rubric = getRubricFromUI();
-
     const g = clamp(Math.round(Number($("sFinalGrade").value || 0)), 0, 100);
     a.finalGrade = g;
 
@@ -2748,17 +2813,9 @@ If this is a quiz-only lesson, show the quiz answers and score here.`;
     setAssessmentMeta(student);
   }
 
-  $("saveRubricBtn")?.addEventListener("click", () => {
-    if (!activeStudent) return;
-    persistRubricToStudent(activeStudent);
-    applyStudentFilters();
-    $("sSaveHint").textContent = "Saved!";
-    setTimeout(()=> $("sSaveHint").textContent = "Changes are stored locally (prototype).", 1200);
-  });
-
   $("markNeedsRevisionBtn")?.addEventListener("click", () => {
     if (!activeStudent) return;
-    persistRubricToStudent(activeStudent);
+    persistGradeToStudent(activeStudent);
     setAssessmentStatus(activeStudent, "Needs revision");
     computeStats(students);
     renderDashboardRisk();
@@ -2769,7 +2826,7 @@ If this is a quiz-only lesson, show the quiz answers and score here.`;
 
   $("markGradedBtn")?.addEventListener("click", () => {
     if (!activeStudent) return;
-    persistRubricToStudent(activeStudent);
+    persistGradeToStudent(activeStudent);
     setAssessmentStatus(activeStudent, "Graded");
     computeStats(students);
     renderDashboardRisk();
@@ -2804,16 +2861,34 @@ If this is a quiz-only lesson, show the quiz answers and score here.`;
 
   $("lessonsExportBtn")?.addEventListener("click", () => {
     // Export ALL students currently visible to the teacher (grouped by section columns)
-    const headers = ["Course","Year","Section","Student ID","Name","L1 State","L1 %","L2 State","L2 %","L3 State","L3 %","L4 State","L4 %","Overall %"];
+    const headers = [
+      "Course","Year","Section","Student ID","Name",
+      "L1 T1","L1 T2","L1 T3","L1 T4",
+      "L2 T1","L2 T2","L2 T3","L2 T4",
+      "L3 T1","L3 T2","L3 T3","L3 T4",
+      "L4 T1",
+      "Overall %"
+    ];
     const rows = students.map(s => {
-      const by = Object.fromEntries((s.lessons||[]).map(l => [l.key, l]));
       return [
         s.course, s.year, s.section,
         s.id, s.name,
-        by.l1?.state || "—", by.l1?.pct ?? 0,
-        by.l2?.state || "—", by.l2?.pct ?? 0,
-        by.l3?.state || "—", by.l3?.pct ?? 0,
-        by.l4?.state || "—", by.l4?.pct ?? 0,
+        taskCSVValue(getTask(s, 1, 1)),
+        taskCSVValue(getTask(s, 1, 2)),
+        taskCSVValue(getTask(s, 1, 3)),
+        taskCSVValue(getTask(s, 1, 4)),
+
+        taskCSVValue(getTask(s, 2, 1)),
+        taskCSVValue(getTask(s, 2, 2)),
+        taskCSVValue(getTask(s, 2, 3)),
+        taskCSVValue(getTask(s, 2, 4)),
+
+        taskCSVValue(getTask(s, 3, 1)),
+        taskCSVValue(getTask(s, 3, 2)),
+        taskCSVValue(getTask(s, 3, 3)),
+        taskCSVValue(getTask(s, 3, 4)),
+
+        taskCSVValue(getTask(s, 4, 1)),
         s.progress ?? 0,
       ];
     });
@@ -2836,16 +2911,34 @@ If this is a quiz-only lesson, show the quiz answers and score here.`;
     if (!sec) return;
 
     const list = Array.isArray(__sectionStudentsAll) ? __sectionStudentsAll : [];
-    const headers = ["Student ID","Name","Email","Course","Year","Section","L1 State","L1 %","L2 State","L2 %","L3 State","L3 %","L4 State","L4 %","Overall %"];
+    const headers = [
+      "Student ID","Name","Email","Course","Year","Section",
+      "L1 T1","L1 T2","L1 T3","L1 T4",
+      "L2 T1","L2 T2","L2 T3","L2 T4",
+      "L3 T1","L3 T2","L3 T3","L3 T4",
+      "L4 T1",
+      "Overall %"
+    ];
     const rows = list.map(s => {
-      const by = Object.fromEntries((s.lessons||[]).map(l => [l.key, l]));
       return [
         s.id, s.name, s.email,
         s.course, s.year, s.section,
-        by.l1?.state || "—", by.l1?.pct ?? 0,
-        by.l2?.state || "—", by.l2?.pct ?? 0,
-        by.l3?.state || "—", by.l3?.pct ?? 0,
-        by.l4?.state || "—", by.l4?.pct ?? 0,
+        taskCSVValue(getTask(s, 1, 1)),
+        taskCSVValue(getTask(s, 1, 2)),
+        taskCSVValue(getTask(s, 1, 3)),
+        taskCSVValue(getTask(s, 1, 4)),
+
+        taskCSVValue(getTask(s, 2, 1)),
+        taskCSVValue(getTask(s, 2, 2)),
+        taskCSVValue(getTask(s, 2, 3)),
+        taskCSVValue(getTask(s, 2, 4)),
+
+        taskCSVValue(getTask(s, 3, 1)),
+        taskCSVValue(getTask(s, 3, 2)),
+        taskCSVValue(getTask(s, 3, 3)),
+        taskCSVValue(getTask(s, 3, 4)),
+
+        taskCSVValue(getTask(s, 4, 1)),
         s.progress ?? 0,
       ];
     });
@@ -2988,8 +3081,6 @@ If this is a quiz-only lesson, show the quiz answers and score here.`;
 
     wireTabs();
     wireSectionCodes();
-
-    $("sRubricMax").textContent = "60";
 
     const banner = $("studentsErrorBanner");
     const show = !!__studentsLoadError && isPermissionError(__studentsLoadError);

@@ -241,7 +241,8 @@
               <div class="mt-3 h-2.5 w-full rounded-full bg-white/20">
                 <div id="progressBar" class="h-2.5 w-0 rounded-full bg-white transition-all"></div>
               </div>
-              <p class="mt-2 text-xs text-white/70">Passing score: 70%</p>
+              <p class="mt-2 text-xs text-white/70">Your score will be saved. You may proceed to the next part.</p>
+
             </div>
           </div>
         </div>
@@ -519,22 +520,303 @@
         await doSignOut();
       });
 
-      // ===== your existing Lesson 3 script (Firebase version, same UI behavior) =====
+      // ===== Lesson 3 script (updated to match your 4 assessment tasks) =====
       const LESSON_NO = 3;
       const PASSING = 70;
 
-      const quiz = [
-        { q: 'Indian English: "Kindly revert with the machine report."', options: ["Return the report physically", "Reply with the report", "Cancel the report"], answer: 1 },
-        { q: 'Singapore English: "Can finish by today or not?"', options: ["Do you want to finish today?", "Repeat the task", "Is it possible to finish today?"], answer: 2 },
-        { q: 'Filipino English: "Open the fan in the workshop."', options: ["Fix the fan", "Turn on the fan", "Remove the fan cover"], answer: 1 },
-        { q: 'British English: "Take the lift to the factory floor."', options: ["Take the elevator", "Take the stairs", "Take the escalator"], answer: 0 },
-        { q: 'Indian English: "Do the needful with the safety checklist."', options: ["Ignore the checklist", "Do anything you want", "Take necessary action"], answer: 2 },
-        { q: 'Singapore English: "Don’t anyhow operate the machine."', options: ["Don’t operate quickly", "Don’t operate carelessly", "Don’t operate at all"], answer: 1 },
-        { q: 'Filipino English: "I’ll go to the comfort room."', options: ["Lounge", "Restroom", "Bedroom"], answer: 1 },
-        { q: 'British English: "Put the rubbish in the bin."', options: ["Store food", "Throw trash away", "Keep tools"], answer: 1 },
-        { q: 'American English: "Check the faucet in the washroom."', options: ["Check the pipe", "Check the tap", "Check the sink"], answer: 1 },
-        { q: 'Indian English: "We need to prepone the factory meeting."', options: ["Cancel meeting", "Move meeting later", "Move meeting earlier"], answer: 2 },
+      // ---------------------
+      // Task 1 — World Englishes meanings (30 items)
+      // ---------------------
+      const TASK1_QUIZ = [
+        { q: 'Indian English: "Kindly revert with the machine report."', options: [
+          'Please return the machine report physically',
+          'Please reply with the machine report',
+          'Please cancel the machine report'
+        ], answer: 1 },
+        { q: 'Singapore English: "Can finish by today or not?"', options: [
+          'Do you want to finish today?',
+          'Can you repeat the task?',
+          'Is it possible to finish today?'
+        ], answer: 2 },
+        { q: 'Filipino English: "Open the fan in the workshop."', options: [
+          'Fix the fan in the workshop',
+          'Turn on the fan in the workshop',
+          'Remove the fan cover'
+        ], answer: 1 },
+        { q: 'British English: "Take the lift to the factory floor."', options: [
+          'Take the elevator to the factory floor',
+          'Take the stairs to the factory floor',
+          'Take the escalator to the factory floor'
+        ], answer: 0 },
+        { q: 'American English: "Put the trash in the garbage can near the assembly line."', options: [
+          'Put the food in the fridge',
+          'Put the tools in the box',
+          'Put the waste in the bin near the assembly line'
+        ], answer: 2 },
+        { q: 'Indian English: "Do the needful with the safety checklist."', options: [
+          'Ignore the checklist',
+          'Do whatever you want with the checklist',
+          'Take necessary action with the safety checklist'
+        ], answer: 2 },
+        { q: 'Singapore English: "Don\'t be so kiasu about overtime."', options: [
+          'Don\'t be lazy about overtime',
+          'Don\'t be late for overtime',
+          'Don\'t be overly afraid of missing overtime benefits'
+        ], answer: 2 },
+        { q: 'Filipino English: "Take a picture of the machine for remembrance."', options: [
+          'Take a photo for ID purposes',
+          'Take a photo as a keepsake',
+          'Take a photo for documentation only'
+        ], answer: 1 },
+        { q: 'British English: "Put the rubbish in the bin outside the workshop."', options: [
+          'Store the food',
+          'Throw the trash away',
+          'Keep the tools'
+        ], answer: 1 },
+        { q: 'American English: "Check the faucet in the factory washroom."', options: [
+          'Check the pipe in the washroom',
+          'Check the tap in the washroom',
+          'Check the sink in the washroom'
+        ], answer: 1 },
+        { q: 'Indian English: "We need to prepone the factory meeting."', options: [
+          'Cancel the meeting',
+          'Move the meeting later',
+          'Move the meeting earlier'
+        ], answer: 2 },
+        { q: 'Singapore English: "He\'s blur like sotong during machine training."', options: [
+          'He\'s happy during training',
+          'He\'s confused like a squid during training',
+          'He\'s angry during training'
+        ], answer: 1 },
+        { q: 'Filipino English: "I\'ll go to the comfort room near the production area."', options: [
+          'I\'ll go to the lounge near the production area',
+          'I\'ll go to the restroom near the production area',
+          'I\'ll go to the bedroom near the production area'
+        ], answer: 1 },
+        { q: 'British English: "He\'s in hospital after the factory accident."', options: [
+          'He\'s visiting the hospital',
+          'He\'s admitted to the hospital',
+          'He\'s working at the hospital'
+        ], answer: 1 },
+        { q: 'American English: "He\'s in the hospital after the factory accident."', options: [
+          'He\'s admitted to the hospital',
+          'He\'s visiting the hospital',
+          'He\'s working at the hospital'
+        ], answer: 0 },
+        { q: 'Indian English: "The supervisor is out of station."', options: [
+          'Out of service',
+          'Out of town',
+          'Out of the office'
+        ], answer: 1 },
+        { q: 'Singapore English: "Don\'t anyhow operate the machine."', options: [
+          'Don\'t operate the machine quickly',
+          'Don\'t operate the machine carelessly',
+          'Don\'t operate the machine at all'
+        ], answer: 1 },
+        { q: 'Filipino English: "I\'ll go to the province after my factory shift."', options: [
+          'I\'ll go abroad',
+          'I\'ll go to the countryside',
+          'I\'ll go to the city'
+        ], answer: 1 },
+        { q: 'British English: "He lives in a flat near the industrial park."', options: [
+          'He lives in a dormitory near the industrial park',
+          'He lives in a house near the industrial park',
+          'He lives in an apartment near the industrial park'
+        ], answer: 2 },
+        { q: 'American English: "He lives in an apartment near the industrial park."', options: [
+          'He lives in a flat near the industrial park',
+          'He lives in a house near the industrial park',
+          'He lives in a dormitory near the industrial park'
+        ], answer: 0 },
+        { q: 'Indian English: "He passed out from engineering college."', options: [
+          'He fainted in engineering college',
+          'He graduated from engineering college',
+          'He dropped out of engineering college'
+        ], answer: 1 },
+        { q: 'Singapore English: "Don\'t play play with factory safety."', options: [
+          'Don\'t joke about safety',
+          'Don\'t take safety lightly',
+          'Don\'t play games in the factory'
+        ], answer: 1 },
+        { q: 'Filipino English: "I\'ll just fall in line at the canteen."', options: [
+          'I\'ll sit down at the canteen',
+          'I\'ll queue up at the canteen',
+          'I\'ll wait outside the canteen'
+        ], answer: 1 },
+        { q: 'British English: "He\'s at university studying industrial design."', options: [
+          'He\'s visiting the university',
+          'He\'s studying at university',
+          'He\'s working at the university'
+        ], answer: 1 },
+        { q: 'American English: "He\'s in college studying industrial design."', options: [
+          'He\'s studying at college',
+          'He\'s visiting the college',
+          'He\'s working at the college'
+        ], answer: 0 },
+        { q: 'Indian English: "My cousin brother works in the factory."', options: [
+          'My friend works in the factory',
+          'My male cousin works in the factory',
+          'My brother works in the factory'
+        ], answer: 1 },
+        { q: 'Singapore English: "Don\'t be kaypoh about the factory project."', options: [
+          'Don\'t be lazy about the project',
+          'Don\'t be nosy about the project',
+          'Don\'t be late for the project'
+        ], answer: 1 },
+        { q: 'Filipino English: "I\'ll go to the CR near the workshop."', options: [
+          'I\'ll go to the restroom near the workshop',
+          'I\'ll go to the classroom near the workshop',
+          'I\'ll go to the cafeteria near the workshop'
+        ], answer: 0 },
+        { q: 'British English: "He\'s buying petrol for the factory generator."', options: [
+          'He\'s buying diesel for the generator',
+          'He\'s buying kerosene for the generator',
+          'He\'s buying gasoline for the generator'
+        ], answer: 2 },
+        { q: 'American English: "He\'s buying gas for the factory generator."', options: [
+          'He\'s buying cooking gas for the generator',
+          'He\'s buying kerosene for the generator',
+          'He\'s buying gasoline for the generator'
+        ], answer: 2 },
       ];
+
+      // ---------------------
+      // Task 2 — Best communication mode (15 items)
+      // ---------------------
+      const TASK2_QUIZ = [
+        { q: 'Safety Rules in a Laboratory', options: ['Text only', 'Text + Images', 'Audio only', 'Video only'], answer: 1 },
+        { q: 'Demonstrating Fire Extinguisher Use', options: ['Text only', 'Audio instructions', 'Video demonstration', 'Images only'], answer: 2 },
+        { q: 'Food Service Guidelines for New Staff', options: ['Text + Images', 'Audio only', 'Video only', 'Text only'], answer: 0 },
+        { q: 'Machine Troubleshooting (Step-by-Step)', options: ['Text only', 'Text + Images', 'Audio only', 'Video only'], answer: 1 },
+        { q: 'Emergency Evacuation Drill', options: ['Text only', 'Audio announcement', 'Video simulation', 'Images only'], answer: 2 },
+        { q: 'Explaining Workplace Dress Code', options: ['Text only', 'Text + Images', 'Audio only', 'Video only'], answer: 1 },
+        { q: 'Teaching Knife Safety in Culinary Class', options: ['Text only', 'Images only', 'Video demonstration', 'Audio only'], answer: 2 },
+        { q: 'Introducing New Software Features', options: ['Text only', 'Text + Images', 'Audio only', 'Video tutorial'], answer: 1 },
+        { q: 'First Aid Procedures (CPR)', options: ['Text only', 'Audio instructions', 'Video demonstration', 'Images only'], answer: 2 },
+        { q: 'Explaining Food Storage Guidelines', options: ['Text only', 'Text + Images', 'Audio only', 'Video only'], answer: 1 },
+        { q: 'Assembly Instructions for Furniture', options: ['Text only', 'Text + Images', 'Audio only', 'Video only'], answer: 1 },
+        { q: 'Demonstrating Proper Handwashing', options: ['Text only', 'Images only', 'Video demonstration', 'Audio only'], answer: 2 },
+        { q: 'Orientation for New Factory Workers', options: ['Text only', 'Audio only', 'Video + Images', 'Text only'], answer: 2 },
+        { q: 'Explaining Electrical Safety Precautions', options: ['Text only', 'Text + Images', 'Audio only', 'Video only'], answer: 1 },
+        { q: 'Customer Service Training (Role Play)', options: ['Text only', 'Audio only', 'Video demonstration', 'Images only'], answer: 2 },
+      ];
+
+      // ---------------------
+      // Task 4 — Message revision (10 items, MC + justification)
+      // ---------------------
+      const TASK4_ITEMS = [
+        {
+          q: '"Check the machine regularly."',
+          options: [
+            '"Inspect the hydraulic press every 2 hours for oil leaks and unusual noise."',
+            '"Look at the machine sometimes."',
+            '"Check it when you feel like it."'
+          ],
+          answer: 0,
+        },
+        {
+          q: '"Be careful with wires."',
+          options: [
+            '"Turn off the main switch before touching any wires to avoid electric shock."',
+            '"Handle wires carefully."',
+            '"Don\'t touch wires."'
+          ],
+          answer: 0,
+        },
+        {
+          q: '"Fix the car properly."',
+          options: [
+            '"Tighten all bolts to manufacturer torque specifications before releasing the vehicle."',
+            '"Do a good job."',
+            '"Repair it fast."'
+          ],
+          answer: 0,
+        },
+        {
+          q: '"Make sure the site is safe."',
+          options: [
+            '"Secure scaffolding, wear helmets, and check hazard signs before starting work."',
+            '"Be safe."',
+            '"Check the site."'
+          ],
+          answer: 0,
+        },
+        {
+          q: '"Wash your hands."',
+          options: [
+            '"Wash your hands with soap for 20 seconds before handling food."',
+            '"Wash hands if you want."',
+            '"Don\'t forget hygiene."'
+          ],
+          answer: 0,
+        },
+        {
+          q: '"Test the circuit."',
+          options: [
+            '"Use a multimeter to test voltage and resistance before connecting the circuit."',
+            '"Check the circuit sometimes."',
+            '"Look at the wires."'
+          ],
+          answer: 0,
+        },
+        {
+          q: '"Lubricate the parts."',
+          options: [
+            '"Apply grease to all moving joints every 50 hours of operation."',
+            '"Put oil when needed."',
+            '"Grease it if you want."'
+          ],
+          answer: 0,
+        },
+        {
+          q: '"Check the brakes."',
+          options: [
+            '"Inspect brake pads weekly and replace them if thickness is below 3mm."',
+            '"Look at the brakes."',
+            '"Check brakes when noisy."'
+          ],
+          answer: 0,
+        },
+        {
+          q: '"Follow safety rules."',
+          options: [
+            '"Wear helmets, reflective vests, and safety boots before entering the construction site."',
+            '"Be safe always."',
+            '"Follow rules."'
+          ],
+          answer: 0,
+        },
+        {
+          q: '"Keep food fresh."',
+          options: [
+            '"Store perishable food at 4\u00b0C or below to maintain freshness."',
+            '"Keep food nice."',
+            '"Don\'t let food spoil."'
+          ],
+          answer: 0,
+        },
+      ];
+
+      // ---------------------
+      // Parts
+      // ---------------------
+      function uploadPartHtml(taskKey, taskTitle, taskBodyHtml) {
+        return `
+          <div class="rounded-2xl bg-slate-50 p-5 ring-1 ring-black/5">
+            <h3 class="text-lg font-extrabold text-slate-900">${taskTitle}</h3>
+            <div class="mt-3 space-y-3 text-sm text-slate-700">${taskBodyHtml}</div>
+
+            <div class="mt-5">
+              <label class="block text-sm font-semibold text-slate-800">Upload your file</label>
+              <input id="fileInput-${taskKey}" type="file" class="mt-2 block w-full text-sm file:mr-4 file:rounded-xl file:border-0 file:bg-brand-600 file:px-4 file:py-2 file:text-white file:font-semibold hover:file:bg-brand-700" />
+              <button id="submitFileBtn-${taskKey}" class="mt-3 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800">
+                Submit File
+              </button>
+              <p id="fileStatus-${taskKey}" class="mt-2 text-xs text-slate-600"></p>
+            </div>
+          </div>
+        `;
+      }
 
       const parts = [
         {
@@ -556,9 +838,8 @@
             <div class="prose max-w-none prose-slate">
               <h3>World Englishes in Technical Work</h3>
               <p>
-                English has regionally distinct varieties shaped by culture (e.g., Indian English, Singapore English, Filipino English).
-                In technical settings, these differences affect intelligibility. Professionals must listen carefully, be respectful,
-                and adjust communication style depending on the audience.
+                English has regionally distinct varieties shaped by culture (e.g., Indian English, Singapore English, Filipino English,
+                American English, and British English). In technical settings, these differences affect intelligibility.
               </p>
 
               <h3>Multimodality in Technical Communication</h3>
@@ -572,16 +853,77 @@
                 <li><strong>Simplicity</strong> — clear purpose; avoid unnecessary words.</li>
                 <li><strong>Specificity</strong> — concrete and actionable instructions.</li>
                 <li><strong>Structure</strong> — logical flow that is easy to follow.</li>
-                <li><strong>Stickiness</strong> — memorable phrases that stay in mind.</li>
+                <li><strong>Stickiness</strong> — memorable phrasing that stays in mind.</li>
               </ul>
             </div>
           `,
         },
         {
-          title: "Part 2 — Assessment (Multiple Choice)",
-          subtitle: "World Englishes meanings. Passing score: 70%.",
+          title: "Task 1 — World Englishes Meanings (Multiple Choice)",
+          subtitle: "30 items • Passing score: 70%.",
           type: "quiz",
-          html: "",
+          quizTitle: "Task 1 — World Englishes",
+          quizSubtitle: "Listen/read each sample and choose the correct meaning.",
+          requirePass: false,
+
+          data: TASK1_QUIZ,
+        },
+        {
+          title: "Task 2 — Best Communication Mode (Multiple Choice)",
+          subtitle: "15 items • Passing score: 70%.",
+          type: "quiz",
+          quizTitle: "Task 2 — Communication Modes",
+          quizSubtitle: "For each situation, choose the best mode combination for clarity and engagement.",
+          requirePass: false,
+
+          data: TASK2_QUIZ,
+        },
+        {
+          title: "Task 3 — Output Creation (File Submission)",
+          subtitle: "Submit your output file and reflection.",
+          type: "upload",
+          taskKey: "task3",
+          html: uploadPartHtml(
+            "task3",
+            "Task 3 — Communicate Technical Information to a Diverse Audience",
+            `
+              <div class="rounded-xl bg-white p-4 ring-1 ring-black/5">
+                <p class="font-semibold">Instructions</p>
+                <p class="mt-2">
+                  You are tasked to communicate important technical information to a diverse audience (e.g., classmates, co-workers, or community members).
+                  The information must be presented in a way that is clear, engaging, and accessible to people with different backgrounds and levels of expertise.
+                </p>
+                <p class="mt-3 font-semibold">Choose one scenario and create an appropriate output (poster, manual, audio recording, or video demonstration):</p>
+                <ol class="mt-2 list-decimal pl-5 space-y-1">
+                  <li>Safety Rules in a Laboratory — Present essential safety guidelines for new students.</li>
+                  <li>Machine Troubleshooting Guide — Explain step-by-step how to fix a common technical issue.</li>
+                  <li>Food Service Guidelines — Show proper hygiene and service practices in a cafeteria or restaurant.</li>
+                  <li>Emergency Evacuation Drill — Demonstrate procedures for safe evacuation during emergencies.</li>
+                  <li>Customer Service Training — Model effective communication strategies for handling customer concerns.</li>
+                </ol>
+                <p class="mt-3">
+                  Submit your work along with a short reflection (5–7 sentences) explaining:
+                </p>
+                <ul class="mt-2 list-disc pl-5 space-y-1">
+                  <li>Why you chose that mode.</li>
+                  <li>How it ensures clarity and engagement for the intended audience.</li>
+                </ul>
+                <p class="mt-2 text-xs text-slate-500">
+                  Tip: If your output is a video/audio link, you can upload a small text/PDF file containing the link.
+                </p>
+              </div>
+            `
+          ),
+        },
+        {
+          title: "Task 4 — Message Revision (Multiple Choice + Justification)",
+          subtitle: "10 items • Choose the best revision and justify your choice.",
+          type: "mcj",
+          mcTitle: "Task 4 — Revise Workplace Messages",
+          mcSubtitle: "Evaluate each message using simplicity, specificity, structure, and stickiness. Then justify your answer.",
+          requirePass: false,
+
+          data: TASK4_ITEMS,
         },
       ];
 
@@ -608,24 +950,22 @@
         return doc(db, "users", uid, "progress", `lesson${LESSON_NO}`);
       }
 
+      function userDocRef(uid) {
+        return doc(db, "users", uid);
+      }
 
-    function userDocRef(uid) {
-      return doc(db, "users", uid);
-    }
-
-    async function upsertUserDocFields(uid, data) {
-      const ref = userDocRef(uid);
-      try {
-        await updateDoc(ref, data);
-      } catch (err) {
+      async function upsertUserDocFields(uid, data) {
+        const ref = userDocRef(uid);
         try {
-          await setDoc(ref, data, { merge: true });
-        } catch (err2) {
-          console.warn("Firestore write failed (user doc fallback)", err2);
+          await updateDoc(ref, data);
+        } catch (err) {
+          try {
+            await setDoc(ref, data, { merge: true });
+          } catch (err2) {
+            console.warn("Firestore write failed (user doc fallback)", err2);
+          }
         }
       }
-    }
-
 
       async function mustHaveLesson2Complete(uid) {
         try {
@@ -637,8 +977,39 @@
         }
       }
 
+      function emptyTaskFiles() {
+        return { task3: "" };
+      }
+
       function defaultLessonState() {
-        return { partsDone: parts.map(() => false), quizAnswers: {} };
+        return {
+          partsDone: parts.map(() => false),
+          quizAnswers: {},
+          quizScores: {},
+          taskFiles: emptyTaskFiles(),
+          mcJustify: {},
+        };
+      }
+
+      function normalizeQuizAnswers(raw) {
+        const out = {};
+        if (!raw || typeof raw !== "object") return out;
+
+        const vals = Object.values(raw);
+        const isNested = vals.some(v => v && typeof v === "object" && !Array.isArray(v));
+        if (isNested) {
+          for (const [k, v] of Object.entries(raw)) {
+            if (!v || typeof v !== "object") continue;
+            out[String(k)] = {};
+            for (const [qi, ans] of Object.entries(v)) out[String(k)][String(qi)] = parseInt(ans, 10);
+          }
+          return out;
+        }
+
+        // backward-compat: old flat answers belong to the first quiz part (index 1)
+        out["1"] = {};
+        for (const [qi, ans] of Object.entries(raw)) out["1"][String(qi)] = parseInt(ans, 10);
+        return out;
       }
 
       async function loadLessonState(uid) {
@@ -670,11 +1041,13 @@
           const arr = Array.isArray(d.partsDone) ? d.partsDone : [];
           const partsDone = parts.map((_, i) => !!arr[i]);
 
-          const qa = (d.quizAnswers && typeof d.quizAnswers === "object") ? d.quizAnswers : {};
-          const quizAnswers = {};
-          Object.keys(qa).forEach(k => { quizAnswers[k] = parseInt(qa[k], 10); });
+          const qa = normalizeQuizAnswers(d.quizAnswers);
+          const qs = (d.quizScores && typeof d.quizScores === "object") ? d.quizScores : {};
 
-          return { partsDone, quizAnswers };
+          const tf = (d.taskFiles && typeof d.taskFiles === "object") ? d.taskFiles : emptyTaskFiles();
+          const mcj = (d.mcJustify && typeof d.mcJustify === "object") ? d.mcJustify : {};
+
+          return { partsDone, quizAnswers: qa, quizScores: qs, taskFiles: tf, mcJustify: mcj };
         } catch (_) {
           return defaultLessonState();
         }
@@ -683,21 +1056,20 @@
       async function saveLessonState(uid, state) {
         const payload = {
           partsDone: state.partsDone,
-          updatedAt: Date.now()
+          updatedAt: Date.now(),
         };
 
-        // Keep any lesson-specific fields
         if (state.quizAnswers !== undefined) payload.quizAnswers = state.quizAnswers || {};
-        if (state.task4VideoFile !== undefined) payload.task4VideoFile = state.task4VideoFile || "";
+        if (state.quizScores !== undefined) payload.quizScores = state.quizScores || {};
+        if (state.taskFiles !== undefined) payload.taskFiles = state.taskFiles || emptyTaskFiles();
+        if (state.mcJustify !== undefined) payload.mcJustify = state.mcJustify || {};
 
-        // Try subcollection first
         try {
           await setDoc(lessonDocRef(uid), payload, { merge: true });
         } catch (err) {
           console.warn("Firestore write failed (lessons subcollection)", err);
         }
 
-        // Fallback: also store inside users/{uid}
         try {
           await upsertUserDocFields(uid, { [`lessonState.lesson${LESSON_NO}`]: payload });
         } catch (err) {
@@ -716,24 +1088,15 @@
         if (Number.isFinite(doneCount)) payload.doneCount = doneCount;
 
         try {
-
           await setDoc(progressDocRef(uid), payload, { merge: true });
-
         } catch (err) {
-
           console.warn("Firestore write failed (progress subcollection)", err);
-
         }
 
-
         try {
-
           await upsertUserDocFields(uid, { [`progress.lesson${LESSON_NO}`]: payload });
-
         } catch (err) {
-
           console.warn("Firestore write failed (user doc progress)", err);
-
         }
       }
 
@@ -765,7 +1128,7 @@
 
           btn.innerHTML = `
             <span class="text-sm font-semibold">${p.title}</span>
-            <span class="text-xs font-bold ${isActive ? "text-white" : "text-brand-700"}">${done ? "✓" : ""}</span>
+            <span class="text-xs font-bold ${isActive ? "text-white" : "text-brand-700"}">${done ? "\u2713" : ""}</span>
           `;
 
           btn.addEventListener("click", async () => { activePart = idx; await render(); });
@@ -773,23 +1136,31 @@
         });
       }
 
-      function renderQuiz() {
-        const saved = (__lessonState && __lessonState.quizAnswers) ? __lessonState.quizAnswers : {};
+      function renderQuizForPart(partIdx, quizData, heading, subheading, requirePass) {
+        const key = String(partIdx);
+        const quizAnswers = (__lessonState && __lessonState.quizAnswers) ? __lessonState.quizAnswers : {};
+        const saved = (quizAnswers[key] && typeof quizAnswers[key] === "object") ? quizAnswers[key] : {};
+
         const wrap = document.createElement("div");
         wrap.className = "space-y-5";
 
         const info = document.createElement("div");
         info.className = "rounded-2xl bg-slate-50 p-5 ring-1 ring-black/5";
         info.innerHTML = `
-          <h3 class="text-lg font-extrabold text-slate-900">Assessment</h3>
-          <p class="mt-1 text-sm text-slate-600">Choose the correct meaning of each expression.</p>
+          <h3 class="text-lg font-extrabold text-slate-900">${heading || "Assessment"}</h3>
+          <p class="mt-1 text-sm text-slate-600">${subheading || "Select the best answer for each item, then submit."}</p>
+          <p class="mt-2 text-xs text-slate-500">Passing score: ${PASSING}%</p>
         `;
         wrap.appendChild(info);
 
-        quiz.forEach((item, i) => {
+        quizData.forEach((item, i) => {
           const card = document.createElement("div");
           card.className = "rounded-2xl bg-white p-5 ring-1 ring-black/5";
-          card.innerHTML = `<p class="font-semibold text-slate-900">${i + 1}. ${item.q}</p>`;
+
+          const q = document.createElement("div");
+          q.className = "font-semibold text-slate-900";
+          q.textContent = `${i + 1}. ${item.q}`;
+          card.appendChild(q);
 
           const opts = document.createElement("div");
           opts.className = "mt-3 grid gap-2";
@@ -798,7 +1169,7 @@
             const row = document.createElement("label");
             row.className = "flex items-center gap-3 rounded-xl bg-slate-50 px-4 py-3 hover:bg-slate-100 cursor-pointer";
             row.innerHTML = `
-              <input type="radio" name="q${i}" value="${idx}" class="h-4 w-4 accent-brand-600" />
+              <input type="radio" name="p${partIdx}q${i}" value="${idx}" class="h-4 w-4 accent-brand-600" />
               <span class="text-sm text-slate-800">${opt}</span>
             `;
             opts.appendChild(row);
@@ -807,7 +1178,8 @@
 
             row.querySelector("input").addEventListener("change", async (e) => {
               saved[i] = parseInt(e.target.value, 10);
-              __lessonState.quizAnswers = saved;
+              quizAnswers[key] = saved;
+              __lessonState.quizAnswers = quizAnswers;
               if (__currentUser) await saveLessonState(__currentUser.uid, __lessonState);
             });
           });
@@ -819,45 +1191,232 @@
         const actions = document.createElement("div");
         actions.className = "flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between";
         actions.innerHTML = `
-          <button id="submitQuizBtn" class="rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800">
+          <button id="submitQuizBtn_${partIdx}" class="rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800">
             Submit Answers
           </button>
-          <p id="quizResult" class="text-sm font-semibold text-slate-700"></p>
+          <p id="quizResult_${partIdx}" class="text-sm font-semibold text-slate-700"></p>
         `;
         wrap.appendChild(actions);
 
         setTimeout(() => {
-          document.getElementById("submitQuizBtn").addEventListener("click", async () => {
-            let correct = 0;
-            quiz.forEach((item, i) => { if (saved[i] === item.answer) correct++; });
-            const score = Math.round((correct / quiz.length) * 100);
-            const result = document.getElementById("quizResult");
+          const btn = document.getElementById(`submitQuizBtn_${partIdx}`);
+          if (!btn || btn.dataset.wired === "1") return;
+          btn.dataset.wired = "1";
 
-            if (score >= PASSING) {
-              result.innerHTML = `Score: ${score}% — Passed <span class="material-symbols-rounded align-middle text-emerald-600 text-[18px] leading-none ml-1">check_circle</span> <span class="text-brand-800">(Part Completed)</span>`;
+          btn.addEventListener("click", async () => {
+            let correct = 0;
+            quizData.forEach((it, qi) => { if (saved[qi] === it.answer) correct++; });
+            const score = Math.round((correct / quizData.length) * 100);
+            const result = document.getElementById(`quizResult_${partIdx}`);
+
+            __lessonState.quizScores = (__lessonState.quizScores && typeof __lessonState.quizScores === "object") ? __lessonState.quizScores : {};
+            __lessonState.quizScores[key] = { score, correct, total: quizData.length, updatedAt: Date.now() };
+
+            const passed = score >= PASSING;
+
+            if (passed || !requirePass) {
+              result.innerHTML = `Score: ${score}% — ${passed ? "Passed" : "Saved"} <span class="material-symbols-rounded align-middle text-emerald-600 text-[18px] leading-none ml-1">check_circle</span>`;
               result.className = "text-sm font-extrabold text-brand-800";
 
-              __lessonState.partsDone[1] = true;
-              if (__currentUser) await saveLessonState(__currentUser.uid, __lessonState);
-
-              // ✅ also write progress doc so Lesson is marked complete in /progress
-              const pct = computeProgressPct(__lessonState);
-              if (__currentUser) await saveLessonProgress(__currentUser.uid, pct, { doneCount: __lessonState.partsDone.reduce((a,b)=>a+(b?1:0),0), partsTotal: parts.length });
-
-              renderSidebar();
-              await renderProgress();
-              pill(true);
-
-              // ✅ update next button to "Next Lesson" when last part is completed
-              renderPart();
+              __lessonState.partsDone[partIdx] = true;
             } else {
               result.textContent = `Score: ${score}% — Not passed (needs ${PASSING}%)`;
               result.className = "text-sm font-extrabold text-red-600";
+
+              __lessonState.partsDone[partIdx] = false;
             }
+
+            if (__currentUser) await saveLessonState(__currentUser.uid, __lessonState);
+
+            const pct = computeProgressPct(__lessonState);
+            if (__currentUser) await saveLessonProgress(__currentUser.uid, pct, { doneCount: __lessonState.partsDone.reduce((a,b)=>a+(b?1:0),0), partsTotal: parts.length });
+
+            renderSidebar();
+            await renderProgress();
+            pill(!!__lessonState.partsDone[partIdx]);
+            renderPart();
           });
         }, 0);
 
         return wrap;
+      }
+
+      function renderMCJustifyForPart(partIdx, items, heading, subheading, requirePass) {
+        const key = String(partIdx);
+        __lessonState.mcJustify = (__lessonState.mcJustify && typeof __lessonState.mcJustify === "object") ? __lessonState.mcJustify : {};
+        const saved = (__lessonState.mcJustify[key] && typeof __lessonState.mcJustify[key] === "object") ? __lessonState.mcJustify[key] : { choices: {}, justifications: {} };
+        saved.choices = (saved.choices && typeof saved.choices === "object") ? saved.choices : {};
+        saved.justifications = (saved.justifications && typeof saved.justifications === "object") ? saved.justifications : {};
+
+        const wrap = document.createElement("div");
+        wrap.className = "space-y-5";
+
+        const info = document.createElement("div");
+        info.className = "rounded-2xl bg-slate-50 p-5 ring-1 ring-black/5";
+        info.innerHTML = `
+          <h3 class="text-lg font-extrabold text-slate-900">${heading || "Task 4"}</h3>
+          <p class="mt-1 text-sm text-slate-600">${subheading || "Choose the best revision and justify."}</p>
+          <p class="mt-2 text-xs text-slate-500">Passing score (choices only): ${PASSING}% • Justification required for each item</p>
+        `;
+        wrap.appendChild(info);
+
+        items.forEach((item, i) => {
+          const card = document.createElement("div");
+          card.className = "rounded-2xl bg-white p-5 ring-1 ring-black/5";
+
+          const q = document.createElement("div");
+          q.className = "font-semibold text-slate-900";
+          q.textContent = `${i + 1}. ${item.q}`;
+          card.appendChild(q);
+
+          const opts = document.createElement("div");
+          opts.className = "mt-3 grid gap-2";
+
+          item.options.forEach((opt, idx) => {
+            const row = document.createElement("label");
+            row.className = "flex items-center gap-3 rounded-xl bg-slate-50 px-4 py-3 hover:bg-slate-100 cursor-pointer";
+            row.innerHTML = `
+              <input type="radio" name="mcj${partIdx}_${i}" value="${idx}" class="h-4 w-4 accent-brand-600" />
+              <span class="text-sm text-slate-800">${opt}</span>
+            `;
+            opts.appendChild(row);
+
+            if (String(saved.choices[i]) === String(idx)) row.querySelector("input").checked = true;
+
+            row.querySelector("input").addEventListener("change", async (e) => {
+              saved.choices[i] = parseInt(e.target.value, 10);
+              __lessonState.mcJustify[key] = saved;
+              if (__currentUser) await saveLessonState(__currentUser.uid, __lessonState);
+            });
+          });
+
+          const taWrap = document.createElement("div");
+          taWrap.className = "mt-4";
+          taWrap.innerHTML = `
+            <label class="block text-sm font-semibold text-slate-800">Justification (2–3 sentences)</label>
+            <textarea id="mcjJust_${partIdx}_${i}" rows="3" class="mt-2 w-full rounded-xl bg-slate-50 px-4 py-3 text-sm ring-1 ring-black/5 focus:outline-none focus:ring-4 focus:ring-brand-200" placeholder="Explain why your choice is best based on simplicity, specificity, structure, and stickiness."></textarea>
+          `;
+
+          const ta = taWrap.querySelector("textarea");
+          ta.value = String(saved.justifications[i] || "");
+          ta.addEventListener("input", async (e) => {
+            saved.justifications[i] = e.target.value;
+            __lessonState.mcJustify[key] = saved;
+            if (__currentUser) await saveLessonState(__currentUser.uid, __lessonState);
+          });
+
+          card.appendChild(opts);
+          card.appendChild(taWrap);
+          wrap.appendChild(card);
+        });
+
+        const actions = document.createElement("div");
+        actions.className = "flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between";
+        actions.innerHTML = `
+          <button id="submitMCJBtn_${partIdx}" class="rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800">
+            Submit Task 4
+          </button>
+          <p id="mcjResult_${partIdx}" class="text-sm font-semibold text-slate-700"></p>
+        `;
+        wrap.appendChild(actions);
+
+        setTimeout(() => {
+          const btn = document.getElementById(`submitMCJBtn_${partIdx}`);
+          if (!btn || btn.dataset.wired === "1") return;
+          btn.dataset.wired = "1";
+
+          btn.addEventListener("click", async () => {
+            const result = document.getElementById(`mcjResult_${partIdx}`);
+
+            // validate
+            for (let i = 0; i < items.length; i++) {
+              const choice = saved.choices[i];
+              const just = String(saved.justifications[i] || "").trim();
+              if (choice === undefined || choice === null || Number.isNaN(Number(choice))) {
+                result.textContent = `Please answer item ${i + 1}.`;
+                result.className = "text-sm font-extrabold text-red-600";
+                return;
+              }
+              if (just.length < 20) {
+                result.textContent = `Please write a clearer justification for item ${i + 1} (at least ~2 sentences).`;
+                result.className = "text-sm font-extrabold text-red-600";
+                return;
+              }
+            }
+
+            let correct = 0;
+            items.forEach((it, i) => { if (Number(saved.choices[i]) === it.answer) correct++; });
+            const score = Math.round((correct / items.length) * 100);
+
+            const passed = score >= PASSING;
+            if (passed || !requirePass) {
+              result.innerHTML = `Score (choices): ${score}% — ${passed ? "Passed" : "Saved"} <span class="material-symbols-rounded align-middle text-emerald-600 text-[18px] leading-none ml-1">check_circle</span>`;
+              result.className = "text-sm font-extrabold text-brand-800";
+              __lessonState.partsDone[partIdx] = true;
+            } else {
+              result.textContent = `Score (choices): ${score}% — Not passed (needs ${PASSING}%)`;
+              result.className = "text-sm font-extrabold text-red-600";
+              __lessonState.partsDone[partIdx] = false;
+            }
+
+            __lessonState.mcJustify[key] = saved;
+
+            if (__currentUser) await saveLessonState(__currentUser.uid, __lessonState);
+
+            const pct = computeProgressPct(__lessonState);
+            if (__currentUser) await saveLessonProgress(__currentUser.uid, pct, { doneCount: __lessonState.partsDone.reduce((a,b)=>a+(b?1:0),0), partsTotal: parts.length });
+
+            renderSidebar();
+            await renderProgress();
+            pill(!!__lessonState.partsDone[partIdx]);
+            renderPart();
+          });
+        }, 0);
+
+        return wrap;
+      }
+
+      function wireUploadForCurrentPart(taskKey) {
+        const submitFileBtn = document.getElementById(`submitFileBtn-${taskKey}`);
+        const fileInput = document.getElementById(`fileInput-${taskKey}`);
+        const fileStatus = document.getElementById(`fileStatus-${taskKey}`);
+
+        if (!submitFileBtn || submitFileBtn.dataset.wired === "1") return;
+        submitFileBtn.dataset.wired = "1";
+
+        const savedName = (__lessonState?.taskFiles && typeof __lessonState.taskFiles === "object") ? String(__lessonState.taskFiles[taskKey] || "") : "";
+        if (savedName) {
+          fileStatus.textContent = `Last submitted: ${savedName}`;
+          fileStatus.className = "mt-2 text-xs text-slate-600";
+        }
+
+        submitFileBtn.addEventListener("click", async () => {
+          if (!fileInput?.files?.length) {
+            fileStatus.textContent = "Please choose a file first.";
+            fileStatus.className = "mt-2 text-xs text-red-600";
+            return;
+          }
+
+          const name = fileInput.files[0].name;
+
+          __lessonState.taskFiles = (__lessonState.taskFiles && typeof __lessonState.taskFiles === "object") ? __lessonState.taskFiles : emptyTaskFiles();
+          __lessonState.taskFiles[taskKey] = name;
+          __lessonState.partsDone[activePart] = true;
+
+          fileStatus.textContent = `Submitted: ${name}`;
+          fileStatus.className = "mt-2 text-xs text-brand-800";
+
+          if (__currentUser) {
+            await saveLessonState(__currentUser.uid, __lessonState);
+            const pct = computeProgressPct(__lessonState);
+            await saveLessonProgress(__currentUser.uid, pct, { doneCount: __lessonState.partsDone.reduce((a,b)=>a+(b?1:0),0), partsTotal: parts.length });
+          }
+
+          renderSidebar();
+          await renderProgress();
+          pill(true);
+          renderPart();
+        });
       }
 
       function renderPart() {
@@ -866,9 +1425,17 @@
         partSubtitle.textContent = p.subtitle;
 
         partBody.innerHTML = "";
+
         if (p.type === "quiz") {
           completeBtn.classList.add("hidden");
-          partBody.appendChild(renderQuiz());
+          partBody.appendChild(renderQuizForPart(activePart, p.data, p.quizTitle, p.quizSubtitle, !!p.requirePass));
+        } else if (p.type === "upload") {
+          completeBtn.classList.add("hidden");
+          partBody.innerHTML = p.html;
+          wireUploadForCurrentPart(String(p.taskKey || "task3"));
+        } else if (p.type === "mcj") {
+          completeBtn.classList.add("hidden");
+          partBody.appendChild(renderMCJustifyForPart(activePart, p.data, p.mcTitle, p.mcSubtitle, !!p.requirePass));
         } else {
           completeBtn.classList.remove("hidden");
           partBody.innerHTML = p.html;
@@ -879,17 +1446,16 @@
 
         prevBtn.disabled = activePart === 0;
 
-        // ✅ CHANGE: if last part is completed, Next button becomes "Next Lesson" and goes to Lesson 4
         const atLast = activePart === parts.length - 1;
         const lastDone = !!__lessonState?.partsDone?.[parts.length - 1];
 
         if (atLast && lastDone) {
           nextBtn.disabled = false;
-          nextBtn.textContent = "Next Lesson →";
+          nextBtn.textContent = "Next Lesson \u2192";
           nextBtn.dataset.nextLesson = "1";
         } else {
           nextBtn.disabled = atLast;
-          nextBtn.textContent = "Next →";
+          nextBtn.textContent = "Next \u2192";
           nextBtn.dataset.nextLesson = "";
         }
 
@@ -911,15 +1477,16 @@
         await renderProgress();
       }
 
-      prevBtn.addEventListener("click", async () => { if (activePart > 0) activePart--; await render(); });
+      prevBtn.addEventListener("click", async () => {
+        if (activePart > 0) activePart--;
+        await render();
+      });
 
       nextBtn.addEventListener("click", async () => {
-        // ✅ CHANGE: if ready for next lesson, go to Lesson 4
         if (nextBtn.dataset.nextLesson === "1") {
           window.location.href = "lesson-4.html";
           return;
         }
-
         if (activePart < parts.length - 1) activePart++;
         await render();
       });
@@ -936,7 +1503,6 @@
 
         await render();
       });
-
       // Mobile menu
       const menuBtnEl = document.getElementById("menuBtn");
       const mobileMenuEl = document.getElementById("mobileMenu");
