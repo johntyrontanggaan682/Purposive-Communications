@@ -694,6 +694,9 @@
           updatedAt: Date.now()
         };
 
+        // ✅ persist assessment file name
+        if (state.assessmentFile !== undefined) payload.assessmentFile = state.assessmentFile || "";
+
         // Keep any lesson-specific fields
         if (state.quizAnswers !== undefined) payload.quizAnswers = state.quizAnswers || {};
         if (state.task4VideoFile !== undefined) payload.task4VideoFile = state.task4VideoFile || "";

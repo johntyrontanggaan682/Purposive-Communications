@@ -730,6 +730,11 @@
                   <p class="text-xs font-extrabold text-slate-500 uppercase">Drop-Off Point</p>
                   <p class="mt-1 text-sm font-extrabold text-slate-900" id="dDropOff">—</p>
                 </div>
+
+                <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-4">
+                  <p class="text-xs font-extrabold text-slate-500 uppercase">Lesson MCQ Scores (L1–L4)</p>
+                  <div id="dMcqScores" class="mt-3 space-y-2"></div>
+                </div>
               </div>
             </aside>
           </div>
@@ -770,6 +775,14 @@
                   <select id="sSubmissionSelect"
                     class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-semibold outline-none focus:ring-4 focus:ring-brand-200"></select>
                   <p id="sSubmissionInfo" class="mt-2 text-xs text-slate-600 font-semibold">—</p>
+
+                  <button id="sOpenFileBtn"
+                    class="mt-3 inline-flex w-full items-center justify-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-extrabold text-white hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed">
+                    View / Download
+                  </button>
+                  <p id="sOpenFileHint" class="mt-2 text-xs text-slate-500 font-semibold">
+                    Connect Firebase/Supabase storage later and save a fileUrl to enable direct viewing.
+                  </p>
                 </div>
 
                 <div>
@@ -1472,15 +1485,43 @@
   const rules = { riskInactiveDays: 7, riskProgressThreshold: 40, riskQuizFails: 3 };
 
   const LESSON_META = {
-    1: { title: "Lesson 1: Communication Principles and Ethics", parts: 4 },
-    2: { title: "Lesson 2: Local and Global Communication in Multicultural Settings", parts: 2 },
-    3: { title: "Lesson 3: Evaluating Messages and Images of Different Text Types", parts: 2 },
-    4: { title: "Lesson 4: The Rise of New Media and Technology Aids in Communication", parts: 2 },
+    1: { title: "Lesson 1: Communication Principles and Ethics", parts: 8 },
+    2: { title: "Lesson 2: Local and Global Communication in Multicultural Settings", parts: 5 },
+    3: { title: "Lesson 3: Evaluating Messages and Images of Different Text Types", parts: 8 },
+    4: { title: "Lesson 4: The Rise of New Media and Technology Aids in Communication", parts: 4 },
   };
 
-  const QUIZ_ANSWER_KEYS = {
-    2: [1,0,1,1,0,1,0,0,1,1],
-    3: [1,2,1,0,2,1,1,1,1,2],
+  // Expected quiz tasks per lesson (for labeling + placeholders)
+  const QUIZ_TASKS_EXPECTED = {
+    2: [
+      { label: "Task 1 (MCQ)" },
+      { label: "Task 2 (MCQ)" },
+      { label: "Task 3 (MCQ)" },
+    ],
+    3: [
+      { label: "Task 1 (MCQ)" },
+      { label: "Task 2 (MCQ)" },
+      { label: "Task 4 (MCQ + Justification)" },
+    ],
+  };
+
+  // Expected file tasks per lesson (for Assessment Submission dropdown)
+  const FILE_TASKS_EXPECTED = {
+    1: [
+      { taskId: "task1", label: "Task 1 (File)" },
+      { taskId: "task2", label: "Task 2 (File)" },
+      { taskId: "task3", label: "Task 3 (File)" },
+      { taskId: "task4", label: "Task 4 (File)" },
+    ],
+    2: [
+      { taskId: "task4VideoFile", label: "Task 4 (File)" },
+    ],
+    3: [
+      { taskId: "task3File", label: "Task 3 (File Submit)" },
+    ],
+    4: [
+      { taskId: "assessmentFile", label: "Task (File)" },
+    ],
   };
 
   const GRADING_SCHEME = { rubricWeight: 0.7, quizWeight: 0.3 };
@@ -1624,16 +1665,30 @@
     const lessonById = {};
     lessonSnap.forEach(d => { lessonById[d.id] = d.data() || {}; });
 
+    // ---------------------------
+    // Lessons + progress
+    // ---------------------------
     const lessons = [1, 2, 3, 4].map((n) => {
-      const meta = LESSON_META[n];
-      const partsTotal = meta?.parts || 0;
+      const meta = LESSON_META[n] || {};
       const lKey = `lesson${n}`;
+
       const lessonState = lessonById[lKey] || {};
+      const prog = progressById[lKey] || {};
+
       const partsDoneArr = Array.isArray(lessonState.partsDone) ? lessonState.partsDone : [];
       const partsDone = partsDoneArr.filter(Boolean).length;
 
-      const prog = progressById[lKey] || {};
-      const pctRaw = (prog.progress != null) ? prog.progress : (partsTotal ? Math.round((partsDone / partsTotal) * 100) : 0);
+      // Prefer stored partsTotal (from lesson pages). Fallback to stored array length, then meta.
+      const partsTotal =
+        Number(prog.partsTotal || 0) ||
+        (partsDoneArr.length || 0) ||
+        Number(meta.parts || 0) ||
+        0;
+
+      const pctRaw = (prog.progress != null)
+        ? prog.progress
+        : (partsTotal ? Math.round((partsDone / partsTotal) * 100) : 0);
+
       const pct = clamp(parseInt(pctRaw || 0, 10) || 0, 0, 100);
 
       let state = "Not started";
@@ -1642,7 +1697,7 @@
 
       return {
         key: `l${n}`,
-        title: meta?.title || `Lesson ${n}`,
+        title: meta.title || `Lesson ${n}`,
         pct,
         partsDone,
         partsTotal,
@@ -1654,17 +1709,201 @@
     });
 
     const pctList = lessons.map(l => Number(l.pct || 0));
-    const overallProgress = pctList.length ? Math.round(pctList.reduce((a, b) => a + b, 0) / pctList.length) : 0;
+    const overallProgress = pctList.length
+      ? Math.round(pctList.reduce((a, b) => a + b, 0) / pctList.length)
+      : 0;
 
-    const submissions = [];
-    [1, 4].forEach((n) => {
-      const lKey = `lesson${n}`;
-      const st = lessonById[lKey] || {};
-      const fileName = String(st.assessmentFile || "").trim();
-      if (!fileName) return;
-      const submittedAt = msToISO(tsToMs(st.updatedAt) || Date.now());
-      submissions.push({ lesson: n, fileName, submittedAt, size: 0 });
+    // ---------------------------
+    // Quiz parsing (supports multiple quizzes per lesson)
+    // ---------------------------
+    function normalizeQuizScores(raw) {
+      const out = {};
+      if (!raw || typeof raw !== "object") return out;
+
+      // If the object itself looks like a score entry, store as "__root"
+      const rootHas = ["score", "total", "correct"].some(k => raw[k] != null);
+      if (rootHas) out["__root"] = raw;
+
+      for (const [k, v] of Object.entries(raw)) {
+        if (!v || typeof v !== "object" || Array.isArray(v)) continue;
+        const has = ["score", "total", "correct"].some(x => v[x] != null);
+        if (!has) continue;
+        out[String(k)] = v;
+      }
+      return out;
+    }
+
+    function resolveQuizLabel(lessonNo, key, entry) {
+      // Direct mapping for lessons that use part indices (Lesson 2 is key=1/2/3)
+      if (lessonNo === 2) {
+        if (key === "1") return { label: "Task 1 (MCQ)", order: 1 };
+        if (key === "2") return { label: "Task 2 (MCQ)", order: 2 };
+        if (key === "3") return { label: "Task 3 (MCQ)", order: 3 };
+      }
+
+      // Lesson 3 often needs heuristics (because keys can vary by implementation)
+      if (lessonNo === 3) {
+        const t = Number(entry?.total || 0);
+        if (t === 30) return { label: "Task 1 (MCQ)", order: 1 };
+        if (t === 15) return { label: "Task 2 (MCQ)", order: 2 };
+        if (t === 10) return { label: "Task 4 (MCQ + Justification)", order: 4 };
+
+        // fallback by common part-key patterns
+        if (key === "1" || key === "2") return { label: "Task 1 (MCQ)", order: 1 };
+        if (key === "3") return { label: "Task 2 (MCQ)", order: 2 };
+        if (key === "4") return { label: "Task 4 (MCQ + Justification)", order: 4 };
+      }
+
+      // Generic fallback
+      const kk = String(key || "").replace(/[^0-9]/g, "");
+      const n = kk ? Number(kk) : 0;
+      return { label: n ? `Quiz ${n}` : "Quiz", order: n || 99 };
+    }
+
+    const byLessonTasks = {};
+    const quizEntries = [];
+
+    [1, 2, 3, 4].forEach((lessonNo) => {
+      const st = lessonById[`lesson${lessonNo}`] || {};
+      const qs = normalizeQuizScores(st.quizScores);
+
+      const list = [];
+      for (const [k, v] of Object.entries(qs)) {
+        const total = Math.max(0, Number(v?.total || 0) || 0);
+        const correct = Math.max(0, Number(v?.correct || 0) || 0);
+        const scoreField = Number(v?.score);
+        const pct = Number.isFinite(scoreField)
+          ? clamp(Math.round(scoreField), 0, 100)
+          : (total ? clamp(Math.round((correct / total) * 100), 0, 100) : 0);
+
+        // Determine timestamp
+        const ms = tsToMs(v?.updatedAt) || tsToMs(st.updatedAt) || 0;
+        const updatedAt = ms ? msToISO(ms) : "";
+
+        // Only count as submitted if we have a usable score/total
+        const submitted = Number.isFinite(scoreField) || total > 0 || correct > 0;
+        if (!submitted) continue;
+
+        const meta = resolveQuizLabel(lessonNo, String(k), { total, correct, pct });
+        const item = {
+          lesson: lessonNo,
+          quizKey: String(k),
+          label: meta.label,
+          order: meta.order,
+          correct: Math.min(correct, total || correct),
+          total: total || (correct || 0),
+          pct,
+          updatedAt,
+        };
+        list.push(item);
+        quizEntries.push(item);
+      }
+
+      // Sort tasks within a lesson
+      list.sort((a, b) => (a.order - b.order) || String(a.label).localeCompare(String(b.label)));
+      byLessonTasks[lessonNo] = list;
     });
+
+    // Per-lesson summary (kept for existing UI/metrics)
+    const byLesson = {};
+    [1, 2, 3, 4].forEach((lessonNo) => {
+      const list = byLessonTasks[lessonNo] || [];
+      if (!list.length) {
+        byLesson[lessonNo] = { submitted: false, score: 0, lastAttemptAt: "" };
+        return;
+      }
+      const avg = Math.round(list.reduce((a, b) => a + Number(b.pct || 0), 0) / list.length);
+      const last = list.map(x => x.updatedAt).filter(Boolean).sort().slice(-1)[0] || "";
+      byLesson[lessonNo] = { submitted: true, score: avg, lastAttemptAt: last };
+    });
+
+    const allTaken = quizEntries;
+    const avgScore = allTaken.length
+      ? Math.round(allTaken.reduce((a, b) => a + Number(b.pct || 0), 0) / allTaken.length)
+      : 0;
+
+    const lastAttemptAt = allTaken.map(x => x.updatedAt).filter(Boolean).sort().slice(-1)[0] || "";
+
+    const quiz = {
+      avgScore,
+      attempts: allTaken.length,
+      failedAttempts: 0,
+      lastAttemptAt,
+      byLesson,
+      byLessonTasks,
+      entries: allTaken.sort((a, b) => String(b.updatedAt || "").localeCompare(String(a.updatedAt || ""))),
+    };
+
+    // ---------------------------
+    // File submissions (all lessons + tasks)
+    // ---------------------------
+    const submissions = [];
+    const pushFile = (lessonNo, taskId, label, fileName, ms) => {
+      const fn = String(fileName || "").trim();
+      if (!fn) return;
+      submissions.push({
+        type: "file",
+        lesson: lessonNo,
+        taskId,
+        label,
+        fileName: fn,
+        submittedAt: msToISO(ms || Date.now()),
+        size: 0,
+        // Optional for future storage integrations:
+        fileUrl: "",
+        storagePath: "",
+      });
+    };
+
+    // Lesson 1: taskFiles.task1–task4 (legacy assessmentFile is fallback)
+    {
+      const st = lessonById["lesson1"] || {};
+      const tf = (st.taskFiles && typeof st.taskFiles === "object") ? st.taskFiles : {};
+      const ms = tsToMs(st.updatedAt) || Date.now();
+
+      pushFile(1, "task1", "Task 1 (File)", tf.task1, ms);
+      pushFile(1, "task2", "Task 2 (File)", tf.task2, ms);
+      pushFile(1, "task3", "Task 3 (File)", tf.task3, ms);
+      pushFile(1, "task4", "Task 4 (File)", tf.task4, ms);
+
+      // Backwards compatibility if only assessmentFile exists
+      if (!submissions.some(s => s.lesson === 1) && st.assessmentFile) {
+        pushFile(1, "task1", "Task 1 (File)", st.assessmentFile, ms);
+      }
+    }
+
+    // Lesson 2: task4VideoFile (file)
+    {
+      const st = lessonById["lesson2"] || {};
+      const ms = tsToMs(st.updatedAt) || Date.now();
+      pushFile(2, "task4VideoFile", "Task 4 (File)", st.task4VideoFile || st.assessmentFile, ms);
+    }
+
+    // Lesson 3: try common file fields for Task 3 (file submit)
+    {
+      const st = lessonById["lesson3"] || {};
+      const ms = tsToMs(st.updatedAt) || Date.now();
+
+      const candidates = [
+        st.task3File,
+        st.task3FileName,
+        st.task3SubmissionFile,
+        st.task3UploadFile,
+        st.task3FileSubmit,
+        st.fileSubmission,
+        (st.taskFiles && st.taskFiles.task3) ? st.taskFiles.task3 : "",
+      ];
+      const fileName = candidates.map(x => String(x || "").trim()).find(Boolean) || "";
+      pushFile(3, "task3File", "Task 3 (File Submit)", fileName, ms);
+    }
+
+    // Lesson 4: assessmentFile (single file task)
+    {
+      const st = lessonById["lesson4"] || {};
+      const ms = tsToMs(st.updatedAt) || Date.now();
+      pushFile(4, "assessmentFile", "Task (File)", st.assessmentFile || "", ms);
+    }
+
     submissions.sort((a, b) => String(b.submittedAt || "").localeCompare(String(a.submittedAt || "")));
 
     const assessment = {
@@ -1678,35 +1917,6 @@
       rubric: { clarity: 0, audience: 0, tone: 0, organization: 0, grammar: 0, purpose: 0 },
     };
 
-    function scoreQuiz(lessonNumber) {
-      const key = `lesson${lessonNumber}`;
-      const st = lessonById[key] || {};
-      const ans = (st.quizAnswers && typeof st.quizAnswers === "object") ? st.quizAnswers : null;
-      const answerKey = QUIZ_ANSWER_KEYS[lessonNumber] || [];
-      const updatedAt = tsToMs(st.updatedAt) || 0;
-
-      if (!ans || !answerKey.length) {
-        return { submitted: false, score: 0, lastAttemptAt: updatedAt ? msToISO(updatedAt) : "" };
-      }
-
-      let correct = 0;
-      for (let i = 0; i < answerKey.length; i++) {
-        const v = (ans[i] != null) ? parseInt(ans[i], 10) : NaN;
-        if (v === answerKey[i]) correct++;
-      }
-      const score = Math.round((correct / answerKey.length) * 100);
-      const submitted = Object.keys(ans).length > 0;
-
-      return { submitted, score, lastAttemptAt: updatedAt ? msToISO(updatedAt) : "" };
-    }
-
-    const q2 = scoreQuiz(2);
-    const q3 = scoreQuiz(3);
-    const scoreVals = [q2, q3].filter(x => x.submitted).map(x => x.score);
-    const avgScore = scoreVals.length ? Math.round(scoreVals.reduce((a,b)=>a+b,0) / scoreVals.length) : 0;
-    const lastAttemptAt = [q2.lastAttemptAt, q3.lastAttemptAt].filter(Boolean).sort().slice(-1)[0] || "";
-
-    const quiz = { avgScore, attempts: scoreVals.length, failedAttempts: 0, lastAttemptAt, byLesson: { 2: q2, 3: q3 } };
     return { lessons, overallProgress, assessment, quiz };
   }
 
@@ -1880,27 +2090,45 @@
 
   function buildTimeline(student) {
     const items = [];
+
+    // Lesson start/complete events (if you later store these timestamps)
     (student.lessons || []).forEach(l => {
       if (l.startedAt) items.push({ at: l.startedAt, label: `Started: ${l.title}` });
       if (l.completedAt) items.push({ at: l.completedAt, label: `Completed: ${l.title}` });
     });
 
-    const by = student.quiz?.byLesson || {};
-    if (by[2]?.submitted && by[2]?.lastAttemptAt) items.push({ at: by[2].lastAttemptAt, label: `Lesson 2 Quiz submitted — Score ${by[2].score}%` });
-    if (by[3]?.submitted && by[3]?.lastAttemptAt) items.push({ at: by[3].lastAttemptAt, label: `Lesson 3 Quiz submitted — Score ${by[3].score}%` });
+    // Quiz events (multi-quiz aware)
+    const qEntries = Array.isArray(student?.quiz?.entries) ? student.quiz.entries : [];
+    qEntries.forEach((q) => {
+      if (!q?.updatedAt) return;
+      const lno = Number(q.lesson || 0);
+      const title = `Lesson ${lno} • ${q.label}`;
+      const total = Number(q.total || 0);
+      const correct = Number(q.correct || 0);
+      const pct = clamp(Math.round(Number(q.pct || 0)), 0, 100);
+      const scoreLine = total ? `${correct}/${total} correct (${pct}%)` : `${pct}%`;
+      items.push({ at: q.updatedAt, label: `${title} submitted — ${scoreLine}` });
+    });
 
-    const subs = student?.assessment?.submissions || [];
-    const sub = subs.length ? subs[0] : null;
-    if (student.assessment?.submittedAt) {
-      const ln = sub?.lesson ? `Lesson ${sub.lesson}` : "Assessment";
-      const file = sub?.fileName ? ` — ${sub.fileName}` : "";
-      items.push({ at: student.assessment.submittedAt, label: `${ln} task submitted${file}` });
-    }
+    // File submissions (all submitted items)
+    const subs = Array.isArray(student?.assessment?.submissions) ? student.assessment.submissions : [];
+    subs.forEach((sub) => {
+      if (!sub?.submittedAt) return;
+      const lno = Number(sub.lesson || 0);
+      const file = sub.fileName ? ` — ${sub.fileName}` : "";
+      const label = sub.label ? sub.label : "Task (File)";
+      items.push({ at: sub.submittedAt, label: `Lesson ${lno} • ${label} submitted${file}` });
+    });
+
+    // Teacher workflow events (local/prototype)
     if (student.assessment?.reviewedAt) items.push({ at: student.assessment.reviewedAt, label: `Task reviewed` });
     if (student.assessment?.gradedAt) items.push({ at: student.assessment.gradedAt, label: `Task graded` });
 
-    return items.filter(x => x.at).sort((a,b) => new Date(b.at) - new Date(a.at));
+    return items
+      .filter(x => x.at)
+      .sort((a, b) => new Date(b.at) - new Date(a.at));
   }
+
 
   // ==========================================================
   // DASHBOARD
@@ -2308,7 +2536,84 @@
     $("dQuizAttempts").textContent = String(student.quiz?.attempts || 0);
     $("dQuizFails").textContent = String(student.quiz?.failedAttempts || 0);
     $("dDropOff").textContent = dropOffPoint(student);
+    renderMcqScores(student);
   }
+
+  function renderMcqScores(student) {
+    const wrap = $("dMcqScores");
+    if (!wrap) return;
+
+    const byTasks = student?.quiz?.byLessonTasks || {};
+    const lessonNos = [1, 2, 3, 4];
+
+    const lessonBlocks = lessonNos.map((lessonNo) => {
+      const expected = Array.isArray(QUIZ_TASKS_EXPECTED?.[lessonNo]) ? QUIZ_TASKS_EXPECTED[lessonNo] : [];
+      const actual = Array.isArray(byTasks?.[lessonNo]) ? byTasks[lessonNo] : [];
+
+      // Build rows: expected first (so "Not taken" shows), then any extra/unmapped quizzes.
+      const rows = [];
+      const used = new Set();
+
+      expected.forEach((exp) => {
+        const found = actual.find(a => String(a.label) === String(exp.label));
+        if (found) used.add(found.quizKey);
+        rows.push(found || { lesson: lessonNo, label: exp.label, correct: 0, total: 0, pct: 0, updatedAt: "", submitted: false });
+      });
+
+      // Add any extra quizzes not mapped (edge cases / legacy)
+      actual.forEach((a) => {
+        if (used.has(a.quizKey)) return;
+        rows.push(a);
+      });
+
+      if (!rows.length) {
+        return `
+          <div class="rounded-xl bg-white ring-1 ring-black/5 p-3">
+            <div class="flex items-center justify-between gap-3">
+              <span class="text-sm font-extrabold text-slate-900">Lesson ${lessonNo}</span>
+              <span class="text-xs font-semibold text-slate-500">No quizzes</span>
+            </div>
+          </div>
+        `;
+      }
+
+      const rowsHtml = rows.map((q) => {
+        const taken = !!q.updatedAt || (!!q.total || !!q.correct);
+        const total = Number(q.total || 0);
+        const correct = Number(q.correct || 0);
+        const pct = clamp(Math.round(Number(q.pct || 0)), 0, 100);
+        const score = taken
+          ? (total ? `${correct}/${total} (${pct}%)` : `${pct}%`)
+          : "Not taken";
+        const when = taken ? (q.updatedAt ? fmtDateTime(q.updatedAt) : "Submitted") : "";
+
+        return `
+          <div class="flex items-start justify-between gap-3 rounded-xl bg-slate-50 px-3 py-2 ring-1 ring-black/5">
+            <div class="min-w-0">
+              <div class="text-sm font-extrabold text-slate-900 truncate">${q.label || "Quiz"}</div>
+              <div class="text-xs text-slate-500 font-semibold">${when || ""}</div>
+            </div>
+            <div class="text-right">
+              <div class="text-sm font-extrabold text-brand-700">${score}</div>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      return `
+        <div class="rounded-xl bg-white ring-1 ring-black/5 p-3">
+          <div class="flex items-center justify-between gap-3">
+            <span class="text-sm font-extrabold text-slate-900">Lesson ${lessonNo}</span>
+            <span class="text-xs font-semibold text-slate-500">${rows.length} quiz${rows.length === 1 ? "" : "zes"}</span>
+          </div>
+          <div class="mt-3 space-y-2">${rowsHtml}</div>
+        </div>
+      `;
+    });
+
+    wrap.innerHTML = lessonBlocks.join("");
+  }
+
 
   function renderLessons(student) {
     const wrap = $("lessonProgressList");
@@ -2336,27 +2641,82 @@
     `).join("");
   }
 
-  function latestSubmission(student) {
-    const subs = student?.assessment?.submissions || [];
+  function getAllFileItems(student) {
+    const subs = Array.isArray(student?.assessment?.submissions) ? student.assessment.submissions : [];
+    const byKey = new Map(subs.map(s => [`${Number(s.lesson||0)}|${String(s.taskId||"")}`, s]));
+
+    const items = [];
+    const lessons = Object.keys(FILE_TASKS_EXPECTED || {}).map(Number).sort((a,b)=>a-b);
+
+    lessons.forEach((lessonNo) => {
+      const defs = Array.isArray(FILE_TASKS_EXPECTED?.[lessonNo]) ? FILE_TASKS_EXPECTED[lessonNo] : [];
+      defs.forEach((def) => {
+        const key = `${lessonNo}|${def.taskId}`;
+        const found = byKey.get(key);
+        items.push(found ? found : {
+          type: "file",
+          lesson: lessonNo,
+          taskId: def.taskId,
+          label: def.label,
+          fileName: "",
+          submittedAt: "",
+          size: 0,
+          fileUrl: "",
+          storagePath: "",
+          __missing: true
+        });
+      });
+    });
+
+    // Include any extra file submissions not in FILE_TASKS_EXPECTED (legacy / future tasks)
+    subs.forEach((s) => {
+      const key = `${Number(s.lesson||0)}|${String(s.taskId||"")}`;
+      if (items.some(x => `${Number(x.lesson||0)}|${String(x.taskId||"")}` === key)) return;
+      items.push(s);
+    });
+
+    // Sort newest submitted first, then missing items at the bottom
+    items.sort((a, b) => {
+      const aa = String(a.submittedAt || "");
+      const bb = String(b.submittedAt || "");
+      if (aa && bb) return bb.localeCompare(aa);
+      if (aa && !bb) return -1;
+      if (!aa && bb) return 1;
+      return `${Number(a.lesson||0)}|${String(a.label||"")}`.localeCompare(`${Number(b.lesson||0)}|${String(b.label||"")}`);
+    });
+
+    return items;
+  }
+
+  function latestFileSubmission(student) {
+    const subs = Array.isArray(student?.assessment?.submissions) ? student.assessment.submissions : [];
     return subs.length ? subs[0] : null;
   }
+
   function assessmentTaskLine(student) {
-    const sub = latestSubmission(student);
+    const sub = latestFileSubmission(student);
     if (!sub) return "—";
     const ln = Number(sub.lesson || 0);
-    const kind = (ln === 2 || ln === 3) ? "Quiz" : "Task (File)";
-    const file = sub?.fileName ? ` — ${sub.fileName}` : "";
-    return `L${ln} ${kind}${file}`;
+    const label = sub.label || "Task (File)";
+    const file = sub.fileName ? ` — ${sub.fileName}` : "";
+    return `L${ln} ${label}${file}`;
   }
+
   function bestQuizLine(student) {
-    const by = student?.quiz?.byLesson || {};
-    const l2 = by[2];
-    const l3 = by[3];
-    const parts = [];
-    if (l2?.submitted) parts.push(`L2: ${l2.score}%`);
-    if (l3?.submitted) parts.push(`L3: ${l3.score}%`);
-    return parts.length ? parts.join(" • ") : "—";
+    const entries = Array.isArray(student?.quiz?.entries) ? student.quiz.entries : [];
+    if (!entries.length) return "—";
+
+    const top = [...entries]
+      .sort((a, b) => String(b.updatedAt || "").localeCompare(String(a.updatedAt || "")))
+      .slice(0, 4);
+
+    return top.map(q => {
+      const ln = Number(q.lesson || 0);
+      const pct = clamp(Math.round(Number(q.pct || 0)), 0, 100);
+      return `L${ln} ${q.label}: ${pct}%`;
+    }).join(" • ");
   }
+
   function assessmentGradeLine(student) {
     const g = student?.assessment?.finalGrade;
     if (g == null || g === "") return "";
@@ -2364,7 +2724,7 @@
     return `Grade: ${n} (${letterFromGrade(n)})`;
   }
 
-  function setAssessmentMeta(student) {
+function setAssessmentMeta(student) {
     const a = student.assessment || {};
     const { pct } = rubricTotals(a.rubric || {});
     const lines = [];
@@ -2470,48 +2830,74 @@ function setAssessPillUI(student) {
     if (!sub) return "—";
     const ln = Number(sub.lesson || 0);
     const title = LESSON_META[ln]?.title || `Lesson ${ln}`;
-    const kind = (ln === 2 || ln === 3) ? "Quiz" : "Task (File)";
-    return `${title} • ${kind}`;
+    const label = sub.label || "Task (File)";
+    return `${title} • ${label}`;
   }
+
 
   function renderSubmissionUI(student, sub) {
     activeSubmission = sub || null;
 
     const label = submissionLabel(sub);
-    const file = sub?.fileName ? `File: ${sub.fileName}` : "—";
+    const fileLine = sub?.fileName
+      ? `File: ${sub.fileName}`
+      : "No file submitted yet.";
     const when = sub?.submittedAt ? fmtDateTime(sub.submittedAt) : "—";
 
-    $("sSubmissionInfo").textContent = (label !== "—") ? `${label} • ${file} • ${when}` : "—";
+    $("sSubmissionInfo").textContent = (label !== "—")
+      ? `${label} • ${fileLine} • ${when}`
+      : "—";
+
+    // View/Download button (placeholder until storage is connected)
+    const btn = $("sOpenFileBtn");
+    const hint = $("sOpenFileHint");
+    if (btn) {
+      const hasSubmission = !!(sub && (String(sub.fileName || "").trim() || String(sub.fileUrl || "").trim()));
+      btn.disabled = !hasSubmission;
+
+      if (hint) {
+        if (!hasSubmission) {
+          hint.textContent = "No file submitted for this task yet.";
+        } else if (String(sub.fileUrl || "").trim()) {
+          hint.textContent = "Opens the submitted file in a new tab.";
+        } else {
+          hint.textContent = "Filename is saved; connect Firebase/Supabase storage and store a fileUrl to enable direct viewing.";
+        }
+      }
+    }
   }
+
 
   function openSubmission(student) {
     lastFocusEl = document.activeElement;
     $("sStudentLine").textContent = `${student.name} • ${student.id}`;
 
-    const subs = Array.isArray(student.assessment?.submissions) ? student.assessment.submissions : [];
     const sel = $("sSubmissionSelect");
     sel.innerHTML = "";
 
-    const options = subs.length ? subs : [{ lesson: 0, fileName: "", submittedAt: student.assessment?.submittedAt || "" }];
-    options.forEach((sub, i) => {
+    // Show ALL expected file tasks (even if not submitted yet)
+    const items = getAllFileItems(student);
+    student.__submissionItems = items;
+
+    items.forEach((sub, i) => {
       const ln = Number(sub.lesson || 0);
-      const kind = (ln === 2 || ln === 3) ? "Quiz" : "Task (File)";
-      const short = ln ? `L${ln} ${kind}` : "Assessment";
-      const extra = sub.fileName ? ` — ${sub.fileName}` : "";
+      const label = sub.label || "Task (File)";
+      const extra = sub.fileName ? ` — ${sub.fileName}` : " — Not submitted";
       const opt = document.createElement("option");
       opt.value = String(i);
-      opt.textContent = `${short}${extra}`;
+      opt.textContent = `L${ln} ${label}${extra}`;
       sel.appendChild(opt);
     });
 
     sel.value = "0";
-    renderSubmissionUI(student, options[0]);
+    renderSubmissionUI(student, items[0] || null);
     setSubmissionUIFromStudent(student);
 
     $("submissionModal").classList.remove("hidden");
     document.body.classList.add("overflow-hidden");
     $("closeSubmission").focus();
   }
+
 
   function closeSubmission() {
     $("submissionModal").classList.add("hidden");
@@ -2523,11 +2909,34 @@ function setAssessPillUI(student) {
 
   $("openSubmissionBtn")?.addEventListener("click", () => { if (activeStudent) openSubmission(activeStudent); });
 
+  $("sOpenFileBtn")?.addEventListener("click", () => {
+    if (!activeSubmission) return;
+
+    const url = String(activeSubmission.fileUrl || activeSubmission.downloadUrl || activeSubmission.url || "").trim();
+    if (url) {
+      window.open(url, "_blank", "noopener,noreferrer");
+      return;
+    }
+
+    const fn = String(activeSubmission.fileName || "").trim();
+    if (fn) {
+      alert(
+        "File viewing is not connected yet.\n\n" +
+        `Saved filename: ${fn}\n` +
+        "Next step: after connecting Supabase/Firebase Storage, store a fileUrl on the submission record so this button can open it."
+      );
+    }
+  });
+
   $("sSubmissionSelect")?.addEventListener("change", (e) => {
     if (!activeStudent) return;
-    const subs = Array.isArray(activeStudent.assessment?.submissions) ? activeStudent.assessment.submissions : [];
+
+    const items = Array.isArray(activeStudent.__submissionItems)
+      ? activeStudent.__submissionItems
+      : getAllFileItems(activeStudent);
+
     const i = Number(e.target.value || 0);
-    const pick = subs[i] || subs[0] || null;
+    const pick = items[i] || items[0] || null;
     renderSubmissionUI(activeStudent, pick);
   });
 
@@ -2545,7 +2954,8 @@ function setAssessPillUI(student) {
 
     if (activeSubmission) {
       a.targetLesson = Number(activeSubmission.lesson || 0) || a.targetLesson || 0;
-      a.targetFileName = activeSubmission.fileName || a.targetFileName || "";
+      a.targetTaskId = String(activeSubmission.taskId || a.targetTaskId || "");
+      a.targetFileName = String(activeSubmission.fileName || a.targetFileName || "");
       if (activeSubmission.submittedAt) a.submittedAt = activeSubmission.submittedAt;
     }
 
@@ -2553,6 +2963,7 @@ function setAssessPillUI(student) {
     setAssessmentMeta(student);
     setAssessPillUI(student);
   }
+
 
   $("saveRubricBtn")?.addEventListener("click", () => {
     if (!activeStudent) return;

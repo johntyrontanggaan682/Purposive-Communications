@@ -45,6 +45,8 @@
       .scale-in { animation: scaleIn .18s ease-out; }
       @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
       @keyframes scaleIn { from { transform: translateY(8px) scale(.98); } to { transform: translateY(0) scale(1); } }
+
+      .qblock { white-space: pre-wrap; }
     </style>
   </head>
 
@@ -221,32 +223,36 @@
       </div>
     </header>
 
-    <section class="bg-brand-700">
-      <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-        <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <div>
-            <p class="text-white/80 text-sm font-semibold">Lesson 3</p>
-            <h1 class="mt-1 text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
-              Evaluating Messages and Images of Different Text Types
-            </h1>
-            <p class="mt-3 max-w-3xl text-white/85">Part 1 (Lesson/Module) • Part 2 (Assessment — Multiple Choice)</p>
-          </div>
+    <!-- HERO -->
+    <!-- HERO -->
+<section class="bg-brand-700">
+  <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+    <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+      <div>
+        <p class="text-white/80 text-sm font-semibold">Lesson 3</p>
+        <h1 class="mt-1 text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
+          Evaluating Messages and Images of Different Text Types
+        </h1>
+        <p class="mt-3 max-w-3xl text-white/85">
+          Parts: World Englishes in Technical Work • Balancing Identity and Intelligibility • Multimodality in Technical Communication • Evaluating the Effectiveness of a Message • Tasks 1–4 (MCQ + File Submission)
+        </p>
+      </div>
 
-          <div class="w-full md:w-[340px]">
-            <div class="rounded-2xl bg-white/10 ring-1 ring-white/15 p-4">
-              <div class="flex items-center justify-between text-sm text-white/90">
-                <span class="font-semibold">Lesson Progress</span>
-                <span id="progressText" class="font-bold">0%</span>
-              </div>
-              <div class="mt-3 h-2.5 w-full rounded-full bg-white/20">
-                <div id="progressBar" class="h-2.5 w-0 rounded-full bg-white transition-all"></div>
-              </div>
-              <p class="mt-2 text-xs text-white/70">Passing score: 70%</p>
-            </div>
+      <div class="w-full md:w-[340px]">
+        <div class="rounded-2xl bg-white/10 ring-1 ring-white/15 p-4">
+          <div class="flex items-center justify-between text-sm text-white/90">
+            <span class="font-semibold">Lesson Progress</span>
+            <span id="progressText" class="font-bold">0%</span>
           </div>
+          <div class="mt-3 h-2.5 w-full rounded-full bg-white/20">
+            <div id="progressBar" class="h-2.5 w-0 rounded-full bg-white transition-all"></div>
+          </div>
+          <p class="mt-2 text-xs text-white/70">Assessments save scores when submitted.</p>
         </div>
       </div>
-    </section>
+    </div>
+  </div>
+</section>
 
     <main class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       <div class="grid gap-8 lg:grid-cols-12">
@@ -286,6 +292,9 @@
               </div>
             </div>
           </div>
+
+          <p class="mt-4 text-xs text-slate-500">Passing score for each assessment is <strong>70%</strong> to mark it complete.</p>
+          <p class="mt-1 text-xs text-slate-500">Note: Task submissions are stored in Firestore as a filename only (no upload storage yet).</p>
         </section>
       </div>
     </main>
@@ -412,7 +421,7 @@
 
       document.addEventListener("click", (e) => {
         if (!userDropdown || userDropdown.classList.contains("hidden")) return;
-        const wrapper = userMenuBtn?.parentElement;
+        const wrapper = userMenuBtn?.parentElement; // .auth-user
         if (wrapper && e.target instanceof Node && !wrapper.contains(e.target)) closeUserDropdown();
       });
 
@@ -476,7 +485,7 @@
         setAvatarEl(mNavAvatar, avatarText);
       }
 
-      // ===== Sign out confirm (WHAT TO CHANGE/UPDATE) =====
+      // ===== Sign out confirm =====
       const signOutModal = document.getElementById("signOutModal");
       const signOutBackdrop = document.getElementById("signOutBackdrop");
       const signOutYes = document.getElementById("signOutYes");
@@ -510,7 +519,6 @@
 
       window.__pcSignOut = doSignOut;
 
-      // ✅ update: open modal instead of direct sign out
       signOutBtn?.addEventListener("click", (e) => { e.preventDefault(); openSignOutModal(); });
       mSignOutBtn?.addEventListener("click", (e) => { e.preventDefault(); openSignOutModal(); });
 
@@ -519,474 +527,916 @@
         await doSignOut();
       });
 
-      // ===== your existing Lesson 3 script (Firebase version, same UI behavior) =====
-      const LESSON_NO = 3;
-      const PASSING = 70;
+      // ===== Lesson 3 script =====
+const LESSON_NO = 3;
+const PASSING = 70;
 
-      const quiz = [
-        { q: 'Indian English: "Kindly revert with the machine report."', options: ["Return the report physically", "Reply with the report", "Cancel the report"], answer: 1 },
-        { q: 'Singapore English: "Can finish by today or not?"', options: ["Do you want to finish today?", "Repeat the task", "Is it possible to finish today?"], answer: 2 },
-        { q: 'Filipino English: "Open the fan in the workshop."', options: ["Fix the fan", "Turn on the fan", "Remove the fan cover"], answer: 1 },
-        { q: 'British English: "Take the lift to the factory floor."', options: ["Take the elevator", "Take the stairs", "Take the escalator"], answer: 0 },
-        { q: 'Indian English: "Do the needful with the safety checklist."', options: ["Ignore the checklist", "Do anything you want", "Take necessary action"], answer: 2 },
-        { q: 'Singapore English: "Don’t anyhow operate the machine."', options: ["Don’t operate quickly", "Don’t operate carelessly", "Don’t operate at all"], answer: 1 },
-        { q: 'Filipino English: "I’ll go to the comfort room."', options: ["Lounge", "Restroom", "Bedroom"], answer: 1 },
-        { q: 'British English: "Put the rubbish in the bin."', options: ["Store food", "Throw trash away", "Keep tools"], answer: 1 },
-        { q: 'American English: "Check the faucet in the washroom."', options: ["Check the pipe", "Check the tap", "Check the sink"], answer: 1 },
-        { q: 'Indian English: "We need to prepone the factory meeting."', options: ["Cancel meeting", "Move meeting later", "Move meeting earlier"], answer: 2 },
-      ];
+// -----------------------------
+// Task 1 (MCQ) — World Englishes Meanings (30 items)
+// -----------------------------
+const worldEnglishesQuiz = [
+  { qHtml: `1. Indian English\n“Kindly revert with the machine report.”`, options: ["A. Please return the machine report physically","B. Please reply with the machine report","C. Please cancel the machine report"], answer: 1 },
+  { qHtml: `2. Singapore English\n“Can finish by today or not?”`, options: ["A. Do you want to finish today?","B. Can you repeat the task?","C. Is it possible to finish today?"], answer: 2 },
+  { qHtml: `3. Filipino English\n“Open the fan in the workshop.”`, options: ["A. Fix the fan in the workshop","B. Turn on the fan in the workshop","C. Remove the fan cover"], answer: 1 },
+  { qHtml: `4. British English\n“Take the lift to the factory floor.”`, options: ["A. Take the elevator to the factory floor","B. Take the stairs to the factory floor","C. Take the escalator to the factory floor"], answer: 0 },
+  { qHtml: `5. American English\n“Put the trash in the garbage can near the assembly line.”`, options: ["A. Put the food in the fridge","B. Put the tools in the box","C. Put the waste in the bin near the assembly line"], answer: 2 },
+  { qHtml: `6. Indian English\n“Do the needful with the safety checklist.”`, options: ["A. Ignore the checklist","B. Do whatever you want with the checklist","C. Take necessary action with the safety checklist"], answer: 2 },
+  { qHtml: `7. Singapore English\n“Don’t be so kiasu about overtime.”`, options: ["A. Don’t be lazy about overtime","B. Don’t be late for overtime","C. Don’t be overly afraid of missing overtime benefits"], answer: 2 },
+  { qHtml: `8. Filipino English\n“Take a picture of the machine for remembrance.”`, options: ["A. Take a photo for ID purposes","B. Take a photo as a keepsake","C. Take a photo for documentation only"], answer: 1 },
+  { qHtml: `9. British English\n“Put the rubbish in the bin outside the workshop.”`, options: ["A. Store the food","B. Throw the trash away","C. Keep the tools"], answer: 1 },
+  { qHtml: `10. American English\n“Check the faucet in the factory washroom.”`, options: ["A. Check the pipe in the washroom","B. Check the tap in the washroom","C. Check the sink in the washroom"], answer: 1 },
+  { qHtml: `11. Indian English\n“We need to prepone the factory meeting.”`, options: ["A. Cancel the meeting","B. Move the meeting later","C. Move the meeting earlier"], answer: 2 },
+  { qHtml: `12. Singapore English\n“He’s blur like sotong during machine training.”`, options: ["A. He’s happy during training","B. He’s confused like a squid during training","C. He’s angry during training"], answer: 1 },
+  { qHtml: `13. Filipino English\n“I’ll go to the comfort room near the production area.”`, options: ["A. I’ll go to the lounge near the production area","B. I’ll go to the restroom near the production area","C. I’ll go to the bedroom near the production area"], answer: 1 },
+  { qHtml: `14. British English\n“He’s in hospital after the factory accident.”`, options: ["A. He’s visiting the hospital","B. He’s admitted to the hospital","C. He’s working at the hospital"], answer: 1 },
+  { qHtml: `15. American English\n“He’s in the hospital after the factory accident.”`, options: ["A. He’s admitted to the hospital","B. He’s visiting the hospital","C. He’s working at the hospital"], answer: 0 },
+  { qHtml: `16. Indian English\n“The supervisor is out of station.”`, options: ["A. Out of service","B. Out of town","C. Out of the office"], answer: 1 },
+  { qHtml: `17. Singapore English\n“Don’t anyhow operate the machine.”`, options: ["A. Don’t operate the machine quickly","B. Don’t operate the machine carelessly","C. Don’t operate the machine at all"], answer: 1 },
+  { qHtml: `18. Filipino English\n“I’ll go to the province after my factory shift.”`, options: ["A. I’ll go abroad","B. I’ll go to the countryside","C. I’ll go to the city"], answer: 1 },
+  { qHtml: `19. British English\n“He lives in a flat near the industrial park.”`, options: ["A. He lives in a dormitory near the industrial park","B. He lives in a house near the industrial park","C. He lives in an apartment near the industrial park"], answer: 2 },
+  { qHtml: `20. American English\n“He lives in an apartment near the industrial park.”`, options: ["A. He lives in a flat near the industrial park","B. He lives in a house near the industrial park","C. He lives in a dormitory near the industrial park"], answer: 0 },
+  { qHtml: `21. Indian English\n“He passed out from engineering college.”`, options: ["A. He fainted in engineering college","B. He graduated from engineering college","C. He dropped out of engineering college"], answer: 1 },
+  { qHtml: `22. Singapore English\n“Don’t play play with factory safety.”`, options: ["A. Don’t joke about safety","B. Don’t take safety lightly","C. Don’t play games in the factory"], answer: 1 },
+  { qHtml: `23. Filipino English\n“I’ll just fall in line at the canteen.”`, options: ["A. I’ll sit down at the canteen","B. I’ll queue up at the canteen","C. I’ll wait outside the canteen"], answer: 1 },
+  { qHtml: `24. British English\n“He’s at university studying industrial design.”`, options: ["A. He’s visiting the university","B. He’s studying at university","C. He’s working at the university"], answer: 1 },
+  { qHtml: `25. American English\n“He’s in college studying industrial design.”`, options: ["A. He’s studying at college","B. He’s visiting the college","C. He’s working at the college"], answer: 0 },
+  { qHtml: `26. Indian English\n“My cousin brother works in the factory.”`, options: ["A. My friend works in the factory","B. My male cousin works in the factory","C. My brother works in the factory"], answer: 1 },
+  { qHtml: `27. Singapore English\n“Don’t be kaypoh about the factory project.”`, options: ["A. Don’t be lazy about the project","B. Don’t be nosy about the project","C. Don’t be late for the project"], answer: 1 },
+  { qHtml: `28. Filipino English\n“I’ll go to the CR near the workshop.”`, options: ["A. I’ll go to the restroom near the workshop","B. I’ll go to the classroom near the workshop","C. I’ll go to the cafeteria near the workshop"], answer: 0 },
+  { qHtml: `29. British English\n“He’s buying petrol for the factory generator.”`, options: ["A. He’s buying diesel for the generator","B. He’s buying kerosene for the generator","C. He’s buying gasoline for the generator"], answer: 2 },
+  { qHtml: `30. American English\n“He’s buying gas for the factory generator.”`, options: ["A. He’s buying cooking gas for the generator","B. He’s buying kerosene for the generator","C. He’s buying gasoline for the generator"], answer: 2 },
+];
 
-      const parts = [
-        {
-          title: "Part 1 — Lesson/Module",
-          subtitle: "World Englishes, multimodality, and evaluating message effectiveness.",
-          type: "content",
-          html: `
-            <div class="rounded-2xl overflow-hidden ring-1 ring-black/5">
-              <div class="aspect-video bg-black">
-                <iframe class="w-full h-full"
-                  src="https://www.youtube.com/embed/8S0FDjFBj8o"
-                  title="Lesson Video (Fallback)"
-                  frameborder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowfullscreen></iframe>
-              </div>
-            </div>
+// -----------------------------
+// Task 2 (MCQ) — Multimodality Choices (15 items)
+// -----------------------------
+const multimodalityQuiz = [
+  { q: "1. Safety Rules in a Laboratory", options: ["Text only","Text + Images","Audio only","Video only"], answer: 1 },
+  { q: "2. Demonstrating Fire Extinguisher Use", options: ["Text only","Audio instructions","Video demonstration","Images only"], answer: 2 },
+  { q: "3. Food Service Guidelines for New Staff", options: ["Text + Images","Audio only","Video only","Text only"], answer: 0 },
+  { q: "4. Machine Troubleshooting (Step-by-Step)", options: ["Text only","Text + Images","Audio only","Video only"], answer: 1 },
+  { q: "5. Emergency Evacuation Drill", options: ["Text only","Audio announcement","Video simulation","Images only"], answer: 2 },
+  { q: "6. Explaining Workplace Dress Code", options: ["Text only","Text + Images","Audio only","Video only"], answer: 1 },
+  { q: "7. Teaching Knife Safety in Culinary Class", options: ["Text only","Images only","Video demonstration","Audio only"], answer: 2 },
+  { q: "8. Introducing New Software Features", options: ["Text only","Text + Images","Audio only","Video tutorial"], answer: 1 },
+  { q: "9. First Aid Procedures (CPR)", options: ["Text only","Audio instructions","Video demonstration","Images only"], answer: 2 },
+  { q: "10. Explaining Food Storage Guidelines", options: ["Text only","Text + Images","Audio only","Video only"], answer: 1 },
+  { q: "11. Assembly Instructions for Furniture", options: ["Text only","Text + Images","Audio only","Video only"], answer: 1 },
+  { q: "12. Demonstrating Proper Handwashing", options: ["Text only","Images only","Video demonstration","Audio only"], answer: 2 },
+  { q: "13. Orientation for New Factory Workers", options: ["Text only","Audio only","Video + Images","Text only"], answer: 2 },
+  { q: "14. Explaining Electrical Safety Precautions", options: ["Text only","Text + Images","Audio only","Video only"], answer: 1 },
+  { q: "15. Customer Service Training (Role Play)", options: ["Text only","Audio only","Video demonstration","Images only"], answer: 2 },
+];
 
-            <div class="prose max-w-none prose-slate">
-              <h3>World Englishes in Technical Work</h3>
-              <p>
-                English has regionally distinct varieties shaped by culture (e.g., Indian English, Singapore English, Filipino English).
-                In technical settings, these differences affect intelligibility. Professionals must listen carefully, be respectful,
-                and adjust communication style depending on the audience.
-              </p>
+// -----------------------------
+// Task 4 (MCQ + Justification) — Evaluating Messages (10 items)
+// -----------------------------
+const effectivenessQuiz = [
+  { q: "1. “Check the machine regularly.”", options: ["A. “Inspect the hydraulic press every 2 hours for oil leaks and unusual noise.”","B. “Look at the machine sometimes.”","C. “Check it when you feel like it.”"], answer: 0 },
+  { q: "2. “Be careful with wires.”", options: ["A. “Turn off the main switch before touching any wires to avoid electric shock.”","B. “Handle wires carefully.”","C. “Don’t touch wires.”"], answer: 0 },
+  { q: "3. “Fix the car properly.”", options: ["A. “Tighten all bolts to manufacturer torque specifications before releasing the vehicle.”","B. “Do a good job.”","C. “Repair it fast.”"], answer: 0 },
+  { q: "4. “Make sure the site is safe.”", options: ["A. “Secure scaffolding, wear helmets, and check hazard signs before starting work.”","B. “Be safe.”","C. “Check the site.”"], answer: 0 },
+  { q: "5. “Wash your hands.”", options: ["A. “Wash your hands with soap for 20 seconds before handling food.”","B. “Wash hands if you want.”","C. “Don’t forget hygiene.”"], answer: 0 },
+  { q: "6. “Test the circuit.”", options: ["A. “Use a multimeter to test voltage and resistance before connecting the circuit.”","B. “Check the circuit sometimes.”","C. “Look at the wires.”"], answer: 0 },
+  { q: "7. “Lubricate the parts.”", options: ["A. “Apply grease to all moving joints every 50 hours of operation.”","B. “Put oil when needed.”","C. “Grease it if you want.”"], answer: 0 },
+  { q: "8. “Check the brakes.”", options: ["A. “Inspect brake pads weekly and replace them if thickness is below 3mm.”","B. “Look at the brakes.”","C. “Check brakes when noisy.”"], answer: 0 },
+  { q: "9. “Follow safety rules.”", options: ["A. “Wear helmets, reflective vests, and safety boots before entering the construction site.”","B. “Be safe always.”","C. “Follow rules.”"], answer: 0 },
+  { q: "10. “Keep food fresh.”", options: ["A. “Store perishable food at 4°C or below to maintain freshness.”","B. “Keep food nice.”","C. “Don’t let food spoil.”"], answer: 0 },
+];
 
-              <h3>Multimodality in Technical Communication</h3>
-              <p>
-                Multimodality combines two or more modes (text, visuals, audio, video, demonstration) to create meaning.
-                It improves clarity and engagement in orientations, manuals, troubleshooting guides, and safety training.
-              </p>
+// Helpers
+function uploadPartHtml(taskKey, taskTitle, taskBodyHtml) {
+  return `
+    <div class="rounded-2xl bg-slate-50 p-5 ring-1 ring-black/5">
+      <h3 class="text-lg font-extrabold text-slate-900">${taskTitle}</h3>
+      <div class="mt-3 space-y-3 text-sm text-slate-700">
+        ${taskBodyHtml}
+      </div>
 
-              <h3>Evaluating Message Effectiveness</h3>
-              <ul>
-                <li><strong>Simplicity</strong> — clear purpose; avoid unnecessary words.</li>
-                <li><strong>Specificity</strong> — concrete and actionable instructions.</li>
-                <li><strong>Structure</strong> — logical flow that is easy to follow.</li>
-                <li><strong>Stickiness</strong> — memorable phrases that stay in mind.</li>
-              </ul>
-            </div>
-          `,
-        },
-        {
-          title: "Part 2 — Assessment (Multiple Choice)",
-          subtitle: "World Englishes meanings. Passing score: 70%.",
-          type: "quiz",
-          html: "",
-        },
-      ];
+      <div class="mt-5">
+        <label class="block text-sm font-semibold text-slate-800">Upload your file</label>
+        <input id="fileInput-${taskKey}" type="file" class="mt-2 block w-full text-sm file:mr-4 file:rounded-xl file:border-0 file:bg-brand-600 file:px-4 file:py-2 file:text-white file:font-semibold hover:file:bg-brand-700" />
+        <button id="submitFileBtn-${taskKey}" class="mt-3 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800">
+          Submit File
+        </button>
+        <p id="fileStatus-${taskKey}" class="mt-2 text-xs text-slate-600"></p>
+      </div>
+    </div>
+  `;
+}
 
-      const partsList = document.getElementById("partsList");
-      const partTitle = document.getElementById("partTitle");
-      const partSubtitle = document.getElementById("partSubtitle");
-      const partBody = document.getElementById("partBody");
-      const prevBtn = document.getElementById("prevBtn");
-      const nextBtn = document.getElementById("nextBtn");
-      const completeBtn = document.getElementById("completeBtn");
-      const progressText = document.getElementById("progressText");
-      const progressBar = document.getElementById("progressBar");
-      const statusPill = document.getElementById("statusPill");
+const parts = [
+  {
+    title: "Part 1 — World Englishes in Technical Work",
+    subtitle: "Identify different varieties of World Englishes and why intelligibility matters in technical settings.",
+    type: "content",
+    html: `
+      <div class="prose max-w-none prose-slate">
+        <h3>Lesson 3: Evaluating Messages and Images of Different Text Types</h3>
+        <h4>Learning Outcomes</h4>
+        <ol>
+          <li>Identify different varieties of World Englishes.</li>
+          <li>Apply appropriate multimodal communication strategies (text, visuals, audio, video) to effectively present technical information in workplace scenarios.</li>
+          <li>Evaluate the effectiveness of sample messages from technical contexts using the four qualities—simplicity, specificity, structure, and stickiness.</li>
+        </ol>
 
-      let activePart = 0;
-      let __lessonState = null;
+        <h4>World Englishes</h4>
+        <p>
+          English today is not one uniform language. It has been shaped by cultures worldwide, creating regionally distinct varieties
+          such as Indian English, West African English, Singapore English, and Filipino English.
+        </p>
+        <p>
+          In technical workplaces, teams can be global. People may use different pronunciations, vocabulary, or sentence structures.
+          These differences are not “mistakes” — they are features of local varieties. The key challenge is <strong>intelligibility</strong>:
+          making sure messages are clear enough for others to understand to avoid errors, safety issues, or poor service.
+        </p>
 
-      function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
+        <h4>Technical example</h4>
+        <ul>
+          <li>Indian English: “Kindly revert” = “Please reply”</li>
+          <li>Singapore English: “Can or not?” = “Is it possible?”</li>
+          <li>Filipino English: “Open the light” = “Turn on the light”</li>
+        </ul>
 
-      function lessonDocRef(uid) {
-        return doc(db, "users", uid, "lessons", `lesson${LESSON_NO}`);
-      }
-      function progressDocRef(uid) {
-        return doc(db, "users", uid, "progress", `lesson${LESSON_NO}`);
-      }
+        <p>
+          Recognizing World Englishes builds flexibility, respect, and professionalism in multicultural technical environments.
+        </p>
+      </div>
+    `
+  },
+  {
+    title: "Part 2 — Balancing Identity and Intelligibility",
+    subtitle: "Adjust English to your audience while respecting identity (Kirkpatrick’s extremes).",
+    type: "content",
+    html: `
+      <div class="prose max-w-none prose-slate">
+        <p>
+          Local English expressions can create barriers to understanding across varieties (e.g., “Having here, or take away?” vs
+          “Dine in, or take out?”). Kirkpatrick (2007) explains two extremes:
+        </p>
 
+        <ul>
+          <li><strong>National/Regional Identity</strong> — using local variety to affirm culture (local terms may confuse outsiders).</li>
+          <li><strong>Intelligibility</strong> — being understood worldwide (learning equivalents like “bin/trash can”, “lift/elevator”).</li>
+        </ul>
 
-    function userDocRef(uid) {
-      return doc(db, "users", uid);
+        <p>
+          Professionals often <strong>code-switch</strong> or adjust variety depending on the audience. The goal is balance: be clear,
+          respectful, and flexible while maintaining identity.
+        </p>
+
+        <h4>When interpreting technical messages, ask:</h4>
+        <ul>
+          <li>What is the message?</li>
+          <li>What is the purpose?</li>
+          <li>How is it conveyed (text/diagram/sign)?</li>
+          <li>Who is the target audience?</li>
+          <li>What other ways can it be presented?</li>
+        </ul>
+      </div>
+    `
+  },
+  {
+    title: "Part 3 — Multimodality in Technical Communication",
+    subtitle: "Combine two or more modes (text, images, audio, video, action) to improve clarity and engagement.",
+    type: "content",
+    html: `
+      <div class="prose max-w-none prose-slate">
+        <p>
+          A message is <strong>multimodal</strong> when it uses two or more modes to create meaning (linguistic, visual, aural,
+          somatic/body movement). In technical training, combining modes makes instructions clearer and more memorable.
+        </p>
+
+        <h4>Common multimodal outputs</h4>
+        <ul>
+          <li><strong>Paper-based</strong>: posters, brochures, comics (e.g., wiring safety poster).</li>
+          <li><strong>Digital</strong>: slides, web pages, infographics, videos, tutorials.</li>
+          <li><strong>Live</strong>: demonstrations, role-plays, seminars.</li>
+          <li><strong>Transmedia</strong>: one concept across multiple platforms (comics + video + social posts).</li>
+        </ul>
+
+        <p>
+          Multimodality is powered by <strong>semiotics</strong>—how symbols (icons, diagrams, color codes) are interpreted. Technical
+          communication uses symbols constantly (circuit diagrams, safety icons, labels). The right combination boosts understanding.
+        </p>
+      </div>
+    `
+  },
+  {
+    title: "Part 4 — Evaluating the Effectiveness of a Message",
+    subtitle: "Use the four qualities: simplicity, specificity, structure, and stickiness.",
+    type: "content",
+    html: `
+      <div class="prose max-w-none prose-slate">
+        <p>
+          Effective technical messages prevent mistakes and improve safety and efficiency. Evaluate messages using four qualities:
+        </p>
+        <ul>
+          <li><strong>Simplicity</strong> — remove unnecessary words; keep a clear purpose.</li>
+          <li><strong>Specificity</strong> — use concrete, actionable details (avoid vague instructions).</li>
+          <li><strong>Structure</strong> — organize ideas logically (intro → steps → reminder).</li>
+          <li><strong>Stickiness</strong> — make it memorable (short slogans, strong cues).</li>
+        </ul>
+
+        <p>
+          Before sending or posting a technical message, ask: Is my purpose clear? Are my words concrete? Do ideas flow logically?
+          Will the message be remembered?
+        </p>
+      </div>
+    `
+  },
+
+  // Tasks
+  {
+    title: "Task 1 — MQC (World Englishes Meanings)",
+    subtitle: "Choose the correct meaning of each expression. Submit anytime — your score will be saved.",
+    type: "quiz",
+    quizTitle: "Task 1",
+    quizSubtitle: "Read each labeled variety and choose the correct meaning.",
+    data: worldEnglishesQuiz
+  },
+  {
+    title: "Task 2 — MQC (Multimodal Communication Choices)",
+    subtitle: "Select the best combination of modes to ensure clarity, accuracy, and engagement.",
+    type: "quiz",
+    quizTitle: "Task 2",
+    quizSubtitle: "Choose the best communication mode(s) for each situation.",
+    data: multimodalityQuiz
+  },
+  {
+    title: "Task 3 — File Submission (Multimodal Output + Reflection)",
+    subtitle: "Create a multimodal output and submit your file. Include a 5–7 sentence reflection.",
+    type: "upload",
+    taskKey: "task3",
+    html: uploadPartHtml(
+      "task3",
+      "Task 3 — Multimodal Technical Communication Output",
+      `
+        <div class="rounded-xl bg-white p-4 ring-1 ring-black/5">
+          <p class="font-semibold">Instructions</p>
+          <p class="mt-2">
+            Choose <strong>one</strong> scenario and create an appropriate output (poster, manual, audio recording, or video demonstration):
+          </p>
+          <ol class="mt-2 list-decimal pl-5 space-y-1">
+            <li>Safety Rules in a Laboratory – Present essential safety guidelines for new students.</li>
+            <li>Machine Troubleshooting Guide – Explain step-by-step how to fix a common technical issue.</li>
+            <li>Food Service Guidelines – Show proper hygiene and service practices in a cafeteria or restaurant.</li>
+            <li>Emergency Evacuation Drill – Demonstrate procedures for safe evacuation during emergencies.</li>
+            <li>Customer Service Training – Model effective communication strategies for handling customer concerns.</li>
+          </ol>
+
+          <p class="mt-3 font-semibold">Include a short reflection (5–7 sentences)</p>
+          <ul class="mt-1 list-disc pl-5">
+            <li>Why you chose that mode.</li>
+            <li>How it ensures clarity and engagement for the intended audience.</li>
+          </ul>
+
+          <p class="mt-3 text-xs text-slate-500">
+            Note: Submission is stored in Firestore as a filename only (no file storage integration yet).
+          </p>
+        </div>
+      `
+    )
+  },
+  {
+    title: "Task 4 — MQC with Justification (Message Effectiveness)",
+    subtitle: "Choose the best revision option and justify why it is best (simplicity, specificity, structure, stickiness).",
+    type: "quiz_justify",
+    quizTitle: "Task 4",
+    quizSubtitle: "Answer each item, then write a brief justification. Submit to save your score + justifications.",
+    data: effectivenessQuiz
+  }
+];
+
+// Elements
+const partsList = document.getElementById("partsList");
+const partTitle = document.getElementById("partTitle");
+const partSubtitle = document.getElementById("partSubtitle");
+const partBody = document.getElementById("partBody");
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+const completeBtn = document.getElementById("completeBtn");
+const progressText = document.getElementById("progressText");
+const progressBar = document.getElementById("progressBar");
+const statusPill = document.getElementById("statusPill");
+
+let activePart = 0;
+let __lessonState = null;
+
+function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
+
+function lessonDocRef(uid) {
+  return doc(db, "users", uid, "lessons", `lesson${LESSON_NO}`);
+}
+function progressDocRef(uid) {
+  return doc(db, "users", uid, "progress", `lesson${LESSON_NO}`);
+}
+
+function userDocRef(uid) { return doc(db, "users", uid); }
+
+async function upsertUserDocFields(uid, data) {
+  const ref = userDocRef(uid);
+  try {
+    await updateDoc(ref, data);
+  } catch (err) {
+    try { await setDoc(ref, data, { merge: true }); }
+    catch (err2) { console.warn("Firestore write failed (user doc fallback)", err2); }
+  }
+}
+
+async function mustHaveLesson2Complete(uid) {
+  try {
+    const snap = await getDoc(doc(db, "users", uid, "progress", "lesson2"));
+    const d = snap.exists() ? (snap.data() || {}) : {};
+    return !!d.complete || (parseInt(d.progress || "0", 10) >= 100);
+  } catch (_) {
+    return false;
+  }
+}
+
+const FILE_TASK_KEYS = ["task3"];
+function emptyTaskFiles() { return { task3: "" }; }
+
+function defaultLessonState() {
+  return {
+    partsDone: parts.map(() => false),
+    quizAnswers: {},
+    quizScores: {},
+    quizJustifications: {},
+    taskFiles: emptyTaskFiles(),
+    assessmentFile: ""
+  };
+}
+
+function normalizeQuizAnswers(raw) {
+  const out = {};
+  if (!raw || typeof raw !== "object") return out;
+
+  const vals = Object.values(raw);
+  const isNested = vals.some(v => v && typeof v === "object" && !Array.isArray(v));
+  if (isNested) {
+    for (const [k, v] of Object.entries(raw)) {
+      if (!v || typeof v !== "object") continue;
+      out[String(k)] = {};
+      for (const [qi, ans] of Object.entries(v)) out[String(k)][String(qi)] = parseInt(ans, 10);
+    }
+    return out;
+  }
+
+  // If a flat object was saved (legacy), assign it to the first quiz part we have (Task 1)
+  const firstQuizIdx = parts.findIndex(p => p.type === "quiz");
+  const key = String(firstQuizIdx >= 0 ? firstQuizIdx : 0);
+  out[key] = {};
+  for (const [qi, ans] of Object.entries(raw)) out[key][String(qi)] = parseInt(ans, 10);
+  return out;
+}
+
+function normalizeQuizJustifications(raw) {
+  const out = {};
+  if (!raw || typeof raw !== "object") return out;
+  for (const [k, v] of Object.entries(raw)) {
+    if (!v || typeof v !== "object") continue;
+    out[String(k)] = {};
+    for (const [qi, txt] of Object.entries(v)) out[String(k)][String(qi)] = String(txt || "");
+  }
+  return out;
+}
+
+async function loadLessonState(uid) {
+  try {
+    let d = null;
+
+    // 1) try subcollection
+    try {
+      const snap = await getDoc(lessonDocRef(uid));
+      if (snap.exists()) d = snap.data() || {};
+    } catch (err) {
+      console.warn("Could not read lessons subcollection (will fallback)", err);
     }
 
-    async function upsertUserDocFields(uid, data) {
-      const ref = userDocRef(uid);
+    // 2) fallback to users/{uid}
+    if (!d) {
       try {
-        await updateDoc(ref, data);
-      } catch (err) {
-        try {
-          await setDoc(ref, data, { merge: true });
-        } catch (err2) {
-          console.warn("Firestore write failed (user doc fallback)", err2);
+        const us = await getDoc(userDocRef(uid));
+        if (us.exists()) {
+          const ud = us.data() || {};
+          const key = `lesson${LESSON_NO}`;
+          const nested = (ud.lessonState && typeof ud.lessonState === "object") ? ud.lessonState[key] : null;
+          if (nested && typeof nested === "object") d = nested;
         }
+      } catch (err) {
+        console.warn("Could not read user doc fallback for lessonState", err);
       }
     }
 
+    if (!d) return defaultLessonState();
 
-      async function mustHaveLesson2Complete(uid) {
-        try {
-          const snap = await getDoc(doc(db, "users", uid, "progress", "lesson2"));
-          const d = snap.exists() ? (snap.data() || {}) : {};
-          return !!d.complete || (parseInt(d.progress || "0", 10) >= 100);
-        } catch (_) {
-          return false;
-        }
-      }
+    const arr = Array.isArray(d.partsDone) ? d.partsDone : [];
+    const partsDone = parts.map((_, i) => !!arr[i]);
 
-      function defaultLessonState() {
-        return { partsDone: parts.map(() => false), quizAnswers: {} };
-      }
+    const qa = normalizeQuizAnswers(d.quizAnswers);
+    const qs = (d.quizScores && typeof d.quizScores === "object") ? d.quizScores : {};
+    const qj = normalizeQuizJustifications(d.quizJustifications);
 
-      async function loadLessonState(uid) {
-        try {
-          let d = null;
-          try {
-            const snap = await getDoc(lessonDocRef(uid));
-            if (snap.exists()) d = snap.data() || {};
-          } catch (err) {
-            console.warn("Could not read lessons subcollection (will fallback)", err);
-          }
+    const tf = emptyTaskFiles();
+    const rawTF = (d.taskFiles && typeof d.taskFiles === "object") ? d.taskFiles : {};
+    FILE_TASK_KEYS.forEach(k => { tf[k] = String(rawTF?.[k] || ""); });
 
-          if (!d) {
-            try {
-              const us = await getDoc(userDocRef(uid));
-              if (us.exists()) {
-                const ud = us.data() || {};
-                const key = `lesson${LESSON_NO}`;
-                const nested = (ud.lessonState && typeof ud.lessonState === "object") ? ud.lessonState[key] : null;
-                if (nested && typeof nested === "object") d = nested;
-              }
-            } catch (err) {
-              console.warn("Could not read user doc fallback for lessonState", err);
-            }
-          }
+    const assessmentFile = String(d.assessmentFile || tf.task3 || "");
 
-          if (!d) return defaultLessonState();
+    return { partsDone, quizAnswers: qa, quizScores: qs, quizJustifications: qj, taskFiles: tf, assessmentFile };
+  } catch (_) {
+    return defaultLessonState();
+  }
+}
 
-          const arr = Array.isArray(d.partsDone) ? d.partsDone : [];
-          const partsDone = parts.map((_, i) => !!arr[i]);
+async function saveLessonState(uid, state) {
+  const taskFiles = (state.taskFiles && typeof state.taskFiles === "object") ? state.taskFiles : emptyTaskFiles();
+  const legacyAssessment = String(taskFiles.task3 || state.assessmentFile || "");
 
-          const qa = (d.quizAnswers && typeof d.quizAnswers === "object") ? d.quizAnswers : {};
-          const quizAnswers = {};
-          Object.keys(qa).forEach(k => { quizAnswers[k] = parseInt(qa[k], 10); });
+  const payload = {
+    partsDone: state.partsDone,
+    quizAnswers: state.quizAnswers || {},
+    quizScores: state.quizScores || {},
+    quizJustifications: state.quizJustifications || {},
+    taskFiles,
+    assessmentFile: legacyAssessment,
+    updatedAt: Date.now()
+  };
 
-          return { partsDone, quizAnswers };
-        } catch (_) {
-          return defaultLessonState();
-        }
-      }
+  // Try subcollection first
+  try {
+    await setDoc(lessonDocRef(uid), payload, { merge: true });
+  } catch (err) {
+    console.warn("Firestore write failed (lessons subcollection)", err);
+  }
 
-      async function saveLessonState(uid, state) {
-        const payload = {
-          partsDone: state.partsDone,
-          updatedAt: Date.now()
-        };
+  // Fallback: also store inside users/{uid}
+  try {
+    await upsertUserDocFields(uid, { [`lessonState.lesson${LESSON_NO}`]: payload });
+  } catch (err) {
+    console.warn("Firestore write failed (user doc lessonState)", err);
+  }
+}
 
-        // Keep any lesson-specific fields
-        if (state.quizAnswers !== undefined) payload.quizAnswers = state.quizAnswers || {};
-        if (state.task4VideoFile !== undefined) payload.task4VideoFile = state.task4VideoFile || "";
+async function saveLessonProgress(uid, pct, meta = {}) {
+  const progress = clamp(parseInt(pct || "0", 10) || 0, 0, 100);
+  const complete = progress === 100;
 
-        // Try subcollection first
-        try {
-          await setDoc(lessonDocRef(uid), payload, { merge: true });
-        } catch (err) {
-          console.warn("Firestore write failed (lessons subcollection)", err);
-        }
+  const partsTotal = Number(meta?.partsTotal ?? parts.length) || parts.length;
+  const doneCount = (meta?.doneCount != null) ? Number(meta.doneCount) : undefined;
 
-        // Fallback: also store inside users/{uid}
-        try {
-          await upsertUserDocFields(uid, { [`lessonState.lesson${LESSON_NO}`]: payload });
-        } catch (err) {
-          console.warn("Firestore write failed (user doc lessonState)", err);
-        }
-      }
+  const payload = { progress, complete, partsTotal, updatedAt: Date.now() };
+  if (Number.isFinite(doneCount)) payload.doneCount = doneCount;
 
-      async function saveLessonProgress(uid, pct, meta = {}) {
-        const progress = clamp(parseInt(pct || "0", 10) || 0, 0, 100);
-        const complete = progress === 100;
+  try { await setDoc(progressDocRef(uid), payload, { merge: true }); }
+  catch (err) { console.warn("Firestore write failed (progress subcollection)", err); }
 
-        const partsTotal = Number(meta?.partsTotal ?? parts.length) || parts.length;
-        const doneCount = (meta?.doneCount != null) ? Number(meta.doneCount) : undefined;
+  try { await upsertUserDocFields(uid, { [`progress.lesson${LESSON_NO}`]: payload }); }
+  catch (err) { console.warn("Firestore write failed (user doc progress)", err); }
+}
 
-        const payload = { progress, complete, partsTotal, updatedAt: Date.now() };
-        if (Number.isFinite(doneCount)) payload.doneCount = doneCount;
+function computeProgressPct(state) {
+  const doneCount = state.partsDone.reduce((acc, v) => acc + (v ? 1 : 0), 0);
+  return Math.round((doneCount / parts.length) * 100);
+}
 
-        try {
+function pill(done) {
+  if (done) {
+    statusPill.textContent = "Completed";
+    statusPill.className = "inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold bg-brand-50 text-brand-800 ring-1 ring-black/5";
+  } else {
+    statusPill.textContent = "Not completed";
+    statusPill.className = "inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold bg-slate-100 text-slate-700 ring-1 ring-black/5";
+  }
+}
 
-          await setDoc(progressDocRef(uid), payload, { merge: true });
+function renderSidebar() {
+  partsList.innerHTML = "";
+  parts.forEach((p, idx) => {
+    const done = !!__lessonState?.partsDone?.[idx];
+    const isActive = idx === activePart;
 
-        } catch (err) {
+    const btn = document.createElement("button");
+    btn.className =
+      "w-full flex items-center justify-between gap-3 rounded-2xl px-4 py-3 text-left ring-1 ring-black/5 transition " +
+      (isActive ? "bg-brand-600 text-white" : "bg-slate-50 hover:bg-slate-100 text-slate-900");
 
-          console.warn("Firestore write failed (progress subcollection)", err);
+    btn.innerHTML = `
+      <span class="text-sm font-semibold">${p.title}</span>
+      <span class="text-xs font-bold ${isActive ? "text-white" : "text-brand-700"}">${done ? "✓" : ""}</span>
+    `;
 
-        }
+    btn.addEventListener("click", () => { activePart = idx; render(); });
+    partsList.appendChild(btn);
+  });
+}
 
+// Debounce helper for textarea writes
+function debounce(fn, wait) {
+  let t = null;
+  return (...args) => {
+    clearTimeout(t);
+    t = setTimeout(() => fn(...args), wait);
+  };
+}
 
-        try {
+function renderQuizForPart(partIdx, quizData, heading, subheading) {
+  const key = String(partIdx);
+  const quizAnswers = (__lessonState && __lessonState.quizAnswers) ? __lessonState.quizAnswers : {};
+  const saved = (quizAnswers[key] && typeof quizAnswers[key] === "object") ? quizAnswers[key] : {};
 
-          await upsertUserDocFields(uid, { [`progress.lesson${LESSON_NO}`]: payload });
+  const wrap = document.createElement("div");
+  wrap.className = "space-y-5";
 
-        } catch (err) {
+  const info = document.createElement("div");
+  info.className = "rounded-2xl bg-slate-50 p-5 ring-1 ring-black/5";
+  info.innerHTML = `
+    <h3 class="text-lg font-extrabold text-slate-900">${heading || "Assessment"}</h3>
+    <p class="mt-1 text-sm text-slate-600">${subheading || "Select the best answer for each item, then submit."}</p>
+  `;
+  wrap.appendChild(info);
 
-          console.warn("Firestore write failed (user doc progress)", err);
+  quizData.forEach((item, i) => {
+    const card = document.createElement("div");
+    card.className = "rounded-2xl bg-white p-5 ring-1 ring-black/5";
 
-        }
-      }
+    const q = document.createElement("div");
+    q.className = "font-semibold text-slate-900 qblock";
+    q.textContent = item.qHtml ? item.qHtml : `${i + 1}. ${item.q}`;
+    card.appendChild(q);
 
-      function computeProgressPct(state) {
-        const doneCount = state.partsDone.reduce((acc, v) => acc + (v ? 1 : 0), 0);
-        return Math.round((doneCount / parts.length) * 100);
-      }
+    const opts = document.createElement("div");
+    opts.className = "mt-3 grid gap-2";
 
-      function pill(done) {
-        if (done) {
-          statusPill.textContent = "Completed";
-          statusPill.className = "inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold bg-brand-50 text-brand-800 ring-1 ring-black/5";
-        } else {
-          statusPill.textContent = "Not completed";
-          statusPill.className = "inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold bg-slate-100 text-slate-700 ring-1 ring-black/5";
-        }
-      }
+    item.options.forEach((opt, idx) => {
+      const row = document.createElement("label");
+      row.className = "flex items-center gap-3 rounded-xl bg-slate-50 px-4 py-3 hover:bg-slate-100 cursor-pointer";
+      row.innerHTML = `
+        <input type="radio" name="p${partIdx}q${i}" value="${idx}" class="h-4 w-4 accent-brand-600" />
+        <span class="text-sm text-slate-800">${opt}</span>
+      `;
+      opts.appendChild(row);
 
-      function renderSidebar() {
-        partsList.innerHTML = "";
-        parts.forEach((p, idx) => {
-          const done = !!__lessonState?.partsDone?.[idx];
-          const isActive = idx === activePart;
+      if (String(saved[i]) === String(idx)) row.querySelector("input").checked = true;
 
-          const btn = document.createElement("button");
-          btn.className =
-            "w-full flex items-center justify-between gap-3 rounded-2xl px-4 py-3 text-left ring-1 ring-black/5 transition " +
-            (isActive ? "bg-brand-600 text-white" : "bg-slate-50 hover:bg-slate-100 text-slate-900");
+      row.querySelector("input").addEventListener("change", async (e) => {
+        saved[i] = parseInt(e.target.value, 10);
+        quizAnswers[key] = saved;
+        __lessonState.quizAnswers = quizAnswers;
+        if (__currentUser) await saveLessonState(__currentUser.uid, __lessonState);
+      });
+    });
 
-          btn.innerHTML = `
-            <span class="text-sm font-semibold">${p.title}</span>
-            <span class="text-xs font-bold ${isActive ? "text-white" : "text-brand-700"}">${done ? "✓" : ""}</span>
-          `;
+    card.appendChild(opts);
+    wrap.appendChild(card);
+  });
 
-          btn.addEventListener("click", async () => { activePart = idx; await render(); });
-          partsList.appendChild(btn);
-        });
-      }
+  const actions = document.createElement("div");
+  actions.className = "flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between";
+  actions.innerHTML = `
+    <button id="submitQuizBtn_${partIdx}" class="rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800">
+      Submit Answers
+    </button>
+    <p id="quizResult_${partIdx}" class="text-sm font-semibold text-slate-700"></p>
+  `;
+  wrap.appendChild(actions);
 
-      function renderQuiz() {
-        const saved = (__lessonState && __lessonState.quizAnswers) ? __lessonState.quizAnswers : {};
-        const wrap = document.createElement("div");
-        wrap.className = "space-y-5";
+  setTimeout(() => {
+    document.getElementById(`submitQuizBtn_${partIdx}`).addEventListener("click", async () => {
+      let correct = 0;
+      quizData.forEach((it, qi) => { if (saved[qi] === it.answer) correct++; });
+      const score = Math.round((correct / quizData.length) * 100);
+      const result = document.getElementById(`quizResult_${partIdx}`);
 
-        const info = document.createElement("div");
-        info.className = "rounded-2xl bg-slate-50 p-5 ring-1 ring-black/5";
-        info.innerHTML = `
-          <h3 class="text-lg font-extrabold text-slate-900">Assessment</h3>
-          <p class="mt-1 text-sm text-slate-600">Choose the correct meaning of each expression.</p>
-        `;
-        wrap.appendChild(info);
+      result.innerHTML = `Score: ${score}% <span class="text-slate-500">(saved)</span>`;
+      result.className = "text-sm font-extrabold text-brand-800";
 
-        quiz.forEach((item, i) => {
-          const card = document.createElement("div");
-          card.className = "rounded-2xl bg-white p-5 ring-1 ring-black/5";
-          card.innerHTML = `<p class="font-semibold text-slate-900">${i + 1}. ${item.q}</p>`;
+      __lessonState.quizScores = (__lessonState.quizScores && typeof __lessonState.quizScores === "object") ? __lessonState.quizScores : {};
+      __lessonState.quizScores[key] = { score, correct, total: quizData.length, updatedAt: Date.now() };
 
-          const opts = document.createElement("div");
-          opts.className = "mt-3 grid gap-2";
+      __lessonState.partsDone[partIdx] = true;
+      if (__currentUser) await saveLessonState(__currentUser.uid, __lessonState);
 
-          item.options.forEach((opt, idx) => {
-            const row = document.createElement("label");
-            row.className = "flex items-center gap-3 rounded-xl bg-slate-50 px-4 py-3 hover:bg-slate-100 cursor-pointer";
-            row.innerHTML = `
-              <input type="radio" name="q${i}" value="${idx}" class="h-4 w-4 accent-brand-600" />
-              <span class="text-sm text-slate-800">${opt}</span>
-            `;
-            opts.appendChild(row);
+      const pct = computeProgressPct(__lessonState);
+      if (__currentUser) await saveLessonProgress(__currentUser.uid, pct, { doneCount: __lessonState.partsDone.reduce((a,b)=>a+(b?1:0),0), partsTotal: parts.length });
 
-            if (String(saved[i]) === String(idx)) row.querySelector("input").checked = true;
+      renderSidebar();
+      await renderProgress();
+      pill(true);
+      renderPart();
+    });
+  }, 0);
 
-            row.querySelector("input").addEventListener("change", async (e) => {
-              saved[i] = parseInt(e.target.value, 10);
-              __lessonState.quizAnswers = saved;
-              if (__currentUser) await saveLessonState(__currentUser.uid, __lessonState);
-            });
-          });
+  return wrap;
+}
 
-          card.appendChild(opts);
-          wrap.appendChild(card);
-        });
+function renderJustifyQuizForPart(partIdx, quizData, heading, subheading) {
+  const key = String(partIdx);
+  const quizAnswers = (__lessonState && __lessonState.quizAnswers) ? __lessonState.quizAnswers : {};
+  const saved = (quizAnswers[key] && typeof quizAnswers[key] === "object") ? quizAnswers[key] : {};
 
-        const actions = document.createElement("div");
-        actions.className = "flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between";
-        actions.innerHTML = `
-          <button id="submitQuizBtn" class="rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800">
-            Submit Answers
-          </button>
-          <p id="quizResult" class="text-sm font-semibold text-slate-700"></p>
-        `;
-        wrap.appendChild(actions);
+  const quizJustifications = (__lessonState && __lessonState.quizJustifications) ? __lessonState.quizJustifications : {};
+  const savedJust = (quizJustifications[key] && typeof quizJustifications[key] === "object") ? quizJustifications[key] : {};
 
-        setTimeout(() => {
-          document.getElementById("submitQuizBtn").addEventListener("click", async () => {
-            let correct = 0;
-            quiz.forEach((item, i) => { if (saved[i] === item.answer) correct++; });
-            const score = Math.round((correct / quiz.length) * 100);
-            const result = document.getElementById("quizResult");
+  const debouncedSave = debounce(async () => {
+    if (__currentUser) await saveLessonState(__currentUser.uid, __lessonState);
+  }, 700);
 
-            if (score >= PASSING) {
-              result.innerHTML = `Score: ${score}% — Passed <span class="material-symbols-rounded align-middle text-emerald-600 text-[18px] leading-none ml-1">check_circle</span> <span class="text-brand-800">(Part Completed)</span>`;
-              result.className = "text-sm font-extrabold text-brand-800";
+  const wrap = document.createElement("div");
+  wrap.className = "space-y-5";
 
-              __lessonState.partsDone[1] = true;
-              if (__currentUser) await saveLessonState(__currentUser.uid, __lessonState);
+  const info = document.createElement("div");
+  info.className = "rounded-2xl bg-slate-50 p-5 ring-1 ring-black/5";
+  info.innerHTML = `
+    <h3 class="text-lg font-extrabold text-slate-900">${heading || "Assessment"}</h3>
+    <p class="mt-1 text-sm text-slate-600">${subheading || ""}</p>
+    <p class="mt-2 text-xs text-slate-500">Write a short justification for each item (mention simplicity/specificity/structure/stickiness).</p>
+  `;
+  wrap.appendChild(info);
 
-              // ✅ also write progress doc so Lesson is marked complete in /progress
-              const pct = computeProgressPct(__lessonState);
-              if (__currentUser) await saveLessonProgress(__currentUser.uid, pct, { doneCount: __lessonState.partsDone.reduce((a,b)=>a+(b?1:0),0), partsTotal: parts.length });
+  quizData.forEach((item, i) => {
+    const card = document.createElement("div");
+    card.className = "rounded-2xl bg-white p-5 ring-1 ring-black/5";
 
-              renderSidebar();
-              await renderProgress();
-              pill(true);
+    const q = document.createElement("div");
+    q.className = "font-semibold text-slate-900 qblock";
+    q.textContent = item.qHtml ? item.qHtml : `${item.q}`;
+    card.appendChild(q);
 
-              // ✅ update next button to "Next Lesson" when last part is completed
-              renderPart();
-            } else {
-              result.textContent = `Score: ${score}% — Not passed (needs ${PASSING}%)`;
-              result.className = "text-sm font-extrabold text-red-600";
-            }
-          });
-        }, 0);
+    const opts = document.createElement("div");
+    opts.className = "mt-3 grid gap-2";
 
-        return wrap;
-      }
+    item.options.forEach((opt, idx) => {
+      const row = document.createElement("label");
+      row.className = "flex items-start gap-3 rounded-xl bg-slate-50 px-4 py-3 hover:bg-slate-100 cursor-pointer";
+      row.innerHTML = `
+        <input type="radio" name="p${partIdx}q${i}" value="${idx}" class="mt-1 h-4 w-4 accent-brand-600" />
+        <span class="text-sm text-slate-800">${opt}</span>
+      `;
+      opts.appendChild(row);
 
-      function renderPart() {
-        const p = parts[activePart];
-        partTitle.textContent = p.title;
-        partSubtitle.textContent = p.subtitle;
+      if (String(saved[i]) === String(idx)) row.querySelector("input").checked = true;
 
-        partBody.innerHTML = "";
-        if (p.type === "quiz") {
-          completeBtn.classList.add("hidden");
-          partBody.appendChild(renderQuiz());
-        } else {
-          completeBtn.classList.remove("hidden");
-          partBody.innerHTML = p.html;
-        }
+      row.querySelector("input").addEventListener("change", async (e) => {
+        saved[i] = parseInt(e.target.value, 10);
+        quizAnswers[key] = saved;
+        __lessonState.quizAnswers = quizAnswers;
+        // do not spam writes; just quick save
+        debouncedSave();
+      });
+    });
 
-        const done = !!__lessonState?.partsDone?.[activePart];
-        pill(done);
+    card.appendChild(opts);
 
-        prevBtn.disabled = activePart === 0;
+    const justWrap = document.createElement("div");
+    justWrap.className = "mt-4";
+    justWrap.innerHTML = `
+      <label class="block text-sm font-semibold text-slate-800">Justification</label>
+      <textarea id="just_${partIdx}_${i}" rows="3"
+        class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 shadow-sm focus:outline-none focus:ring-4 focus:ring-brand-100"
+        placeholder="Explain why your revision is best (simplicity, specificity, structure, stickiness)."></textarea>
+      <p class="mt-2 text-xs text-slate-500">Tip: 1–2 sentences is enough.</p>
+    `;
+    card.appendChild(justWrap);
+    wrap.appendChild(card);
 
-        // ✅ CHANGE: if last part is completed, Next button becomes "Next Lesson" and goes to Lesson 4
-        const atLast = activePart === parts.length - 1;
-        const lastDone = !!__lessonState?.partsDone?.[parts.length - 1];
+    setTimeout(() => {
+      const ta = document.getElementById(`just_${partIdx}_${i}`);
+      if (!ta) return;
+      ta.value = String(savedJust[i] || "");
+      ta.addEventListener("input", () => {
+        savedJust[i] = ta.value;
+        quizJustifications[key] = savedJust;
+        __lessonState.quizJustifications = quizJustifications;
+        debouncedSave();
+      });
+    }, 0);
+  });
 
-        if (atLast && lastDone) {
-          nextBtn.disabled = false;
-          nextBtn.textContent = "Next Lesson →";
-          nextBtn.dataset.nextLesson = "1";
-        } else {
-          nextBtn.disabled = atLast;
-          nextBtn.textContent = "Next →";
-          nextBtn.dataset.nextLesson = "";
-        }
+  const actions = document.createElement("div");
+  actions.className = "flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between";
+  actions.innerHTML = `
+    <button id="submitQuizBtn_${partIdx}" class="rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800">
+      Submit Answers
+    </button>
+    <p id="quizResult_${partIdx}" class="text-sm font-semibold text-slate-700"></p>
+  `;
+  wrap.appendChild(actions);
 
-        prevBtn.classList.toggle("opacity-50", prevBtn.disabled);
-        prevBtn.classList.toggle("cursor-not-allowed", prevBtn.disabled);
-        nextBtn.classList.toggle("opacity-50", nextBtn.disabled);
-        nextBtn.classList.toggle("cursor-not-allowed", nextBtn.disabled);
-      }
-
-      async function renderProgress() {
-        const pct = computeProgressPct(__lessonState);
-        progressText.textContent = `${pct}%`;
-        progressBar.style.width = `${pct}%`;
-      }
-
-      async function render() {
-        renderSidebar();
-        renderPart();
-        await renderProgress();
-      }
-
-      prevBtn.addEventListener("click", async () => { if (activePart > 0) activePart--; await render(); });
-
-      nextBtn.addEventListener("click", async () => {
-        // ✅ CHANGE: if ready for next lesson, go to Lesson 4
-        if (nextBtn.dataset.nextLesson === "1") {
-          window.location.href = "lesson-4.html";
+  setTimeout(() => {
+    document.getElementById(`submitQuizBtn_${partIdx}`).addEventListener("click", async () => {
+      // Validate: all answered + all justifications non-empty
+      for (let qi = 0; qi < quizData.length; qi++) {
+        if (saved[qi] == null || isNaN(parseInt(saved[qi], 10))) {
+          const r = document.getElementById(`quizResult_${partIdx}`);
+          r.textContent = "Please answer all items before submitting.";
+          r.className = "text-sm font-extrabold text-red-700";
           return;
         }
-
-        if (activePart < parts.length - 1) activePart++;
-        await render();
-      });
-
-      completeBtn.addEventListener("click", async () => {
-        if (!__lessonState) return;
-        __lessonState.partsDone[activePart] = true;
-
-        if (__currentUser) {
-          await saveLessonState(__currentUser.uid, __lessonState);
-          const pct = computeProgressPct(__lessonState);
-          await saveLessonProgress(__currentUser.uid, pct, { doneCount: __lessonState.partsDone.reduce((a,b)=>a+(b?1:0),0), partsTotal: parts.length });
-        }
-
-        await render();
-      });
-
-      // Mobile menu
-      const menuBtnEl = document.getElementById("menuBtn");
-      const mobileMenuEl = document.getElementById("mobileMenu");
-      menuBtnEl?.addEventListener("click", () => {
-        const isOpen = !mobileMenuEl.classList.contains("hidden");
-        mobileMenuEl.classList.toggle("hidden");
-        menuBtnEl.setAttribute("aria-expanded", String(!isOpen));
-      });
-
-      // ✅ Auth entry (REMOVED ALERTS)
-      onAuthStateChanged(auth, async (user) => {
-        __currentUser = user || null;
-
-        if (!__currentUser) {
-          window.location.href = "login.html";
+        const jt = String(savedJust[qi] || "").trim();
+        if (jt.length < 3) {
+          const r = document.getElementById(`quizResult_${partIdx}`);
+          r.textContent = "Please add a short justification for each item.";
+          r.className = "text-sm font-extrabold text-red-700";
           return;
         }
+      }
 
-        // Update activity for Admin Dashboard
-        try { await setDoc(doc(db, 'users', __currentUser.uid), { email: __currentUser.email || '', lastSeenAt: Date.now() }, { merge: true }); } catch (_) {}
-        // ✅ Show logged-in UI instantly
-        __profile = null;
-        applyAuthUI();
+      let correct = 0;
+      quizData.forEach((it, qi) => { if (parseInt(saved[qi], 10) === it.answer) correct++; });
+      const score = Math.round((correct / quizData.length) * 100);
+      const result = document.getElementById(`quizResult_${partIdx}`);
 
-        // sequential guard (lesson 2 complete) - no alert
-        const ok = await mustHaveLesson2Complete(__currentUser.uid);
-        if (!ok) {
-          window.location.href = "lessons.html";
-          return;
-        }
+      result.innerHTML = `Score: ${score}% <span class="text-slate-500">(saved)</span>`;
+      result.className = "text-sm font-extrabold text-brand-800";
 
-        // Load profile + lesson state
-        const [profile, lessonState] = await Promise.all([
-          loadProfile(__currentUser.uid),
-          loadLessonState(__currentUser.uid),
-        ]);
+      __lessonState.quizScores = (__lessonState.quizScores && typeof __lessonState.quizScores === "object") ? __lessonState.quizScores : {};
+      __lessonState.quizScores[key] = { score, correct, total: quizData.length, updatedAt: Date.now() };
 
-        __profile = profile || {};
-        applyAuthUI();
+      __lessonState.partsDone[partIdx] = true;
+      if (__currentUser) await saveLessonState(__currentUser.uid, __lessonState);
 
-        __lessonState = lessonState;
+      const pct = computeProgressPct(__lessonState);
+      if (__currentUser) await saveLessonProgress(__currentUser.uid, pct, { doneCount: __lessonState.partsDone.reduce((a,b)=>a+(b?1:0),0), partsTotal: parts.length });
 
-        // ✅ ensure /progress reflects current state on load (optional safe sync)
-        if (__currentUser) {
-          const pct = computeProgressPct(__lessonState);
-          await saveLessonProgress(__currentUser.uid, pct, { doneCount: __lessonState.partsDone.reduce((a,b)=>a+(b?1:0),0), partsTotal: parts.length });
-        }
+      renderSidebar();
+      await renderProgress();
+      pill(true);
+      renderPart();
+    });
+  }, 0);
 
-        await render();
-      });
+  return wrap;
+}
+
+function wireUploadPart(taskKey) {
+  const submitFileBtn = document.getElementById(`submitFileBtn-${taskKey}`);
+  const fileInput = document.getElementById(`fileInput-${taskKey}`);
+  const fileStatus = document.getElementById(`fileStatus-${taskKey}`);
+
+  const savedName = (__lessonState?.taskFiles && typeof __lessonState.taskFiles === "object") ? (__lessonState.taskFiles[taskKey] || "") : "";
+  if (savedName && fileStatus) {
+    fileStatus.textContent = `Last submitted: ${savedName}`;
+    fileStatus.className = "mt-2 text-xs text-slate-600";
+  }
+
+  submitFileBtn?.addEventListener("click", async () => {
+    if (!fileInput?.files?.length) {
+      if (fileStatus) {
+        fileStatus.textContent = "Please choose a file first.";
+        fileStatus.className = "mt-2 text-xs text-red-600";
+      }
+      return;
+    }
+
+    const name = fileInput.files[0].name;
+
+    __lessonState.taskFiles = (__lessonState.taskFiles && typeof __lessonState.taskFiles === "object") ? __lessonState.taskFiles : emptyTaskFiles();
+    __lessonState.taskFiles[taskKey] = name;
+    __lessonState.assessmentFile = name; // legacy (used by teacher dashboard submissions)
+    __lessonState.partsDone[activePart] = true;
+
+    if (fileStatus) {
+      fileStatus.textContent = `Submitted: ${name}`;
+      fileStatus.className = "mt-2 text-xs text-brand-800";
+    }
+
+    if (__currentUser) {
+      await saveLessonState(__currentUser.uid, __lessonState);
+      const pct = computeProgressPct(__lessonState);
+      await saveLessonProgress(__currentUser.uid, pct, { doneCount: __lessonState.partsDone.reduce((a,b)=>a+(b?1:0),0), partsTotal: parts.length });
+    }
+
+    await render();
+  });
+}
+
+function renderPart() {
+  const p = parts[activePart];
+  partTitle.textContent = p.title;
+  partSubtitle.textContent = p.subtitle;
+
+  partBody.innerHTML = "";
+
+  if (p.type === "quiz") {
+    completeBtn.classList.add("hidden");
+    partBody.appendChild(renderQuizForPart(activePart, p.data, p.quizTitle, p.quizSubtitle));
+  } else if (p.type === "quiz_justify") {
+    completeBtn.classList.add("hidden");
+    partBody.appendChild(renderJustifyQuizForPart(activePart, p.data, p.quizTitle, p.quizSubtitle));
+  } else if (p.type === "upload") {
+    completeBtn.classList.add("hidden");
+    partBody.innerHTML = p.html;
+    wireUploadPart(String(p.taskKey || "task3"));
+  } else {
+    completeBtn.classList.remove("hidden");
+    partBody.innerHTML = p.html;
+  }
+
+  const done = !!__lessonState?.partsDone?.[activePart];
+  pill(done);
+
+  prevBtn.disabled = activePart === 0;
+
+  // If last part is completed, Next button becomes "Next Lesson 4"
+  const atLast = activePart === parts.length - 1;
+  const lastDone = !!__lessonState?.partsDone?.[parts.length - 1];
+
+  if (atLast && lastDone) {
+    nextBtn.disabled = false;
+    nextBtn.textContent = "Next Lesson 4 →";
+    nextBtn.dataset.nextLesson = "1";
+  } else {
+    nextBtn.disabled = atLast;
+    nextBtn.textContent = "Next →";
+    nextBtn.dataset.nextLesson = "";
+  }
+
+  prevBtn.classList.toggle("opacity-50", prevBtn.disabled);
+  prevBtn.classList.toggle("cursor-not-allowed", prevBtn.disabled);
+  nextBtn.classList.toggle("opacity-50", nextBtn.disabled);
+  nextBtn.classList.toggle("cursor-not-allowed", nextBtn.disabled);
+}
+
+async function renderProgress() {
+  const pct = computeProgressPct(__lessonState);
+  progressText.textContent = `${pct}%`;
+  progressBar.style.width = `${pct}%`;
+}
+
+async function render() {
+  renderSidebar();
+  renderPart();
+  await renderProgress();
+}
+
+prevBtn.addEventListener("click", async () => {
+  if (activePart > 0) activePart--;
+  if (__lessonState) await render();
+});
+
+nextBtn.addEventListener("click", async () => {
+  if (nextBtn.dataset.nextLesson === "1") {
+    window.location.href = "lesson-4.html";
+    return;
+  }
+  if (activePart < parts.length - 1) activePart++;
+  if (__lessonState) await render();
+});
+
+completeBtn.addEventListener("click", async () => {
+  if (!__lessonState) return;
+  __lessonState.partsDone[activePart] = true;
+
+  if (__currentUser) {
+    await saveLessonState(__currentUser.uid, __lessonState);
+    const pct = computeProgressPct(__lessonState);
+    await saveLessonProgress(__currentUser.uid, pct, { doneCount: __lessonState.partsDone.reduce((a,b)=>a+(b?1:0),0), partsTotal: parts.length });
+  }
+  await render();
+});
+
+// Auth listener: require login, enforce unlock (Lesson 2 complete), then load profile + lesson state
+onAuthStateChanged(auth, async (user) => {
+  __currentUser = user || null;
+  if (!__currentUser) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  // Enforce unlock: must finish Lesson 2 to view Lesson 3
+  const ok = await mustHaveLesson2Complete(__currentUser.uid);
+  if (!ok) {
+    window.location.href = "locked.html";
+    return;
+  }
+
+  // Update activity for Admin Dashboard
+  try { await setDoc(doc(db, 'users', __currentUser.uid), { email: __currentUser.email || '', lastSeenAt: Date.now() }, { merge: true }); } catch (_) {}
+
+  // Show UI instantly
+  __profile = null;
+  applyAuthUI();
+
+  const [profile, lessonState] = await Promise.all([
+    loadProfile(__currentUser.uid),
+    loadLessonState(__currentUser.uid),
+  ]);
+
+  __profile = profile || {};
+  applyAuthUI();
+
+  __lessonState = lessonState;
+
+  // Ensure progress doc exists/updated (fix unlocking on Lessons page)
+  try {
+    const pct = computeProgressPct(__lessonState);
+    await saveLessonProgress(__currentUser.uid, pct, { doneCount: __lessonState.partsDone.reduce((a,b)=>a+(b?1:0),0), partsTotal: parts.length });
+  } catch (_) {}
+
+  await render();
+});
     </script>
 
     <script type="module" src="./app.js"></script>
@@ -994,7 +1444,5 @@
       // Ensure sign-out uses Firebase
       window.signOut = () => window.__pcSignOut?.();
     </script>
-
-    <!-- ✅ NOTE: Sign-out confirm modal wiring is inside the module script above -->
   </body>
 </html>
