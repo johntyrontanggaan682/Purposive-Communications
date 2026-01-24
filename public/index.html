@@ -359,12 +359,17 @@
   <header class="fixed inset-x-0 top-0 z-50 bg-white/95 backdrop-blur border-b border-slate-200">
     <nav class="mx-auto flex max-w-7xl items-center px-4 py-4 sm:px-6 lg:px-8">
       <!-- Brand -->
-      <a href="index.html" class="flex items-center gap-3">
-        <img src="./assets/logo.png" alt="Purposive Communication Logo"
-          class="h-10 w-10 rounded-full ring-1 ring-black/10 object-cover"
-          onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png';" />
-        <span class="text-lg sm:text-xl font-semibold tracking-tight text-slate-900">Purposive Communication</span>
-      </a>
+<!-- Brand -->
+<a href="index.html" class="flex items-center gap-3">
+  <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 ring-1 ring-black/5">
+    <svg viewBox="0 0 24 24" class="h-6 w-6 text-brand-700" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M4 7l8-4 8 4v10l-8 4-8-4V7z"></path>
+      <path d="M8 11l2 2 5-5"></path>
+    </svg>
+  </div>
+  <span class="text-lg sm:text-xl font-semibold tracking-tight text-slate-900">Purposive Communication</span>
+</a>
+
 
       <!-- Desktop Links -->
       <div class="hidden md:flex items-center gap-8 ml-auto">
