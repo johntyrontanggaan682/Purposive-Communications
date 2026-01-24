@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Purposive Communication | Profile</title>
 
   <!-- Tailwind CDN -->
@@ -41,6 +41,12 @@
         #E7F7F5;
     }
 
+    /* ✅ FIX: prevent right-side cut / horizontal overflow on mobile (zoom out safe) */
+    html, body { width: 100%; max-width: 100%; overflow-x: clip; }
+    @supports not (overflow: clip) {
+      html, body { overflow-x: hidden; }
+    }
+
     /* Simple modal animation (upgraded) */
     .fade-in { animation: fadeIn .18s ease-out; }
     .scale-in { animation: scaleIn .22s cubic-bezier(.2,.9,.2,1); }
@@ -51,10 +57,20 @@
       100% { transform: translateY(0) scale(1); }
     }
 
+    /* ✅ Drawer icon animation (hamburger <-> X) */
+    #menuIcon .menu-line {
+      transition: transform 220ms ease, opacity 160ms ease;
+      transform-origin: 12px 12px;
+    }
+    #menuBtn.is-open #menuIcon .line-top { transform: translateY(6px) rotate(45deg); }
+    #menuBtn.is-open #menuIcon .line-mid { opacity: 0; }
+    #menuBtn.is-open #menuIcon .line-bot { transform: translateY(-6px) rotate(-45deg); }
+
     /* ===== Motion helpers ===== */
     @media (prefers-reduced-motion: reduce) {
       .reveal, .reveal-scale, .floaty, .btn-pop { transition: none !important; animation: none !important; transform: none !important; opacity: 1 !important; }
       .bar-anim { transition: none !important; }
+      #menuIcon .menu-line { transition: none !important; }
     }
 
     .reveal {
@@ -108,7 +124,7 @@
   </style>
 </head>
 
-<body class="page-bg text-slate-800">
+<body class="page-bg text-slate-800 overflow-x-hidden">
   <!-- NAVBAR -->
   <header class="sticky top-0 z-50 bg-white/80 backdrop-blur border-b border-slate-100">
     <nav class="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:py-4 sm:px-6 lg:px-8">
@@ -204,8 +220,10 @@
       <button id="menuBtn"
         class="inline-flex items-center justify-center rounded-xl bg-slate-50 p-2 text-slate-800 ring-1 ring-black/5 hover:bg-slate-100 md:hidden"
         aria-label="Open menu" aria-expanded="false">
-        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+        <svg id="menuIcon" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path class="menu-line line-top" stroke-linecap="round" stroke-linejoin="round" d="M4 6h16" />
+          <path class="menu-line line-mid" stroke-linecap="round" stroke-linejoin="round" d="M4 12h16" />
+          <path class="menu-line line-bot" stroke-linecap="round" stroke-linejoin="round" d="M4 18h16" />
         </svg>
       </button>
     </nav>
@@ -420,7 +438,6 @@
       </div>
 
       <div class="mt-5 sm:mt-6 grid gap-4 sm:gap-5 lg:grid-cols-2">
-        <!-- Lesson cards: better padding on small -->
         <div class="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm min-h-[170px] flex flex-col floaty">
           <div class="flex items-start justify-between gap-3 sm:gap-4">
             <div class="min-w-0">
@@ -632,6 +649,7 @@
     menuBtn?.addEventListener("click", () => {
       const isOpen = !mobileMenu.classList.contains("hidden");
       mobileMenu.classList.toggle("hidden");
+      menuBtn.classList.toggle("is-open", !isOpen);         // ✅ icon anim state
       menuBtn.setAttribute("aria-expanded", String(!isOpen));
     });
 

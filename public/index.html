@@ -74,16 +74,21 @@
       --header-h: 80px;
     }
 
-    .hero-full {
-      height: 100vh;
+    /* ✅ FIX: HERO should not cut off on mobile/zoom */
+    .hero-full{
+      min-height: 100vh;              /* ✅ min-height (not height) */
       padding-top: var(--header-h);
       box-sizing: border-box;
+      overflow-x: hidden;
+      overflow-y: visible;            /* ✅ allow vertical overflow */
     }
 
     @supports (height: 100svh) {
-      .hero-full {
-        height: 100svh;
-      }
+      .hero-full { min-height: 100svh; }
+    }
+
+    @supports (height: 100dvh) {
+      .hero-full { min-height: 100dvh; }
     }
 
     /* ✅ FULL SCREEN for About + Contact */
@@ -101,6 +106,15 @@
         min-height: 100svh;
       }
     }
+
+    @supports (height: 100dvh) {
+      .screen-only {
+        min-height: 100dvh;
+      }
+    }
+
+    /* ✅ extra safety vs horizontal cut on zoom */
+    body { overflow-x: clip; }
 
     /* =========================================
        ✅ SMOOTH CROSSFADE (2-layer)
@@ -360,9 +374,12 @@
     <nav class="mx-auto flex max-w-7xl items-center px-4 py-4 sm:px-6 lg:px-8">
       <!-- Brand -->
       <a href="index.html" class="flex items-center gap-3">
-        <img src="./assets/logo.png" alt="Purposive Communication Logo"
-          class="h-10 w-10 rounded-full ring-1 ring-black/10 object-cover"
-          onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png';" />
+        <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 ring-1 ring-black/5">
+          <svg viewBox="0 0 24 24" class="h-6 w-6 text-brand-700" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 7l8-4 8 4v10l-8 4-8-4V7z"></path>
+            <path d="M8 11l2 2 5-5"></path>
+          </svg>
+        </div>
         <span class="text-lg sm:text-xl font-semibold tracking-tight text-slate-900">Purposive Communication</span>
       </a>
 
@@ -504,7 +521,8 @@
   </header>
 
   <!-- HERO -->
-  <section id="home" class="hero-full relative overflow-hidden">
+  <!-- ✅ FIX: removed overflow-hidden from HERO section -->
+  <section id="home" class="hero-full relative">
     <div class="absolute inset-0 hero-parallax">
       <div class="hero-glow" id="heroGlow"></div>
 
@@ -545,7 +563,9 @@
       </div>
     </div>
 
-    <div class="relative mx-auto max-w-7xl h-full flex flex-col items-center justify-center px-4 text-center sm:px-6 lg:px-8">
+    <!-- ✅ FIX: removed h-full to avoid percent-height issues when zoomed;
+              added extra vertical padding so content can expand safely -->
+    <div class="relative mx-auto max-w-7xl min-h-[calc(100vh-var(--header-h))] flex flex-col items-center justify-center px-4 py-12 text-center sm:px-6 lg:px-8">
       <h1 class="max-w-5xl text-4xl font-extrabold tracking-tight text-white sm:text-6xl lg:text-7xl anim-fade-up anim-delay-1">
         Master Purposive <br class="hidden sm:block" />
         Communication
@@ -1055,7 +1075,7 @@
 
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    // ✅ Set CSS variable for the fixed header height
+    // ✅ Set CSS variable for the fixed header height (updates on zoom/viewport changes)
     (function setHeaderHeightVar() {
       const header = document.querySelector("header");
       if (!header) return;
@@ -1066,6 +1086,16 @@
 
       apply();
       window.addEventListener("resize", apply);
+      window.addEventListener("orientationchange", apply);
+
+      // ✅ Helps on mobile pinch-zoom / browser UI changes
+      if (window.visualViewport) {
+        visualViewport.addEventListener("resize", apply);
+        visualViewport.addEventListener("scroll", apply);
+      }
+
+      // ✅ after fonts load, header height can change
+      document.fonts?.ready?.then(apply);
     })();
 
     // ✅ Scroll progress + navbar shrink + back-to-top
@@ -1209,7 +1239,6 @@
     function normalizeRole(profile) {
       return String(profile?.role || "student").toLowerCase().trim();
     }
-
 
     function maybeRedirectLocked(p) {
       const role = normalizeRole(p);
