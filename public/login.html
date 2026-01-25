@@ -149,7 +149,11 @@
               <input type="checkbox" class="h-4 w-4 rounded border-slate-300 text-brand-600 focus:ring-brand-200" />
               Remember me
             </label>
-            <a href="#" class="text-xs font-semibold text-brand-700 hover:text-brand-800">Forgot password?</a>
+
+            <!-- ✅ Forgot Password trigger (now works) -->
+            <button id="forgotPasswordBtn" type="button" class="text-xs font-semibold text-brand-700 hover:text-brand-800">
+              Forgot password?
+            </button>
           </div>
 
           <button id="studentLoginBtn" type="submit"
@@ -172,13 +176,60 @@
     </section>
   </main>
 
+  <!-- ✅ Forgot Password Modal -->
+  <div id="fpModal" class="fixed inset-0 z-[60] hidden">
+    <div id="fpBackdrop" class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+
+    <div class="relative mx-auto flex min-h-full max-w-md items-center justify-center px-4 py-10">
+      <div class="w-full overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/10">
+        <div class="px-6 pt-6 pb-4 border-b border-slate-100 flex items-center justify-between">
+          <div>
+            <p class="text-sm font-extrabold text-slate-900">Reset your password</p>
+            <p class="mt-1 text-xs font-semibold text-slate-500">We’ll send a reset link to your email.</p>
+          </div>
+          <button id="fpClose" class="rounded-xl p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-700" aria-label="Close">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <form id="fpForm" class="px-6 pt-5 pb-6 space-y-3" novalidate>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700">Email</label>
+            <input id="fpEmail" type="email" required
+              class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 shadow-sm focus:outline-none focus:ring-4 focus:ring-brand-200"
+              placeholder="you@example.com" />
+            <p id="fpErr" class="mt-2 hidden text-xs font-semibold text-red-600">Please enter a valid email.</p>
+          </div>
+
+          <button id="fpSendBtn" type="submit"
+            class="btn-shine inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-brand-600 px-5 py-3 text-sm font-semibold text-white shadow-soft hover:bg-brand-700 focus:outline-none focus:ring-4 focus:ring-brand-200">
+            <span id="fpSpinner" class="hidden inline-flex h-4 w-4 items-center justify-center">
+              <svg class="h-4 w-4 animate-spin text-white" viewBox="0 0 24 24" fill="none">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" d="M4 12a8 8 0 018-8" stroke="currentColor" stroke-width="4" stroke-linecap="round"></path>
+              </svg>
+            </span>
+            <span id="fpBtnText">Send reset link</span>
+          </button>
+
+          <p class="text-[11px] text-slate-500 font-medium leading-relaxed">
+            If you don’t see the email, check your spam/junk folder.
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <script type="module">
     import { auth, db } from "./firebase.js";
     import {
       signInWithEmailAndPassword,
       setPersistence,
       browserSessionPersistence,
-      onAuthStateChanged
+      onAuthStateChanged,
+      sendPasswordResetEmail
     } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 
     import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
@@ -205,15 +256,11 @@
 
         if (snap.exists()) {
           const data = snap.data() || {};
-
-          // Only update lightweight session fields; never overwrite role/approval from Firestore
           const patch = { email, lastLoginAt: now, lastSeenAt: now };
           await setDoc(ref, patch, { merge: true });
-
           return { ...data, ...patch };
         }
 
-        // If no Firestore doc yet, create a minimal STUDENT profile so routing works
         const fullName = String(user.displayName || "").trim();
         const base = {
           fullName,
@@ -232,7 +279,7 @@
       }
     }
 
-function isInIframe() {
+    function isInIframe() {
       try { return window.self !== window.top; } catch { return true; }
     }
 
@@ -369,7 +416,94 @@ function isInIframe() {
       } catch (_) {}
     }
 
-form?.addEventListener("submit", async (e) => {
+    // ===========================
+    // ✅ FORGOT PASSWORD (WORKING)
+    // ===========================
+    const fpModal = document.getElementById("fpModal");
+    const fpBackdrop = document.getElementById("fpBackdrop");
+    const fpClose = document.getElementById("fpClose");
+    const forgotPasswordBtn = document.getElementById("forgotPasswordBtn");
+
+    const fpForm = document.getElementById("fpForm");
+    const fpEmail = document.getElementById("fpEmail");
+    const fpErr = document.getElementById("fpErr");
+    const fpSendBtn = document.getElementById("fpSendBtn");
+    const fpSpinner = document.getElementById("fpSpinner");
+    const fpBtnText = document.getElementById("fpBtnText");
+
+    function openFpModal() {
+      // prefill from login email if present
+      const current = document.getElementById("studentEmail")?.value?.trim() || "";
+      if (fpEmail) fpEmail.value = current;
+      fpErr?.classList.add("hidden");
+      fpModal?.classList.remove("hidden");
+      document.body.classList.add("overflow-hidden");
+      setTimeout(() => fpEmail?.focus(), 50);
+    }
+
+    function closeFpModal() {
+      fpModal?.classList.add("hidden");
+      document.body.classList.remove("overflow-hidden");
+    }
+
+    function setFpLoading(v) {
+      fpSendBtn.disabled = v;
+      fpSendBtn.classList.toggle("opacity-80", v);
+      fpSpinner.classList.toggle("hidden", !v);
+      fpBtnText.textContent = v ? "Sending..." : "Send reset link";
+    }
+
+    forgotPasswordBtn?.addEventListener("click", openFpModal);
+    fpClose?.addEventListener("click", closeFpModal);
+    fpBackdrop?.addEventListener("click", closeFpModal);
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && fpModal && !fpModal.classList.contains("hidden")) closeFpModal();
+    });
+
+    fpEmail?.addEventListener("input", () => fpErr?.classList.add("hidden"));
+
+    fpForm?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = String(fpEmail?.value || "").trim();
+
+      const ok = email.length > 3 && fpEmail.validity.valid;
+      fpErr?.classList.toggle("hidden", ok);
+      if (!ok) return;
+
+      setFpLoading(true);
+
+      try {
+        // This sends Firebase's password reset email (user clicks link to set new password)
+        await sendPasswordResetEmail(auth, email, {
+          // Optional: after reset, redirect back to your login page
+          url: new URL("login.html", window.location.href).toString(),
+          handleCodeInApp: false
+        });
+
+        setFpLoading(false);
+        closeFpModal();
+
+        // show toast on login page
+        showFlash("Reset link sent! Please check your email.");
+      } catch (err) {
+        setFpLoading(false);
+
+        const code = err?.code || "";
+        let msg = err?.message || "Failed to send reset link.";
+
+        // friendlier messages
+        if (code === "auth/invalid-email") msg = "Please enter a valid email address.";
+        if (code === "auth/user-not-found") msg = "No account found with that email.";
+        if (code === "auth/too-many-requests") msg = "Too many attempts. Please try again later.";
+
+        alert(msg);
+      }
+    });
+
+    // ===========================
+    // ✅ LOGIN (your existing logic)
+    // ===========================
+    form?.addEventListener("submit", async (e) => {
       e.preventDefault();
       setLoading(true);
 
@@ -401,8 +535,6 @@ form?.addEventListener("submit", async (e) => {
         const cred = await signInWithEmailAndPassword(auth, email, pass);
         const profile = await ensureUserDoc(cred.user);
         const role = String(profile?.role || "student").toLowerCase().trim();
-        try { console.log("[LOGIN normal] uid=", cred.user.uid, "role=", profile?.role, "approved=", profile?.approved, "status=", profile?.approvalStatus); } catch (_) {}
-        try { console.log("[LOGIN] uid=", cred.user.uid, "role=", role, "approved=", profile?.approved, "status=", profile?.approvalStatus); } catch (_) {}
 
         const approved = role !== "teacher"
           ? true

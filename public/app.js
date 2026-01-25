@@ -15,9 +15,7 @@ import {
  */
 try {
   await setPersistence(auth, browserSessionPersistence);
-} catch (_) {
-  // If persistence fails in some environments, auth still works; ignore silently.
-}
+} catch (_) {}
 
 /* -----------------------------
    Helpers
@@ -26,7 +24,7 @@ function setLoading(btn, spinnerEl, textEl, isLoading, loadingText) {
   if (!btn || !spinnerEl || !textEl) return;
   btn.disabled = isLoading;
   spinnerEl.classList.toggle("hidden", !isLoading);
-  textEl.textContent = isLoading ? loadingText : textEl.dataset.originalText || textEl.textContent;
+  textEl.textContent = isLoading ? loadingText : (textEl.dataset.originalText || textEl.textContent);
 }
 
 function initPasswordToggle(buttonId, inputId) {
@@ -41,12 +39,142 @@ function initPasswordToggle(buttonId, inputId) {
   });
 }
 
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || "").trim());
+}
+
 /* -----------------------------
    Password eye toggles (both pages)
 ----------------------------- */
 initPasswordToggle("toggleStudentPassword", "studentPassword");
 initPasswordToggle("togglePassword", "password");
 initPasswordToggle("toggleConfirmPassword", "confirmPassword");
+
+/* -----------------------------
+   OTP RESET (login.html) - requires modal HTML
+----------------------------- */
+const forgotBtn = document.getElementById("forgotPasswordBtn");
+const otpModal = document.getElementById("otpModal");
+const otpBackdrop = document.getElementById("otpBackdrop");
+const otpClose = document.getElementById("otpClose");
+
+const otpStep1 = document.getElementById("otpStep1");
+const otpStep2 = document.getElementById("otpStep2");
+const otpMsg = document.getElementById("otpMsg");
+
+const otpEmail = document.getElementById("otpEmail");
+const otpSendBtn = document.getElementById("otpSendBtn");
+
+const otpCode = document.getElementById("otpCode");
+const otpNewPass = document.getElementById("otpNewPass");
+const otpConfirmBtn = document.getElementById("otpConfirmBtn");
+const otpBackBtn = document.getElementById("otpBackBtn");
+
+// ✅ change this to your project id
+const PROJECT_ID = "YOUR_PROJECT_ID";
+const REGION = "us-central1";
+
+// ✅ Cloud Functions endpoints:
+const FN_REQUEST = `https://${REGION}-${PROJECT_ID}.cloudfunctions.net/requestPasswordResetOTP`;
+const FN_CONFIRM = `https://${REGION}-${PROJECT_ID}.cloudfunctions.net/confirmPasswordResetOTP`;
+
+function openOtpModal(prefillEmail = "") {
+  if (!otpModal) return;
+  otpModal.classList.remove("hidden");
+  document.body.classList.add("overflow-hidden");
+
+  if (otpEmail) otpEmail.value = prefillEmail || "";
+  otpMsg.textContent = "";
+  otpStep1.classList.remove("hidden");
+  otpStep2.classList.add("hidden");
+}
+
+function closeOtpModal() {
+  otpModal?.classList.add("hidden");
+  document.body.classList.remove("overflow-hidden");
+}
+
+forgotBtn?.addEventListener("click", () => {
+  const email = (document.getElementById("studentEmail")?.value || "").trim();
+  openOtpModal(email);
+});
+
+otpBackdrop?.addEventListener("click", closeOtpModal);
+otpClose?.addEventListener("click", closeOtpModal);
+
+otpBackBtn?.addEventListener("click", () => {
+  otpMsg.textContent = "";
+  otpStep2.classList.add("hidden");
+  otpStep1.classList.remove("hidden");
+});
+
+otpSendBtn?.addEventListener("click", async () => {
+  const email = (otpEmail?.value || "").trim();
+  otpMsg.textContent = "";
+
+  if (!email || !isValidEmail(email)) {
+    otpMsg.textContent = "Please enter a valid email.";
+    return;
+  }
+
+  otpSendBtn.disabled = true;
+  otpSendBtn.classList.add("opacity-80");
+
+  try {
+    const r = await fetch(FN_REQUEST, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email })
+    });
+    const data = await r.json();
+
+    if (!data.ok) throw new Error(data.message || "Failed to send OTP.");
+
+    otpMsg.textContent = "OTP sent! Check your email.";
+    otpStep1.classList.add("hidden");
+    otpStep2.classList.remove("hidden");
+  } catch (e) {
+    console.log("OTP SEND ERROR:", e);
+    otpMsg.textContent = e.message || "Failed to send OTP.";
+  } finally {
+    otpSendBtn.disabled = false;
+    otpSendBtn.classList.remove("opacity-80");
+  }
+});
+
+otpConfirmBtn?.addEventListener("click", async () => {
+  const email = (otpEmail?.value || "").trim();
+  const code = (otpCode?.value || "").trim();
+  const newPass = otpNewPass?.value || "";
+  otpMsg.textContent = "";
+
+  if (!email || !isValidEmail(email)) return (otpMsg.textContent = "Invalid email.");
+  if (!/^\d{6}$/.test(code)) return (otpMsg.textContent = "Code must be 6 digits.");
+  if (newPass.length < 6) return (otpMsg.textContent = "Password must be at least 6 characters.");
+
+  otpConfirmBtn.disabled = true;
+  otpConfirmBtn.classList.add("opacity-80");
+
+  try {
+    const r = await fetch(FN_CONFIRM, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, otp: code, newPassword: newPass })
+    });
+    const data = await r.json();
+
+    if (!data.ok) throw new Error(data.message || "Reset failed.");
+
+    otpMsg.textContent = "Password updated! You can now login.";
+    setTimeout(() => closeOtpModal(), 900);
+  } catch (e) {
+    console.log("OTP CONFIRM ERROR:", e);
+    otpMsg.textContent = e.message || "Reset failed.";
+  } finally {
+    otpConfirmBtn.disabled = false;
+    otpConfirmBtn.classList.remove("opacity-80");
+  }
+});
 
 /* -----------------------------
    LOGIN (login.html)
@@ -72,8 +200,7 @@ if (loginForm) {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       alert("Login successful!");
-      // If you want redirect after login, set it here, example:
-      // window.location.href = "dashboard.html";
+      // window.location.href = "index.html";
     } catch (err) {
       alert(err?.message || "Login failed.");
     } finally {
@@ -103,7 +230,6 @@ if (registerForm) {
     pwHint.classList.toggle("hidden", !show);
   }
 
-  // Live mismatch hint
   if (passEl && confirmEl) {
     const check = () => showPwMismatch(passEl.value !== confirmEl.value && confirmEl.value.length > 0);
     passEl.addEventListener("input", check);
@@ -129,7 +255,6 @@ if (registerForm) {
     try {
       const cred = await createUserWithEmailAndPassword(auth, email, password);
 
-      // Save displayName in Auth profile (no localStorage, no database used here)
       if (fullName) {
         try {
           await updateProfile(cred.user, { displayName: fullName });
