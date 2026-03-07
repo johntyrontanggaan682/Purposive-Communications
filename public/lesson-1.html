@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -561,12 +560,10 @@
         html: `
             <div class="rounded-2xl overflow-hidden ring-1 ring-black/5">
               <div class="aspect-video bg-black">
-                <iframe class="w-full h-full"
-                  src="https://www.youtube.com/embed/8S0FDjFBj8o"
-                  title="Lesson Video (Fallback)"
-                  frameborder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowfullscreen></iframe>
+                <video class="w-full h-full" controls>
+                  <source src="./Effective Communication Skills in the Workplace.mp4" type="video/mp4">
+                  Your browser does not support the video tag.
+                </video>
               </div>
             </div>
 
@@ -591,58 +588,76 @@
           `,
       },
       {
-        title: "Part 2 — Communication and Globalization",
-        subtitle: "Cultural sensitivity and adaptability in global teams and audiences.",
-        type: "content",
-        showVideo: false,
-        html: `
-            <div class="prose max-w-none prose-slate">
-              <p>
-                Globalization and digitization have made people interact across countries and cultures more than ever. For future tech
-                professionals, this means collaborating with diverse teammates, clients, and managers. Beyond language (often English),
-                global communication requires cultural sensitivity.
-              </p>
+  title: "Part 2 — Communication and Globalization",
+  subtitle: "Cultural sensitivity and adaptability in global teams and audiences.",
+  type: "content",
+  showVideo: false,
+  html: `
+      <div class="rounded-2xl overflow-hidden ring-1 ring-black/5">
+        <div class="aspect-video bg-black">
+          <video class="w-full h-full" controls>
+            <source src="./Globalization and Communication.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        </div>
+      </div>
 
-              <h3>Why cultural awareness matters</h3>
-              <ul>
-                <li>Words, symbols, gestures, and designs can be interpreted differently across cultures.</li>
-                <li>Insensitivity can damage brands and relationships (even small design or wording choices can offend).</li>
-                <li>Even everyday behaviors may be polite in one culture and rude in another.</li>
-              </ul>
+      <div class="prose max-w-none prose-slate">
+        <p>
+          Globalization and digitization have made people interact across countries and cultures more than ever. For future tech
+          professionals, this means collaborating with diverse teammates, clients, and managers. Beyond language (often English),
+          global communication requires cultural sensitivity.
+        </p>
 
-              <p>
-                The key message: global communication requires <strong>awareness</strong>, <strong>respect</strong>, and <strong>adaptability</strong>
-                in how you speak, write, and present technical information.
-              </p>
-            </div>
-          `,
-      },
+        <h3>Why cultural awareness matters</h3>
+        <ul>
+          <li>Words, symbols, gestures, and designs can be interpreted differently across cultures.</li>
+          <li>Insensitivity can damage brands and relationships (even small design or wording choices can offend).</li>
+          <li>Even everyday behaviors may be polite in one culture and rude in another.</li>
+        </ul>
+
+        <p>
+          The key message: global communication requires <strong>awareness</strong>, <strong>respect</strong>, and <strong>adaptability</strong>
+          in how you speak, write, and present technical information.
+        </p>
+      </div>
+    `,
+},
       {
-        title: "Part 3 — Ethics in Communication",
-        subtitle: "Honesty, transparency, respect, and confidentiality in workplace communication.",
-        type: "content",
-        showVideo: false,
-        html: `
-            <div class="prose max-w-none prose-slate">
-              <p>
-                In the technology industry, communication must not only be clear—it must be <strong>ethical</strong>. Ethical communication
-                means being accurate, honest, respectful, and responsible with information. Unethical communication may involve hiding truth,
-                exaggerating results, or misleading others. Even without intent, poor choices can still cause harm.
-              </p>
+  title: "Part 3 — Ethics in Communication",
+  subtitle: "Honesty, transparency, respect, and confidentiality in workplace communication.",
+  type: "content",
+  showVideo: false,
+  html: `
+      <div class="rounded-2xl overflow-hidden ring-1 ring-black/5">
+        <div class="aspect-video bg-black">
+          <video class="w-full h-full" controls>
+            <source src="./Ethics in the Workplace.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        </div>
+      </div>
 
-              <h3>Why ethics is critical in tech</h3>
-              <ul>
-                <li>You will handle sensitive data (project info, client records, system reports).</li>
-                <li>Misleading reports and careless messages can destroy trust and credibility.</li>
-                <li>Professionalism includes protecting confidential information.</li>
-              </ul>
+      <div class="prose max-w-none prose-slate">
+        <p>
+          In the technology industry, communication must not only be clear—it must be <strong>ethical</strong>. Ethical communication
+          means being accurate, honest, respectful, and responsible with information. Unethical communication may involve hiding truth,
+          exaggerating results, or misleading others. Even without intent, poor choices can still cause harm.
+        </p>
 
-              <p>
-                Ethical communication builds trust, strengthens partnerships, and reflects professional integrity.
-              </p>
-            </div>
-          `,
-      },
+        <h3>Why ethics is critical in tech</h3>
+        <ul>
+          <li>You will handle sensitive data (project info, client records, system reports).</li>
+          <li>Misleading reports and careless messages can destroy trust and credibility.</li>
+          <li>Professionalism includes protecting confidential information.</li>
+        </ul>
+
+        <p>
+          Ethical communication builds trust, strengthens partnerships, and reflects professional integrity.
+        </p>
+      </div>
+    `,
+},
 
       // ✅ Tasks (each task has its own upload + saved filename)
       {

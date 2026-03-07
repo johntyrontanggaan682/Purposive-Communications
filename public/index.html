@@ -72,20 +72,28 @@
 
     :root {
       --header-h: 80px;
-      --vh: 1vh; /* ✅ dynamic visual viewport unit (fixed via JS) */
     }
 
-    /* ✅ FIX: Use visual viewport height (works correctly even when user zooms) */
-    .hero-full {
-      min-height: calc(var(--vh) * 100);
-      height: auto;
+    /* ✅ FIX: HERO should not cut off on mobile/zoom */
+    .hero-full{
+      min-height: 100vh;              /* ✅ min-height (not height) */
       padding-top: var(--header-h);
       box-sizing: border-box;
+      overflow-x: hidden;
+      overflow-y: visible;            /* ✅ allow vertical overflow */
     }
 
-    /* ✅ FULL SCREEN for About + Contact (also uses visual viewport) */
+    @supports (height: 100svh) {
+      .hero-full { min-height: 100svh; }
+    }
+
+    @supports (height: 100dvh) {
+      .hero-full { min-height: 100dvh; }
+    }
+
+    /* ✅ FULL SCREEN for About + Contact */
     .screen-only {
-      min-height: calc(var(--vh) * 100);
+      min-height: 100vh;
       box-sizing: border-box;
       padding-top: calc(var(--header-h) + 24px);
       padding-bottom: 24px;
@@ -93,11 +101,20 @@
       overscroll-behavior: auto;
     }
 
-    /* ✅ Prefer modern dvh when available */
-    @supports (height: 100dvh) {
-      .hero-full { min-height: 100dvh; }
-      .screen-only { min-height: 100dvh; }
+    @supports (height: 100svh) {
+      .screen-only {
+        min-height: 100svh;
+      }
     }
+
+    @supports (height: 100dvh) {
+      .screen-only {
+        min-height: 100dvh;
+      }
+    }
+
+    /* ✅ extra safety vs horizontal cut on zoom */
+    body { overflow-x: clip; }
 
     /* =========================================
        ✅ SMOOTH CROSSFADE (2-layer)
@@ -505,7 +522,8 @@
   </header>
 
   <!-- HERO -->
-  <section id="home" class="hero-full relative overflow-hidden">
+  <!-- ✅ FIX: removed overflow-hidden from HERO section -->
+  <section id="home" class="hero-full relative">
     <div class="absolute inset-0 hero-parallax">
       <div class="hero-glow" id="heroGlow"></div>
 
@@ -546,7 +564,9 @@
       </div>
     </div>
 
-    <div class="relative mx-auto max-w-7xl h-full flex flex-col items-center justify-center px-4 text-center sm:px-6 lg:px-8">
+    <!-- ✅ FIX: removed h-full to avoid percent-height issues when zoomed;
+              added extra vertical padding so content can expand safely -->
+    <div class="relative mx-auto max-w-7xl min-h-[calc(100vh-var(--header-h))] flex flex-col items-center justify-center px-4 py-12 text-center sm:px-6 lg:px-8">
       <h1 class="max-w-5xl text-4xl font-extrabold tracking-tight text-white sm:text-6xl lg:text-7xl anim-fade-up anim-delay-1">
         Master Purposive <br class="hidden sm:block" />
         Communication
@@ -563,7 +583,7 @@
           Start Learning
         </a>
 
-        <a href="register.html" id="signUpFreeBtn"
+        <a href="login.html" id="signUpFreeBtn"
           class="btn-shine w-full rounded-2xl border border-white/60 bg-white/10 px-9 py-4 text-base font-semibold text-white backdrop-blur hover:bg-white/15 focus:outline-none focus:ring-4 focus:ring-white/20 sm:w-auto">
           Sign Up Free
         </a>
@@ -1056,33 +1076,27 @@
 
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    // ✅ FIX: Keep --vh and --header-h synced to VISUAL viewport (handles mobile zoom out properly)
-    (function setViewportVars() {
-      const root = document.documentElement;
-      let raf = 0;
+    // ✅ Set CSS variable for the fixed header height (updates on zoom/viewport changes)
+    (function setHeaderHeightVar() {
+      const header = document.querySelector("header");
+      if (!header) return;
 
       function apply() {
-        const header = document.querySelector("header");
-        const headerH = header ? header.offsetHeight : 80;
-        root.style.setProperty("--header-h", headerH + "px");
-
-        const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
-        root.style.setProperty("--vh", (vh * 0.01) + "px");
-      }
-
-      function schedule() {
-        if (raf) cancelAnimationFrame(raf);
-        raf = requestAnimationFrame(apply);
+        document.documentElement.style.setProperty("--header-h", header.offsetHeight + "px");
       }
 
       apply();
-      window.addEventListener("resize", schedule, { passive: true });
-      window.addEventListener("orientationchange", schedule, { passive: true });
+      window.addEventListener("resize", apply);
+      window.addEventListener("orientationchange", apply);
 
+      // ✅ Helps on mobile pinch-zoom / browser UI changes
       if (window.visualViewport) {
-        window.visualViewport.addEventListener("resize", schedule);
-        window.visualViewport.addEventListener("scroll", schedule);
+        visualViewport.addEventListener("resize", apply);
+        visualViewport.addEventListener("scroll", apply);
       }
+
+      // ✅ after fonts load, header height can change
+      document.fonts?.ready?.then(apply);
     })();
 
     // ✅ Scroll progress + navbar shrink + back-to-top
