@@ -240,6 +240,30 @@
                   <p class="text-xs font-extrabold text-orange-800 uppercase">Lesson 4</p>
                   <p class="mt-2 text-3xl font-extrabold text-orange-800"><span id="l4Done">0</span>/<span id="lTotal4">0</span></p>
                 </div>
+                <div class="rounded-2xl bg-violet-50 ring-1 ring-black/5 p-5">
+                  <p class="text-xs font-extrabold text-violet-800 uppercase">Lesson 5</p>
+                  <p class="mt-2 text-3xl font-extrabold text-violet-800"><span id="l5Done">0</span>/<span id="lTotal5">0</span></p>
+                </div>
+                <div class="rounded-2xl bg-cyan-50 ring-1 ring-black/5 p-5">
+                  <p class="text-xs font-extrabold text-cyan-800 uppercase">Lesson 6</p>
+                  <p class="mt-2 text-3xl font-extrabold text-cyan-800"><span id="l6Done">0</span>/<span id="lTotal6">0</span></p>
+                </div>
+                <div class="rounded-2xl bg-amber-50 ring-1 ring-black/5 p-5">
+                  <p class="text-xs font-extrabold text-amber-800 uppercase">Lesson 7</p>
+                  <p class="mt-2 text-3xl font-extrabold text-amber-800"><span id="l7Done">0</span>/<span id="lTotal7">0</span></p>
+                </div>
+                <div class="rounded-2xl bg-rose-50 ring-1 ring-black/5 p-5">
+                  <p class="text-xs font-extrabold text-rose-800 uppercase">Lesson 8</p>
+                  <p class="mt-2 text-3xl font-extrabold text-rose-800"><span id="l8Done">0</span>/<span id="lTotal8">0</span></p>
+                </div>
+                <div class="rounded-2xl bg-teal-50 ring-1 ring-black/5 p-5">
+                  <p class="text-xs font-extrabold text-teal-800 uppercase">Lesson 9</p>
+                  <p class="mt-2 text-3xl font-extrabold text-teal-800"><span id="l9Done">0</span>/<span id="lTotal9">0</span></p>
+                </div>
+                <div class="rounded-2xl bg-indigo-50 ring-1 ring-black/5 p-5">
+                  <p class="text-xs font-extrabold text-indigo-800 uppercase">Lesson 10</p>
+                  <p class="mt-2 text-3xl font-extrabold text-indigo-800"><span id="l10Done">0</span>/<span id="lTotal10">0</span></p>
+                </div>
               </div>
             </aside>
           </section>
@@ -566,6 +590,12 @@
                         <th class="py-3 px-4">L2</th>
                         <th class="py-3 px-4">L3</th>
                         <th class="py-3 px-4">L4</th>
+                        <th class="py-3 px-4">L5</th>
+                        <th class="py-3 px-4">L6</th>
+                        <th class="py-3 px-4">L7</th>
+                        <th class="py-3 px-4">L8</th>
+                        <th class="py-3 px-4">L9</th>
+                        <th class="py-3 px-4">L10</th>
                         <th class="py-3 px-4">Overall</th>
                       </tr>
                     </thead>
@@ -732,7 +762,7 @@
                 </div>
 
                 <div class="rounded-2xl bg-slate-50 ring-1 ring-black/5 p-4">
-                  <p class="text-xs font-extrabold text-slate-500 uppercase">Lesson MCQ Scores (L1–L4)</p>
+                  <p class="text-xs font-extrabold text-slate-500 uppercase">Lesson MCQ Scores (L1–L10)</p>
                   <div id="dMcqScores" class="mt-3 space-y-2"></div>
                 </div>
               </div>
@@ -1348,7 +1378,7 @@
     function emptyHtml() {
       return `
         <tr>
-          <td colspan="6" class="py-10 text-center">
+          <td colspan="12" class="py-10 text-center">
             <p class="text-sm font-extrabold text-slate-700">No sections yet</p>
             <p class="mt-1 text-xs font-semibold text-slate-500">Click “Add a Section” to create a code for a class.</p>
           </td>
@@ -1485,11 +1515,18 @@
   const rules = { riskInactiveDays: 7, riskProgressThreshold: 40, riskQuizFails: 3 };
 
   const LESSON_META = {
-    1: { title: "Lesson 1: Communication Principles and Ethics", parts: 8 },
-    2: { title: "Lesson 2: Local and Global Communication in Multicultural Settings", parts: 5 },
-    3: { title: "Lesson 3: Evaluating Messages and Images of Different Text Types", parts: 8 },
-    4: { title: "Lesson 4: The Rise of New Media and Technology Aids in Communication", parts: 4 },
+    1: { title: "Lesson 1: Introduction to Purposive Communication", parts: 8 },
+    2: { title: "Lesson 2: Verbal and Non-Verbal Communication", parts: 5 },
+    3: { title: "Lesson 3: Written Communication Skills", parts: 8 },
+    4: { title: "Lesson 4: The Rise of New Media and Technology Aids in Communication", parts: 2 },
+    5: { title: "Lesson 5: Communication for Academic Purposes", parts: 2 },
+    6: { title: "Lesson 6: Basic Business Communication", parts: 2 },
+    7: { title: "Lesson 7: Application Letter, Résumé and Job Interview", parts: 2 },
+    8: { title: "Lesson 8: Business Meetings and Minutes", parts: 2 },
+    9: { title: "Lesson 9: Managing Conflicts", parts: 2 },
+    10: { title: "Lesson 10: Organizing a Webinar", parts: 2 },
   };
+  const LESSON_NUMBERS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
   // Expected quiz tasks per lesson (for labeling + placeholders)
   const QUIZ_TASKS_EXPECTED = {
@@ -1513,15 +1550,15 @@
       { taskId: "task3", label: "Task 3 (File)" },
       { taskId: "task4", label: "Task 4 (File)" },
     ],
-    2: [
-      { taskId: "task4VideoFile", label: "Task 4 (File)" },
-    ],
-    3: [
-      { taskId: "task3File", label: "Task 3 (File Submit)" },
-    ],
-    4: [
-      { taskId: "assessmentFile", label: "Task (File)" },
-    ],
+    2: [ { taskId: "task4VideoFile", label: "Task 4 (File)" } ],
+    3: [ { taskId: "task3File", label: "Task 3 (File Submit)" } ],
+    4: [ { taskId: "assessmentFile", label: "Task (File)" } ],
+    5: [ { taskId: "assessmentFile", label: "Review Paper File" } ],
+    6: [ { taskId: "assessmentFile", label: "7Cs Reflection File" } ],
+    7: [ { taskId: "assessmentFile", label: "Application Letter and Résumé File" } ],
+    8: [ { taskId: "assessmentFile", label: "Minutes of the Meeting File" } ],
+    9: [ { taskId: "assessmentFile", label: "Negotiation Solution File" } ],
+    10: [ { taskId: "assessmentFile", label: "Webinar Narrative Report File" } ],
   };
 
   const GRADING_SCHEME = { rubricWeight: 0.7, quizWeight: 0.3 };
@@ -1621,7 +1658,7 @@
   const msToISO = (ms) => (ms ? new Date(ms).toISOString() : "");
 
   function makeDefaultLearning() {
-    const lessons = [1,2,3,4].map((n) => {
+    const lessons = LESSON_NUMBERS.map((n) => {
       const meta = LESSON_META[n];
       return {
         key: `l${n}`,
@@ -1668,7 +1705,7 @@
     // ---------------------------
     // Lessons + progress
     // ---------------------------
-    const lessons = [1, 2, 3, 4].map((n) => {
+    const lessons = LESSON_NUMBERS.map((n) => {
       const meta = LESSON_META[n] || {};
       const lKey = `lesson${n}`;
 
@@ -1763,7 +1800,7 @@
     const byLessonTasks = {};
     const quizEntries = [];
 
-    [1, 2, 3, 4].forEach((lessonNo) => {
+    LESSON_NUMBERS.forEach((lessonNo) => {
       const st = lessonById[`lesson${lessonNo}`] || {};
       const qs = normalizeQuizScores(st.quizScores);
 
@@ -1806,7 +1843,7 @@
 
     // Per-lesson summary (kept for existing UI/metrics)
     const byLesson = {};
-    [1, 2, 3, 4].forEach((lessonNo) => {
+    LESSON_NUMBERS.forEach((lessonNo) => {
       const list = byLessonTasks[lessonNo] || [];
       if (!list.length) {
         byLesson[lessonNo] = { submitted: false, score: 0, lastAttemptAt: "" };
@@ -1903,6 +1940,13 @@
       const ms = tsToMs(st.updatedAt) || Date.now();
       pushFile(4, "assessmentFile", "Task (File)", st.assessmentFile || "", ms);
     }
+
+    // Lessons 5-10: assessmentFile (single file task)
+    [5, 6, 7, 8, 9, 10].forEach((lessonNo) => {
+      const st = lessonById[`lesson${lessonNo}`] || {};
+      const ms = tsToMs(st.updatedAt) || Date.now();
+      pushFile(lessonNo, "assessmentFile", "Assessment File", st.assessmentFile || "", ms);
+    });
 
     submissions.sort((a, b) => String(b.submittedAt || "").localeCompare(String(a.submittedAt || "")));
 
@@ -2148,20 +2192,13 @@
     $("statAvg").textContent = avg;
     $("statPending").textContent = pending;
 
-    const l1 = list.filter(s => (s.lessons?.find(x=>x.key==="l1")?.pct || 0) === 100).length;
-    const l2 = list.filter(s => (s.lessons?.find(x=>x.key==="l2")?.pct || 0) === 100).length;
-    const l3 = list.filter(s => (s.lessons?.find(x=>x.key==="l3")?.pct || 0) === 100).length;
-    const l4 = list.filter(s => (s.lessons?.find(x=>x.key==="l4")?.pct || 0) === 100).length;
-
-    $("l1Done").textContent = l1;
-    $("l2Done").textContent = l2;
-    $("l3Done").textContent = l3;
-    $("l4Done").textContent = l4;
-
-    $("lTotal1").textContent = total;
-    $("lTotal2").textContent = total;
-    $("lTotal3").textContent = total;
-    $("lTotal4").textContent = total;
+    LESSON_NUMBERS.forEach((n) => {
+      const done = list.filter(s => (s.lessons?.find(x => x.key === `l${n}`)?.pct || 0) === 100).length;
+      const doneEl = $(`l${n}Done`);
+      const totalEl = $(`lTotal${n}`);
+      if (doneEl) doneEl.textContent = done;
+      if (totalEl) totalEl.textContent = total;
+    });
 
     $("dqNeedsReview").textContent = list.filter(s => s.assessment?.status === "Submitted" || s.assessment?.status === "Resubmitted").length;
     $("dqNeedsRevision").textContent = list.filter(s => s.assessment?.status === "Needs revision").length;
@@ -2430,7 +2467,7 @@
     }
 
     if (!list.length) {
-      tbody.innerHTML = `<tr><td colspan="6" class="py-10 text-center text-sm text-slate-500">No students found.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="12" class="py-10 text-center text-sm text-slate-500">No students found.</td></tr>`;
       return;
     }
 
@@ -2447,6 +2484,12 @@
           <td class="py-5 px-4 align-top">${lessonCellHTML(by.l2)}</td>
           <td class="py-5 px-4 align-top">${lessonCellHTML(by.l3)}</td>
           <td class="py-5 px-4 align-top">${lessonCellHTML(by.l4)}</td>
+          <td class="py-5 px-4 align-top">${lessonCellHTML(by.l5)}</td>
+          <td class="py-5 px-4 align-top">${lessonCellHTML(by.l6)}</td>
+          <td class="py-5 px-4 align-top">${lessonCellHTML(by.l7)}</td>
+          <td class="py-5 px-4 align-top">${lessonCellHTML(by.l8)}</td>
+          <td class="py-5 px-4 align-top">${lessonCellHTML(by.l9)}</td>
+          <td class="py-5 px-4 align-top">${lessonCellHTML(by.l10)}</td>
           <td class="py-5 px-4 align-top">
             <div class="flex items-center gap-3">
               <div class="h-2.5 w-32 rounded-full bg-slate-200 overflow-hidden">
@@ -2544,7 +2587,7 @@
     if (!wrap) return;
 
     const byTasks = student?.quiz?.byLessonTasks || {};
-    const lessonNos = [1, 2, 3, 4];
+    const lessonNos = LESSON_NUMBERS;
 
     const lessonBlocks = lessonNos.map((lessonNo) => {
       const expected = Array.isArray(QUIZ_TASKS_EXPECTED?.[lessonNo]) ? QUIZ_TASKS_EXPECTED[lessonNo] : [];
@@ -2999,16 +3042,13 @@ function setAssessPillUI(student) {
 
   $("lessonsExportBtn")?.addEventListener("click", () => {
     // Export ALL students currently visible to the teacher (grouped by section columns)
-    const headers = ["Course","Year","Section","Student ID","Name","L1 State","L1 %","L2 State","L2 %","L3 State","L3 %","L4 State","L4 %","Overall %"];
+    const headers = ["Course","Year","Section","Student ID","Name","L1 State","L1 %","L2 State","L2 %","L3 State","L3 %","L4 State","L4 %","L5 State","L5 %","L6 State","L6 %","L7 State","L7 %","L8 State","L8 %","L9 State","L9 %","L10 State","L10 %","Overall %"];
     const rows = students.map(s => {
       const by = Object.fromEntries((s.lessons||[]).map(l => [l.key, l]));
       return [
         s.course, s.year, s.section,
         s.id, s.name,
-        by.l1?.state || "—", by.l1?.pct ?? 0,
-        by.l2?.state || "—", by.l2?.pct ?? 0,
-        by.l3?.state || "—", by.l3?.pct ?? 0,
-        by.l4?.state || "—", by.l4?.pct ?? 0,
+        ...LESSON_NUMBERS.flatMap(n => [by[`l${n}`]?.state || "—", by[`l${n}`]?.pct ?? 0]),
         s.progress ?? 0,
       ];
     });
@@ -3031,16 +3071,13 @@ function setAssessPillUI(student) {
     if (!sec) return;
 
     const list = Array.isArray(__sectionStudentsAll) ? __sectionStudentsAll : [];
-    const headers = ["Student ID","Name","Email","Course","Year","Section","L1 State","L1 %","L2 State","L2 %","L3 State","L3 %","L4 State","L4 %","Overall %"];
+    const headers = ["Student ID","Name","Email","Course","Year","Section","L1 State","L1 %","L2 State","L2 %","L3 State","L3 %","L4 State","L4 %","L5 State","L5 %","L6 State","L6 %","L7 State","L7 %","L8 State","L8 %","L9 State","L9 %","L10 State","L10 %","Overall %"];
     const rows = list.map(s => {
       const by = Object.fromEntries((s.lessons||[]).map(l => [l.key, l]));
       return [
         s.id, s.name, s.email,
         s.course, s.year, s.section,
-        by.l1?.state || "—", by.l1?.pct ?? 0,
-        by.l2?.state || "—", by.l2?.pct ?? 0,
-        by.l3?.state || "—", by.l3?.pct ?? 0,
-        by.l4?.state || "—", by.l4?.pct ?? 0,
+        ...LESSON_NUMBERS.flatMap(n => [by[`l${n}`]?.state || "—", by[`l${n}`]?.pct ?? 0]),
         s.progress ?? 0,
       ];
     });

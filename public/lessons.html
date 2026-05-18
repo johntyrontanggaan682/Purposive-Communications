@@ -1,4 +1,4 @@
-<!-- lessons.html (Main Lessons Page - 4 Lesson Cards, Lock After Lesson 1) -->
+<!-- lessons.html (Main Lessons Page - 10 Lesson Cards, Sequential Locking) -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -458,6 +458,408 @@
           </div>
         </div>
       </div>
+
+      <!-- LESSON 5 -->
+      <div id="lesson5Card" class="relative">
+        <div id="lesson5LockOverlay"
+          class="absolute inset-0 z-20 flex items-center justify-center rounded-3xl bg-white/70 backdrop-blur-sm ring-1 ring-black/5 transition-opacity duration-500 opacity-100">
+          <div class="text-center px-4">
+            <div
+              class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-700 text-white shadow-soft">
+              <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M7 11V8a5 5 0 0110 0v3" />
+                <rect x="5" y="11" width="14" height="10" rx="2" />
+              </svg>
+            </div>
+            <p class="mt-4 text-sm font-semibold text-slate-900">Locked</p>
+            <p id="lesson5LockMsg" class="mt-1 text-xs text-slate-600">Finish Lesson 4 to unlock</p>
+          </div>
+        </div>
+
+        <div id="lesson5Inner"
+          class="group overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-lg">
+          <div class="relative">
+            <img id="lesson5Img"
+              class="h-56 w-full object-cover transition-[filter,transform] duration-500 group-hover:scale-[1.02]"
+              src="./assets/lesson-5.jpg" alt="Communication for Academic Purposes"
+              onerror="this.src='https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1400&q=80';" />
+            <div
+              class="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-slate-900/20 to-transparent">
+            </div>
+          </div>
+
+          <div class="p-7">
+            <h3 class="text-xl font-extrabold text-slate-900 transition-colors group-hover:text-brand-700">
+              Communication for Academic Purposes
+            </h3>
+            <p class="mt-3 text-sm leading-relaxed text-slate-600">
+              Learn the principles of academic writing, responsible AI use, plagiarism awareness, and review paper preparation.
+            </p>
+
+            <div class="mt-6 rounded-2xl bg-slate-50 p-4 ring-1 ring-black/5">
+              <div class="flex items-center justify-between text-sm">
+                <span class="font-semibold text-slate-700">Progress</span>
+                <span id="p5Text" class="font-bold text-brand-700">0%</span>
+              </div>
+              <div class="mt-3 h-2.5 w-full rounded-full bg-slate-200 overflow-hidden">
+                <div id="p5Bar" class="h-2.5 w-0 rounded-full bg-brand-500 transition-all"></div>
+              </div>
+            </div>
+
+            <div class="mt-5 flex items-center justify-between text-sm text-slate-500">
+              <span class="inline-flex items-center gap-2">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="9"></circle>
+                  <path d="M12 7v5l3 2"></path>
+                </svg>
+                3 Parts
+              </span>
+              <span class="inline-flex items-center gap-2">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M8 4h10a2 2 0 012 2v14H8a2 2 0 01-2-2V6a2 2 0 012-2z"></path>
+                  <path d="M6 6h2"></path>
+                </svg>
+                1 Assessment
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LESSON 6 -->
+      <div id="lesson6Card" class="relative">
+        <div id="lesson6LockOverlay"
+          class="absolute inset-0 z-20 flex items-center justify-center rounded-3xl bg-white/70 backdrop-blur-sm ring-1 ring-black/5 transition-opacity duration-500 opacity-100">
+          <div class="text-center px-4">
+            <div
+              class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-700 text-white shadow-soft">
+              <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M7 11V8a5 5 0 0110 0v3" />
+                <rect x="5" y="11" width="14" height="10" rx="2" />
+              </svg>
+            </div>
+            <p class="mt-4 text-sm font-semibold text-slate-900">Locked</p>
+            <p id="lesson6LockMsg" class="mt-1 text-xs text-slate-600">Finish Lesson 5 to unlock</p>
+          </div>
+        </div>
+
+        <div id="lesson6Inner"
+          class="group overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-lg">
+          <div class="relative">
+            <img id="lesson6Img"
+              class="h-56 w-full object-cover transition-[filter,transform] duration-500 group-hover:scale-[1.02]"
+              src="./assets/lesson-6.jpg" alt="Basic Business Communication"
+              onerror="this.src='https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1400&q=80';" />
+            <div
+              class="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-slate-900/20 to-transparent">
+            </div>
+          </div>
+
+          <div class="p-7">
+            <h3 class="text-xl font-extrabold text-slate-900 transition-colors group-hover:text-brand-700">
+              Basic Business Communication
+            </h3>
+            <p class="mt-3 text-sm leading-relaxed text-slate-600">
+              Understand downward, upward, and horizontal communication, including the Seven Cs of effective business messages.
+            </p>
+
+            <div class="mt-6 rounded-2xl bg-slate-50 p-4 ring-1 ring-black/5">
+              <div class="flex items-center justify-between text-sm">
+                <span class="font-semibold text-slate-700">Progress</span>
+                <span id="p6Text" class="font-bold text-brand-700">0%</span>
+              </div>
+              <div class="mt-3 h-2.5 w-full rounded-full bg-slate-200 overflow-hidden">
+                <div id="p6Bar" class="h-2.5 w-0 rounded-full bg-brand-500 transition-all"></div>
+              </div>
+            </div>
+
+            <div class="mt-5 flex items-center justify-between text-sm text-slate-500">
+              <span class="inline-flex items-center gap-2">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="9"></circle>
+                  <path d="M12 7v5l3 2"></path>
+                </svg>
+                3 Parts
+              </span>
+              <span class="inline-flex items-center gap-2">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M8 4h10a2 2 0 012 2v14H8a2 2 0 01-2-2V6a2 2 0 012-2z"></path>
+                  <path d="M6 6h2"></path>
+                </svg>
+                1 Assessment
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LESSON 7 -->
+      <div id="lesson7Card" class="relative">
+        <div id="lesson7LockOverlay"
+          class="absolute inset-0 z-20 flex items-center justify-center rounded-3xl bg-white/70 backdrop-blur-sm ring-1 ring-black/5 transition-opacity duration-500 opacity-100">
+          <div class="text-center px-4">
+            <div
+              class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-700 text-white shadow-soft">
+              <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M7 11V8a5 5 0 0110 0v3" />
+                <rect x="5" y="11" width="14" height="10" rx="2" />
+              </svg>
+            </div>
+            <p class="mt-4 text-sm font-semibold text-slate-900">Locked</p>
+            <p id="lesson7LockMsg" class="mt-1 text-xs text-slate-600">Finish Lesson 6 to unlock</p>
+          </div>
+        </div>
+
+        <div id="lesson7Inner"
+          class="group overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-lg">
+          <div class="relative">
+            <img id="lesson7Img"
+              class="h-56 w-full object-cover transition-[filter,transform] duration-500 group-hover:scale-[1.02]"
+              src="./assets/lesson-7.jpg" alt="Application Letter, Résumé and Job Interview"
+              onerror="this.src='https://images.unsplash.com/photo-1586281380349-632531db7ed4?auto=format&fit=crop&w=1400&q=80';" />
+            <div
+              class="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-slate-900/20 to-transparent">
+            </div>
+          </div>
+
+          <div class="p-7">
+            <h3 class="text-xl font-extrabold text-slate-900 transition-colors group-hover:text-brand-700">
+              Application Letter, Résumé and Job Interview
+            </h3>
+            <p class="mt-3 text-sm leading-relaxed text-slate-600">
+              Prepare professional application documents and develop confidence for job interviews and career readiness.
+            </p>
+
+            <div class="mt-6 rounded-2xl bg-slate-50 p-4 ring-1 ring-black/5">
+              <div class="flex items-center justify-between text-sm">
+                <span class="font-semibold text-slate-700">Progress</span>
+                <span id="p7Text" class="font-bold text-brand-700">0%</span>
+              </div>
+              <div class="mt-3 h-2.5 w-full rounded-full bg-slate-200 overflow-hidden">
+                <div id="p7Bar" class="h-2.5 w-0 rounded-full bg-brand-500 transition-all"></div>
+              </div>
+            </div>
+
+            <div class="mt-5 flex items-center justify-between text-sm text-slate-500">
+              <span class="inline-flex items-center gap-2">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="9"></circle>
+                  <path d="M12 7v5l3 2"></path>
+                </svg>
+                3 Parts
+              </span>
+              <span class="inline-flex items-center gap-2">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M8 4h10a2 2 0 012 2v14H8a2 2 0 01-2-2V6a2 2 0 012-2z"></path>
+                  <path d="M6 6h2"></path>
+                </svg>
+                1 Assessment
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LESSON 8 -->
+      <div id="lesson8Card" class="relative">
+        <div id="lesson8LockOverlay"
+          class="absolute inset-0 z-20 flex items-center justify-center rounded-3xl bg-white/70 backdrop-blur-sm ring-1 ring-black/5 transition-opacity duration-500 opacity-100">
+          <div class="text-center px-4">
+            <div
+              class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-700 text-white shadow-soft">
+              <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M7 11V8a5 5 0 0110 0v3" />
+                <rect x="5" y="11" width="14" height="10" rx="2" />
+              </svg>
+            </div>
+            <p class="mt-4 text-sm font-semibold text-slate-900">Locked</p>
+            <p id="lesson8LockMsg" class="mt-1 text-xs text-slate-600">Finish Lesson 7 to unlock</p>
+          </div>
+        </div>
+
+        <div id="lesson8Inner"
+          class="group overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-lg">
+          <div class="relative">
+            <img id="lesson8Img"
+              class="h-56 w-full object-cover transition-[filter,transform] duration-500 group-hover:scale-[1.02]"
+              src="./assets/lesson-8.jpg" alt="Business Meetings and Minutes"
+              onerror="this.src='https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=1400&q=80';" />
+            <div
+              class="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-slate-900/20 to-transparent">
+            </div>
+          </div>
+
+          <div class="p-7">
+            <h3 class="text-xl font-extrabold text-slate-900 transition-colors group-hover:text-brand-700">
+              Business Meetings and Minutes
+            </h3>
+            <p class="mt-3 text-sm leading-relaxed text-slate-600">
+              Learn how to conduct meetings, handle motions, vote properly, and write clear minutes of the meeting.
+            </p>
+
+            <div class="mt-6 rounded-2xl bg-slate-50 p-4 ring-1 ring-black/5">
+              <div class="flex items-center justify-between text-sm">
+                <span class="font-semibold text-slate-700">Progress</span>
+                <span id="p8Text" class="font-bold text-brand-700">0%</span>
+              </div>
+              <div class="mt-3 h-2.5 w-full rounded-full bg-slate-200 overflow-hidden">
+                <div id="p8Bar" class="h-2.5 w-0 rounded-full bg-brand-500 transition-all"></div>
+              </div>
+            </div>
+
+            <div class="mt-5 flex items-center justify-between text-sm text-slate-500">
+              <span class="inline-flex items-center gap-2">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="9"></circle>
+                  <path d="M12 7v5l3 2"></path>
+                </svg>
+                3 Parts
+              </span>
+              <span class="inline-flex items-center gap-2">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M8 4h10a2 2 0 012 2v14H8a2 2 0 01-2-2V6a2 2 0 012-2z"></path>
+                  <path d="M6 6h2"></path>
+                </svg>
+                1 Assessment
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LESSON 9 -->
+      <div id="lesson9Card" class="relative">
+        <div id="lesson9LockOverlay"
+          class="absolute inset-0 z-20 flex items-center justify-center rounded-3xl bg-white/70 backdrop-blur-sm ring-1 ring-black/5 transition-opacity duration-500 opacity-100">
+          <div class="text-center px-4">
+            <div
+              class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-700 text-white shadow-soft">
+              <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M7 11V8a5 5 0 0110 0v3" />
+                <rect x="5" y="11" width="14" height="10" rx="2" />
+              </svg>
+            </div>
+            <p class="mt-4 text-sm font-semibold text-slate-900">Locked</p>
+            <p id="lesson9LockMsg" class="mt-1 text-xs text-slate-600">Finish Lesson 8 to unlock</p>
+          </div>
+        </div>
+
+        <div id="lesson9Inner"
+          class="group overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-lg">
+          <div class="relative">
+            <img id="lesson9Img"
+              class="h-56 w-full object-cover transition-[filter,transform] duration-500 group-hover:scale-[1.02]"
+              src="./assets/lesson-9.jpg" alt="Managing Conflicts"
+              onerror="this.src='https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=1400&q=80';" />
+            <div
+              class="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-slate-900/20 to-transparent">
+            </div>
+          </div>
+
+          <div class="p-7">
+            <h3 class="text-xl font-extrabold text-slate-900 transition-colors group-hover:text-brand-700">
+              Managing Conflicts
+            </h3>
+            <p class="mt-3 text-sm leading-relaxed text-slate-600">
+              Identify workplace conflicts and apply appropriate conflict management approaches and negotiation strategies.
+            </p>
+
+            <div class="mt-6 rounded-2xl bg-slate-50 p-4 ring-1 ring-black/5">
+              <div class="flex items-center justify-between text-sm">
+                <span class="font-semibold text-slate-700">Progress</span>
+                <span id="p9Text" class="font-bold text-brand-700">0%</span>
+              </div>
+              <div class="mt-3 h-2.5 w-full rounded-full bg-slate-200 overflow-hidden">
+                <div id="p9Bar" class="h-2.5 w-0 rounded-full bg-brand-500 transition-all"></div>
+              </div>
+            </div>
+
+            <div class="mt-5 flex items-center justify-between text-sm text-slate-500">
+              <span class="inline-flex items-center gap-2">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="9"></circle>
+                  <path d="M12 7v5l3 2"></path>
+                </svg>
+                3 Parts
+              </span>
+              <span class="inline-flex items-center gap-2">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M8 4h10a2 2 0 012 2v14H8a2 2 0 01-2-2V6a2 2 0 012-2z"></path>
+                  <path d="M6 6h2"></path>
+                </svg>
+                1 Assessment
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LESSON 10 -->
+      <div id="lesson10Card" class="relative">
+        <div id="lesson10LockOverlay"
+          class="absolute inset-0 z-20 flex items-center justify-center rounded-3xl bg-white/70 backdrop-blur-sm ring-1 ring-black/5 transition-opacity duration-500 opacity-100">
+          <div class="text-center px-4">
+            <div
+              class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-700 text-white shadow-soft">
+              <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M7 11V8a5 5 0 0110 0v3" />
+                <rect x="5" y="11" width="14" height="10" rx="2" />
+              </svg>
+            </div>
+            <p class="mt-4 text-sm font-semibold text-slate-900">Locked</p>
+            <p id="lesson10LockMsg" class="mt-1 text-xs text-slate-600">Finish Lesson 9 to unlock</p>
+          </div>
+        </div>
+
+        <div id="lesson10Inner"
+          class="group overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-lg">
+          <div class="relative">
+            <img id="lesson10Img"
+              class="h-56 w-full object-cover transition-[filter,transform] duration-500 group-hover:scale-[1.02]"
+              src="./assets/lesson-10.jpg" alt="Organizing a Webinar"
+              onerror="this.src='https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?auto=format&fit=crop&w=1400&q=80';" />
+            <div
+              class="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-slate-900/20 to-transparent">
+            </div>
+          </div>
+
+          <div class="p-7">
+            <h3 class="text-xl font-extrabold text-slate-900 transition-colors group-hover:text-brand-700">
+              Organizing a Webinar
+            </h3>
+            <p class="mt-3 text-sm leading-relaxed text-slate-600">
+              Plan, promote, and conduct a webinar with proper program flow, roles, visuals, technical preparation, and reporting.
+            </p>
+
+            <div class="mt-6 rounded-2xl bg-slate-50 p-4 ring-1 ring-black/5">
+              <div class="flex items-center justify-between text-sm">
+                <span class="font-semibold text-slate-700">Progress</span>
+                <span id="p10Text" class="font-bold text-brand-700">0%</span>
+              </div>
+              <div class="mt-3 h-2.5 w-full rounded-full bg-slate-200 overflow-hidden">
+                <div id="p10Bar" class="h-2.5 w-0 rounded-full bg-brand-500 transition-all"></div>
+              </div>
+            </div>
+
+            <div class="mt-5 flex items-center justify-between text-sm text-slate-500">
+              <span class="inline-flex items-center gap-2">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="9"></circle>
+                  <path d="M12 7v5l3 2"></path>
+                </svg>
+                3 Parts
+              </span>
+              <span class="inline-flex items-center gap-2">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M8 4h10a2 2 0 012 2v14H8a2 2 0 01-2-2V6a2 2 0 012-2z"></path>
+                  <path d="M6 6h2"></path>
+                </svg>
+                1 Assessment
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </main>
 
@@ -473,7 +875,7 @@
       </div>
       <div class="text-sm">
         <p class="font-semibold">Locked lesson</p>
-        <p class="mt-0.5 text-white/80">Complete Lesson 1 to unlock the next lessons.</p>
+        <p class="mt-0.5 text-white/80">Complete the previous lesson to unlock the next lesson.</p>
       </div>
       <button id="toastClose" class="ml-2 rounded-lg p-1 text-white/70 hover:bg-white/10 hover:text-white"
         aria-label="Close">
@@ -725,6 +1127,12 @@
       l2: "lesson2",
       l3: "lesson3",
       l4: "lesson4",
+      l5: "lesson5",
+      l6: "lesson6",
+      l7: "lesson7",
+      l8: "lesson8",
+      l9: "lesson9",
+      l10: "lesson10",
     };
 
     function clamp(n, min, max) {
@@ -828,14 +1236,9 @@
     }
 
     async function loadLessonProgress(uid) {
-      const state = {
-        lesson1: { progress: 0, complete: false },
-        lesson2: { progress: 0, complete: false },
-        lesson3: { progress: 0, complete: false },
-        lesson4: { progress: 0, complete: false },
-      };
-
-      const keys = ["lesson1", "lesson2", "lesson3", "lesson4"];
+      const state = {};
+      const keys = Array.from({ length: 10 }, (_, i) => `lesson${i + 1}`);
+      keys.forEach(k => { state[k] = { progress: 0, complete: false }; });
 
       const clampPct = (v) => {
         const n = parseInt(v ?? "0", 10);
@@ -877,19 +1280,8 @@
 
       // 2) Try subcollections (if allowed) and merge/override
       try {
-        const progressRefs = [
-          doc(db, "users", uid, "progress", PROGRESS_DOCS.l1),
-          doc(db, "users", uid, "progress", PROGRESS_DOCS.l2),
-          doc(db, "users", uid, "progress", PROGRESS_DOCS.l3),
-          doc(db, "users", uid, "progress", PROGRESS_DOCS.l4),
-        ];
-
-        const lessonRefs = [
-          doc(db, "users", uid, "lessons", "lesson1"),
-          doc(db, "users", uid, "lessons", "lesson2"),
-          doc(db, "users", uid, "lessons", "lesson3"),
-          doc(db, "users", uid, "lessons", "lesson4"),
-        ];
+        const progressRefs = keys.map((k, i) => doc(db, "users", uid, "progress", PROGRESS_DOCS[`l${i + 1}`]));
+        const lessonRefs = keys.map((k) => doc(db, "users", uid, "lessons", k));
 
         const [progResults, lessonResults] = await Promise.all([
           Promise.allSettled(progressRefs.map(r => getDoc(r))),
@@ -942,74 +1334,39 @@
     }
 
 function setLockMessages(state) {
-      const l1 = !!state.lesson1.complete;
-      const l2 = !!state.lesson2.complete;
-      const l3 = !!state.lesson3.complete;
-
-      let nextLocked = null;
-      if (!l1) nextLocked = 2;
-      else if (!l2) nextLocked = 3;
-      else if (!l3) nextLocked = 4;
-      else nextLocked = null;
-
-      const m2 = document.getElementById("lesson2LockMsg");
-      const m3 = document.getElementById("lesson3LockMsg");
-      const m4 = document.getElementById("lesson4LockMsg");
-
-      [m2, m3, m4].forEach(m => m && m.classList.add("hidden"));
-
-      if (nextLocked === 2 && m2) {
-        m2.textContent = "Finish Lesson 1 to unlock";
-        m2.classList.remove("hidden");
-      }
-      if (nextLocked === 3 && m3) {
-        m3.textContent = "Finish Lesson 2 to unlock";
-        m3.classList.remove("hidden");
-      }
-      if (nextLocked === 4 && m4) {
-        m4.textContent = "Finish Lesson 3 to unlock";
-        m4.classList.remove("hidden");
+      for (let n = 2; n <= 10; n++) {
+        const msg = document.getElementById(`lesson${n}LockMsg`);
+        if (!msg) continue;
+        msg.textContent = `Finish Lesson ${n - 1} to unlock`;
+        msg.classList.remove("hidden");
       }
     }
 
     function renderLocking(state) {
-      const l1 = !!state.lesson1.complete;
-      const l2 = !!state.lesson2.complete;
-      const l3 = !!state.lesson3.complete;
-
-      if (l1) unlockCard("lesson2Card", document.getElementById("lesson2Inner"), "lesson2LockOverlay", "lesson-2.html");
-      else lockCard("lesson2Card", document.getElementById("lesson2Inner"), "lesson2Img", "lesson2LockOverlay");
-
-      if (l2) unlockCard("lesson3Card", document.getElementById("lesson3Inner"), "lesson3LockOverlay", "lesson-3.html");
-      else lockCard("lesson3Card", document.getElementById("lesson3Inner"), "lesson3Img", "lesson3LockOverlay");
-
-      if (l3) unlockCard("lesson4Card", document.getElementById("lesson4Inner"), "lesson4LockOverlay", "lesson-4.html");
-      else lockCard("lesson4Card", document.getElementById("lesson4Inner"), "lesson4Img", "lesson4LockOverlay");
+      for (let n = 2; n <= 10; n++) {
+        const prevComplete = !!state[`lesson${n - 1}`]?.complete || Number(state[`lesson${n - 1}`]?.progress || 0) >= 100;
+        const inner = document.getElementById(`lesson${n}Inner`);
+        if (prevComplete) unlockCard(`lesson${n}Card`, inner, `lesson${n}LockOverlay`, `lesson-${n}.html`);
+        else lockCard(`lesson${n}Card`, inner, `lesson${n}Img`, `lesson${n}LockOverlay`);
+      }
     }
 
     function renderProgress(state) {
-      setProgress("p1Bar", "p1Text", state.lesson1.progress);
-      setProgress("p2Bar", "p2Text", state.lesson2.progress);
-      setProgress("p3Bar", "p3Text", state.lesson3.progress);
-      setProgress("p4Bar", "p4Text", state.lesson4.progress);
+      for (let n = 1; n <= 10; n++) {
+        setProgress(`p${n}Bar`, `p${n}Text`, state[`lesson${n}`]?.progress || 0);
+      }
     }
 
     function renderGuestDefaults() {
-      setProgress("p1Bar", "p1Text", 0);
-      setProgress("p2Bar", "p2Text", 0);
-      setProgress("p3Bar", "p3Text", 0);
-      setProgress("p4Bar", "p4Text", 0);
+      for (let n = 1; n <= 10; n++) {
+        setProgress(`p${n}Bar`, `p${n}Text`, 0);
+      }
 
-      lockCard("lesson2Card", document.getElementById("lesson2Inner"), "lesson2Img", "lesson2LockOverlay");
-      lockCard("lesson3Card", document.getElementById("lesson3Inner"), "lesson3Img", "lesson3LockOverlay");
-      lockCard("lesson4Card", document.getElementById("lesson4Inner"), "lesson4Img", "lesson4LockOverlay");
-
-      const m2 = document.getElementById("lesson2LockMsg");
-      const m3 = document.getElementById("lesson3LockMsg");
-      const m4 = document.getElementById("lesson4LockMsg");
-      if (m2) m2.textContent = "Finish Lesson 1 to unlock";
-      if (m3) m3.textContent = "Finish Lesson 1 to unlock";
-      if (m4) m4.textContent = "Finish Lesson 1 to unlock";
+      for (let n = 2; n <= 10; n++) {
+        lockCard(`lesson${n}Card`, document.getElementById(`lesson${n}Inner`), `lesson${n}Img`, `lesson${n}LockOverlay`);
+        const msg = document.getElementById(`lesson${n}LockMsg`);
+        if (msg) msg.textContent = `Finish Lesson ${n - 1} to unlock`;
+      }
     }
 
     // ✅ Firebase auth listener: update dropdown + progress/locking
