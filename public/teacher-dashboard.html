@@ -816,27 +816,75 @@
                 </div>
 
                 <div>
-                  <p class="text-xs font-extrabold text-slate-400 uppercase">Grade</p>
+                  <p class="text-xs font-extrabold text-slate-400 uppercase">Review Status</p>
+                  <select id="sReviewStatus"
+                    class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-extrabold outline-none focus:ring-4 focus:ring-brand-200">
+                    <option value="Under review">Under review</option>
+                    <option value="Graded">Graded</option>
+                    <option value="Needs revision">Needs revision</option>
+                  </select>
+                </div>
+
+                <div>
+                  <p class="text-xs font-extrabold text-slate-400 uppercase">Final Grade</p>
                   <input id="sFinalGrade" type="number" min="0" max="100" step="1" placeholder="0–100"
                     class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-extrabold outline-none focus:ring-4 focus:ring-brand-200" />
+                  <p id="sGradeLetter" class="mt-2 text-xs font-extrabold text-brand-700">Grade: —</p>
                 </div>
               </div>
             </div>
 
             <div class="lg:col-span-2">
               <div class="rounded-2xl bg-white ring-1 ring-black/5 p-6">
-                <h3 class="text-lg font-extrabold text-slate-900">Feedback</h3>
-                <p class="mt-1 text-sm text-slate-600">Write feedback for the student.</p>
+                <h3 class="text-lg font-extrabold text-slate-900">Rubric and Feedback</h3>
+                <p class="mt-1 text-sm text-slate-600">Score the selected submitted file. The rubric total automatically fills the final grade.</p>
 
-                <textarea id="sFeedback" rows="10" placeholder="Write feedback / required revisions…"
+                <div class="mt-5 grid gap-3 sm:grid-cols-2">
+                  <label class="rounded-2xl bg-slate-50 p-4 ring-1 ring-black/5">
+                    <span class="text-xs font-extrabold text-slate-500 uppercase">Content / Relevance (30)</span>
+                    <input id="sRubricContent" data-rubric-max="30" type="number" min="0" max="30" step="1" value="0"
+                      class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-extrabold outline-none focus:ring-4 focus:ring-brand-200" />
+                  </label>
+
+                  <label class="rounded-2xl bg-slate-50 p-4 ring-1 ring-black/5">
+                    <span class="text-xs font-extrabold text-slate-500 uppercase">Organization (20)</span>
+                    <input id="sRubricOrganization" data-rubric-max="20" type="number" min="0" max="20" step="1" value="0"
+                      class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-extrabold outline-none focus:ring-4 focus:ring-brand-200" />
+                  </label>
+
+                  <label class="rounded-2xl bg-slate-50 p-4 ring-1 ring-black/5">
+                    <span class="text-xs font-extrabold text-slate-500 uppercase">Clarity / Communication (20)</span>
+                    <input id="sRubricClarity" data-rubric-max="20" type="number" min="0" max="20" step="1" value="0"
+                      class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-extrabold outline-none focus:ring-4 focus:ring-brand-200" />
+                  </label>
+
+                  <label class="rounded-2xl bg-slate-50 p-4 ring-1 ring-black/5">
+                    <span class="text-xs font-extrabold text-slate-500 uppercase">Grammar / Mechanics (15)</span>
+                    <input id="sRubricMechanics" data-rubric-max="15" type="number" min="0" max="15" step="1" value="0"
+                      class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-extrabold outline-none focus:ring-4 focus:ring-brand-200" />
+                  </label>
+
+                  <label class="rounded-2xl bg-slate-50 p-4 ring-1 ring-black/5 sm:col-span-2">
+                    <span class="text-xs font-extrabold text-slate-500 uppercase">Format / Completeness (15)</span>
+                    <input id="sRubricFormat" data-rubric-max="15" type="number" min="0" max="15" step="1" value="0"
+                      class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-extrabold outline-none focus:ring-4 focus:ring-brand-200" />
+                  </label>
+                </div>
+
+                <div class="mt-4 rounded-2xl bg-brand-50 p-4 ring-1 ring-brand-100">
+                  <p class="text-xs font-extrabold text-brand-800 uppercase">Rubric Total</p>
+                  <p class="mt-1 text-2xl font-extrabold text-brand-800"><span id="sRubricTotal">0</span>/100</p>
+                </div>
+
+                <textarea id="sFeedback" rows="7" placeholder="Write feedback / required revisions…"
                   class="mt-4 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:ring-4 focus:ring-brand-200"></textarea>
 
                 <div class="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <p class="text-xs text-slate-500 font-semibold" id="sSaveHint">Changes are stored locally (prototype).</p>
+                  <p class="text-xs text-slate-500 font-semibold" id="sSaveHint">Grades are saved to Firestore for the selected submitted file.</p>
 
                   <button id="saveRubricBtn"
                     class="inline-flex items-center justify-center rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-extrabold text-white shadow-softer hover:bg-brand-700 focus:outline-none focus:ring-4 focus:ring-brand-200">
-                    Save
+                    Save Grade
                   </button>
                 </div>
               </div>
@@ -1598,7 +1646,9 @@
   function statusPill(status) { return status === "Active" ? "bg-emerald-100 text-emerald-800" : "bg-slate-100 text-slate-700"; }
   function statePill(state) {
     switch (state) {
-      case "Completed": return "bg-emerald-100 text-emerald-800";
+      case "Completed":
+      case "Graded": return "bg-emerald-100 text-emerald-800";
+      case "Submitted": return "bg-sky-100 text-sky-800";
       case "In progress": return "bg-orange-100 text-orange-800";
       case "Needs revision": return "bg-rose-100 text-rose-800";
       default: return "bg-slate-100 text-slate-700";
@@ -1612,7 +1662,15 @@
     return "bg-slate-100 text-slate-700";
   }
   function rubricTotals(rubric) {
-    const vals = ["clarity","audience","tone","organization","grammar","purpose"].map(k => Number(rubric?.[k] || 0));
+    const r = (rubric && typeof rubric === "object") ? rubric : {};
+    const modernKeys = ["content", "organization", "clarity", "mechanics", "format"];
+    const hasModern = modernKeys.some(k => r[k] != null);
+    if (hasModern) {
+      const raw = clamp(Math.round(modernKeys.reduce((a, k) => a + (Number(r[k] || 0) || 0), 0)), 0, 100);
+      return { raw, max: 100, pct: raw };
+    }
+
+    const vals = ["clarity","audience","tone","organization","grammar","purpose"].map(k => Number(r?.[k] || 0));
     const raw = vals.reduce((a,b)=>a+b,0);
     const max = 60;
     const pct = Math.round((raw / max) * 100);
@@ -1872,14 +1930,46 @@
     };
 
     // ---------------------------
-    // File submissions (all lessons + tasks)
+    // File submissions + grading data (all lessons + tasks)
     // ---------------------------
     const submissions = [];
-    const pushFile = (lessonNo, taskId, label, fileName, ms, meta = {}) => {
+
+    function safeTaskKey(taskId) {
+      return String(taskId || "assessmentFile").replace(/[^A-Za-z0-9_\-]/g, "_");
+    }
+
+    function readTaskGrade(lessonState, taskId) {
+      const key = safeTaskKey(taskId);
+      const taskGrades = (lessonState?.taskGrades && typeof lessonState.taskGrades === "object") ? lessonState.taskGrades : {};
+      const direct = taskGrades?.[taskId] || taskGrades?.[key] || null;
+      const legacy = lessonState?.assessmentGrade || lessonState?.grading || lessonState?.review || null;
+      return (direct && typeof direct === "object") ? direct : ((legacy && typeof legacy === "object") ? legacy : {});
+    }
+
+    function normalizeGradeMeta(meta, gradeMeta = {}) {
+      const m = (meta && typeof meta === "object") ? meta : {};
+      const g = (gradeMeta && typeof gradeMeta === "object") ? gradeMeta : {};
+      const rubric = (g.rubric && typeof g.rubric === "object") ? g.rubric : ((m.rubric && typeof m.rubric === "object") ? m.rubric : {});
+      const gradeRaw = g.finalGrade ?? g.grade ?? m.finalGrade ?? m.grade ?? "";
+      const grade = gradeRaw === "" || gradeRaw == null ? "" : clamp(Math.round(Number(gradeRaw) || 0), 0, 100);
+      const status = String(g.status || g.reviewStatus || m.reviewStatus || m.status || (grade !== "" ? "Graded" : "Submitted")).trim() || "Submitted";
+      return {
+        status,
+        finalGrade: grade,
+        rubric,
+        feedback: String(g.feedback || m.feedback || ""),
+        reviewer: String(g.reviewer || m.reviewer || ""),
+        reviewedAt: msToISO(tsToMs(g.reviewedAt) || tsToMs(m.reviewedAt) || 0),
+        gradedAt: msToISO(tsToMs(g.gradedAt) || tsToMs(m.gradedAt) || 0),
+      };
+    }
+
+    const pushFile = (lessonNo, taskId, label, fileName, ms, meta = {}, gradeMeta = {}) => {
       const m = (meta && typeof meta === "object") ? meta : {};
       const fn = String(fileName || m.fileName || m.name || "").trim();
       if (!fn) return;
       const submittedMs = Number(m.submittedAtMs || 0) || tsToMs(m.submittedAt) || Number(ms || 0) || Date.now();
+      const review = normalizeGradeMeta(m, gradeMeta);
       submissions.push({
         type: "file",
         lesson: lessonNo,
@@ -1893,7 +1983,14 @@
         fileUrl: String(m.fileUrl || m.downloadUrl || m.url || ""),
         storagePath: String(m.storagePath || m.filePath || m.path || ""),
         storage: m.storage || (m.fileUrl ? "supabase" : ""),
-        bucket: m.bucket || ""
+        bucket: m.bucket || "",
+        reviewStatus: review.status,
+        finalGrade: review.finalGrade,
+        rubric: review.rubric,
+        feedback: review.feedback,
+        reviewer: review.reviewer,
+        reviewedAt: review.reviewedAt,
+        gradedAt: review.gradedAt,
       });
     };
 
@@ -1904,14 +2001,14 @@
       const tfm = (st.taskFileMeta && typeof st.taskFileMeta === "object") ? st.taskFileMeta : {};
       const ms = tsToMs(st.updatedAt) || Date.now();
 
-      pushFile(1, "task1", "Task 1 (File)", tf.task1, ms, tfm.task1);
-      pushFile(1, "task2", "Task 2 (File)", tf.task2, ms, tfm.task2);
-      pushFile(1, "task3", "Task 3 (File)", tf.task3, ms, tfm.task3);
-      pushFile(1, "task4", "Task 4 (File)", tf.task4, ms, tfm.task4);
+      pushFile(1, "task1", "Task 1 (File)", tf.task1, ms, tfm.task1, readTaskGrade(st, "task1"));
+      pushFile(1, "task2", "Task 2 (File)", tf.task2, ms, tfm.task2, readTaskGrade(st, "task2"));
+      pushFile(1, "task3", "Task 3 (File)", tf.task3, ms, tfm.task3, readTaskGrade(st, "task3"));
+      pushFile(1, "task4", "Task 4 (File)", tf.task4, ms, tfm.task4, readTaskGrade(st, "task4"));
 
       // Backwards compatibility if only assessmentFile exists
       if (!submissions.some(s => s.lesson === 1) && st.assessmentFile) {
-        pushFile(1, "task1", "Task 1 (File)", st.assessmentFile, ms, st.assessmentFileMeta);
+        pushFile(1, "task1", "Task 1 (File)", st.assessmentFile, ms, st.assessmentFileMeta, readTaskGrade(st, "task1"));
       }
     }
 
@@ -1919,7 +2016,7 @@
     {
       const st = lessonById["lesson2"] || {};
       const ms = tsToMs(st.updatedAt) || Date.now();
-      pushFile(2, "task4VideoFile", "Task 4 (File)", st.task4VideoFile || st.assessmentFile, ms, st.task4VideoFileMeta || st.assessmentFileMeta);
+      pushFile(2, "task4VideoFile", "Task 4 (File)", st.task4VideoFile || st.assessmentFile, ms, st.task4VideoFileMeta || st.assessmentFileMeta, readTaskGrade(st, "task4VideoFile"));
     }
 
     // Lesson 3: try common file fields for Task 3 (file submit)
@@ -1938,37 +2035,86 @@
       ];
       const fileName = candidates.map(x => String(x || "").trim()).find(Boolean) || "";
       const tfm = (st.taskFileMeta && typeof st.taskFileMeta === "object") ? st.taskFileMeta : {};
-      pushFile(3, "task3File", "Task 3 (File Submit)", fileName, ms, st.task3FileMeta || st.assessmentFileMeta || tfm.task3);
+      pushFile(3, "task3File", "Task 3 (File Submit)", fileName, ms, st.task3FileMeta || st.assessmentFileMeta || tfm.task3, readTaskGrade(st, "task3File"));
     }
 
     // Lesson 4: assessmentFile (single file task)
     {
       const st = lessonById["lesson4"] || {};
       const ms = tsToMs(st.updatedAt) || Date.now();
-      pushFile(4, "assessmentFile", "Task (File)", st.assessmentFile || "", ms, st.assessmentFileMeta);
+      pushFile(4, "assessmentFile", "Task (File)", st.assessmentFile || "", ms, st.assessmentFileMeta, readTaskGrade(st, "assessmentFile"));
     }
 
     // Lessons 5-10: assessmentFile (single file task)
     [5, 6, 7, 8, 9, 10].forEach((lessonNo) => {
       const st = lessonById[`lesson${lessonNo}`] || {};
       const ms = tsToMs(st.updatedAt) || Date.now();
-      pushFile(lessonNo, "assessmentFile", "Assessment File", st.assessmentFile || "", ms, st.assessmentFileMeta);
+      pushFile(lessonNo, "assessmentFile", "Assessment File", st.assessmentFile || "", ms, st.assessmentFileMeta, readTaskGrade(st, "assessmentFile"));
     });
 
     submissions.sort((a, b) => String(b.submittedAt || "").localeCompare(String(a.submittedAt || "")));
 
+    // Improve progress display by combining reading progress + submitted-file workflow.
+    // This does not erase the student's stored progress; it gives the teacher a clearer view.
+    lessons.forEach((l, idx) => {
+      const lessonNo = idx + 1;
+      const submitted = submissions.filter(s => Number(s.lesson || 0) === lessonNo && !s.__missing);
+      if (!submitted.length) {
+        l.fileSubmitted = false;
+        return;
+      }
+
+      const hasRevision = submitted.some(s => String(s.reviewStatus || "").toLowerCase() === "needs revision");
+      const allGraded = submitted.every(s => String(s.reviewStatus || "").toLowerCase() === "graded");
+      const hasUnderReview = submitted.some(s => ["submitted", "resubmitted", "under review"].includes(String(s.reviewStatus || "").toLowerCase()));
+
+      l.fileSubmitted = true;
+      l.submissionCount = submitted.length;
+      l.latestSubmissionAt = submitted[0]?.submittedAt || "";
+      l.submissionStatus = hasRevision ? "Needs revision" : (allGraded ? "Graded" : (hasUnderReview ? "Submitted" : "Submitted"));
+      l.latestGrade = submitted.map(s => s.finalGrade).find(g => g !== "" && g != null);
+
+      if (l.submissionStatus === "Needs revision") {
+        l.state = "Needs revision";
+        l.pct = Math.max(Number(l.pct || 0), 80);
+      } else if (l.submissionStatus === "Graded") {
+        l.state = "Completed";
+        l.pct = 100;
+      } else if (l.submissionStatus === "Submitted") {
+        l.state = Number(l.pct || 0) >= 100 ? "Submitted" : "In progress";
+        l.pct = Math.max(Number(l.pct || 0), 90);
+      }
+    });
+
+    const finalOverallProgress = lessons.length
+      ? Math.round(lessons.reduce((a, b) => a + Number(b.pct || 0), 0) / lessons.length)
+      : 0;
+
+    function getOverallAssessmentStatus() {
+      if (!submissions.length) return "Not started";
+      if (submissions.some(s => String(s.reviewStatus || "").toLowerCase() === "needs revision")) return "Needs revision";
+      if (submissions.some(s => ["submitted", "resubmitted", "under review"].includes(String(s.reviewStatus || "").toLowerCase()))) return "Submitted";
+      if (submissions.every(s => String(s.reviewStatus || "").toLowerCase() === "graded")) return "Graded";
+      return "Submitted";
+    }
+
+    const latestReviewed = submissions.map(s => s.reviewedAt).filter(Boolean).sort().slice(-1)[0] || "";
+    const latestGraded = submissions.map(s => s.gradedAt).filter(Boolean).sort().slice(-1)[0] || "";
+    const latestGradedSub = submissions.find(s => s.finalGrade !== "" && s.finalGrade != null) || null;
+
     const assessment = {
-      status: submissions.length ? "Submitted" : "Not started",
+      status: getOverallAssessmentStatus(),
       submittedAt: submissions[0]?.submittedAt || "",
-      reviewedAt: "",
-      gradedAt: "",
-      reviewer: "",
-      feedback: "",
+      reviewedAt: latestReviewed,
+      gradedAt: latestGraded,
+      reviewer: latestGradedSub?.reviewer || "",
+      feedback: latestGradedSub?.feedback || "",
+      finalGrade: latestGradedSub?.finalGrade ?? "",
       submissions,
-      rubric: { clarity: 0, audience: 0, tone: 0, organization: 0, grammar: 0, purpose: 0 },
+      rubric: latestGradedSub?.rubric || { clarity: 0, audience: 0, tone: 0, organization: 0, grammar: 0, purpose: 0 },
     };
 
-    return { lessons, overallProgress, assessment, quiz };
+    return { lessons, overallProgress: finalOverallProgress, assessment, quiz };
   }
 
   async function loadStudents() {
@@ -2450,10 +2596,16 @@
 
   function lessonCellHTML(l) {
     if (!l) return `<span class="text-xs font-semibold text-slate-400">—</span>`;
+    const grade = (l.latestGrade !== "" && l.latestGrade != null)
+      ? `<span class="text-[11px] font-extrabold text-emerald-700">${l.latestGrade}</span>`
+      : "";
     return `
-      <div class="flex items-center gap-2">
-        <span class="inline-flex items-center rounded-full px-3 py-1 text-[11px] font-extrabold ring-1 ring-black/5 ${statePill(l.state)}">${l.state}</span>
-        <span class="text-xs font-extrabold text-brand-700">${Number(l.pct ?? 0)}%</span>
+      <div class="space-y-1">
+        <div class="flex items-center gap-2">
+          <span class="inline-flex items-center rounded-full px-3 py-1 text-[11px] font-extrabold ring-1 ring-black/5 ${statePill(l.state)}">${l.state}</span>
+          <span class="text-xs font-extrabold text-brand-700">${Number(l.pct ?? 0)}%</span>
+        </div>
+        ${l.fileSubmitted ? `<div class="text-[11px] font-semibold text-slate-500">File: ${l.submissionStatus || "Submitted"} ${grade}</div>` : `<div class="text-[11px] font-semibold text-slate-400">No file</div>`}
       </div>
     `;
   }
@@ -2668,27 +2820,38 @@
   function renderLessons(student) {
     const wrap = $("lessonProgressList");
     if (!wrap) return;
-    wrap.innerHTML = (student.lessons || []).map(l => `
-      <div class="rounded-2xl bg-white ring-1 ring-black/5 p-6">
-        <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-          <div class="min-w-0">
-            <p class="text-sm font-extrabold text-slate-900">${l.title}</p>
-            <p class="mt-1 text-xs text-slate-500 font-semibold">
-              Parts: ${l.partsDone} of ${l.partsTotal} • Time: ${Number(l.timeSpentMin||0)}m
-            </p>
+    wrap.innerHTML = (student.lessons || []).map(l => {
+      const hasSubmission = !!l.fileSubmitted;
+      const gradeLine = (l.latestGrade !== "" && l.latestGrade != null)
+        ? ` • Grade: ${l.latestGrade} (${letterFromGrade(l.latestGrade)})`
+        : "";
+      const submissionLine = hasSubmission
+        ? ` • File: ${l.submissionStatus || "Submitted"}${gradeLine}`
+        : " • File: Missing / not submitted";
+
+      return `
+        <div class="rounded-2xl bg-white ring-1 ring-black/5 p-6">
+          <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <div class="min-w-0">
+              <p class="text-sm font-extrabold text-slate-900">${l.title}</p>
+              <p class="mt-1 text-xs text-slate-500 font-semibold">
+                Parts: ${l.partsDone} of ${l.partsTotal} • Time: ${Number(l.timeSpentMin||0)}m${submissionLine}
+              </p>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="inline-flex items-center rounded-full px-3 py-1 text-xs font-extrabold ring-1 ring-black/5 ${statePill(l.state)}">${l.state}</span>
+              ${hasSubmission ? `<span class="inline-flex items-center rounded-full bg-white px-3 py-1 text-xs font-extrabold text-slate-700 ring-1 ring-black/5">${l.submissionStatus || "Submitted"}</span>` : ""}
+              <span class="text-sm font-extrabold text-brand-700">${l.pct || 0}%</span>
+            </div>
           </div>
 
-          <div class="flex items-center gap-2">
-            <span class="inline-flex items-center rounded-full px-3 py-1 text-xs font-extrabold ring-1 ring-black/5 ${statePill(l.state)}">${l.state}</span>
-            <span class="text-sm font-extrabold text-brand-700">${l.pct || 0}%</span>
+          <div class="mt-4 h-2.5 w-full rounded-full bg-slate-200 overflow-hidden">
+            <div class="h-2.5 bg-brand-600" style="width:${clamp(Number(l.pct||0),0,100)}%"></div>
           </div>
         </div>
-
-        <div class="mt-4 h-2.5 w-full rounded-full bg-slate-200 overflow-hidden">
-          <div class="h-2.5 bg-brand-600" style="width:${clamp(Number(l.pct||0),0,100)}%"></div>
-        </div>
-      </div>
-    `).join("");
+      `;
+    }).join("");
   }
 
   function getAllFileItems(student) {
@@ -2869,11 +3032,8 @@ function setAssessPillUI(student) {
     setAssessPillUI(student);
   }
 
-  function setSubmissionUIFromStudent(student) {
-    $("sFeedback").value = student.assessment?.feedback || "";
-    const savedG = student.assessment?.finalGrade;
-    const g = (savedG != null && String(savedG) !== "") ? clamp(Math.round(Number(savedG) || 0), 0, 100) : 0;
-    $("sFinalGrade").value = String(g);
+  function setSubmissionUIFromStudent(student, sub = activeSubmission) {
+    setGradingFieldsFromSubmission(student, sub);
   }
 
   function submissionLabel(sub) {
@@ -2884,6 +3044,86 @@ function setAssessPillUI(student) {
     return `${title} • ${label}`;
   }
 
+  const RUBRIC_FIELDS = [
+    { id: "sRubricContent", key: "content", max: 30 },
+    { id: "sRubricOrganization", key: "organization", max: 20 },
+    { id: "sRubricClarity", key: "clarity", max: 20 },
+    { id: "sRubricMechanics", key: "mechanics", max: 15 },
+    { id: "sRubricFormat", key: "format", max: 15 },
+  ];
+
+  function normalizeReviewStatus(v) {
+    const s = String(v || "").trim();
+    if (["Under review", "Graded", "Needs revision"].includes(s)) return s;
+    if (s.toLowerCase() === "submitted" || s.toLowerCase() === "resubmitted") return "Under review";
+    return "Under review";
+  }
+
+  function clampRubricInput(el, max) {
+    if (!el) return 0;
+    const n = clamp(Math.round(Number(el.value || 0)), 0, Number(max || 100));
+    el.value = String(n);
+    return n;
+  }
+
+  function calculateRubricFromInputs({ updateFinal = true } = {}) {
+    const rubric = {};
+    let total = 0;
+    RUBRIC_FIELDS.forEach((f) => {
+      const value = clampRubricInput($(f.id), f.max);
+      rubric[f.key] = value;
+      total += value;
+    });
+    total = clamp(Math.round(total), 0, 100);
+    if ($("sRubricTotal")) $("sRubricTotal").textContent = String(total);
+    if (updateFinal && $("sFinalGrade")) $("sFinalGrade").value = String(total);
+    updateGradeLetter();
+    return { rubric, total };
+  }
+
+  function updateGradeLetter() {
+    const g = clamp(Math.round(Number($("sFinalGrade")?.value || 0)), 0, 100);
+    if ($("sGradeLetter")) $("sGradeLetter").textContent = `Grade: ${g} (${letterFromGrade(g)})`;
+  }
+
+  function setRubricInputs(rubric = {}) {
+    const r = (rubric && typeof rubric === "object") ? rubric : {};
+    RUBRIC_FIELDS.forEach((f) => {
+      const el = $(f.id);
+      if (!el) return;
+      const v = r[f.key] ?? 0;
+      el.value = String(clamp(Math.round(Number(v) || 0), 0, f.max));
+    });
+    calculateRubricFromInputs({ updateFinal: false });
+  }
+
+  function getReviewFromSubmission(sub) {
+    if (!sub) {
+      return { status: "Under review", finalGrade: 0, rubric: {}, feedback: "" };
+    }
+    const grade = sub.finalGrade === "" || sub.finalGrade == null ? 0 : clamp(Math.round(Number(sub.finalGrade) || 0), 0, 100);
+    return {
+      status: normalizeReviewStatus(sub.reviewStatus || sub.status),
+      finalGrade: grade,
+      rubric: sub.rubric || {},
+      feedback: sub.feedback || "",
+    };
+  }
+
+  function setGradingFieldsFromSubmission(student, sub) {
+    const review = getReviewFromSubmission(sub);
+    if ($("sReviewStatus")) $("sReviewStatus").value = review.status;
+    setRubricInputs(review.rubric);
+
+    if ($("sFinalGrade")) {
+      const hasSavedGrade = sub && sub.finalGrade !== "" && sub.finalGrade != null;
+      $("sFinalGrade").value = String(hasSavedGrade ? review.finalGrade : (rubricTotals(review.rubric || {}).pct || 0));
+    }
+
+    if ($("sFeedback")) $("sFeedback").value = review.feedback || student?.assessment?.feedback || "";
+    calculateRubricFromInputs({ updateFinal: !sub || sub.finalGrade === "" || sub.finalGrade == null });
+    updateGradeLetter();
+  }
 
   function renderSubmissionUI(student, sub) {
     activeSubmission = sub || null;
@@ -2893,9 +3133,11 @@ function setAssessPillUI(student) {
       ? `File: ${sub.fileName}`
       : "No file submitted yet.";
     const when = sub?.submittedAt ? fmtDateTime(sub.submittedAt) : "—";
+    const status = sub?.reviewStatus ? ` • Status: ${sub.reviewStatus}` : "";
+    const grade = (sub?.finalGrade !== "" && sub?.finalGrade != null) ? ` • Grade: ${sub.finalGrade} (${letterFromGrade(sub.finalGrade)})` : "";
 
     $("sSubmissionInfo").textContent = (label !== "—")
-      ? `${label} • ${fileLine} • ${when}`
+      ? `${label} • ${fileLine} • ${when}${status}${grade}`
       : "—";
 
     // View/Download button for Supabase Storage links
@@ -2915,6 +3157,8 @@ function setAssessPillUI(student) {
         }
       }
     }
+
+    setGradingFieldsFromSubmission(student, sub);
   }
 
 
@@ -2932,7 +3176,9 @@ function setAssessPillUI(student) {
     items.forEach((sub, i) => {
       const ln = Number(sub.lesson || 0);
       const label = sub.label || "Task (File)";
-      const extra = sub.fileName ? ` — ${sub.fileName}` : " — Not submitted";
+      const review = sub.reviewStatus ? ` • ${sub.reviewStatus}` : "";
+      const grade = (sub.finalGrade !== "" && sub.finalGrade != null) ? ` • ${sub.finalGrade}` : "";
+      const extra = sub.fileName ? ` — ${sub.fileName}${review}${grade}` : " — Not submitted";
       const opt = document.createElement("option");
       opt.value = String(i);
       opt.textContent = `L${ln} ${label}${extra}`;
@@ -2941,7 +3187,6 @@ function setAssessPillUI(student) {
 
     sel.value = "0";
     renderSubmissionUI(student, items[0] || null);
-    setSubmissionUIFromStudent(student);
 
     $("submissionModal").classList.remove("hidden");
     document.body.classList.add("overflow-hidden");
@@ -2990,37 +3235,172 @@ function setAssessPillUI(student) {
     renderSubmissionUI(activeStudent, pick);
   });
 
+  RUBRIC_FIELDS.forEach((f) => {
+    $(f.id)?.addEventListener("input", () => calculateRubricFromInputs({ updateFinal: true }));
+  });
+
   $("sFinalGrade")?.addEventListener("input", () => {
     const g = clamp(Math.round(Number($("sFinalGrade").value || 0)), 0, 100);
     $("sFinalGrade").value = String(g);
+    updateGradeLetter();
   });
 
-  function persistRubricToStudent(student) {
+  function recomputeStudentOverall(student) {
+    const lessons = Array.isArray(student?.lessons) ? student.lessons : [];
+    student.progress = lessons.length
+      ? Math.round(lessons.reduce((a, b) => a + Number(b.pct || 0), 0) / lessons.length)
+      : 0;
+  }
+
+  function upsertLocalSubmissionGrade(student, grading) {
     const a = student.assessment || (student.assessment = {});
-    a.feedback = $("sFeedback").value || "";
+    const list = Array.isArray(a.submissions) ? a.submissions : (a.submissions = []);
+    const lessonNo = Number(activeSubmission.lesson || 0);
+    const taskId = String(activeSubmission.taskId || "assessmentFile");
 
-    const g = clamp(Math.round(Number($("sFinalGrade").value || 0)), 0, 100);
-    a.finalGrade = g;
-
-    if (activeSubmission) {
-      a.targetLesson = Number(activeSubmission.lesson || 0) || a.targetLesson || 0;
-      a.targetTaskId = String(activeSubmission.taskId || a.targetTaskId || "");
-      a.targetFileName = String(activeSubmission.fileName || a.targetFileName || "");
-      if (activeSubmission.submittedAt) a.submittedAt = activeSubmission.submittedAt;
+    let sub = list.find(s => Number(s.lesson || 0) === lessonNo && String(s.taskId || "") === taskId);
+    if (!sub && activeSubmission) {
+      sub = activeSubmission;
+      list.unshift(sub);
     }
 
+    if (sub) {
+      Object.assign(sub, {
+        reviewStatus: grading.status,
+        finalGrade: grading.finalGrade,
+        rubric: grading.rubric,
+        feedback: grading.feedback,
+        reviewer: grading.reviewer,
+        reviewedAt: grading.reviewedAt,
+        gradedAt: grading.gradedAt,
+      });
+      activeSubmission = sub;
+    }
+
+    const lesson = (student.lessons || []).find(l => l.key === `l${lessonNo}`);
+    if (lesson) {
+      lesson.fileSubmitted = !!(sub && sub.fileName);
+      lesson.submissionStatus = grading.status;
+      lesson.latestGrade = grading.finalGrade;
+      if (grading.status === "Needs revision") {
+        lesson.state = "Needs revision";
+        lesson.pct = Math.max(Number(lesson.pct || 0), 80);
+      } else if (grading.status === "Graded") {
+        lesson.state = "Completed";
+        lesson.pct = 100;
+      } else {
+        lesson.state = "Submitted";
+        lesson.pct = Math.max(Number(lesson.pct || 0), 90);
+      }
+    }
+
+    a.status = grading.status;
+    a.feedback = grading.feedback;
+    a.finalGrade = grading.finalGrade;
+    a.reviewer = grading.reviewer;
+    a.reviewedAt = grading.reviewedAt;
+    if (grading.status === "Graded") a.gradedAt = grading.gradedAt;
+    if (activeSubmission?.submittedAt) a.submittedAt = activeSubmission.submittedAt;
+
+    recomputeStudentOverall(student);
     saveStudents();
     setAssessmentMeta(student);
     setAssessPillUI(student);
   }
 
+  async function saveSelectedSubmissionGrade(student) {
+    if (!student || !activeSubmission) throw new Error("No submitted item selected.");
+    if (!String(activeSubmission.fileName || "").trim()) throw new Error("This task has no submitted file yet.");
 
-  $("saveRubricBtn")?.addEventListener("click", () => {
+    const { rubric, total } = calculateRubricFromInputs({ updateFinal: false });
+    const finalGrade = clamp(Math.round(Number($("sFinalGrade")?.value || total || 0)), 0, 100);
+    const status = normalizeReviewStatus($("sReviewStatus")?.value || "Under review");
+    const nowIso = new Date().toISOString();
+
+    const grading = {
+      status,
+      finalGrade,
+      rubric,
+      feedback: String($("sFeedback")?.value || "").trim(),
+      reviewer: __teacherName,
+      reviewerUid: __teacherUid,
+      reviewedAt: nowIso,
+      gradedAt: status === "Graded" ? nowIso : "",
+      fileName: String(activeSubmission.fileName || ""),
+      fileUrl: String(activeSubmission.fileUrl || ""),
+      storagePath: String(activeSubmission.storagePath || ""),
+      updatedAt: nowIso,
+    };
+
+    // Local update first for immediate UI response.
+    upsertLocalSubmissionGrade(student, grading);
+
+    // Persistent save to Firestore under the selected lesson/task.
+    const lessonNo = Number(activeSubmission.lesson || 0);
+    const taskId = String(activeSubmission.taskId || "assessmentFile");
+    const taskKey = taskId.replace(/[^A-Za-z0-9_\-]/g, "_");
+    const lessonRef = doc(db, "users", student.uid, "lessons", `lesson${lessonNo}`);
+    const progressRef = doc(db, "users", student.uid, "progress", `lesson${lessonNo}`);
+
+    await setDoc(lessonRef, {
+      taskGrades: {
+        [taskKey]: {
+          ...grading,
+          reviewedAt: serverTimestamp(),
+          gradedAt: status === "Graded" ? serverTimestamp() : "",
+          updatedAt: serverTimestamp(),
+        }
+      },
+      latestReviewStatus: status,
+      latestGrade: finalGrade,
+      updatedAt: serverTimestamp(),
+    }, { merge: true });
+
+    const progressPatch = {
+      reviewStatus: status,
+      finalGrade,
+      reviewedAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    };
+    if (status === "Graded") {
+      progressPatch.progress = 100;
+      progressPatch.complete = true;
+      progressPatch.gradedAt = serverTimestamp();
+    }
+    await setDoc(progressRef, progressPatch, { merge: true });
+
+    return grading;
+  }
+
+  // Backward-compatible function name used by old code/tests.
+  async function persistRubricToStudent(student) {
+    return await saveSelectedSubmissionGrade(student);
+  }
+
+
+  $("saveRubricBtn")?.addEventListener("click", async () => {
     if (!activeStudent) return;
-    persistRubricToStudent(activeStudent);
-    applyStudentFilters();
-    $("sSaveHint").textContent = "Saved!";
-    setTimeout(()=> $("sSaveHint").textContent = "Changes are stored locally (prototype).", 1200);
+    const btn = $("saveRubricBtn");
+    const oldText = btn?.textContent || "Save Grade";
+    try {
+      if (btn) { btn.disabled = true; btn.textContent = "Saving..."; }
+      await persistRubricToStudent(activeStudent);
+      applyStudentFilters();
+      renderTimeline(activeStudent);
+      renderEngagement(activeStudent);
+      renderLessons(activeStudent);
+      computeStats(students);
+      renderDashboardRisk();
+      renderSectionsProgressPanel();
+      renderSubmissionUI(activeStudent, activeSubmission);
+      $("sSaveHint").textContent = "Saved to Firestore.";
+      setTimeout(()=> $("sSaveHint").textContent = "Grades are saved to Firestore for the selected submitted file.", 1600);
+    } catch (err) {
+      console.error(err);
+      $("sSaveHint").textContent = err?.message || "Failed to save grade.";
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = oldText; }
+    }
   });
 
   // ==========================================================
