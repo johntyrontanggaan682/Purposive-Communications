@@ -811,7 +811,7 @@
                     View / Download
                   </button>
                   <p id="sOpenFileHint" class="mt-2 text-xs text-slate-500 font-semibold">
-                    Connect Firebase/Supabase storage later and save a fileUrl to enable direct viewing.
+                    Submitted files uploaded through Supabase Storage can be opened here when fileUrl is saved.
                   </p>
                 </div>
 
@@ -1875,20 +1875,25 @@
     // File submissions (all lessons + tasks)
     // ---------------------------
     const submissions = [];
-    const pushFile = (lessonNo, taskId, label, fileName, ms) => {
-      const fn = String(fileName || "").trim();
+    const pushFile = (lessonNo, taskId, label, fileName, ms, meta = {}) => {
+      const m = (meta && typeof meta === "object") ? meta : {};
+      const fn = String(fileName || m.fileName || m.name || "").trim();
       if (!fn) return;
+      const submittedMs = Number(m.submittedAtMs || 0) || tsToMs(m.submittedAt) || Number(ms || 0) || Date.now();
       submissions.push({
         type: "file",
         lesson: lessonNo,
         taskId,
-        label,
+        label: m.label || label,
+        title: m.title || label,
         fileName: fn,
-        submittedAt: msToISO(ms || Date.now()),
-        size: 0,
-        // Optional for future storage integrations:
-        fileUrl: "",
-        storagePath: "",
+        submittedAt: msToISO(submittedMs),
+        size: Number(m.size || 0) || 0,
+        fileType: m.type || "",
+        fileUrl: String(m.fileUrl || m.downloadUrl || m.url || ""),
+        storagePath: String(m.storagePath || m.filePath || m.path || ""),
+        storage: m.storage || (m.fileUrl ? "supabase" : ""),
+        bucket: m.bucket || ""
       });
     };
 
@@ -1896,16 +1901,17 @@
     {
       const st = lessonById["lesson1"] || {};
       const tf = (st.taskFiles && typeof st.taskFiles === "object") ? st.taskFiles : {};
+      const tfm = (st.taskFileMeta && typeof st.taskFileMeta === "object") ? st.taskFileMeta : {};
       const ms = tsToMs(st.updatedAt) || Date.now();
 
-      pushFile(1, "task1", "Task 1 (File)", tf.task1, ms);
-      pushFile(1, "task2", "Task 2 (File)", tf.task2, ms);
-      pushFile(1, "task3", "Task 3 (File)", tf.task3, ms);
-      pushFile(1, "task4", "Task 4 (File)", tf.task4, ms);
+      pushFile(1, "task1", "Task 1 (File)", tf.task1, ms, tfm.task1);
+      pushFile(1, "task2", "Task 2 (File)", tf.task2, ms, tfm.task2);
+      pushFile(1, "task3", "Task 3 (File)", tf.task3, ms, tfm.task3);
+      pushFile(1, "task4", "Task 4 (File)", tf.task4, ms, tfm.task4);
 
       // Backwards compatibility if only assessmentFile exists
       if (!submissions.some(s => s.lesson === 1) && st.assessmentFile) {
-        pushFile(1, "task1", "Task 1 (File)", st.assessmentFile, ms);
+        pushFile(1, "task1", "Task 1 (File)", st.assessmentFile, ms, st.assessmentFileMeta);
       }
     }
 
@@ -1913,7 +1919,7 @@
     {
       const st = lessonById["lesson2"] || {};
       const ms = tsToMs(st.updatedAt) || Date.now();
-      pushFile(2, "task4VideoFile", "Task 4 (File)", st.task4VideoFile || st.assessmentFile, ms);
+      pushFile(2, "task4VideoFile", "Task 4 (File)", st.task4VideoFile || st.assessmentFile, ms, st.task4VideoFileMeta || st.assessmentFileMeta);
     }
 
     // Lesson 3: try common file fields for Task 3 (file submit)
@@ -1931,21 +1937,22 @@
         (st.taskFiles && st.taskFiles.task3) ? st.taskFiles.task3 : "",
       ];
       const fileName = candidates.map(x => String(x || "").trim()).find(Boolean) || "";
-      pushFile(3, "task3File", "Task 3 (File Submit)", fileName, ms);
+      const tfm = (st.taskFileMeta && typeof st.taskFileMeta === "object") ? st.taskFileMeta : {};
+      pushFile(3, "task3File", "Task 3 (File Submit)", fileName, ms, st.task3FileMeta || st.assessmentFileMeta || tfm.task3);
     }
 
     // Lesson 4: assessmentFile (single file task)
     {
       const st = lessonById["lesson4"] || {};
       const ms = tsToMs(st.updatedAt) || Date.now();
-      pushFile(4, "assessmentFile", "Task (File)", st.assessmentFile || "", ms);
+      pushFile(4, "assessmentFile", "Task (File)", st.assessmentFile || "", ms, st.assessmentFileMeta);
     }
 
     // Lessons 5-10: assessmentFile (single file task)
     [5, 6, 7, 8, 9, 10].forEach((lessonNo) => {
       const st = lessonById[`lesson${lessonNo}`] || {};
       const ms = tsToMs(st.updatedAt) || Date.now();
-      pushFile(lessonNo, "assessmentFile", "Assessment File", st.assessmentFile || "", ms);
+      pushFile(lessonNo, "assessmentFile", "Assessment File", st.assessmentFile || "", ms, st.assessmentFileMeta);
     });
 
     submissions.sort((a, b) => String(b.submittedAt || "").localeCompare(String(a.submittedAt || "")));
@@ -2891,7 +2898,7 @@ function setAssessPillUI(student) {
       ? `${label} • ${fileLine} • ${when}`
       : "—";
 
-    // View/Download button (placeholder until storage is connected)
+    // View/Download button for Supabase Storage links
     const btn = $("sOpenFileBtn");
     const hint = $("sOpenFileHint");
     if (btn) {
@@ -2904,7 +2911,7 @@ function setAssessPillUI(student) {
         } else if (String(sub.fileUrl || "").trim()) {
           hint.textContent = "Opens the submitted file in a new tab.";
         } else {
-          hint.textContent = "Filename is saved; connect Firebase/Supabase storage and store a fileUrl to enable direct viewing.";
+          hint.textContent = "Filename is saved; make sure supabase.js has the anon key and the lesson page saved fileUrl.";
         }
       }
     }
@@ -2966,7 +2973,7 @@ function setAssessPillUI(student) {
       alert(
         "File viewing is not connected yet.\n\n" +
         `Saved filename: ${fn}\n` +
-        "Next step: after connecting Supabase/Firebase Storage, store a fileUrl on the submission record so this button can open it."
+        "No file URL was saved. Check that Supabase upload succeeded and supabase.js contains the anon public key."
       );
     }
   });

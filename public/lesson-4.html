@@ -241,7 +241,7 @@
               <div class="mt-3 h-2.5 w-full rounded-full bg-white/20">
                 <div id="progressBar" class="h-2.5 w-0 rounded-full bg-white transition-all"></div>
               </div>
-              <p class="mt-2 text-xs text-white/70">File upload stores filename only.</p>
+              <p class="mt-2 text-xs text-white/70">Files are uploaded to Supabase Storage and linked in the teacher dashboard.</p>
             </div>
           </div>
         </div>
@@ -326,6 +326,7 @@
     <!-- ✅ Firebase only (NO localStorage) -->
     <script type="module">
       import { auth, db } from "./firebase.js";
+      import { uploadTaskSubmission } from "./submission-upload.js";
       import {
         onAuthStateChanged,
         signOut as firebaseSignOut,
@@ -569,7 +570,7 @@
         },
         {
           title: "Part 2 — Assessment (File Submission)",
-          subtitle: "Submit an infographic output (stores filename only).",
+          subtitle: "Submit an infographic output. The file is uploaded to Supabase Storage.",
           type: "upload",
           html: `
             <div class="rounded-2xl bg-slate-50 p-5 ring-1 ring-black/5">
@@ -647,7 +648,8 @@
       function defaultLessonState() {
         return {
           partsDone: parts.map(() => false),
-          assessmentFile: ""
+          assessmentFile: "",
+          assessmentFileMeta: null
         };
       }
 
@@ -681,8 +683,9 @@
           const partsDone = parts.map((_, i) => !!arr[i]);
 
           const assessmentFile = (d.assessmentFile || "").toString();
+          const assessmentFileMeta = (d.assessmentFileMeta && typeof d.assessmentFileMeta === "object") ? d.assessmentFileMeta : null;
 
-          return { partsDone, assessmentFile };
+          return { partsDone, assessmentFile, assessmentFileMeta };
         } catch (_) {
           return defaultLessonState();
         }
@@ -696,6 +699,7 @@
 
         // ✅ persist assessment file name
         if (state.assessmentFile !== undefined) payload.assessmentFile = state.assessmentFile || "";
+        if (state.assessmentFileMeta !== undefined) payload.assessmentFileMeta = state.assessmentFileMeta || null;
 
         // Keep any lesson-specific fields
         if (state.quizAnswers !== undefined) payload.quizAnswers = state.quizAnswers || {};
@@ -799,7 +803,11 @@
         const fileStatus = document.getElementById("fileStatus");
 
         const savedName = (__lessonState?.assessmentFile || "").trim();
-        if (savedName) fileStatus.textContent = `Last submitted: ${savedName}`;
+        if (savedName) {
+          const savedMeta = __lessonState?.assessmentFileMeta || null;
+          if (savedMeta?.fileUrl) fileStatus.innerHTML = `Last submitted: <a class="font-semibold text-brand-800 underline" href="${savedMeta.fileUrl}" target="_blank" rel="noopener">${savedName}</a>`;
+          else fileStatus.textContent = `Last submitted: ${savedName}`;
+        }
 
         submitFileBtn?.addEventListener("click", async () => {
           if (!fileInput?.files?.length) {
@@ -808,22 +816,43 @@
             return;
           }
 
-          const name = fileInput.files[0].name;
+          const file = fileInput.files[0];
+          submitFileBtn.disabled = true;
+          fileStatus.textContent = "Uploading to Supabase Storage...";
+          fileStatus.className = "mt-2 text-xs text-slate-600";
 
-          __lessonState.assessmentFile = name;
-          __lessonState.partsDone[activePart] = true; // Part 2 complete on submit
+          try {
+            const meta = await uploadTaskSubmission({
+              lessonNo: LESSON_NO,
+              taskId: "assessmentFile",
+              label: "Assessment File",
+              title: "Lesson 4 Assessment File Submission",
+              file,
+              profile: __profile || {}
+            });
+            const name = meta.fileName || file.name;
 
-          if (__currentUser) await saveLessonState(__currentUser.uid, __lessonState);
+            __lessonState.assessmentFile = name;
+            __lessonState.assessmentFileMeta = meta;
+            __lessonState.partsDone[activePart] = true; // Part 2 complete on submit
 
-          fileStatus.textContent = `Submitted: ${name}`;
-          fileStatus.className = "mt-2 text-xs text-brand-800";
+            if (__currentUser) await saveLessonState(__currentUser.uid, __lessonState);
 
-          renderSidebar();
-          await renderProgress();
-          pill(true);
+            fileStatus.innerHTML = `Submitted: <a class="font-semibold text-brand-800 underline" href="${meta.fileUrl}" target="_blank" rel="noopener">${name}</a>`;
+            fileStatus.className = "mt-2 text-xs text-brand-800";
 
-          // ✅ update next button state immediately after submit
-          await renderPart();
+            renderSidebar();
+            await renderProgress();
+            pill(true);
+
+            // ✅ update next button state immediately after submit
+            await renderPart();
+          } catch (err) {
+            fileStatus.textContent = err?.message || "Upload failed. Please try again.";
+            fileStatus.className = "mt-2 text-xs text-red-600";
+          } finally {
+            submitFileBtn.disabled = false;
+          }
         });
       }
 

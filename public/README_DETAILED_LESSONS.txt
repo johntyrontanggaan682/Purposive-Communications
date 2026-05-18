@@ -1,0 +1,1 @@
+Updated package. Lesson 5 to Lesson 10 now contain detailed module readings instead of short summaries. Replace your project files with these files. Keep existing videos/assets folders if already present.
