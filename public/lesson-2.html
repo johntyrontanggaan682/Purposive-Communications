@@ -293,7 +293,7 @@
           </div>
 
           <p class="mt-4 text-xs text-slate-500">Passing score for each assessment is <strong>70%</strong> to mark it complete.</p>
-          <p class="mt-1 text-xs text-slate-500">Note: Task submissions are stored in Firestore as a filename only (no upload storage yet).</p>
+          <p class="mt-1 text-xs text-slate-500">Note: Task submissions are uploaded to Supabase Storage and the file link is saved for teacher checking.</p>
         </section>
       </div>
     </main>
@@ -334,6 +334,7 @@
     <!-- ✅ Firebase only (NO localStorage) -->
     <script type="module">
       import { auth, db } from "./firebase.js";
+      import { uploadTaskSubmission } from "./submission-upload.js";
       import {
         onAuthStateChanged,
         signOut as firebaseSignOut,
@@ -854,7 +855,7 @@
       }
 
       function defaultLessonState() {
-        return { partsDone: parts.map(() => false), quizAnswers: {}, quizScores: {}, task4VideoFile: "" };
+        return { partsDone: parts.map(() => false), quizAnswers: {}, quizScores: {}, task4VideoFile: "", task4VideoFileMeta: null };
       }
 
       function normalizeQuizAnswers(raw) {
@@ -909,7 +910,7 @@
 
           const qa = normalizeQuizAnswers(d.quizAnswers);
           const qs = (d.quizScores && typeof d.quizScores === 'object') ? d.quizScores : {};
-          return { partsDone, quizAnswers: qa, quizScores: qs, task4VideoFile: (d.task4VideoFile || "") };
+          return { partsDone, quizAnswers: qa, quizScores: qs, task4VideoFile: (d.task4VideoFile || ""), task4VideoFileMeta: (d.task4VideoFileMeta && typeof d.task4VideoFileMeta === "object") ? d.task4VideoFileMeta : null };
         } catch (_) {
           return defaultLessonState();
         }
@@ -925,6 +926,7 @@
         if (state.quizAnswers !== undefined) payload.quizAnswers = state.quizAnswers || {};
         if (state.quizScores !== undefined) payload.quizScores = state.quizScores || {};
         if (state.task4VideoFile !== undefined) payload.task4VideoFile = state.task4VideoFile || "";
+        if (state.task4VideoFileMeta !== undefined) payload.task4VideoFileMeta = state.task4VideoFileMeta || null;
 
         // Try subcollection first
         try {
@@ -1108,7 +1110,9 @@
 
         const savedName = __lessonState?.task4VideoFile || "";
         if (savedName && fileStatus) {
-          fileStatus.textContent = `Last submitted: ${savedName}`;
+          const savedMeta = __lessonState?.task4VideoFileMeta || null;
+          if (savedMeta?.fileUrl) fileStatus.innerHTML = `Last submitted: <a class="font-semibold text-brand-800 underline" href="${savedMeta.fileUrl}" target="_blank" rel="noopener">${savedName}</a>`;
+          else fileStatus.textContent = `Last submitted: ${savedName}`;
           fileStatus.className = "mt-2 text-xs text-slate-600";
         }
 
@@ -1121,23 +1125,47 @@
             return;
           }
 
-          const name = fileInput.files[0].name;
-
-          __lessonState.task4VideoFile = name;
-          __lessonState.partsDone[activePart] = true;
-
+          const file = fileInput.files[0];
+          submitFileBtn.disabled = true;
           if (fileStatus) {
-            fileStatus.textContent = `Submitted: ${name}`;
-            fileStatus.className = "mt-2 text-xs text-brand-800";
+            fileStatus.textContent = "Uploading to Supabase Storage...";
+            fileStatus.className = "mt-2 text-xs text-slate-600";
           }
 
-          if (__currentUser) {
-            await saveLessonState(__currentUser.uid, __lessonState);
-            const pct = computeProgressPct(__lessonState);
-            await saveLessonProgress(__currentUser.uid, pct, { doneCount: __lessonState.partsDone.reduce((a,b)=>a+(b?1:0),0), partsTotal: parts.length });
-          }
+          try {
+            const meta = await uploadTaskSubmission({
+              lessonNo: LESSON_NO,
+              taskId: "task4VideoFile",
+              label: "Task 4 (File)",
+              title: "Lesson 2 Task 4 Video Submission",
+              file,
+              profile: __profile || {}
+            });
+            const name = meta.fileName || file.name;
 
-          await render();
+            __lessonState.task4VideoFile = name;
+            __lessonState.task4VideoFileMeta = meta;
+            __lessonState.partsDone[activePart] = true;
+
+            if (__currentUser) {
+              await saveLessonState(__currentUser.uid, __lessonState);
+              const pct = computeProgressPct(__lessonState);
+              await saveLessonProgress(__currentUser.uid, pct, { doneCount: __lessonState.partsDone.reduce((a,b)=>a+(b?1:0),0), partsTotal: parts.length });
+            }
+
+            if (fileStatus) {
+              fileStatus.innerHTML = `Submitted: <a class="font-semibold text-brand-800 underline" href="${meta.fileUrl}" target="_blank" rel="noopener">${name}</a>`;
+              fileStatus.className = "mt-2 text-xs text-brand-800";
+            }
+            await render();
+          } catch (err) {
+            if (fileStatus) {
+              fileStatus.textContent = err?.message || "Upload failed. Please try again.";
+              fileStatus.className = "mt-2 text-xs text-red-600";
+            }
+          } finally {
+            submitFileBtn.disabled = false;
+          }
         });
       }
 

@@ -294,7 +294,7 @@
           </div>
 
           <p class="mt-4 text-xs text-slate-500">Passing score for each assessment is <strong>70%</strong> to mark it complete.</p>
-          <p class="mt-1 text-xs text-slate-500">Note: Task submissions are stored in Firestore as a filename only (no upload storage yet).</p>
+          <p class="mt-1 text-xs text-slate-500">Note: Task submissions are uploaded to Supabase Storage and the file link is saved for teacher checking.</p>
         </section>
       </div>
     </main>
@@ -335,6 +335,7 @@
     <!-- ✅ Firebase only (NO localStorage) -->
     <script type="module">
       import { auth, db } from "./firebase.js";
+      import { uploadTaskSubmission } from "./submission-upload.js";
       import {
         onAuthStateChanged,
         signOut as firebaseSignOut,
@@ -792,7 +793,7 @@ const parts = [
           </ul>
 
           <p class="mt-3 text-xs text-slate-500">
-            Note: Submission is stored in Firestore as a filename only (no file storage integration yet).
+            Note: Submission is uploaded to Supabase Storage and saved for teacher checking.
           </p>
         </div>
       `
@@ -864,7 +865,9 @@ function defaultLessonState() {
     quizScores: {},
     quizJustifications: {},
     taskFiles: emptyTaskFiles(),
-    assessmentFile: ""
+    taskFileMeta: {},
+    assessmentFile: "",
+    assessmentFileMeta: null
   };
 }
 
@@ -942,9 +945,11 @@ async function loadLessonState(uid) {
     const rawTF = (d.taskFiles && typeof d.taskFiles === "object") ? d.taskFiles : {};
     FILE_TASK_KEYS.forEach(k => { tf[k] = String(rawTF?.[k] || ""); });
 
+    const taskFileMeta = (d.taskFileMeta && typeof d.taskFileMeta === "object") ? d.taskFileMeta : {};
     const assessmentFile = String(d.assessmentFile || tf.task3 || "");
+    const assessmentFileMeta = (d.assessmentFileMeta && typeof d.assessmentFileMeta === "object") ? d.assessmentFileMeta : (taskFileMeta.task3 || null);
 
-    return { partsDone, quizAnswers: qa, quizScores: qs, quizJustifications: qj, taskFiles: tf, assessmentFile };
+    return { partsDone, quizAnswers: qa, quizScores: qs, quizJustifications: qj, taskFiles: tf, taskFileMeta, assessmentFile, assessmentFileMeta };
   } catch (_) {
     return defaultLessonState();
   }
@@ -952,7 +957,9 @@ async function loadLessonState(uid) {
 
 async function saveLessonState(uid, state) {
   const taskFiles = (state.taskFiles && typeof state.taskFiles === "object") ? state.taskFiles : emptyTaskFiles();
+  const taskFileMeta = (state.taskFileMeta && typeof state.taskFileMeta === "object") ? state.taskFileMeta : {};
   const legacyAssessment = String(taskFiles.task3 || state.assessmentFile || "");
+  const legacyAssessmentMeta = state.assessmentFileMeta || taskFileMeta.task3 || null;
 
   const payload = {
     partsDone: state.partsDone,
@@ -960,7 +967,9 @@ async function saveLessonState(uid, state) {
     quizScores: state.quizScores || {},
     quizJustifications: state.quizJustifications || {},
     taskFiles,
+    taskFileMeta,
     assessmentFile: legacyAssessment,
+    assessmentFileMeta: legacyAssessmentMeta,
     updatedAt: Date.now()
   };
 
@@ -1277,7 +1286,9 @@ function wireUploadPart(taskKey) {
 
   const savedName = (__lessonState?.taskFiles && typeof __lessonState.taskFiles === "object") ? (__lessonState.taskFiles[taskKey] || "") : "";
   if (savedName && fileStatus) {
-    fileStatus.textContent = `Last submitted: ${savedName}`;
+    const savedMeta = (__lessonState?.taskFileMeta && typeof __lessonState.taskFileMeta === "object") ? __lessonState.taskFileMeta[taskKey] : null;
+    if (savedMeta?.fileUrl) fileStatus.innerHTML = `Last submitted: <a class="font-semibold text-brand-800 underline" href="${savedMeta.fileUrl}" target="_blank" rel="noopener">${savedName}</a>`;
+    else fileStatus.textContent = `Last submitted: ${savedName}`;
     fileStatus.className = "mt-2 text-xs text-slate-600";
   }
 
@@ -1290,25 +1301,51 @@ function wireUploadPart(taskKey) {
       return;
     }
 
-    const name = fileInput.files[0].name;
-
-    __lessonState.taskFiles = (__lessonState.taskFiles && typeof __lessonState.taskFiles === "object") ? __lessonState.taskFiles : emptyTaskFiles();
-    __lessonState.taskFiles[taskKey] = name;
-    __lessonState.assessmentFile = name; // legacy (used by teacher dashboard submissions)
-    __lessonState.partsDone[activePart] = true;
-
+    const file = fileInput.files[0];
+    submitFileBtn.disabled = true;
     if (fileStatus) {
-      fileStatus.textContent = `Submitted: ${name}`;
-      fileStatus.className = "mt-2 text-xs text-brand-800";
+      fileStatus.textContent = "Uploading to Supabase Storage...";
+      fileStatus.className = "mt-2 text-xs text-slate-600";
     }
 
-    if (__currentUser) {
-      await saveLessonState(__currentUser.uid, __lessonState);
-      const pct = computeProgressPct(__lessonState);
-      await saveLessonProgress(__currentUser.uid, pct, { doneCount: __lessonState.partsDone.reduce((a,b)=>a+(b?1:0),0), partsTotal: parts.length });
-    }
+    try {
+      const meta = await uploadTaskSubmission({
+        lessonNo: LESSON_NO,
+        taskId: taskKey,
+        label: "Task 3 (File Submit)",
+        title: "Lesson 3 Task 3 File Submission",
+        file,
+        profile: __profile || {}
+      });
+      const name = meta.fileName || file.name;
 
-    await render();
+      __lessonState.taskFiles = (__lessonState.taskFiles && typeof __lessonState.taskFiles === "object") ? __lessonState.taskFiles : emptyTaskFiles();
+      __lessonState.taskFileMeta = (__lessonState.taskFileMeta && typeof __lessonState.taskFileMeta === "object") ? __lessonState.taskFileMeta : {};
+      __lessonState.taskFiles[taskKey] = name;
+      __lessonState.taskFileMeta[taskKey] = meta;
+      __lessonState.assessmentFile = name; // legacy (used by teacher dashboard submissions)
+      __lessonState.assessmentFileMeta = meta;
+      __lessonState.partsDone[activePart] = true;
+
+      if (__currentUser) {
+        await saveLessonState(__currentUser.uid, __lessonState);
+        const pct = computeProgressPct(__lessonState);
+        await saveLessonProgress(__currentUser.uid, pct, { doneCount: __lessonState.partsDone.reduce((a,b)=>a+(b?1:0),0), partsTotal: parts.length });
+      }
+
+      if (fileStatus) {
+        fileStatus.innerHTML = `Submitted: <a class="font-semibold text-brand-800 underline" href="${meta.fileUrl}" target="_blank" rel="noopener">${name}</a>`;
+        fileStatus.className = "mt-2 text-xs text-brand-800";
+      }
+      await render();
+    } catch (err) {
+      if (fileStatus) {
+        fileStatus.textContent = err?.message || "Upload failed. Please try again.";
+        fileStatus.className = "mt-2 text-xs text-red-600";
+      }
+    } finally {
+      submitFileBtn.disabled = false;
+    }
   });
 }
 

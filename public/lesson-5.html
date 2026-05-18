@@ -241,7 +241,7 @@
               <div class="mt-3 h-2.5 w-full rounded-full bg-white/20">
                 <div id="progressBar" class="h-2.5 w-0 rounded-full bg-white transition-all"></div>
               </div>
-              <p class="mt-2 text-xs text-white/70">File upload stores filename only.</p>
+              <p class="mt-2 text-xs text-white/70">Files are uploaded to Supabase Storage and linked in the teacher dashboard.</p>
             </div>
           </div>
         </div>
@@ -326,6 +326,7 @@
     <!-- ✅ Firebase only (NO localStorage) -->
     <script type="module">
       import { auth, db } from "./firebase.js";
+      import { uploadTaskSubmission } from "./submission-upload.js";
       import {
         onAuthStateChanged,
         signOut as firebaseSignOut,
@@ -545,7 +546,7 @@
                 "title": "Part 4 — Assessment (File Submission)",
                 "subtitle": "Submit the review paper required in Module 5.",
                 "type": "upload",
-                "html": "<div class=\"rounded-2xl bg-brand-50 p-5 ring-1 ring-brand-100\"><h3 class=\"text-lg font-extrabold text-brand-900\">Assessment Instructions from the Module</h3><p class=\"mt-2 text-sm text-brand-900/80\">This part includes the detailed module reading, not just a short summary.</p></div><div class=\"rounded-2xl bg-white p-5 ring-1 ring-black/5\"><div class=\"space-y-4 text-sm leading-relaxed text-slate-700\"><h3 class=\"pt-3 text-lg font-extrabold text-slate-900\">ENABLING TASK</h3><p>Prepare a review paper summarizing current trends in digital communication for academic purposes. Follow the discussed structure of academic writing and ensure that your work demonstrates clarity, coherence, and objectivity.</p><p>Before submission, make sure that:</p><p>There are no glaring grammatical or typographical errors that might affect your paper.</p><p>Sufficient supporting details have been provided for each paragraph.</p><p>All sources have been properly cited. Follow the APA format beginning on Page 2 onwards.</p><p>The third-person perspective is consistently used, since you are presenting statements of fact rather than personal belief or narrative.</p><p>The paper goes beyond a simple summary of articles, evidence, and references by offering analysis, synthesis, and evaluation of the trends discussed.</p><p>Specifications:</p><p>Limit your paper to 500–600 words (short bond paper), excluding references.</p><p>The first page serves as your title page.</p><p>Use Arial Narrow, font size 12, with 1.5 spacing and 1-inch margins on all sides.</p><p>Your paper will be scored using the Rubric for Assessment of Academic Papers adapted from Whalen, S. “Rubric from Contemporary Health Issues Research Paper.”</p></div></div>\n<div class=\"rounded-2xl bg-slate-50 p-5 ring-1 ring-black/5\">\n  <h3 class=\"text-lg font-extrabold text-slate-900\">Upload Your Output</h3>\n  <p class=\"mt-2 text-sm text-slate-600\">Choose the file required by this module. The system stores the submitted filename for teacher checking.</p>\n  <div class=\"mt-5\">\n    <label class=\"block text-sm font-semibold text-slate-800\">Upload your assessment file</label>\n    <input id=\"fileInput\" type=\"file\" class=\"mt-2 block w-full text-sm file:mr-4 file:rounded-xl file:border-0 file:bg-brand-600 file:px-4 file:py-2 file:text-white file:font-semibold hover:file:bg-brand-700\" />\n    <button id=\"submitFileBtn\" class=\"mt-3 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800\">Submit File</button>\n    <p id=\"fileStatus\" class=\"mt-2 text-xs text-slate-600\"></p>\n  </div>\n</div>"
+                "html": "<div class=\"rounded-2xl bg-brand-50 p-5 ring-1 ring-brand-100\"><h3 class=\"text-lg font-extrabold text-brand-900\">Assessment Instructions from the Module</h3><p class=\"mt-2 text-sm text-brand-900/80\">This part includes the detailed module reading, not just a short summary.</p></div><div class=\"rounded-2xl bg-white p-5 ring-1 ring-black/5\"><div class=\"space-y-4 text-sm leading-relaxed text-slate-700\"><h3 class=\"pt-3 text-lg font-extrabold text-slate-900\">ENABLING TASK</h3><p>Prepare a review paper summarizing current trends in digital communication for academic purposes. Follow the discussed structure of academic writing and ensure that your work demonstrates clarity, coherence, and objectivity.</p><p>Before submission, make sure that:</p><p>There are no glaring grammatical or typographical errors that might affect your paper.</p><p>Sufficient supporting details have been provided for each paragraph.</p><p>All sources have been properly cited. Follow the APA format beginning on Page 2 onwards.</p><p>The third-person perspective is consistently used, since you are presenting statements of fact rather than personal belief or narrative.</p><p>The paper goes beyond a simple summary of articles, evidence, and references by offering analysis, synthesis, and evaluation of the trends discussed.</p><p>Specifications:</p><p>Limit your paper to 500–600 words (short bond paper), excluding references.</p><p>The first page serves as your title page.</p><p>Use Arial Narrow, font size 12, with 1.5 spacing and 1-inch margins on all sides.</p><p>Your paper will be scored using the Rubric for Assessment of Academic Papers adapted from Whalen, S. “Rubric from Contemporary Health Issues Research Paper.”</p></div></div>\n<div class=\"rounded-2xl bg-slate-50 p-5 ring-1 ring-black/5\">\n  <h3 class=\"text-lg font-extrabold text-slate-900\">Upload Your Output</h3>\n  <p class=\"mt-2 text-sm text-slate-600\">Choose the file required by this module. The system uploads the file to Supabase Storage and saves the link for teacher checking.</p>\n  <div class=\"mt-5\">\n    <label class=\"block text-sm font-semibold text-slate-800\">Upload your assessment file</label>\n    <input id=\"fileInput\" type=\"file\" class=\"mt-2 block w-full text-sm file:mr-4 file:rounded-xl file:border-0 file:bg-brand-600 file:px-4 file:py-2 file:text-white file:font-semibold hover:file:bg-brand-700\" />\n    <button id=\"submitFileBtn\" class=\"mt-3 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800\">Submit File</button>\n    <p id=\"fileStatus\" class=\"mt-2 text-xs text-slate-600\"></p>\n  </div>\n</div>"
         }
 ];
 
@@ -616,7 +617,8 @@
       function defaultLessonState() {
         return {
           partsDone: parts.map(() => false),
-          assessmentFile: ""
+          assessmentFile: "",
+          assessmentFileMeta: null
         };
       }
 
@@ -650,8 +652,9 @@
           const partsDone = parts.map((_, i) => !!arr[i]);
 
           const assessmentFile = (d.assessmentFile || "").toString();
+          const assessmentFileMeta = (d.assessmentFileMeta && typeof d.assessmentFileMeta === "object") ? d.assessmentFileMeta : null;
 
-          return { partsDone, assessmentFile };
+          return { partsDone, assessmentFile, assessmentFileMeta };
         } catch (_) {
           return defaultLessonState();
         }
@@ -665,6 +668,7 @@
 
         // ✅ persist assessment file name
         if (state.assessmentFile !== undefined) payload.assessmentFile = state.assessmentFile || "";
+        if (state.assessmentFileMeta !== undefined) payload.assessmentFileMeta = state.assessmentFileMeta || null;
 
         // Keep any lesson-specific fields
         if (state.quizAnswers !== undefined) payload.quizAnswers = state.quizAnswers || {};
@@ -768,7 +772,11 @@
         const fileStatus = document.getElementById("fileStatus");
 
         const savedName = (__lessonState?.assessmentFile || "").trim();
-        if (savedName) fileStatus.textContent = `Last submitted: ${savedName}`;
+        if (savedName) {
+          const savedMeta = __lessonState?.assessmentFileMeta || null;
+          if (savedMeta?.fileUrl) fileStatus.innerHTML = `Last submitted: <a class="font-semibold text-brand-800 underline" href="${savedMeta.fileUrl}" target="_blank" rel="noopener">${savedName}</a>`;
+          else fileStatus.textContent = `Last submitted: ${savedName}`;
+        }
 
         submitFileBtn?.addEventListener("click", async () => {
           if (!fileInput?.files?.length) {
@@ -777,22 +785,43 @@
             return;
           }
 
-          const name = fileInput.files[0].name;
+          const file = fileInput.files[0];
+          submitFileBtn.disabled = true;
+          fileStatus.textContent = "Uploading to Supabase Storage...";
+          fileStatus.className = "mt-2 text-xs text-slate-600";
 
-          __lessonState.assessmentFile = name;
-          __lessonState.partsDone[activePart] = true; // Part 2 complete on submit
+          try {
+            const meta = await uploadTaskSubmission({
+              lessonNo: LESSON_NO,
+              taskId: "assessmentFile",
+              label: "Assessment File",
+              title: "Lesson 5 Assessment File Submission",
+              file,
+              profile: __profile || {}
+            });
+            const name = meta.fileName || file.name;
 
-          if (__currentUser) await saveLessonState(__currentUser.uid, __lessonState);
+            __lessonState.assessmentFile = name;
+            __lessonState.assessmentFileMeta = meta;
+            __lessonState.partsDone[activePart] = true; // Part 2 complete on submit
 
-          fileStatus.textContent = `Submitted: ${name}`;
-          fileStatus.className = "mt-2 text-xs text-brand-800";
+            if (__currentUser) await saveLessonState(__currentUser.uid, __lessonState);
 
-          renderSidebar();
-          await renderProgress();
-          pill(true);
+            fileStatus.innerHTML = `Submitted: <a class="font-semibold text-brand-800 underline" href="${meta.fileUrl}" target="_blank" rel="noopener">${name}</a>`;
+            fileStatus.className = "mt-2 text-xs text-brand-800";
 
-          // ✅ update next button state immediately after submit
-          await renderPart();
+            renderSidebar();
+            await renderProgress();
+            pill(true);
+
+            // ✅ update next button state immediately after submit
+            await renderPart();
+          } catch (err) {
+            fileStatus.textContent = err?.message || "Upload failed. Please try again.";
+            fileStatus.className = "mt-2 text-xs text-red-600";
+          } finally {
+            submitFileBtn.disabled = false;
+          }
         });
       }
 

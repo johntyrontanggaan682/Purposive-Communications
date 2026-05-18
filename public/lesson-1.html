@@ -282,7 +282,7 @@
         </div>
 
         <p class="mt-4 text-xs text-slate-500">
-          Note: Each task submission is stored in Firestore as a filename only (no upload storage yet).
+          Note: Task submissions are uploaded to Supabase Storage and the file link is saved for teacher checking.
         </p>
       </section>
     </div>
@@ -324,6 +324,7 @@
   <!-- ✅ Firebase only (NO localStorage) -->
   <script type="module">
     import { auth, db } from "./firebase.js";
+      import { uploadTaskSubmission } from "./submission-upload.js";
     import {
       onAuthStateChanged,
       signOut as firebaseSignOut,
@@ -831,7 +832,9 @@
       return {
         partsDone: parts.map(() => false),
         taskFiles: emptyTaskFiles(),
+        taskFileMeta: {},
         assessmentFile: "",
+        assessmentFileMeta: null,
       };
     }
 
@@ -878,9 +881,11 @@
           taskFiles.task1 = String(d.assessmentFile || "");
         }
 
+        const taskFileMeta = (d.taskFileMeta && typeof d.taskFileMeta === "object") ? d.taskFileMeta : {};
         const assessmentFile = String(d.assessmentFile || taskFiles.task1 || "");
+        const assessmentFileMeta = (d.assessmentFileMeta && typeof d.assessmentFileMeta === "object") ? d.assessmentFileMeta : (taskFileMeta.task1 || null);
 
-        return { partsDone, taskFiles, assessmentFile };
+        return { partsDone, taskFiles, taskFileMeta, assessmentFile, assessmentFileMeta };
       } catch (_) {
         return defaultLessonState();
       }
@@ -889,14 +894,18 @@
     async function saveLessonState(uid, state) {
       const taskFiles = (state.taskFiles && typeof state.taskFiles === "object") ? state.taskFiles : emptyTaskFiles();
       // Legacy field used by teacher dashboard; keep a best-effort value
+      const taskFileMeta = (state.taskFileMeta && typeof state.taskFileMeta === "object") ? state.taskFileMeta : {};
       const legacyAssessment = String(
         taskFiles.task4 || taskFiles.task3 || taskFiles.task2 || taskFiles.task1 || state.assessmentFile || ""
       );
+      const legacyAssessmentMeta = state.assessmentFileMeta || taskFileMeta.task4 || taskFileMeta.task3 || taskFileMeta.task2 || taskFileMeta.task1 || null;
 
       const payload = {
         partsDone: state.partsDone,
         taskFiles,
+        taskFileMeta,
         assessmentFile: legacyAssessment,
+        assessmentFileMeta: legacyAssessmentMeta,
         updatedAt: Date.now()
       };
 
@@ -1035,7 +1044,11 @@
         const fileStatus = document.getElementById(`fileStatus-${key}`);
 
         const savedName = (state.taskFiles && typeof state.taskFiles === "object") ? String(state.taskFiles[key] || "") : "";
-        if (savedName) fileStatus.textContent = `Last submitted: ${savedName}`;
+        if (savedName) {
+          const savedMeta = (state.taskFileMeta && typeof state.taskFileMeta === "object") ? state.taskFileMeta[key] : null;
+          if (savedMeta?.fileUrl) fileStatus.innerHTML = `Last submitted: <a class="font-semibold text-brand-800 underline" href="${savedMeta.fileUrl}" target="_blank" rel="noopener">${savedName}</a>`;
+          else fileStatus.textContent = `Last submitted: ${savedName}`;
+        }
 
         submitFileBtn?.addEventListener("click", async () => {
           if (!fileInput?.files?.length) {
@@ -1043,23 +1056,45 @@
             fileStatus.className = "mt-2 text-xs text-red-600";
             return;
           }
-          const name = fileInput.files[0].name;
+          const file = fileInput.files[0];
+          submitFileBtn.disabled = true;
+          fileStatus.textContent = "Uploading to Supabase Storage...";
+          fileStatus.className = "mt-2 text-xs text-slate-600";
 
-          if (!state.taskFiles || typeof state.taskFiles !== "object") state.taskFiles = emptyTaskFiles();
-          state.taskFiles[key] = name;
-          state.assessmentFile = name; // legacy
-          state.partsDone[activePart] = true;
+          try {
+            const meta = await uploadTaskSubmission({
+              lessonNo: LESSON_NO,
+              taskId: key,
+              label: p.title || `Task ${key}`,
+              title: p.title || `Lesson ${LESSON_NO} Task Submission`,
+              file,
+              profile: __profile || {}
+            });
+            const name = meta.fileName || file.name;
 
-          fileStatus.textContent = `Submitted: ${name}`;
-          fileStatus.className = "mt-2 text-xs text-brand-800";
+            if (!state.taskFiles || typeof state.taskFiles !== "object") state.taskFiles = emptyTaskFiles();
+            if (!state.taskFileMeta || typeof state.taskFileMeta !== "object") state.taskFileMeta = {};
+            state.taskFiles[key] = name;
+            state.taskFileMeta[key] = meta;
+            state.assessmentFile = name; // legacy
+            state.assessmentFileMeta = meta; // legacy link for dashboards
+            state.partsDone[activePart] = true;
 
-          if (__currentUser) {
-            await saveLessonState(__currentUser.uid, state);
-            const pct = computeProgressPct(state);
-            await saveLessonProgress(__currentUser.uid, pct, { doneCount: state.partsDone.reduce((a,b)=>a+(b?1:0),0), partsTotal: parts.length });
+            if (__currentUser) {
+              await saveLessonState(__currentUser.uid, state);
+              const pct = computeProgressPct(state);
+              await saveLessonProgress(__currentUser.uid, pct, { doneCount: state.partsDone.reduce((a,b)=>a+(b?1:0),0), partsTotal: parts.length });
+            }
+
+            fileStatus.innerHTML = `Submitted: <a class="font-semibold text-brand-800 underline" href="${meta.fileUrl}" target="_blank" rel="noopener">${name}</a>`;
+            fileStatus.className = "mt-2 text-xs text-brand-800";
+            render(state);
+          } catch (err) {
+            fileStatus.textContent = err?.message || "Upload failed. Please try again.";
+            fileStatus.className = "mt-2 text-xs text-red-600";
+          } finally {
+            submitFileBtn.disabled = false;
           }
-
-          render(state);
         });
       }
     }
