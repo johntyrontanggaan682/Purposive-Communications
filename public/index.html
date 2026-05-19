@@ -537,40 +537,21 @@
     <div class="absolute inset-0 hero-parallax">
       <div class="hero-glow" id="heroGlow"></div>
 
-      <div class="relative h-full w-full overflow-hidden group" id="heroCarousel">
-        <img id="heroImgA"
-          src="https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=1800&q=80"
-          alt="Purposive Communication hero"
-          class="xfade-layer is-active"
-          loading="eager"
-          fetchpriority="high"
-          decoding="async" />
-        <img id="heroImgB"
-          src="https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=1800&q=80"
-          alt="Purposive Communication hero"
-          class="xfade-layer"
-          loading="eager"
-          decoding="async" />
+      <div class="relative h-full w-full overflow-hidden" id="heroVideoWrap">
+        <video
+          id="heroBgVideo"
+          class="absolute inset-0 h-full w-full object-cover"
+          autoplay
+          muted
+          loop
+          playsinline
+          preload="auto"
+        >
+          <source src="./landvid.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
 
-        <div class="absolute inset-0 bg-gradient-to-b from-black/55 to-black/35" id="heroOverlay"></div>
-
-        <button id="heroPrev" type="button" aria-hidden="true" tabindex="-1" aria-label="Previous photo"
-          class="absolute left-4 top-1/2 -translate-y-1/2 z-10 inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/90 text-slate-800 ring-1 ring-black/10 shadow-soft
-                 hover:bg-white focus:outline-none focus:ring-4 focus:ring-brand-200
-                 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition">
-          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6" />
-          </svg>
-        </button>
-
-        <button id="heroNext" type="button" aria-hidden="true" tabindex="-1" aria-label="Next photo"
-          class="absolute right-4 top-1/2 -translate-y-1/2 z-10 inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/90 text-slate-800 ring-1 ring-black/10 shadow-soft
-                 hover:bg-white focus:outline-none focus:ring-4 focus:ring-brand-200
-                 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition">
-          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 18l6-6-6-6" />
-          </svg>
-        </button>
+        <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/45 to-black/35" id="heroOverlay"></div>
       </div>
     </div>
 
@@ -864,7 +845,7 @@
               </div>
               <div class="min-w-0">
                 <p class="font-semibold text-slate-900">Email</p>
-                <p class="text-slate-600 break-words">support@purposivecommunication.com</p>
+                <p class="text-slate-600 break-words">slsulucena@slsu.edu.ph</p>
               </div>
             </div>
 
@@ -878,7 +859,7 @@
               </div>
               <div>
                 <p class="font-semibold text-slate-900">Address</p>
-                <p class="text-slate-600">Your School / Campus Address, Philippines</p>
+                <p class="text-slate-600">Ibabang Dupay, Lucena, Philippines, 4301</p>
               </div>
             </div>
           </div>
